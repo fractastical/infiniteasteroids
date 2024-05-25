@@ -557,8 +557,6 @@ const resizeCanvas = () => {
     }
 
 function update() {
-
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   document.getElementById('leaderboard-container').style.display = 'none';
 
@@ -568,38 +566,24 @@ function update() {
 
   let angle = ship.rotation * Math.PI / 180;
 
-  if(isMobile())
+  if (isMobile()) {
     keys[' '] = true;
-
-  // Apply acceleration based on key states
-  if (keys['ArrowUp'] || keys['w']) {
-
-    backgroundMusic.play(); // Resume the background music (if hasn't started)
-    playRandomThrusterSound(); 
-
-    if (ship.speed < ship.maxSpeed) {
-      ship.speed += ship.acceleration;
-    }
-  } else if (keys['ArrowDown'] || keys['s']) {
-    if (ship.speed > -2) {
-      ship.speed -= (ship.acceleration * 3);
-      playRandomThrusterSound(); 
-
-    }
-
-  } else {
-    // Apply deceleration when no acceleration key is pressed
-    if (isMobile())
-      ship.speed *= (ship.deceleration * 2);
-    else
-      ship.speed *= ship.deceleration; 
-
   }
 
+  // Apply thrust based on key states
+  if (keys['ArrowUp'] || keys['w']) {
+    backgroundMusic.play(); // Resume the background music (if hasn't started)
+    playRandomThrusterSound();
 
-  // Update ship velocity based on speed and angle
-  ship.velocityX = ship.speed * Math.sin(angle);
-  ship.velocityY = -ship.speed * Math.cos(angle);
+    ship.velocityX += ship.acceleration * Math.sin(angle);
+    ship.velocityY -= ship.acceleration * Math.cos(angle);
+  }
+
+  // Apply deceleration when no thrust key is pressed
+  if (!keys['ArrowUp'] && !keys['w']) {
+    ship.velocityX *= ship.deceleration;
+    ship.velocityY *= ship.deceleration;
+  }
 
   // Update ship position based on velocity
   ship.x += ship.velocityX;
@@ -621,16 +605,13 @@ function update() {
 
   // Handle shooting based on key state and cooldown
   if (keys[' '] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
-
     backgroundMusic.play(); // Resume the background music (if hasn't started)
-
-    ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: ship.laserLevel + 1  });
+    ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: ship.laserLevel + 1 });
     ship.laserTimer = ship.laserCooldown;
-    playRandomShotSound(); 
-
+    playRandomShotSound();
   }
 
-
+  // Rest of the game update logic...
 
   if (activeWeaponClasses.includes('sonic')) {
     // Update sonic blast cooldown
@@ -639,8 +620,7 @@ function update() {
     } else {
       activateSonicBlast();
     }
-}
-
+  }
 
   // Update sonic blast waves
   for (let i = 0; i < sonicBlast.waves.length; i++) {
@@ -651,7 +631,6 @@ function update() {
     for (let j = 0; j < asteroids.length; j++) {
       const asteroid = asteroids[j];
       if (isColliding(wave, asteroid) && !wave.hitAsteroids.includes(asteroid.id)) {
-        // console.log("wavehit");
         wave.hitAsteroids.push(asteroid.id); // Add the asteroid ID to the hitAsteroids array
         asteroid.hitPoints -= sonicBlast.damage;
         if (asteroid.hitPoints <= 0) {
@@ -670,14 +649,11 @@ function update() {
   }
 
   drawSonicBlast();
-
-
   drawShip();
   drawActiveWeaponClasses();
 
   updateLasers();
   drawLasers();
-  
 
   if (turret.bought) {
     updateTurret();
@@ -694,7 +670,6 @@ function update() {
   updateDrones();
   drawDrones();
 
-
   updateAsteroids();
   drawAsteroids();
 
@@ -705,18 +680,14 @@ function update() {
         resetShip();
         lives--;
         playShipDestroyedSound();
-        // updateCoinsDisplay();
         invincible = true;
         invincibilityTimer = invincibilityDuration;
         if (lives === 0) gameOver = true;
-        // else pauseGameForMarketplace();
-        // break;
       }
     }
   }
 
   checkLaserCollisions(ship.lasers, true);
-
 
   if (turret.bought) {
     checkLaserCollisions(turret.lasers, false);
@@ -729,7 +700,6 @@ function update() {
 
   drawLives();
   drawScore();
-  // drawCoins();
   updateExplosions();
   drawExplosions();
 
@@ -740,20 +710,6 @@ function update() {
     createAsteroids();
     spawnTimer = spawnCooldown;
   }
-
-    // if (asteroids.length === 0 && !gameOver) {
-    //   wave++;
-    //   createAsteroids();
-    //   invincible = true;
-    //   invincibilityTimer = invincibilityDuration;
-    //   waveMessageTimer = waveMessageDuration;
-    // }
-
-
-  // if (waveMessageTimer > 0) {
-  //   drawWaveMessage();
-  //   waveMessageTimer--;
-  // }
 
   if (gameOver) endGame();
 }
@@ -1583,7 +1539,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.304) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.305) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
