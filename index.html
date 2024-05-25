@@ -265,6 +265,8 @@
   	// const droneLaserSpeedLevelDisplay = document.getElementById('droneLaserSpeedLevel');
   	const droneLaserIntervalLevelDisplay = document.getElementById('droneLaserIntervalLevel');
 
+  const activeWeaponClasses = []; // Array to store active weapon classes
+
     let level = 1;
     let xp = 0;
     let xpToNextLevel = 100;
@@ -510,11 +512,14 @@ function update() {
 
 
 
-  if (sonicBlast.timer > 0) {
-    sonicBlast.timer--;
-  } else {
-    activateSonicBlast();
-  }
+  if (activeWeaponClasses.includes('sonic')) {
+    // Update sonic blast cooldown
+    if (sonicBlast.timer > 0) {
+      sonicBlast.timer--;
+    } else {
+      activateSonicBlast();
+    }
+}
 
 
   // Update sonic blast waves
@@ -525,11 +530,12 @@ function update() {
     // Check collision with asteroids
     for (let j = 0; j < asteroids.length; j++) {
       const asteroid = asteroids[j];
-      if (isColliding(wave, asteroid)) {
+      if (isColliding(wave, asteroid) && !wave.hitAsteroids.includes(asteroid.id)) {
         console.log("wavehit");
+        wave.hitAsteroids.push(asteroid.id); // Add the asteroid ID to the hitAsteroids array
         asteroid.hitPoints -= sonicBlast.damage;
         if (asteroid.hitPoints <= 0) {
-          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints); 
+          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
           asteroids.splice(j, 1);
           j--;
         }
@@ -547,6 +553,8 @@ function update() {
 
 
   drawShip();
+  drawActiveWeaponClasses();
+
   updateLasers();
   drawLasers();
   
@@ -804,7 +812,7 @@ function updateTurretLasers() {
     let laser = turret.lasers[i];
     laser.x += Math.cos(laser.rotation) * 2;
     laser.y += Math.sin(laser.rotation) * 2;
-    console.log("up");
+    // console.log("up");
     if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
       turret.lasers.splice(i, 1);
     }
@@ -813,10 +821,10 @@ function updateTurretLasers() {
 
 
 function drawTurretLasers() {
-        console.log(turret.lasers.length);
+        // console.log(turret.lasers.length);
 
   for (let i = 0; i < turret.lasers.length; i++) {
-      console.log('blue');
+      // console.log('blue');
     let laser = turret.lasers[i];
     ctx.fillStyle = turret.color;
     // ctx.fillStyle = 'cyan';
@@ -1132,20 +1140,16 @@ function getRandomUpgrades(count) {
     'Increase Laser Level',
     'Increase Max Bullets',
     'Decrease Laser Cooldown',
-    'Increase Explosive Laser Level',
     'Increase Rotation Speed',
-    'Increase Turret Range',
-    'Increase Turret Firerate',
-    'Increase Turret Damage',
-    'Buy Drone',
-    'Increase Drone Firerate',
-    'Increase Sonic Blast Range', 
-    'Increase Sonic Blast Damage', 
-    'Decrease Sonic Blast Cooldown' 
+    ...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']),
+    ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
+    ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
+    ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast'])
   ];
 
   const upgrades = [];
   for (let i = 0; i < count; i++) {
+    if (availableUpgrades.length === 0) break; // Exit loop if no more upgrades available
     const randomIndex = Math.floor(Math.random() * availableUpgrades.length);
     upgrades.push(availableUpgrades[randomIndex]);
     availableUpgrades.splice(randomIndex, 1);
@@ -1166,47 +1170,85 @@ function applyUpgrade(upgrade) {
       ship.laserCooldownLevel++;
       ship.laserCooldown = Math.max(5, ship.laserCooldown - 3);
       break;
-    case 'Increase Explosive Laser Level':
-      ship.explosiveLaserLevel++;
-      break;
     case 'Increase Rotation Speed':
       ship.rotationSpeedLevel++;
       ship.rotationSpeed = 2 * ship.rotationSpeedLevel;
       break;
+    case 'Activate Explosive Laser':
+      activateWeaponClass('explosive');
+      break;
+    case 'Increase Explosive Laser Level':
+      ship.explosiveLaserLevel++;
+      break;
+    case 'Activate Turret':
+      activateWeaponClass('turret');
+      break;
     case 'Increase Turret Range':
-      turret.bought = true;
       turretUpgrades.range++;
       turret.range = 30 * turretUpgrades.range;
       break;
     case 'Increase Turret Firerate':
-      turret.bought = true;
       turretUpgrades.fireRate++;
       turret.fireInterval = Math.max(10, 360 - (5 * turretUpgrades.fireRate));
       break;
     case 'Increase Turret Damage':
-      turret.bought = true;
       turretUpgrades.damage++;
       turret.damage = turretUpgrades.damage;
       break;
-    case 'Buy Drone':
-      buyDrone()
+    case 'Activate Drone':
+      activateWeaponClass('drone');
       break;
     case 'Increase Drone Firerate':
       droneUpgrades.laserInterval++;
-          drones.forEach(drone => {
-                  drone.laserInterval = 360 / droneUpgrades.laserInterval;
-            });
+      drones.forEach(drone => {
+        drone.laserInterval = 360 / droneUpgrades.laserInterval;
+      });
       break;
-    case 'Increase Sonic Blast Range': // Added sonic blast upgrade
-      sonicBlast.range += 50; // Increase sonic blast range by 50 units
+    case 'Activate Sonic Blast':
+      activateWeaponClass('sonic');
       break;
-    case 'Increase Sonic Blast Damage': // Added sonic blast upgrade
-      sonicBlast.damage++; // Increase sonic blast damage by 1
+    case 'Increase Sonic Blast Range':
+      sonicBlast.range += 50;
       break;
-    case 'Decrease Sonic Blast Cooldown': // Added sonic blast upgrade
-      sonicBlast.cooldown = Math.max(60, sonicBlast.cooldown - 30); // Decrease sonic blast cooldown by 30 frames (0.5 seconds)
+    case 'Increase Sonic Blast Damage':
+      sonicBlast.damage++;
+      break;
+    case 'Decrease Sonic Blast Cooldown':
+      sonicBlast.cooldown = Math.max(60, sonicBlast.cooldown - 30);
       break;
   }
+}
+
+function activateWeaponClass(weaponClass) {
+  if (!activeWeaponClasses.includes(weaponClass) && activeWeaponClasses.length < 4) {
+    activeWeaponClasses.push(weaponClass);
+    switch (weaponClass) {
+      case 'explosive':
+        ship.explosiveLaserLevel = 1;
+        break;
+      case 'turret':
+        turret.bought = true;
+        turretUpgrades.range = 1;
+        turretUpgrades.fireRate = 1;
+        turretUpgrades.damage = 1;
+        break;
+      case 'drone':
+        buyDrone();
+        break;
+      case 'sonic':
+        sonicBlast.range = 200;
+        sonicBlast.damage = 1;
+        sonicBlast.cooldown = 300;
+        break;
+    }
+  }
+}
+
+function drawActiveWeaponClasses() {
+  ctx.fillStyle = 'white';
+  ctx.font = '16px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(`Active Weapon Classes: ${activeWeaponClasses.join(', ')}`, 20, 60);
 }
 
 
@@ -1277,7 +1319,7 @@ function isColliding(obj1, obj2) {
     ctx.fillStyle = 'white';
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
-    ctx.fillText(`(v 0.304) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.305) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
@@ -1347,6 +1389,7 @@ function createAsteroids() {
     }
 
     let asteroid = {
+      id: Date.now() + Math.random(), // Generate a unique ID for each asteroid
       x: x,
       y: y,
       size: asteroidSize,
@@ -1646,16 +1689,18 @@ function updateExplosions() {
       }
     }
 
-    function activateSonicBlast() {
-      if (sonicBlast.timer === 0) {
-        sonicBlast.waves.push({
-          x: ship.x,
-          y: ship.y,
-          radius: 0,
-        });
-        sonicBlast.timer = sonicBlast.cooldown;
-      }
+  function activateSonicBlast() {
+    if (sonicBlast.timer === 0) {
+      sonicBlast.waves.push({
+        x: ship.x,
+        y: ship.y,
+        radius: 0,
+        hitAsteroids: [], // Array to store the IDs of hit asteroids
+      });
+      sonicBlast.timer = sonicBlast.cooldown;
     }
+  }
+
 
 
 
