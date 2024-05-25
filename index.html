@@ -805,16 +805,18 @@ function checkLaserCollisions(lasers, isShip) {
         coins += actualDamage * 20; // Add coins based on actual damage
         increaseXP(actualDamage * 20); // Increase XP based on actual damage
 
-        // if (isShip) {
-        //   coins += actualDamage * 20; // Add coins based on actual damage
-        //   increaseXP(actualDamage * 20); // Increase XP based on actual damage
-        //   updateCoinsDisplay();
-        // }
+        // Handle explosive laser effect
+        if (isShip && ship.explosiveLaserLevel > 1) {
+          createExplosion(laser.x, laser.y, 0);
+          createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 30); // Increase radius based on explosiveLaserLevel
+        }
+
         break;
       }
     }
   }
 }
+
 
 const meteorDestroySounds = [
   document.getElementById('meteor-destroy-1'),
@@ -1590,7 +1592,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.306) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.307) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
