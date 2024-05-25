@@ -1810,41 +1810,72 @@ canvas.addEventListener('touchstart', (e) => {
 	  joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
 	});
 
-	restartButton.addEventListener('click', () => {
-	  restartButton.style.display = 'none';
-	  lives = 1;
-	  score = 0;
-	  coins = 0;
-	  wave = 1;
-	  coins += bonusCoins;
-	  asteroids = [];
-	  drones = [];
-	  droneUpgrades = {
-	  speed: 1,
-	  laserSpeed: 1,
-	  laserInterval: 1
-		};
-
-    level = 1;
-    xpToNextLevel = 100;
-    xp = 0;
-
-
-
-	  ship.laserLevel = 1;
-	  ship.accelerationLevel = 1;
-	  ship.rotationSpeedLevel = 1;
-    ship.laserCooldownLevel = 1;
-    ship.maxBulletsLevel = 1;
-
-	  gameOver = false;
-	  invincible = true;
-	  invincibilityTimer = invincibilityDuration;
-      document.getElementById('leaderboard-container').style.display = 'none';
-	  createAsteroids();
-
-	  startGame();
-	});
+restartButton.addEventListener('click', () => {
+  restartButton.style.display = 'none';
+  lives = 1;
+  score = 0;
+  wave = 1;
+  asteroidsKilled = 0;
+  
+  // Reset coins and XP
+  coins = 0;
+  level = 1;
+  xpToNextLevel = 100;
+  xp = 0;
+  
+  // Reset asteroids and drones
+  asteroids = [];
+  drones = [];
+  droneUpgrades = {
+    speed: 1,
+    laserSpeed: 1,
+    laserInterval: 1
+  };
+  
+  // Reset ship upgrades
+  ship.laserLevel = 1;
+  ship.accelerationLevel = 1;
+  ship.rotationSpeedLevel = 1;
+  ship.laserCooldownLevel = 1;
+  ship.maxBulletsLevel = 1;
+  ship.explosiveLaserLevel = 1;
+  
+  // Reset turret upgrades
+  turret.bought = false;
+  turretUpgrades.range = 1;
+  turretUpgrades.fireRate = 1;
+  turretUpgrades.damage = 1;
+  
+  // Reset sonic blast upgrades
+  sonicBlast.range = 200;
+  sonicBlast.damage = 1;
+  sonicBlast.cooldown = 300;
+  sonicBlast.timer = 0;
+  sonicBlast.waves = [];
+  
+  // Reset active weapon classes
+  activeWeaponClasses = [];
+  
+  // Reset game state
+  gameOver = false;
+  invincible = true;
+  invincibilityTimer = invincibilityDuration;
+  document.getElementById('leaderboard-container').style.display = 'none';
+  
+  // Reset spawn variables
+  spawnTimer = spawnCooldown;
+  chanceForSmallAsteroid = 3;
+  chanceForVerySmallAsteroid = 1;
+  chanceForHardenedAsteroid = 5;
+  chanceForVeryHardenedAsteroid = 2;
+  
+  // Reset ship position
+  resetShip();
+  
+  // Start a new game
+  createAsteroids();
+  startGame();
+});
 
     // Start the game
     // startGame();
