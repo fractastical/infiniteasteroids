@@ -336,7 +336,7 @@
   	// const droneLaserSpeedLevelDisplay = document.getElementById('droneLaserSpeedLevel');
   	const droneLaserIntervalLevelDisplay = document.getElementById('droneLaserIntervalLevel');
 
-  const activeWeaponClasses = []; // Array to store active weapon classes
+  let activeWeaponClasses = []; // Array to store active weapon classes
 
     let level = 1;
     let xp = 0;
@@ -656,12 +656,12 @@ function update() {
         resetShip();
         lives--;
         playShipDestroyedSound();
-        updateCoinsDisplay();
+        // updateCoinsDisplay();
         invincible = true;
         invincibilityTimer = invincibilityDuration;
         if (lives === 0) gameOver = true;
-        else pauseGameForMarketplace();
-        break;
+        // else pauseGameForMarketplace();
+        // break;
       }
     }
   }
@@ -1532,7 +1532,7 @@ function isColliding(obj1, obj2) {
     ctx.fillStyle = 'white';
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
-    ctx.fillText(`(v 0.306) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.307) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
