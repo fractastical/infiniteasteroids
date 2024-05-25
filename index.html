@@ -208,10 +208,10 @@
 		<button onclick="upgradeDrone('speed')">Upgrade Drone Speed (Cost: 200)</button> Level: <span id="droneSpeedLevel">1</span><br>
 		<!-- <button onclick="upgradeDrone('laserSpeed')">Upgrade Drone Laser Speed (Cost: 200)</button> Level: <span id="droneLaserSpeedLevel">1</span><br> -->
 		<button onclick="upgradeDrone('laserInterval')">Upgrade Drone Firing Frequency (Cost: 200)</button> Level: <span id="droneLaserIntervalLevel">1</span><br>
-    <button onclick="buyTurret()">Buy Turret (Cost: 1000)</button><br>
-  <button onclick="upgrade('turretRange')">Upgrade Turret Range (Cost: 200)</button> Level: <span id="turretRangeLevel">1</span><br>
-  <button onclick="upgrade('turretFireRate')">Upgrade Turret Fire Rate (Cost: 200)</button> Level: <span id="turretFireRateLevel">1</span><br>
-  <button onclick="upgrade('turretDamage')">Upgrade Turret Damage (Cost: 200)</button> Level: <span id="turretDamageLevel">1</span><br>
+    <button onclick="buyTurret()">Buy Autocannon (Cost: 1000)</button><br>
+  <button onclick="upgrade('turretRange')">Upgrade Autocannon Range (Cost: 200)</button> Level: <span id="turretRangeLevel">1</span><br>
+  <button onclick="upgrade('turretFireRate')">Upgrade Autocannon Fire Rate (Cost: 200)</button> Level: <span id="turretFireRateLevel">1</span><br>
+  <button onclick="upgrade('turretDamage')">Upgrade Autocannon Damage (Cost: 200)</button> Level: <span id="turretDamageLevel">1</span><br>
 		<button onclick="exitMarketplace()">Exit Marketplace</button>
   </div>
 
@@ -315,7 +315,8 @@
           fireInterval: 60,
           fireTimer: 0,
           range: 200,
-          damage: 1
+          damage: 1,
+          lasers: [] // Initialize the turret's lasers array
     };
 
     let turretUpgrades = {
@@ -347,7 +348,7 @@ const resizeCanvas = () => {
 		
 
 // KEY CONFIG VARs
-    let coins = 1000;
+    let coins = 10000;
 
 
     let score = 0;
@@ -423,11 +424,6 @@ const resizeCanvas = () => {
 function update() {
 
 
-  if (turret.bought) {
-    updateTurret();
-    drawTurret();
-  }
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   if (ship.laserTimer > 0) {
@@ -498,8 +494,20 @@ function update() {
   drawShip();
   updateLasers();
   drawLasers();
+  
+
+  if (turret.bought) {
+    updateTurret();
+    updateTurretLasers();
+    drawTurretLasers();
+    drawTurret();
+  }
+
+
   updateDrones();
   drawDrones();
+
+
   updateAsteroids();
   drawAsteroids();
 
@@ -521,6 +529,11 @@ function update() {
   }
 
   checkLaserCollisions(ship.lasers, true);
+
+
+  if (turret.bought) {
+    checkLaserCollisions(turret.lasers, false);
+  }
 
   if (invincible) {
     invincibilityTimer--;
@@ -573,7 +586,7 @@ function checkLaserCollisions(lasers, isShip) {
       let asteroid = asteroids[j];
       if (isColliding(laser, asteroid)) {
 
-        if (isShip && turret.bought) {
+        if (!isShip && turret.bought) {
             asteroid.hitPoints -= turret.damage;
          }
         if (true) {
@@ -718,6 +731,51 @@ function updateTurret() {
   turret.y = ship.y;
 }
 
+function updateTurretLasers() {
+    // console.log(turret.lasers.length);
+
+  for (let i = turret.lasers.length - 1; i >= 0; i--) {
+    let laser = turret.lasers[i];
+    laser.x += Math.cos(laser.rotation) * 2;
+    laser.y += Math.sin(laser.rotation) * 2;
+    console.log("up");
+    if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
+      turret.lasers.splice(i, 1);
+    }
+  }
+}
+
+
+function drawTurretLasers() {
+        console.log(turret.lasers.length);
+
+  for (let i = 0; i < turret.lasers.length; i++) {
+      console.log('blue');
+    let laser = turret.lasers[i];
+    ctx.fillStyle = laser.color;
+    // ctx.fillStyle = 'cyan';
+    // console.log(laser.x + " , " + laser.y);
+    ctx.fillRect(laser.x - laser.size * 2, laser.y - laser.size * 2, laser.size * 2, laser.size * 2);
+  }
+}
+
+
+    // function drawLasers() {
+    //   ctx.fillStyle = 'red';
+    //   for (let i = 0; i < ship.lasers.length; i++) {
+    //     ctx.fillRect(ship.lasers[i].x - 1, ship.lasers[i].y - 1, ship.laserLevel + 3, ship.laserLevel + 3); // Drawing lasers as small squares for better collision detection
+    //   }
+    // }
+
+function drawTurret() {
+  ctx.save();
+  ctx.translate(turret.x, turret.y);
+  ctx.rotate(turret.rotation * Math.PI / 180);
+  ctx.fillStyle = 'lime';
+  ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size, turret.size);
+  ctx.restore();
+}
+
 
 function findNearestAsteroidInRange() {
   let nearestAsteroid = null;
@@ -735,14 +793,6 @@ function findNearestAsteroidInRange() {
 }
 
 
-function drawTurret() {
-  ctx.save();
-  ctx.translate(turret.x, turret.y);
-  ctx.rotate(turret.rotation * Math.PI / 180);
-  ctx.fillStyle = 'lime';
-  ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size, turret.size);
-  ctx.restore();
-}
 
 
 
@@ -855,7 +905,7 @@ function drawDrones() {
       if(isMobile())
           coinmessage = coinmessage + '    tap for store';
       else
-          coinmessage = coinmessage +  "    'x' for store";
+          coinmessage = coinmessage +  "    'b' for store";
 
       ctx.fillText(coinmessage, 20, canvas.height - 30);
     }
@@ -966,11 +1016,11 @@ function endGame() {
             break;
         case 'turretRange':
           turretUpgrades.range++;
-          turret.range = 200 * turretUpgrades.range;
+          turret.range = 30 * turretUpgrades.range;
           break;
         case 'turretFireRate':
           turretUpgrades.fireRate++;
-          turret.fireInterval = Math.max(10, 60 - (5 * turretUpgrades.fireRate));
+          turret.fireInterval = Math.max(10, 360 - (5 * turretUpgrades.fireRate));
           break;
         case 'turretDamage':
           turretUpgrades.damage++;
@@ -1406,7 +1456,7 @@ let keys = {};
 function handleKeyDown(event) {
   keys[event.key] = true;
 
-  if (event.key === 'x') {
+  if (event.key === 'b') {
     if (marketplace.style.display === 'block') {
       exitMarketplace();
     } else {
