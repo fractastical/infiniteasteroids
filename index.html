@@ -1467,7 +1467,8 @@ function applyUpgrade(upgrade) {
 }
 
 function activateWeaponClass(weaponClass) {
-  if (!activeWeaponClasses.includes(weaponClass) && activeWeaponClasses.length < 4) {
+  // temporarily remove restrictions
+  if (!activeWeaponClasses.includes(weaponClass) && activeWeaponClasses.length < 6) {
     activeWeaponClasses.push(weaponClass);
     switch (weaponClass) {
       case 'explosive':
@@ -1578,7 +1579,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.302) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.303) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
