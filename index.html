@@ -400,7 +400,7 @@
       size: 20,
       speed: 0,
       acceleration: 0.15,
-      deceleration: 0.98,
+      deceleration: 0.99,
       maxSpeed: 5,
       rotation: 0,
       rotationSpeed: 2.5,
@@ -589,7 +589,11 @@ function update() {
 
   } else {
     // Apply deceleration when no acceleration key is pressed
-    ship.speed *= ship.deceleration;
+    if (isMobile())
+      ship.speed *= (ship.deceleration * 2);
+    else
+      ship.speed *= ship.deceleration; 
+
   }
 
 
