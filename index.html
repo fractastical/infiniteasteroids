@@ -734,11 +734,8 @@ function checkLaserCollisions(lasers, isShip) {
       if (isColliding(laser, asteroid)) {
         let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
 
-        if (!isShip && turret.bought) {
-          asteroid.hitPoints -= turret.damage;
-        } else {
-          asteroid.hitPoints -= damage;
-        }
+        let actualDamage = Math.min(damage, asteroid.hitPoints); // Ensure we don't overkill the asteroid
+        asteroid.hitPoints -= actualDamage;
 
         if (asteroid.hitPoints <= 0) {
           createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
@@ -750,15 +747,17 @@ function checkLaserCollisions(lasers, isShip) {
         }
 
         lasers.splice(i, 1);
-        score += 50;
+        score += actualDamage * 50; // Increase score based on actual damage
         asteroidsKilled++;
         playRandomMeteorDestroySound();
+        coins += actualDamage * 20; // Add coins based on actual damage
+        increaseXP(actualDamage * 20); // Increase XP based on actual damage
 
-        if (isShip) {
-          coins += 20; // Add coins when score increases
-          increaseXP(20);
-          updateCoinsDisplay();
-        }
+        // if (isShip) {
+        //   coins += actualDamage * 20; // Add coins based on actual damage
+        //   increaseXP(actualDamage * 20); // Increase XP based on actual damage
+        //   updateCoinsDisplay();
+        // }
         break;
       }
     }
