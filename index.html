@@ -808,7 +808,7 @@ function checkLaserCollisions(lasers, isShip) {
         // Handle explosive laser effect
         if (isShip && ship.explosiveLaserLevel > 1) {
           createExplosion(laser.x, laser.y, 0);
-          createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 30); // Increase radius based on explosiveLaserLevel
+          createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 15); // Increase radius based on explosiveLaserLevel
         }
 
         break;
@@ -1723,29 +1723,28 @@ function updateAsteroids() {
 
 
 	// Function to create area damage
-	function createAreaDamage(x, y, radius) {
-        // console.log("createAreaDamage");
+function createAreaDamage(x, y, radius, damage) {
+  for (let i = asteroids.length - 1; i >= 0; i--) {
+    let asteroid = asteroids[i];
+    let dx = asteroid.x - x;
+    let dy = asteroid.y - y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < radius) {
+      let actualDamage = Math.min(damage, asteroid.hitPoints);
+      asteroid.hitPoints -= actualDamage;
 
-	  for (let i = asteroids.length - 1; i >= 0; i--) {
-	    let asteroid = asteroids[i];
-	    let dx = asteroid.x - x;
-	    let dy = asteroid.y - y;
-	    let distance = Math.sqrt(dx * dx + dy * dy);
-	    if (distance < radius) {
-        // console.log("explosion");
+      if (asteroid.hitPoints <= 0) {
+        createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+        asteroids.splice(i, 1);
+      }
 
-	      createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
-        if(asteroid.hitPoints > 3)
-  	      asteroids.splice(i, 1);
-        else
-          asteroid.hitPoints--; 
+      coins += actualDamage * 15;
+      increaseXP(actualDamage * 15);
+      score += actualDamage * 50;
+    }
+  }
+}
 
-        coins += 15;
-        increaseXP(15);
-	      score += 50;
-	    }
-	  }
-	}
 
   function increaseXP(amount) {
   xp += amount;
