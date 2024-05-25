@@ -965,6 +965,9 @@ function selectUpgrade(choice) {
   const upgrades = window.levelUpgrades;
   applyUpgrade(upgrades[choice - 1]);
   document.getElementById('levelUpModal').style.display = 'none';
+
+  // Resume the game
+  gameLoop = setInterval(update, 1000 / 60); // 60 FPS
 }
 
 
@@ -1309,6 +1312,9 @@ function levelUp() {
 
   // Store upgrades in a global variable for later use
   window.levelUpgrades = upgrades;
+
+  // Pause the game
+  clearInterval(gameLoop);
 
   invincible = true;
   invincibilityTimer = invincibilityDuration;
