@@ -369,6 +369,7 @@
 
   	let isTouchingJoystick = false;
   	let joystickStartX, joystickStartY;
+  let isMusicPlaying = true; // Flag to track music state
 
     const marketplace = document.getElementById('marketplace');
     const coinsDisplay = document.getElementById('coins');
@@ -563,7 +564,7 @@ const resizeCanvas = () => {
       invincibilityTimer = invincibilityDuration;
       gameLoop = setInterval(update, 1000 / 60); // 60 FPS
       backgroundMusic.play(); // Play the background music
-
+      isMusicPlaying = true;
     }
 
 function update() {
@@ -582,7 +583,8 @@ function update() {
 
   // Apply thrust based on key states
   if (keys['ArrowUp'] || keys['w']) {
-    backgroundMusic.play(); // Resume the background music (if hasn't started)
+    if(!isMusicPlaying)
+      backgroundMusic.play(); // Resume the background music (if hasn't started)
     playRandomThrusterSound();
 
     ship.velocityX += ship.acceleration * Math.sin(angle);
@@ -2065,6 +2067,8 @@ function handleKeyUp(event) {
 }
 
 function toggleMusic() {
+  backgroundMusic.pause();
+
   if (isMusicPlaying) {
     backgroundMusic.pause();
   } else {
