@@ -1578,7 +1578,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.31) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.302) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
@@ -1594,6 +1594,7 @@ let chanceForSmallAsteroid = 3;
 let chanceForVerySmallAsteroid = 1;
 let chanceForHardenedAsteroid = 5;
 let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
+let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
 
 function createAsteroids() {
   let numberOfAsteroids = 10 + (wave - 1) * 1.8;
@@ -1603,6 +1604,7 @@ function createAsteroids() {
     let isVerySmallAsteroid = Math.random() * 100 < chanceForVerySmallAsteroid;
     let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
     let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
+    let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
 
     let asteroidSize = isSmallAsteroid ? 10 : 20;
     let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : 0.1;
@@ -1636,7 +1638,10 @@ function createAsteroids() {
     let hitPoints;
     let color;
 
-    if (isVeryHardenedAsteroid) {
+    if (isMegaHardenedAsteroid) {
+      hitPoints = 10 + wave;
+      color = '#301934'; // Very dark purple for mega hardened asteroids
+    } else if (isVeryHardenedAsteroid) {
       hitPoints = 15;
       color = '#0A1414'; // Very dark green color for very hardened asteroids
     } else if (isHardenedAsteroid) {
@@ -1656,7 +1661,6 @@ function createAsteroids() {
       dx: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
       dy: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
       hitPoints: hitPoints,
-      // isHardened: isHardenedAsteroid || isVeryHardenedAsteroid,
       color: color
     };
 
@@ -1667,8 +1671,8 @@ function createAsteroids() {
   chanceForVerySmallAsteroid += 0.1;
   chanceForHardenedAsteroid += 0.5;
   chanceForVeryHardenedAsteroid += 0.2; // Increase the chance for very hardened asteroids
+  chanceForMegaHardenedAsteroid += 0.1; // Increase the chance for mega hardened asteroids
 }
-
 
 
     // Update asteroids
