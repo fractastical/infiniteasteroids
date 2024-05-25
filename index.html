@@ -1639,8 +1639,12 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.308) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.309) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+
+      ctx.fillText("\'m\' to toggle music", 20, canvas.height - 30);
+
   }
+
 
 
     // Draw wave message
@@ -2051,12 +2055,24 @@ function handleKeyDown(event) {
     } else {
       pauseGameForMarketplace();
     }
+  } else if (event.key === 'm') {
+    toggleMusic();
   }
 }
 
 function handleKeyUp(event) {
   keys[event.key] = false;
 }
+
+function toggleMusic() {
+  if (isMusicPlaying) {
+    backgroundMusic.pause();
+  } else {
+    backgroundMusic.play();
+  }
+  isMusicPlaying = !isMusicPlaying;
+}
+
 
 async function fetchLeaderboard() {
   const userId = 190933907; // Replace with dynamic user ID if available
