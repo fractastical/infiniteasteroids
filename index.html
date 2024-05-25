@@ -331,6 +331,16 @@
       damage: 1
     };
 
+let sonicBlast = {
+  cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
+  timer: 0, // Current cooldown timer
+  range: 200, // Range of the sonic blast
+  speed: 2, // Speed of the sonic blast wave
+  damage: 1, // Damage dealt by the sonic blast
+  waves: [], // Array to store the active sonic blast waves
+};
+
+
 
 
 	// let upgrades = {
@@ -499,6 +509,37 @@ function update() {
 
 
 
+  if (sonicBlast.timer > 0) {
+    sonicBlast.timer--;
+  } else {
+    activateSonicBlast();
+  }
+
+  // Update sonic blast waves
+  for (let i = 0; i < sonicBlast.waves.length; i++) {
+    const wave = sonicBlast.waves[i];
+    wave.radius += sonicBlast.speed;
+
+    // Check collision with asteroids
+    for (let j = 0; j < asteroids.length; j++) {
+      const asteroid = asteroids[j];
+      if (isColliding(wave, asteroid)) {
+        asteroid.hitPoints -= sonicBlast.damage;
+        if (asteroid.hitPoints <= 0) {
+          asteroids.splice(j, 1);
+          j--;
+        }
+      }
+    }
+
+    // Remove the wave if it exceeds the range
+    if (wave.radius > sonicBlast.range) {
+      sonicBlast.waves.splice(i, 1);
+      i--;
+    }
+  }
+
+
   drawShip();
   updateLasers();
   drawLasers();
@@ -508,7 +549,7 @@ function update() {
     updateTurret();
     updateTurretLasers();
     drawTurretLasers();
-    // drawTurret();
+    drawTurret();
   }
 
 
@@ -791,7 +832,7 @@ function drawTurret() {
   ctx.translate(turret.x, turret.y);
   ctx.rotate(turret.rotation * Math.PI / 180);
   ctx.fillStyle = 'lime';
-  ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size, turret.size);
+  ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size + 2, turret.size);
   ctx.restore();
 }
 
@@ -811,6 +852,17 @@ function findNearestAsteroidInRange() {
   return nearestAsteroid;
 }
 
+
+function drawSonicBlast() {
+  ctx.strokeStyle = 'blue';
+  ctx.lineWidth = 2;
+  for (let i = 0; i < sonicBlast.waves.length; i++) {
+    const wave = sonicBlast.waves[i];
+    ctx.beginPath();
+    ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}
 
 
 
@@ -1080,9 +1132,11 @@ function getRandomUpgrades(count) {
     'Increase Turret Firerate',
     'Increase Turret Damage',
     'Buy Drone',
-    'Increase Drone Firerate'
-    ]; 
-
+    'Increase Drone Firerate',
+    'Increase Sonic Blast Range', 
+    'Increase Sonic Blast Damage', 
+    'Decrease Sonic Blast Cooldown' 
+  ];
 
   const upgrades = [];
   for (let i = 0; i < count; i++) {
@@ -1132,17 +1186,20 @@ function applyUpgrade(upgrade) {
       buyDrone()
       break;
     case 'Increase Drone Firerate':
-
       droneUpgrades.laserInterval++;
-
           drones.forEach(drone => {
                   drone.laserInterval = 360 / droneUpgrades.laserInterval;
-            }
-          );
-
+            });
       break;
-
-
+    case 'Increase Sonic Blast Range': // Added sonic blast upgrade
+      sonicBlast.range += 50; // Increase sonic blast range by 50 units
+      break;
+    case 'Increase Sonic Blast Damage': // Added sonic blast upgrade
+      sonicBlast.damage++; // Increase sonic blast damage by 1
+      break;
+    case 'Decrease Sonic Blast Cooldown': // Added sonic blast upgrade
+      sonicBlast.cooldown = Math.max(60, sonicBlast.cooldown - 30); // Decrease sonic blast cooldown by 30 frames (0.5 seconds)
+      break;
   }
 }
 
@@ -1205,7 +1262,7 @@ function applyUpgrade(upgrade) {
     ctx.fillStyle = 'white';
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
-    ctx.fillText(`(v 0.302) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.304) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
@@ -1574,6 +1631,19 @@ function updateExplosions() {
       }
     }
 
+    function activateSonicBlast() {
+      if (sonicBlast.timer === 0) {
+        sonicBlast.waves.push({
+          x: ship.x,
+          y: ship.y,
+          radius: 0,
+        });
+        sonicBlast.timer = sonicBlast.cooldown;
+      }
+    }
+
+
+
 let keys = {};
 
 function handleKeyDown(event) {
@@ -1695,9 +1765,12 @@ canvas.addEventListener('touchstart', (e) => {
 	  laserInterval: 1
 		};
 
+    level = 1;
     xpToNextLevel = 100;
     xp = 0;
-		
+
+
+
 	  ship.laserLevel = 1;
 	  ship.accelerationLevel = 1;
 	  ship.rotationSpeedLevel = 1;
