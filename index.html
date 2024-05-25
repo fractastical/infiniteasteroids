@@ -1699,16 +1699,20 @@ function updateXPBar() {
 
 
 function createExplosion(x, y, hitpoints = 0) {
-  const randomSize = Math.random() * 20 + 20;
-  const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015
-  let randomColor;
-  if (hitpoints > 7)
-    randomColor = getRandomPurpleShade();
-  else if (hitpoints > 1) 
-    randomColor = getRandomBlueShade();
-  else 
-    randomColor = getRandomOrangeShade();
+  const baseSize = 20; // Base size for explosions
+  const sizeReductionFactor = 1; // Size reduction per hitpoint
 
+  const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
+  const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015
+
+  let randomColor;
+  if (hitpoints > 7) {
+    randomColor = getRandomPurpleShade();
+  } else if (hitpoints > 1) {
+    randomColor = getRandomBlueShade();
+  } else {
+    randomColor = getRandomOrangeShade();
+  }
 
   let explosion = {
     x: x,
