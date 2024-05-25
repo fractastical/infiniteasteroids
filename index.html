@@ -835,7 +835,7 @@ function buyDrone() {
       direction: Math.random() * Math.PI * 2,
       lasers: [],
       laserSpeed: 2 * droneUpgrades.laserSpeed,
-      laserInterval: 360 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
+      laserInterval: 240 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
       laserTimer: 0
     };
     drones.push(drone);
@@ -992,7 +992,7 @@ function upgradeDrone(attribute) {
           drone.laserSpeed = 5 * droneUpgrades.laserSpeed;
           break;
         case 'laserInterval':
-          drone.laserInterval = 360 / droneUpgrades.laserInterval;
+          drone.laserInterval = 240 / droneUpgrades.laserInterval;
           break;
       }
     });
@@ -1390,7 +1390,7 @@ function applyUpgrade(upgrade) {
     case 'Increase Drone Firerate':
       droneUpgrades.laserInterval++;
       drones.forEach(drone => {
-        drone.laserInterval = 360 / droneUpgrades.laserInterval;
+        drone.laserInterval = 240 / droneUpgrades.laserInterval;
       });
       break;
     case 'Activate Sonic Blast':
