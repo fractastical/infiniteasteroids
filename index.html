@@ -531,7 +531,7 @@ function update() {
     for (let j = 0; j < asteroids.length; j++) {
       const asteroid = asteroids[j];
       if (isColliding(wave, asteroid) && !wave.hitAsteroids.includes(asteroid.id)) {
-        console.log("wavehit");
+        // console.log("wavehit");
         wave.hitAsteroids.push(asteroid.id); // Add the asteroid ID to the hitAsteroids array
         asteroid.hitPoints -= sonicBlast.damage;
         if (asteroid.hitPoints <= 0) {
@@ -566,6 +566,10 @@ function update() {
     drawTurret();
   }
 
+  if (activeWeaponClasses.includes('bomberdrone')) {
+    updateBomberDrones();
+    drawBomberDrones();
+  }
 
   updateDrones();
   drawDrones();
@@ -768,6 +772,21 @@ function buyDrone() {
   }
 }
 
+function buyBomberDrone() {
+  let bomberDrone = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    size: 12,
+    speed: 0.5 * bomberDroneUpgrades.speed,
+    direction: Math.random() * Math.PI * 2,
+    bombs: [],
+    bombInterval: 120,
+    bombTimer: 0
+  };
+  bomberDrones.push(bomberDrone);
+}
+
+
 function buyTurret() {
   if (!turret.bought && coins >= 1000) {
     coins -= 1000;
@@ -953,6 +972,66 @@ function updateDrones() {
   });
 }
 
+function updateBomberDrones() {
+  bomberDrones.forEach(drone => {
+    const dx = ship.x - drone.x;
+    const dy = ship.y - drone.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > 200) {
+      const angleToShip = Math.atan2(dy, dx);
+      drone.direction = angleToShip;
+    }
+
+    drone.x += Math.cos(drone.direction) * drone.speed;
+    drone.y += Math.sin(drone.direction) * drone.speed;
+
+    if (drone.x < 0) drone.x = canvas.width;
+    else if (drone.x > canvas.width) drone.x = 0;
+    if (drone.y < 0) drone.y = canvas.height;
+    else if (drone.y > canvas.height) drone.y = 0;
+
+    drone.bombTimer++;
+    if (drone.bombTimer >= drone.bombInterval) {
+      drone.bombTimer = 0;
+      let bomb = {
+        x: drone.x,
+        y: drone.y,
+        radius: bomberDroneUpgrades.bombRadius,
+        damage: bomberDroneUpgrades.bombDamage
+      };
+      drone.bombs.push(bomb);
+    }
+
+    for (let i = drone.bombs.length - 1; i >= 0; i--) {
+      let bomb = drone.bombs[i];
+      for (let j = asteroids.length - 1; j >= 0; j--) {
+        let asteroid = asteroids[j];
+        let dx = bomb.x - asteroid.x;
+        let dy = bomb.y - asteroid.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < bomb.radius + asteroid.size) {
+          asteroid.hitPoints -= bomb.damage;
+          if (asteroid.hitPoints <= 0) {
+            createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+            asteroids.splice(j, 1);
+            score += 50;
+            increaseXP(20);
+          }
+          createExplosion(bomb.x, bomb.y, 1); // Create explosion at the bomb's position
+          drone.bombs.splice(i, 1);
+          break;
+        }
+      }
+      // Remove bombs that are off-screen
+      if (bomb.x < 0 || bomb.x > canvas.width || bomb.y < 0 || bomb.y > canvas.height) {
+        drone.bombs.splice(i, 1);
+      }
+    }
+  });
+
+}
+
 function drawDrones() {
   drones.forEach(drone => {
     ctx.save();
@@ -974,6 +1053,32 @@ function drawDrones() {
     }
   });
 }
+
+function drawBomberDrones() {
+  bomberDrones.forEach(drone => {
+    ctx.save();
+    ctx.translate(drone.x, drone.y);
+    ctx.rotate(drone.direction);
+    ctx.beginPath();
+    ctx.moveTo(0, -drone.size);
+    ctx.lineTo(-drone.size, drone.size);
+    ctx.lineTo(drone.size, drone.size);
+    ctx.closePath();
+    ctx.fillStyle = 'magenta';
+    ctx.fill();
+    ctx.restore();
+
+    // Draw bombs
+    ctx.fillStyle = 'orange';
+    drone.bombs.forEach(bomb => {
+      ctx.beginPath();
+      ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  });
+}
+
+
 
     function drawLives() {
       ctx.fillStyle = 'white';
@@ -1144,7 +1249,9 @@ function getRandomUpgrades(count) {
     ...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']),
     ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
     ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
-    ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast'])
+    ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
+    ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone'])
+
   ];
 
   const upgrades = [];
@@ -1216,6 +1323,22 @@ function applyUpgrade(upgrade) {
     case 'Decrease Sonic Blast Cooldown':
       sonicBlast.cooldown = Math.max(60, sonicBlast.cooldown - 30);
       break;
+    case 'Activate Bomber Drone':
+      activateWeaponClass('bomberdrone');
+      break;
+    case 'Increase Bomber Drone Speed':
+      bomberDroneUpgrades.speed += 0.2;
+      bomberDrones.forEach(drone => {
+        drone.speed = 0.5 * bomberDroneUpgrades.speed;
+      });
+      break;
+    case 'Increase Bomber Drone Bomb Radius':
+      bomberDroneUpgrades.bombRadius += 10;
+      break;
+    case 'Increase Bomber Drone Bomb Damage':
+      bomberDroneUpgrades.bombDamage++;
+      break;
+
   }
 }
 
@@ -1234,6 +1357,14 @@ function activateWeaponClass(weaponClass) {
         break;
       case 'drone':
         buyDrone();
+        break;
+      case 'bomberdrone':
+        bomberDrones = [];
+        bomberDroneUpgrades = {
+          speed: 1,
+          bombRadius: 50,          bombDamage: 2
+        };
+        buyBomberDrone();
         break;
       case 'sonic':
         sonicBlast.range = 200;
@@ -1872,6 +2003,14 @@ restartButton.addEventListener('click', () => {
   // Reset ship position
   resetShip();
   
+
+  bomberDrones = [];
+  bomberDroneUpgrades = {
+    speed: 1,
+    bombRadius: 50,
+    bombDamage: 2
+  };
+
   // Start a new game
   createAsteroids();
   startGame();
