@@ -372,9 +372,9 @@ const resizeCanvas = () => {
     let asteroidsKilled = 0;
   	let drones = [];
   	const droneCost = 800;
-  	let spawnCooldown = 10; // Cooldown time in seconds
-let spawnTimer = spawnCooldown;
-let bonusCoins = 0;
+  	let spawnCooldown = 12; // Cooldown time in seconds
+  let spawnTimer = spawnCooldown;
+  let bonusCoins = 0;
 
 	let droneUpgrades = {
 	  speed: 1,
@@ -965,7 +965,7 @@ function endGame() {
   // Calculate and display coins for next round
   bonusCoins = Math.floor(score * 0.06);
   coins += bonusCoins;
-  ctx.fillText(`Bonus Coins for Next Round: ${bonusCoins}`, canvas.width / 2, canvas.height / 2 + 100);
+  // ctx.fillText(`Bonus Coins for Next Round: ${bonusCoins}`, canvas.width / 2, canvas.height / 2 + 100);
 
   // Show the restart button
   restartButton.style.display = 'block';
@@ -1693,6 +1693,8 @@ canvas.addEventListener('touchstart', (e) => {
 	  speed: 1,
 	  laserSpeed: 1,
 	  laserInterval: 1
+    xpToNextLevel = 100;
+    xp = 0;
 		};
 		
 	  ship.laserLevel = 1;
