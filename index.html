@@ -307,7 +307,7 @@
       laserTimer: 0
     };
 
-        let turret = {
+    let turret = {
           x: 0,
           y: 0,
           size: 10,
@@ -316,6 +316,7 @@
           fireTimer: 0,
           range: 200,
           damage: 1,
+          color: 'cyan',
           lasers: [] // Initialize the turret's lasers array
     };
 
@@ -500,7 +501,7 @@ function update() {
     updateTurret();
     updateTurretLasers();
     drawTurretLasers();
-    drawTurret();
+    // drawTurret();
   }
 
 
@@ -752,7 +753,7 @@ function drawTurretLasers() {
   for (let i = 0; i < turret.lasers.length; i++) {
       console.log('blue');
     let laser = turret.lasers[i];
-    ctx.fillStyle = laser.color;
+    ctx.fillStyle = turret.color;
     // ctx.fillStyle = 'cyan';
     // console.log(laser.x + " , " + laser.y);
     ctx.fillRect(laser.x - laser.size * 2, laser.y - laser.size * 2, laser.size * 2, laser.size * 2);
