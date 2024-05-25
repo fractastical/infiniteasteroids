@@ -582,8 +582,8 @@ function update() {
     // Generate thruster particles
     generateThrusterParticles();
   } else if (keys['ArrowDown'] || keys['s']) {
-    ship.velocityX *= 0.9; // Strong deceleration factor
-    ship.velocityY *= 0.9;
+    ship.velocityX *= 0.97; // Strong deceleration factor
+    ship.velocityY *= 0.97;
   } else {
     // Apply natural deceleration when no thrust key is pressed
     ship.velocityX *= ship.deceleration;
