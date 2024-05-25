@@ -300,11 +300,11 @@
   </div>
   <div id="startScreen">
     <div>
-      <h2>Welcome to Infinite War!</h2>
+      <h2>Welcome to Nacho Blaster!</h2>
       <p>Use the joystick to move your ship.</p>
       <p>Tap the left and right sides of the screen to rotate your ship.</p>
       <p>Tap the center of the screen to accelerate.</p>
-      <p>Tap lower left for store.</p>
+      <!-- <p>Tap lower left for store.</p> -->
       <!-- <p>Tap with two fingers to fire.</p> -->
       <button onclick="startGame()">Start Game</button>
     </div>
@@ -535,9 +535,9 @@ const resizeCanvas = () => {
 	canvas.addEventListener('touchstart', (e) => {
 
 		// lower left corner to access store
-		if (e.touches[0].clientX < canvas.width / 5 && e.touches[0].clientY > canvas.height * 4 / 5) {
-	    pauseGameForMarketplace();
-	  }
+		// if (e.touches[0].clientX < canvas.width / 5 && e.touches[0].clientY > canvas.height * 4 / 5) {
+	  //   pauseGameForMarketplace();
+	  // }
 
 	  if (e.target === canvas && e.touches.length === 2) { // Require two fingers to fire
 	    ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: 2 });
@@ -1577,7 +1577,7 @@ function isColliding(obj1, obj2) {
     ctx.fillStyle = 'white';
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
-    ctx.fillText(`(v 0.308) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.309) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
