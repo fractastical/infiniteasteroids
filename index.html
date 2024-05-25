@@ -191,6 +191,42 @@
     transition: width 0.5s ease; /* Smooth transition effect */
   }
 
+  /* Styles for the level-up modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 400px;
+  background-color: #111;
+  border: 3px solid #f00;
+  color: #0f0;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.modal-content button {
+  background-color: #222;
+  color: #0f0;
+  border: 2px solid #f00;
+  padding: 10px;
+  margin: 10px 0;
+  width: 100%;
+  cursor: pointer;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+}
+
+.modal-content button:hover {
+  background-color: #333;
+}
+
+
 
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -200,6 +236,17 @@
   <div id="xpBarContainer">
   <div id="xpBar"></div>
 </div>
+
+<div id="levelUpModal" class="modal">
+  <div class="modal-content">
+    <h2>Level Up!</h2>
+    <p>Choose an upgrade:</p>
+    <button id="upgrade1" onclick="selectUpgrade(1)"></button>
+    <button id="upgrade2" onclick="selectUpgrade(2)"></button>
+    <button id="upgrade3" onclick="selectUpgrade(3)"></button>
+  </div>
+</div>
+
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
   <div id="joystick">
@@ -703,7 +750,7 @@ function checkLaserCollisions(lasers, isShip) {
           createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints); // Regular explosion
           if (ship.explosiveLaserLevel > 1) {
             // Create additional explosions for nearby objects
-            createAreaDamage(asteroid.x, asteroid.y, ship.explosiveLaserLevel * 5); // 50 is the radius of the explosion
+            createAreaDamage(asteroid.x, asteroid.y, ship.explosiveLaserLevel * 15); // 50 is the radius of the explosion
           }
           asteroids.splice(j, 1);
         }
@@ -922,6 +969,11 @@ function drawSonicBlast() {
 }
 
 
+function selectUpgrade(choice) {
+  const upgrades = window.levelUpgrades;
+  applyUpgrade(upgrades[choice - 1]);
+  document.getElementById('levelUpModal').style.display = 'none';
+}
 
 
 function upgradeDrone(attribute) {
@@ -1256,14 +1308,18 @@ function levelUp() {
   // Generate three random upgrades
   const upgrades = getRandomUpgrades(3);
 
-  // Prompt the user to choose an upgrade
-  const selectedUpgrade = prompt(`Congratulations! You reached level ${level}. Choose an upgrade:\n1. ${upgrades[0]}\n2. ${upgrades[1]}\n3. ${upgrades[2]}`);
+  // Display the level-up modal
+  const levelUpModal = document.getElementById('levelUpModal');
+  document.getElementById('upgrade1').textContent = `1. ${upgrades[0]}`;
+  document.getElementById('upgrade2').textContent = `2. ${upgrades[1]}`;
+  document.getElementById('upgrade3').textContent = `3. ${upgrades[2]}`;
+  levelUpModal.style.display = 'block';
+
+  // Store upgrades in a global variable for later use
+  window.levelUpgrades = upgrades;
 
   invincible = true;
   invincibilityTimer = invincibilityDuration;
-
-  // Apply the selected upgrade
-  applyUpgrade(upgrades[selectedUpgrade - 1]);
 }
 
 function getRandomUpgrades(count) {
@@ -1476,7 +1532,7 @@ function isColliding(obj1, obj2) {
     ctx.fillStyle = 'white';
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
-    ctx.fillText(`(v 0.305) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.306) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
@@ -2046,6 +2102,18 @@ restartButton.addEventListener('click', () => {
   // Start a new game
   createAsteroids();
   startGame();
+});
+
+document.addEventListener('keydown', function(event) {
+  if (document.getElementById('levelUpModal').style.display === 'block') {
+    if (event.key === '1') {
+      selectUpgrade(1);
+    } else if (event.key === '2') {
+      selectUpgrade(2);
+    } else if (event.key === '3') {
+      selectUpgrade(3);
+    }
+  }
 });
 
     // Start the game
