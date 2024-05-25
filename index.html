@@ -361,7 +361,7 @@ const resizeCanvas = () => {
     let asteroids = [];
     let gameLoop;
     let explosions = [];
-    let lives = 3;
+    let lives = 1;
     let gameOver = false;
     let invincible = false;
     let invincibilityTimer = 0;
@@ -548,7 +548,7 @@ function update() {
     if (invincibilityTimer <= 0) invincible = false;
   }
 
-  drawLives();
+  // drawLives();
   drawScore();
   // drawCoins();
   updateExplosions();
@@ -1205,7 +1205,7 @@ function applyUpgrade(upgrade) {
     ctx.fillStyle = 'white';
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
-    ctx.fillText(`(v 0.301) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.302) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
@@ -1682,7 +1682,7 @@ canvas.addEventListener('touchstart', (e) => {
 
 	restartButton.addEventListener('click', () => {
 	  restartButton.style.display = 'none';
-	  lives = 3;
+	  lives = 1;
 	  score = 0;
 	  coins = 0;
 	  wave = 1;
