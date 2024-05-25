@@ -381,7 +381,8 @@
   	// const droneLaserSpeedLevelDisplay = document.getElementById('droneLaserSpeedLevel');
   	const droneLaserIntervalLevelDisplay = document.getElementById('droneLaserIntervalLevel');
 
-  let activeWeaponClasses = []; // Array to store active weapon classes
+    let activeWeaponClasses = []; // Array to store active weapon classes
+    let particles = []; // Array to store thruster particles
 
     let level = 1;
     let xp = 0;
@@ -577,6 +578,9 @@ function update() {
 
     ship.velocityX += ship.acceleration * Math.sin(angle);
     ship.velocityY -= ship.acceleration * Math.cos(angle);
+
+    // Generate thruster particles
+    generateThrusterParticles();
   }
 
   // Apply deceleration when no thrust key is pressed
@@ -611,7 +615,6 @@ function update() {
     playRandomShotSound();
   }
 
-  // Rest of the game update logic...
 
   if (activeWeaponClasses.includes('sonic')) {
     // Update sonic blast cooldown
@@ -712,6 +715,48 @@ function update() {
   }
 
   if (gameOver) endGame();
+
+  // Update and draw particles
+  updateParticles();
+  drawParticles();
+}
+
+// Function to generate thruster particles
+function generateThrusterParticles() {
+  const angle = ship.rotation * Math.PI / 180;
+  const particle = {
+    x: ship.x - Math.sin(angle) * ship.size,
+    y: ship.y + Math.cos(angle) * ship.size,
+    size: Math.random() * 3 + 1,
+    speed: Math.random() * 2 + 1,
+    direction: angle + Math.PI,
+    life: Math.random() * 30 + 20,
+    color: 'rgba(255, 165, 0, 0.8)'
+  };
+  particles.push(particle);
+}
+
+// Function to update particles
+function updateParticles() {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const particle = particles[i];
+    particle.x += Math.sin(particle.direction) * particle.speed;
+    particle.y -= Math.cos(particle.direction) * particle.speed;
+    particle.life--;
+    if (particle.life <= 0) {
+      particles.splice(i, 1);
+    }
+  }
+}
+
+// Function to draw particles
+function drawParticles() {
+  for (const particle of particles) {
+    ctx.fillStyle = particle.color;
+    ctx.beginPath();
+    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
 }
 
 
