@@ -1252,8 +1252,12 @@ function endGame() {
   ctx.textAlign = 'center';
   ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
   ctx.font = '20px Arial';
-  ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 40);
-  ctx.fillText(`Asteroids Destroyed: ${asteroidsKilled}`, canvas.width / 2, canvas.height / 2 + 70);
+
+  ctx.fillText(`Level: ${level}`, canvas.width / 2, canvas.height / 2 + 40);
+
+  ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 70);
+  ctx.fillText(`Asteroids Destroyed: ${asteroidsKilled}`, canvas.width / 2, canvas.height / 2 + 100);
+
 
   // Calculate and display coins for next round
   bonusCoins = Math.floor(score * 0.06);
@@ -1586,7 +1590,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.305) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.306) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
