@@ -171,12 +171,36 @@
     padding-bottom: 5px;
   }
 
+  #xpBarContainer {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 20px;
+    background-color: #333;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  #xpBar {
+    width: 0;
+    height: 100%;
+    background-color: #0f0;
+    transition: width 0.5s ease; /* Smooth transition effect */
+  }
+
 
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 </head>
 <body>
+  <div id="xpBarContainer">
+  <div id="xpBar"></div>
+</div>
+
   <canvas id="gameCanvas" width="800" height="600"></canvas>
   <div id="joystick">
     <div id="joystickHandle"></div>
@@ -1225,7 +1249,9 @@ function endGame() {
 
 function levelUp() {
   level++;
+  xp = 0;  // Reset XP
   xpToNextLevel = Math.floor(xpToNextLevel * 1.5); // Increase XP required for next level
+  updateXPBar();
 
   // Generate three random upgrades
   const upgrades = getRandomUpgrades(3);
@@ -1603,11 +1629,17 @@ function updateAsteroids() {
 
   function increaseXP(amount) {
   xp += amount;
+  updateXPBar();
   if (xp >= xpToNextLevel) {
     levelUp();
   }
 }
 
+function updateXPBar() {
+  const xpBar = document.getElementById('xpBar');
+  const xpPercentage = (xp / xpToNextLevel) * 100;
+  xpBar.style.width = xpPercentage + '%';
+}
 
 
 function createExplosion(x, y, hitpoints = 0) {
