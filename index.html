@@ -474,6 +474,7 @@ function update() {
     ship.speed *= ship.deceleration;
   }
 
+
   // Update ship velocity based on speed and angle
   ship.velocityX = ship.speed * Math.sin(angle);
   ship.velocityY = -ship.speed * Math.cos(angle);
@@ -515,6 +516,7 @@ function update() {
     activateSonicBlast();
   }
 
+
   // Update sonic blast waves
   for (let i = 0; i < sonicBlast.waves.length; i++) {
     const wave = sonicBlast.waves[i];
@@ -524,8 +526,10 @@ function update() {
     for (let j = 0; j < asteroids.length; j++) {
       const asteroid = asteroids[j];
       if (isColliding(wave, asteroid)) {
+        console.log("wavehit");
         asteroid.hitPoints -= sonicBlast.damage;
         if (asteroid.hitPoints <= 0) {
+          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints); 
           asteroids.splice(j, 1);
           j--;
         }
@@ -538,6 +542,8 @@ function update() {
       i--;
     }
   }
+
+  drawSonicBlast();
 
 
   drawShip();
@@ -855,7 +861,7 @@ function findNearestAsteroidInRange() {
 
 function drawSonicBlast() {
   ctx.strokeStyle = 'blue';
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 1;
   for (let i = 0; i < sonicBlast.waves.length; i++) {
     const wave = sonicBlast.waves[i];
     ctx.beginPath();
@@ -1248,12 +1254,21 @@ function applyUpgrade(upgrade) {
       }
     }
 
-	function isColliding(obj1, obj2) {
-	  let dx = obj1.x - obj2.x;
-	  let dy = obj1.y - obj2.y;
-	  let distance = Math.sqrt(dx * dx + dy * dy);
-	  return distance < (obj1.size || 1) + obj2.size;
-	}
+function isColliding(obj1, obj2) {
+  if (obj1.radius) {
+    // Circular collision detection for sonic blast wave
+    let dx = obj1.x - obj2.x;
+    let dy = obj1.y - obj2.y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+    return distance < obj1.radius + obj2.size;
+  } else {
+    // Original collision detection
+    let dx = obj1.x - obj2.x;
+    let dy = obj1.y - obj2.y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+    return distance < (obj1.size || 1) + obj2.size;
+  }
+}
 
 
 
