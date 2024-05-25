@@ -388,6 +388,15 @@
     let xp = 0;
     let xpToNextLevel = 100;
 
+  let damageReport = {
+    lasers: 0,
+    explosiveLasers: 0,
+    drones: 0,
+    turret: 0,
+    sonicBlast: 0,
+    bomberDrones: 0
+  };
+
 
     let superWeapons = {
       missile: 0,
@@ -628,31 +637,7 @@ function update() {
   }
 
   // Update sonic blast waves
-  for (let i = 0; i < sonicBlast.waves.length; i++) {
-    const wave = sonicBlast.waves[i];
-    wave.radius += sonicBlast.speed;
-
-    // Check collision with asteroids
-    for (let j = 0; j < asteroids.length; j++) {
-      const asteroid = asteroids[j];
-      if (isColliding(wave, asteroid) && !wave.hitAsteroids.includes(asteroid.id)) {
-        wave.hitAsteroids.push(asteroid.id); // Add the asteroid ID to the hitAsteroids array
-        asteroid.hitPoints -= sonicBlast.damage;
-        if (asteroid.hitPoints <= 0) {
-          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
-          asteroids.splice(j, 1);
-          j--;
-        }
-      }
-    }
-
-    // Remove the wave if it exceeds the range
-    if (wave.radius > sonicBlast.range) {
-      sonicBlast.waves.splice(i, 1);
-      i--;
-    }
-  }
-
+  updateSonicBlast();
   drawSonicBlast();
   drawShip();
   drawActiveWeaponClasses();
@@ -777,6 +762,35 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+function updateSonicBlast() {
+  for (let i = 0; i < sonicBlast.waves.length; i++) {
+    const wave = sonicBlast.waves[i];
+    wave.radius += sonicBlast.speed;
+
+    for (let j = 0; j < asteroids.length; j++) {
+      const asteroid = asteroids[j];
+      if (isColliding(wave, asteroid) && !wave.hitAsteroids.includes(asteroid.id)) {
+        wave.hitAsteroids.push(asteroid.id);
+        let actualDamage = Math.min(sonicBlast.damage, asteroid.hitPoints);
+        asteroid.hitPoints -= actualDamage;
+        damageReport.sonicBlast += actualDamage;
+
+        if (asteroid.hitPoints <= 0) {
+          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+          asteroids.splice(j, 1);
+          j--;
+        }
+      }
+    }
+
+    if (wave.radius > sonicBlast.range) {
+      sonicBlast.waves.splice(i, 1);
+      i--;
+    }
+  }
+}
+
+
 // Function to handle laser collisions
 function checkLaserCollisions(lasers, isShip) {
   for (let i = lasers.length - 1; i >= 0; i--) {
@@ -805,10 +819,18 @@ function checkLaserCollisions(lasers, isShip) {
         coins += actualDamage * 20; // Add coins based on actual damage
         increaseXP(actualDamage * 20); // Increase XP based on actual damage
 
-        // Handle explosive laser effect
-        if (isShip && ship.explosiveLaserLevel > 1) {
-          createExplosion(laser.x, laser.y, 0);
-          createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 15, ship.laserLevel); // Increase radius based on explosiveLaserLevel
+        // Track damage
+        if (isShip) {
+          damageReport.lasers += actualDamage;
+
+          // Handle explosive laser effect
+          if (ship.explosiveLaserLevel > 0) {
+            createExplosion(laser.x, laser.y, 0);
+            let areaDamage = createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 30, ship.laserLevel); // Increase radius based on explosiveLaserLevel and damage based on laserLevel
+            damageReport.explosiveLasers += areaDamage;
+          }
+        } else {
+          damageReport.turret += actualDamage;
         }
 
         break;
@@ -1092,9 +1114,22 @@ function updateDrones() {
       drone.lasers.push(laser);
     }
 
+    // Track damage for drone lasers
+    drone.lasers.forEach(laser => {
+      for (let j = asteroids.length - 1; j >= 0; j--) {
+        let asteroid = asteroids[j];
+        if (isColliding(laser, asteroid)) {
+          let actualDamage = Math.min(drone.laserSpeed, asteroid.hitPoints);
+          asteroid.hitPoints -= actualDamage;
+          damageReport.drones += actualDamage;
+        }
+      }
+    });
+
     checkLaserCollisions(drone.lasers, false);
   });
 }
+
 
 function updateBomberDrones() {
   bomberDrones.forEach(drone => {
@@ -1135,25 +1170,26 @@ function updateBomberDrones() {
         let dy = bomb.y - asteroid.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < bomb.radius + asteroid.size) {
-          asteroid.hitPoints -= bomb.damage;
+          let actualDamage = Math.min(bomb.damage, asteroid.hitPoints);
+          asteroid.hitPoints -= actualDamage;
+          damageReport.bomberDrones += actualDamage;
+
           if (asteroid.hitPoints <= 0) {
             createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
             asteroids.splice(j, 1);
             score += 50;
             increaseXP(20);
           }
-          createExplosion(bomb.x, bomb.y, 1); // Create explosion at the bomb's position
+          createExplosion(bomb.x, bomb.y, 1);
           drone.bombs.splice(i, 1);
           break;
         }
       }
-      // Remove bombs that are off-screen
       if (bomb.x < 0 || bomb.x > canvas.width || bomb.y < 0 || bomb.y > canvas.height) {
         drone.bombs.splice(i, 1);
       }
     }
   });
-
 }
 
 function drawDrones() {
@@ -1265,6 +1301,17 @@ function endGame() {
   bonusCoins = Math.floor(score * 0.06);
   coins += bonusCoins;
   // ctx.fillText(`Bonus Coins for Next Round: ${bonusCoins}`, canvas.width / 2, canvas.height / 2 + 100);
+
+  // Display damage report in the lower left corner
+  ctx.font = '14px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(`Damage Report:`, 20, canvas.height - 190);
+  ctx.fillText(`Lasers: ${damageReport.lasers}`, 20, canvas.height - 170);
+  ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 20, canvas.height - 150);
+  ctx.fillText(`Turret: ${damageReport.turret}`, 20, canvas.height - 130);
+  ctx.fillText(`Drones: ${damageReport.drones}`, 20, canvas.height - 110);
+  ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 20, canvas.height - 90);
+  ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 20, canvas.height - 70);
 
   // Show the restart button
   restartButton.style.display = 'block';
@@ -1592,7 +1639,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.307) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.308) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
   }
 
 
@@ -1724,6 +1771,7 @@ function updateAsteroids() {
 
 	// Function to create area damage
 function createAreaDamage(x, y, radius, damage = 1) {
+  let totalDamage = 0;
   for (let i = asteroids.length - 1; i >= 0; i--) {
     let asteroid = asteroids[i];
     let dx = asteroid.x - x;
@@ -1732,6 +1780,7 @@ function createAreaDamage(x, y, radius, damage = 1) {
     if (distance < radius) {
       let actualDamage = Math.min(damage, asteroid.hitPoints);
       asteroid.hitPoints -= actualDamage;
+      totalDamage += actualDamage;
 
       if (asteroid.hitPoints <= 0) {
         createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
@@ -1743,6 +1792,7 @@ function createAreaDamage(x, y, radius, damage = 1) {
       score += actualDamage * 50;
     }
   }
+  return totalDamage;
 }
 
 
