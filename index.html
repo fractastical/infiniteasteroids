@@ -732,27 +732,21 @@ function checkLaserCollisions(lasers, isShip) {
     for (let j = asteroids.length - 1; j >= 0; j--) {
       let asteroid = asteroids[j];
       if (isColliding(laser, asteroid)) {
+        let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
 
         if (!isShip && turret.bought) {
-            asteroid.hitPoints -= turret.damage;
-         }
-        if (true) {
-          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints); // Smaller, redder explosion
-          asteroid.hitPoints--;
-          if (asteroid.hitPoints <= 0) {
-            asteroids.splice(j, 1);
-          } else {
-            // Lighten the color slightly
-            let colorValue = Math.max(40, 30 + (asteroid.hitPoints * 3)); // Adjust color value
-            asteroid.color = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
-          }
+          asteroid.hitPoints -= turret.damage;
         } else {
-          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints); // Regular explosion
-          if (ship.explosiveLaserLevel > 1) {
-            // Create additional explosions for nearby objects
-            createAreaDamage(asteroid.x, asteroid.y, ship.explosiveLaserLevel * 15); // 50 is the radius of the explosion
-          }
+          asteroid.hitPoints -= damage;
+        }
+
+        if (asteroid.hitPoints <= 0) {
+          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
           asteroids.splice(j, 1);
+        } else {
+          // Lighten the color slightly
+          let colorValue = Math.max(40, 30 + (asteroid.hitPoints * 3)); // Adjust color value
+          asteroid.color = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
         }
 
         lasers.splice(i, 1);
@@ -763,7 +757,6 @@ function checkLaserCollisions(lasers, isShip) {
         if (isShip) {
           coins += 20; // Add coins when score increases
           increaseXP(20);
-
           updateCoinsDisplay();
         }
         break;
@@ -771,7 +764,6 @@ function checkLaserCollisions(lasers, isShip) {
     }
   }
 }
-
 
 const meteorDestroySounds = [
   document.getElementById('meteor-destroy-1'),
