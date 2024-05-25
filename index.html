@@ -171,6 +171,7 @@
     padding-bottom: 5px;
   }
 
+
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
@@ -201,13 +202,16 @@
 <button onclick="upgrade('laserCooldown')">Upgrade Laser Cooldown (Cost: 100)</button> Level: <span id="laserCooldownLevel">1</span><br>
     <button onclick="upgrade('explosivelaser')">Explosive Lasers (Cost: 100)</button> Level: <span id="explosiveLaserLevel">1</span><br>
 
-
 		<!-- <button onclick="upgrade('acceleration')">Upgrade Acceleration (Cost: 100)</button> Level: <span id="accelerationLevel">1</span><br> -->
 		<button onclick="upgrade('rotationSpeed')">Upgrade Rotation Speed (Cost: 100)</button> Level: <span id="rotationSpeedLevel">1</span><br>
 		<button onclick="buyDrone()">Buy Drone (Cost: 800)</button><br>
 		<button onclick="upgradeDrone('speed')">Upgrade Drone Speed (Cost: 200)</button> Level: <span id="droneSpeedLevel">1</span><br>
 		<!-- <button onclick="upgradeDrone('laserSpeed')">Upgrade Drone Laser Speed (Cost: 200)</button> Level: <span id="droneLaserSpeedLevel">1</span><br> -->
 		<button onclick="upgradeDrone('laserInterval')">Upgrade Drone Firing Frequency (Cost: 200)</button> Level: <span id="droneLaserIntervalLevel">1</span><br>
+    <button onclick="buyTurret()">Buy Turret (Cost: 1000)</button><br>
+  <button onclick="upgrade('turretRange')">Upgrade Turret Range (Cost: 200)</button> Level: <span id="turretRangeLevel">1</span><br>
+  <button onclick="upgrade('turretFireRate')">Upgrade Turret Fire Rate (Cost: 200)</button> Level: <span id="turretFireRateLevel">1</span><br>
+  <button onclick="upgrade('turretDamage')">Upgrade Turret Damage (Cost: 200)</button> Level: <span id="turretDamageLevel">1</span><br>
 		<button onclick="exitMarketplace()">Exit Marketplace</button>
   </div>
 
@@ -303,6 +307,25 @@
       laserTimer: 0
     };
 
+        let turret = {
+          x: 0,
+          y: 0,
+          size: 10,
+          rotationSpeed: 2,
+          fireInterval: 60,
+          fireTimer: 0,
+          range: 200,
+          damage: 1
+    };
+
+    let turretUpgrades = {
+      range: 1,
+      fireRate: 1,
+      damage: 1
+    };
+
+
+
 	// let upgrades = {
 	//   explosiveLasers: 0, // Initial level of explosive lasers
 	//   emp: 0
@@ -324,7 +347,7 @@ const resizeCanvas = () => {
 		
 
 // KEY CONFIG VARs
-    let coins = 0;
+    let coins = 1000;
 
 
     let score = 0;
@@ -399,6 +422,11 @@ const resizeCanvas = () => {
 
 function update() {
 
+
+  if (turret.bought) {
+    updateTurret();
+    drawTurret();
+  }
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -544,6 +572,10 @@ function checkLaserCollisions(lasers, isShip) {
     for (let j = asteroids.length - 1; j >= 0; j--) {
       let asteroid = asteroids[j];
       if (isColliding(laser, asteroid)) {
+
+        if (isShip && turret.bought) {
+            asteroid.hitPoints -= turret.damage;
+         }
         if (true) {
           createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints); // Smaller, redder explosion
           asteroid.hitPoints--;
@@ -648,6 +680,71 @@ function buyDrone() {
     updateCoinsDisplay();
   }
 }
+
+function buyTurret() {
+  if (!turret.bought && coins >= 1000) {
+    coins -= 1000;
+    turret.bought = true;
+    turret.x = ship.x;
+    turret.y = ship.y;
+    updateCoinsDisplay();
+  }
+}
+
+
+function updateTurret() {
+  let nearestAsteroid = findNearestAsteroidInRange();
+  if (nearestAsteroid) {
+    let dx = nearestAsteroid.x - turret.x;
+    let dy = nearestAsteroid.y - turret.y;
+    let angle = Math.atan2(dy, dx);
+    turret.rotation = angle;
+
+    turret.fireTimer++;
+    if (turret.fireTimer >= turret.fireInterval) {
+      turret.fireTimer = 0;
+      let laser = {
+        x: turret.x,
+        y: turret.y,
+        rotation: turret.rotation,
+        size: 2,
+        color: 'blue' // Set the turret laser color to blue
+      };
+      turret.lasers.push(laser);
+    }
+  }
+
+  turret.x = ship.x;
+  turret.y = ship.y;
+}
+
+
+function findNearestAsteroidInRange() {
+  let nearestAsteroid = null;
+  let nearestDistance = Infinity;
+  for (let i = 0; i < asteroids.length; i++) {
+    let dx = turret.x - asteroids[i].x;
+    let dy = turret.y - asteroids[i].y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < nearestDistance && distance <= turret.range) {
+      nearestAsteroid = asteroids[i];
+      nearestDistance = distance;
+    }
+  }
+  return nearestAsteroid;
+}
+
+
+function drawTurret() {
+  ctx.save();
+  ctx.translate(turret.x, turret.y);
+  ctx.rotate(turret.rotation * Math.PI / 180);
+  ctx.fillStyle = 'lime';
+  ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size, turret.size);
+  ctx.restore();
+}
+
+
 
 function upgradeDrone(attribute) {
   const cost = 200;
@@ -867,7 +964,20 @@ function endGame() {
             ship.rotationSpeedLevel++;
             ship.rotationSpeed = 2 * ship.rotationSpeedLevel;
             break;
+        case 'turretRange':
+          turretUpgrades.range++;
+          turret.range = 200 * turretUpgrades.range;
+          break;
+        case 'turretFireRate':
+          turretUpgrades.fireRate++;
+          turret.fireInterval = Math.max(10, 60 - (5 * turretUpgrades.fireRate));
+          break;
+        case 'turretDamage':
+          turretUpgrades.damage++;
+          turret.damage = turretUpgrades.damage;
+          break;
         }
+
         updateMarketplaceDisplay();
         updateCoinsDisplay();
       }
@@ -888,7 +998,7 @@ function endGame() {
         ctx.lineTo(-ship.size, ship.size);
         ctx.lineTo(ship.size, ship.size);
         ctx.closePath();
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = 'yellow';
         ctx.fill();
         ctx.restore();
       }
@@ -932,7 +1042,7 @@ function endGame() {
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText('(v 0.158) Score: ' + score, 20, 30);
+      ctx.fillText('(v 0.201n) Score: ' + score, 20, 30);
     }
 
     // Draw wave message
@@ -949,7 +1059,7 @@ let chanceForHardenedAsteroid = 5;
 let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
 
 function createAsteroids() {
-  let numberOfAsteroids = 10 + (wave - 1) * 1.5;
+  let numberOfAsteroids = 10 + (wave - 1) * 1.8;
 
   for (let i = 0; i < numberOfAsteroids; i++) {
     let isSmallAsteroid = Math.random() * 100 < chanceForSmallAsteroid;
@@ -958,11 +1068,11 @@ function createAsteroids() {
     let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
 
     let asteroidSize = isSmallAsteroid ? 10 : 20;
-    let asteroidSpeedMultiplier = isSmallAsteroid ? 1.5 : 1;
+    let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : 0.1;
 
     if (isVerySmallAsteroid) {
       asteroidSize = 5;
-      asteroidSpeedMultiplier = 2;
+      asteroidSpeedMultiplier = .5;
     }
 
     let x, y;
@@ -971,18 +1081,18 @@ function createAsteroids() {
     if (spawnArea < 0.25) {
       // Top edge
       x = Math.random() * canvas.width;
-      y = Math.random() * (canvas.height * 0.3);
+      y = Math.random() * (canvas.height * 0.2);
     } else if (spawnArea < 0.5) {
       // Right edge
-      x = canvas.width * 0.7 + Math.random() * (canvas.width * 0.3);
+      x = canvas.width * 0.8 + Math.random() * (canvas.width * 0.2);
       y = Math.random() * canvas.height;
     } else if (spawnArea < 0.75) {
       // Bottom edge
       x = Math.random() * canvas.width;
-      y = canvas.height * 0.7 + Math.random() * (canvas.height * 0.3);
+      y = canvas.height * 0.8 + Math.random() * (canvas.height * 0.2);
     } else {
       // Left edge
-      x = Math.random() * (canvas.width * 0.3);
+      x = Math.random() * (canvas.width * 0.2);
       y = Math.random() * canvas.height;
     }
 
@@ -1004,9 +1114,9 @@ function createAsteroids() {
       x: x,
       y: y,
       size: asteroidSize,
-      speed: asteroidSpeedMultiplier * Math.pow(1.035, wave - 1),
-      dx: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.035, wave - 1),
-      dy: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.035, wave - 1),
+      speed: 0.1,
+      dx: (Math.random() * 2 - 1),
+      dy: (Math.random() * 2 - 1),
       hitPoints: hitPoints,
       // isHardened: isHardenedAsteroid || isVeryHardenedAsteroid,
       color: color
@@ -1053,6 +1163,7 @@ function updateAsteroids() {
         ctx.fill();
       }
     }
+
 
 
 	// Function to create area damage
@@ -1218,7 +1329,9 @@ function updateExplosions() {
 	  // accelerationLevelDisplay.textContent = ship.accelerationLevel;
     document.getElementById('laserCooldownLevel').textContent = ship.laserCooldownLevel;
     document.getElementById('explosiveLaserLevel').textContent = ship.explosiveLaserLevel;
-
+    document.getElementById('turretRangeLevel').textContent = turretUpgrades.range;
+    document.getElementById('turretFireRateLevel').textContent = turretUpgrades.fireRate;
+    document.getElementById('turretDamageLevel').textContent = turretUpgrades.damage;
 	  rotationSpeedLevelDisplay.textContent = ship.rotationSpeedLevel;
     maxBulletsLevelDisplay.textContent = ship.maxBulletsLevel;
 	  droneSpeedLevelDisplay.textContent = droneUpgrades.speed;
