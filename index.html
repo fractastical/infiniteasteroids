@@ -581,13 +581,15 @@ function update() {
 
     // Generate thruster particles
     generateThrusterParticles();
-  }
-
-  // Apply deceleration when no thrust key is pressed
-  if (!keys['ArrowUp'] && !keys['w']) {
+  } else if (keys['ArrowDown'] || keys['s']) {
+    ship.velocityX *= 0.9; // Strong deceleration factor
+    ship.velocityY *= 0.9;
+  } else {
+    // Apply natural deceleration when no thrust key is pressed
     ship.velocityX *= ship.deceleration;
     ship.velocityY *= ship.deceleration;
   }
+
 
   // Update ship position based on velocity
   ship.x += ship.velocityX;
