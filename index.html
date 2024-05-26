@@ -1641,7 +1641,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.309) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.310) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
 
       ctx.fillText("\'m\' to toggle music", 20, canvas.height - 30);
 
@@ -2127,6 +2127,9 @@ canvas.addEventListener('touchstart', (e) => {
       // Acceleration
       if (ship.speed < ship.maxSpeed) {
         ship.speed += (ship.acceleration * 7);
+        ship.velocityX += ship.acceleration * Math.sin(angle);
+        ship.velocityY -= ship.acceleration * Math.cos(angle);
+
       }
     } else if (touchX < partWidth * 4) {
       // Soft right turn
