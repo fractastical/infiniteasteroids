@@ -122,20 +122,21 @@
 
     }
 
-#startScreen h2 {
-  font-size: 4em; /* Increased heading size */
-  margin-bottom: 20px;
-}
 
-#startScreen p {
-  font-size: 2.2em; /* Increased paragraph size */
-  margin-bottom: 20px;
-}
+  #startScreen h2 {
+    font-size: 4em; /* Increased heading size */
+    margin-bottom: 20px;
+  }
 
-#startScreen button {
-  font-size: 1.2em; /* Increased button text size */
-  padding: 10px 20px;
-}
+  #startScreen p {
+    font-size: 2.2em; /* Increased paragraph size */
+    margin-bottom: 20px;
+  }
+
+  #startScreen button {
+    font-size: 1.2em; /* Increased button text size */
+    padding: 10px 20px;
+  }
 
   #leaderboard-container {
     display: none;
@@ -407,6 +408,22 @@
     duration: 1,
     cooldown: 1,
     size: 1
+  };
+
+  let boomerang = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    size: 10,
+    speed: 2,
+    damage: 1,
+    dx: 3,
+    dy: 3,
+    active: false
+  };
+
+  let boomerangUpgrades = {
+    speed: 1,
+    damage: 1
   };
 
 let freezeEffect = {
@@ -736,6 +753,9 @@ function update() {
 
   drawShip();
   drawActiveWeaponClasses();
+
+  updateBoomerang();
+  drawBoomerang();
 
   updateLasers();
   drawLasers();
@@ -1092,6 +1112,57 @@ function drawTurretLasers() {
 }
 
 
+function updateBoomerang() {
+  if (!boomerang.active) return;
+
+  boomerang.x += boomerang.dx * boomerang.speed;
+  boomerang.y += boomerang.dy * boomerang.speed;
+
+  // Bounce off the edges of the screen
+  if (boomerang.x < 0 || boomerang.x > canvas.width) {
+    boomerang.dx = -boomerang.dx;
+  }
+  if (boomerang.y < 0 || boomerang.y > canvas.height) {
+    boomerang.dy = -boomerang.dy;
+  }
+
+  // Check collision with asteroids
+  for (let i = 0; i < asteroids.length; i++) {
+    let asteroid = asteroids[i];
+    if (isColliding(boomerang, asteroid)) {
+      let actualDamage = Math.min(boomerang.damage, asteroid.hitPoints);
+      asteroid.hitPoints -= actualDamage;
+      damageReport.boomerang += actualDamage;
+
+      if (asteroid.hitPoints <= 0) {
+        createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+        asteroids.splice(i, 1);
+        score += actualDamage * 50;
+        coins += actualDamage * 20;
+        increaseXP(actualDamage * 20);
+      }
+    }
+  }
+}
+
+function drawBoomerang() {
+  if (!boomerang.active) return;
+
+  ctx.fillStyle = 'orange';
+  ctx.beginPath();
+  ctx.arc(boomerang.x, boomerang.y, boomerang.size, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function activateBoomerang() {
+  boomerang.active = true;
+  boomerang.x = canvas.width / 2;
+  boomerang.y = canvas.height / 2;
+  boomerang.dx = (Math.random() * 2 - 1) * boomerang.speed;
+  boomerang.dy = (Math.random() * 2 - 1) * boomerang.speed;
+}
+
     // function drawLasers() {
     //   ctx.fillStyle = 'red';
     //   for (let i = 0; i < ship.lasers.length; i++) {
@@ -1406,15 +1477,16 @@ function endGame() {
   // Display damage report in the lower left corner
   ctx.font = '14px Arial';
   ctx.textAlign = 'left';
-  ctx.fillText(`Damage Report:`, 20, canvas.height - 190);
-  ctx.fillText(`Lasers: ${damageReport.lasers}`, 20, canvas.height - 170);
-  ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 20, canvas.height - 150);
-  ctx.fillText(`Turret: ${damageReport.turret}`, 20, canvas.height - 130);
-  ctx.fillText(`Drones: ${damageReport.drones}`, 20, canvas.height - 110);
-  ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 20, canvas.height - 90);
-  ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 20, canvas.height - 70);
-  ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 20, canvas.height - 50);
-  ctx.fillText(`Acid: ${damageReport.acid}`, 20, canvas.height - 30);
+  ctx.fillText(`Damage Report:`, 20, canvas.height - 240);
+  ctx.fillText(`Lasers: ${damageReport.lasers}`, 20, canvas.height - 220);
+  ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 20, canvas.height - 200);
+  ctx.fillText(`Turret: ${damageReport.turret}`, 20, canvas.height - 180);
+  ctx.fillText(`Drones: ${damageReport.drones}`, 20, canvas.height - 160);
+  ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 20, canvas.height - 140);
+  ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 20, canvas.height - 120);
+  ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 20, canvas.height - 100);
+  ctx.fillText(`Acid: ${damageReport.acid}`, 20, canvas.height - 80);
+  ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 20, canvas.height - 60);
 
   // Show the restart button
   restartButton.style.display = 'block';
@@ -1494,6 +1566,15 @@ function endGame() {
           turretUpgrades.damage++;
           turret.damage = turretUpgrades.damage + 1;
           break;
+        case 'boomerangSpeed':
+          boomerangUpgrades.speed++;
+          boomerang.speed = 2 * boomerangUpgrades.speed;
+        break;
+        case 'boomerangDamage':
+          boomerangUpgrades.damage++;
+          boomerang.damage = boomerangUpgrades.damage;
+        break;
+
         }
 
         updateMarketplaceDisplay();
@@ -1541,6 +1622,8 @@ function getRandomUpgrades(count) {
     ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']),
     ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
     ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
+    ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang'])
+
 
 
 
@@ -1671,6 +1754,17 @@ function applyUpgrade(upgrade) {
     freezeEffectUpgrades.cooldown++;
     freezeEffect.cooldown = Math.max(60, 600 - 60 * freezeEffectUpgrades.cooldown);
     break;
+  case 'Activate Boomerang':
+    activateWeaponClass('boomerang');
+    break;
+  case 'Increase Boomerang Speed':
+    boomerangUpgrades.speed++;
+    boomerang.speed = 2 * boomerangUpgrades.speed;
+    break;
+  case 'Increase Boomerang Damage':
+    boomerangUpgrades.damage++;
+    boomerang.damage = boomerangUpgrades.damage;
+    break;
 
   }
 }
@@ -1715,7 +1809,12 @@ function activateWeaponClass(weaponClass) {
         freezeEffect.duration = 30;
         freezeEffect.cooldown = 600;
         break;
+      case 'boomerang':
+        activateBoomerang();
+      break;
+
     }
+
   }
 }
 function drawActiveWeaponClasses() {
@@ -1798,7 +1897,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.35)`, 20, 30);
+    ctx.fillText(`(v 0.36)`, 20, 30);
 //Level: ${level} - XP: ${xp}/${xpToNextLevel}
     if(!isMobile())
       ctx.fillText("\'m\' to toggle music 'p\' to pause", 20, canvas.height - 30);
