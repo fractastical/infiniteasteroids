@@ -717,6 +717,17 @@ function update() {
     }
   }
 
+
+  if (activeWeaponClasses.includes('freeze')) {
+    if (freezeEffect.timer > 0) {
+      freezeEffect.timer--;
+    } else {
+      activateFreezeEffect();
+    }
+  }
+
+  updateFreezeEffect();
+
   updateAcidBombs();
   updateAcidAreas();
   drawAcidBombs();
@@ -1403,6 +1414,7 @@ function endGame() {
   ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 20, canvas.height - 90);
   ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 20, canvas.height - 70);
   ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 20, canvas.height - 50);
+  ctx.fillText(`Acid: ${damageReport.acid}`, 20, canvas.height - 30);
 
   // Show the restart button
   restartButton.style.display = 'block';
@@ -1527,7 +1539,9 @@ function getRandomUpgrades(count) {
     ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
     ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
     ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']),
-    ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb'])
+    ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
+    ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
+
 
 
   ];
@@ -1646,7 +1660,17 @@ function applyUpgrade(upgrade) {
     acidBombUpgrades.size++;
     acidBomb.size = 50 * acidBombUpgrades.size;
     break;
-
+  case 'Activate Freeze Effect':
+    activateWeaponClass('freeze');
+    break;
+  case 'Increase Freeze Duration':
+    freezeEffectUpgrades.duration++;
+    freezeEffect.duration = 20 + (10 * freezeEffectUpgrades.duration);
+    break;
+  case 'Decrease Freeze Cooldown':
+    freezeEffectUpgrades.cooldown++;
+    freezeEffect.cooldown = Math.max(60, 600 - 60 * freezeEffectUpgrades.cooldown);
+    break;
 
   }
 }
@@ -1687,7 +1711,10 @@ function activateWeaponClass(weaponClass) {
         deathRay.width = 50;
         deathRay.cooldown = 300;
         break;
-
+      case 'freeze':
+        freezeEffect.duration = 30;
+        freezeEffect.cooldown = 600;
+        break;
     }
   }
 }
@@ -1771,7 +1798,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.34)`, 20, 30);
+    ctx.fillText(`(v 0.35)`, 20, 30);
 //Level: ${level} - XP: ${xp}/${xpToNextLevel}
     if(!isMobile())
       ctx.fillText("\'m\' to toggle music 'p\' to pause", 20, canvas.height - 30);
@@ -1875,22 +1902,24 @@ function createAsteroids() {
 
     // Update asteroids
 function updateAsteroids() {
+  if (!freezeEffect.active) {
     for (let i = 0; i < asteroids.length; i++) {
-        asteroids[i].x += asteroids[i].dx * asteroids[i].speed;
-        asteroids[i].y += asteroids[i].dy * asteroids[i].speed;
+      asteroids[i].x += asteroids[i].dx * asteroids[i].speed;
+      asteroids[i].y += asteroids[i].dy * asteroids[i].speed;
 
-        // Wrap asteroids around the screen
-        if (asteroids[i].x < 0) {
-            asteroids[i].x = canvas.width;
-        } else if (asteroids[i].x > canvas.width) {
-            asteroids[i].x = 0;
-        }
-        if (asteroids[i].y < 0) {
-            asteroids[i].y = canvas.height;
-        } else if (asteroids[i].y > canvas.height) {
-            asteroids[i].y = 0;
-        }
+      // Wrap asteroids around the screen
+      if (asteroids[i].x < 0) {
+        asteroids[i].x = canvas.width;
+      } else if (asteroids[i].x > canvas.width) {
+        asteroids[i].x = 0;
+      }
+      if (asteroids[i].y < 0) {
+        asteroids[i].y = canvas.height;
+      } else if (asteroids[i].y > canvas.height) {
+        asteroids[i].y = 0;
+      }
     }
+  }
 }
 
     // Draw asteroids
@@ -2182,6 +2211,30 @@ function activateDeathRay() {
     deathRay.timer = deathRay.cooldown;
   }
 }
+
+function activateFreezeEffect() {
+  if (freezeEffect.timer === 0) {
+    freezeEffect.active = true;
+    freezeEffect.remainingDuration = freezeEffect.duration;
+    freezeEffect.timer = freezeEffect.cooldown;
+  }
+}
+
+
+function updateFreezeEffect() {
+  if (freezeEffect.timer > 0) {
+    freezeEffect.timer--;
+  }
+
+  if (freezeEffect.active) {
+    freezeEffect.remainingDuration--;
+
+    if (freezeEffect.remainingDuration <= 0) {
+      freezeEffect.active = false;
+    }
+  }
+}
+
 
 function fireAcidBomb() {
   if (acidBomb.timer === 0) {
