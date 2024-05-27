@@ -718,7 +718,7 @@ if (keys['ArrowUp'] || keys['w']) {
     playRandomThrusterSound();
 
     // Move backwards with higher initial acceleration
-    const initialBackwardAcceleration = ship.acceleration * 2; // Increased initial backward acceleration
+    const initialBackwardAcceleration = ship.acceleration * 1.5; // Increased initial backward acceleration
     const backwardSpeed = ship.maxSpeed; // Increased backward speed limit
     ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
     ship.velocityY += initialBackwardAcceleration * Math.cos(angle);
@@ -2006,7 +2006,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.364)`, 20, 30);
+    ctx.fillText(`(v 0.365)`, 20, 30);
 //Level: ${level} - XP: ${xp}/${xpToNextLevel}
     if(!isMobile())
       ctx.fillText("\'m\' to toggle music 'p\' to pause", 20, canvas.height - 30);
