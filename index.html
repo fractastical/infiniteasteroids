@@ -269,6 +269,7 @@
 
 
 
+
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
@@ -395,7 +396,24 @@
     drones: 0,
     turret: 0,
     sonicBlast: 0,
-    bomberDrones: 0
+    bomberDrones: 0,
+    deathRay: 0
+  };
+
+
+  let deathRay = {
+      length: 1000,
+      width: 50,
+      cooldown: 300,
+      timer: 0
+  };
+
+  let deathRayActive = false;
+
+  let deathRayUpgrades = {
+      length: 1,
+      width: 1,
+      cooldown: 1
   };
 
 
@@ -448,7 +466,7 @@
           rotationSpeed: 2,
           fireInterval: 60,
           fireTimer: 0,
-          range: 200,
+          range: 400,
           damage: 1,
           color: 'cyan',
           lasers: [] // Initialize the turret's lasers array
@@ -463,7 +481,7 @@
 let sonicBlast = {
   cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
   timer: 0, // Current cooldown timer
-  range: 200, // Range of the sonic blast
+  range: 120, // Range of the sonic blast
   speed: 2, // Speed of the sonic blast wave
   damage: 1, // Damage dealt by the sonic blast
   waves: [], // Array to store the active sonic blast waves
@@ -563,7 +581,8 @@ const resizeCanvas = () => {
       ship.laserTimer = 0;
       invincibilityTimer = invincibilityDuration;
       gameLoop = setInterval(update, 1000 / 60); // 60 FPS
-      backgroundMusic.play(); // Play the background music
+      if(!toggleOff)
+        backgroundMusic.play(); // Play the background music
       isMusicPlaying = true;
     }
 
@@ -583,7 +602,7 @@ function update() {
 
   // Apply thrust based on key states
   if (keys['ArrowUp'] || keys['w']) {
-    if(!isMusicPlaying)
+    if(!toggleOff)
       backgroundMusic.play(); // Resume the background music (if hasn't started)
     playRandomThrusterSound();
 
@@ -622,7 +641,8 @@ function update() {
 
   // Handle shooting based on key state and cooldown
   if (keys[' '] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
-    backgroundMusic.play(); // Resume the background music (if hasn't started)
+    if(!toggleOff)
+      backgroundMusic.play(); // Resume the background music (if hasn't started)
     ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: ship.laserLevel + 1 });
     ship.laserTimer = ship.laserCooldown;
     playRandomShotSound();
@@ -641,6 +661,19 @@ function update() {
   // Update sonic blast waves
   updateSonicBlast();
   drawSonicBlast();
+
+  if (activeWeaponClasses.includes('deathray')) {
+    if (deathRay.timer > 0) {
+      deathRay.timer--;
+    } else {
+      activateDeathRay();
+    }
+  }
+
+  if (deathRayActive) {
+    updateDeathRay();
+  }
+
   drawShip();
   drawActiveWeaponClasses();
 
@@ -1314,6 +1347,7 @@ function endGame() {
   ctx.fillText(`Drones: ${damageReport.drones}`, 20, canvas.height - 110);
   ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 20, canvas.height - 90);
   ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 20, canvas.height - 70);
+  ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 20, canvas.height - 50);
 
   // Show the restart button
   restartButton.style.display = 'block';
@@ -1436,7 +1470,8 @@ function getRandomUpgrades(count) {
     ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
     ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
     ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
-    ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone'])
+    ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
+    ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray'])
 
   ];
 
@@ -1524,6 +1559,22 @@ function applyUpgrade(upgrade) {
     case 'Increase Bomber Drone Bomb Damage':
       bomberDroneUpgrades.bombDamage++;
       break;
+  case 'Activate Death Ray':
+    activateWeaponClass('deathray');
+    break;
+  case 'Increase Death Ray Length':
+      deathRayUpgrades.length++;
+      deathRay.length = 1000 * deathRayUpgrades.length;
+      break;
+  case 'Increase Death Ray Width':
+      deathRayUpgrades.width++;
+      deathRay.width = 50 * deathRayUpgrades.width;
+      break;
+  case 'Decrease Death Ray Cooldown':
+      deathRayUpgrades.cooldown++;
+      deathRay.cooldown = Math.max(60, 300 - 30 * deathRayUpgrades.cooldown);
+      break;
+
 
   }
 }
@@ -1558,6 +1609,12 @@ function activateWeaponClass(weaponClass) {
         sonicBlast.damage = 1;
         sonicBlast.cooldown = 300;
         break;
+      case 'deathray':
+        deathRay.length = 1000;
+        deathRay.width = 50;
+        deathRay.cooldown = 300;
+        break;
+
     }
   }
 }
@@ -2045,6 +2102,57 @@ function updateExplosions() {
 
 
 
+function activateDeathRay() {
+  if (deathRay.timer === 0) {
+    deathRayActive = true;
+    deathRay.timer = deathRay.cooldown;
+  }
+}
+
+
+function updateDeathRay() {
+    if (deathRayActive) {
+        // Define the area of effect for the Death Ray
+        let rayLength = deathRay.length;
+        let rayWidth = deathRay.width;
+
+        // Calculate the coordinates of the ray's end point
+        let endX = ship.x + rayLength * Math.sin(ship.rotation * Math.PI / 180);
+        let endY = ship.y - rayLength * Math.cos(ship.rotation * Math.PI / 180);
+
+        // Check for collisions with asteroids
+        for (let i = asteroids.length - 1; i >= 0; i--) {
+            let asteroid = asteroids[i];
+            let dx = asteroid.x - ship.x;
+            let dy = asteroid.y - ship.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
+                createExplosion(asteroid.x, asteroid.y);
+                asteroids.splice(i, 1);
+                damageReport.deathRay += asteroid.hitPoints;
+            }
+        }
+
+        // Draw the Death Ray
+        ctx.save();
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = rayWidth;
+        ctx.beginPath();
+        ctx.moveTo(ship.x, ship.y);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+        ctx.restore();
+
+        deathRayActive = false;
+    }
+
+    if (deathRay.timer > 0) {
+        deathRay.timer--;
+    }
+}
+
+
 
 let keys = {};
 
@@ -2066,7 +2174,11 @@ function handleKeyUp(event) {
   keys[event.key] = false;
 }
 
+let toggleOff = false;
+
 function toggleMusic() {
+  if(!toggleOff)
+    toggleOff = true;
   backgroundMusic.pause();
 
   if (isMusicPlaying) {
@@ -2206,7 +2318,7 @@ restartButton.addEventListener('click', () => {
   turretUpgrades.damage = 1;
   
   // Reset sonic blast upgrades
-  sonicBlast.range = 200;
+  sonicBlast.range = 125;
   sonicBlast.damage = 1;
   sonicBlast.cooldown = 300;
   sonicBlast.timer = 0;
