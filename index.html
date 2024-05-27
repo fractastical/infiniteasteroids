@@ -652,7 +652,6 @@ function update() {
     keys[' '] = true;
   }
 
-  // Apply thrust based on key states
 if (keys['ArrowUp'] || keys['w']) {
   if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
   playRandomThrusterSound();
@@ -667,21 +666,22 @@ if (keys['ArrowUp'] || keys['w']) {
   ship.velocityX *= 0.97;
   ship.velocityY *= 0.97;
 
-  if (Math.abs(ship.velocityX) < 0.1 && Math.abs(ship.velocityY) < 0.1) {
+  if (Math.abs(ship.velocityX) < 2 && Math.abs(ship.velocityY) < 2) {
     if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
     playRandomThrusterSound();
 
-    // Move backwards
-    const backwardSpeed = ship.maxSpeed / 3;
-    ship.velocityX -= (ship.acceleration / 2) * Math.sin(angle);
-    ship.velocityY += (ship.acceleration / 2) * Math.cos(angle);
+    // Move backwards with higher initial acceleration
+    const initialBackwardAcceleration = ship.acceleration * 5; // Increased initial backward acceleration
+    const backwardSpeed = ship.maxSpeed; // Increased backward speed limit
+    ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
+    ship.velocityY += initialBackwardAcceleration * Math.cos(angle);
 
     // Limit backward speed
-    const currentSpeed = Math.sqrt(ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY);
-    if (currentSpeed > backwardSpeed) {
-      ship.velocityX = (ship.velocityX / currentSpeed) * backwardSpeed;
-      ship.velocityY = (ship.velocityY / currentSpeed) * backwardSpeed;
-    }
+    // const currentSpeed = Math.sqrt(ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY);
+    // if (currentSpeed > backwardSpeed) {
+    //   ship.velocityX = (ship.velocityX / currentSpeed) * backwardSpeed;
+    //   ship.velocityY = (ship.velocityY / currentSpeed) * backwardSpeed;
+    // }
 
     // Generate thruster particles for backward movement
     generateThrusterParticles();
@@ -1917,7 +1917,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.361)`, 20, 30);
+    ctx.fillText(`(v 0.362)`, 20, 30);
 //Level: ${level} - XP: ${xp}/${xpToNextLevel}
     if(!isMobile())
       ctx.fillText("\'m\' to toggle music 'p\' to pause", 20, canvas.height - 30);
