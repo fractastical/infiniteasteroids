@@ -261,7 +261,7 @@
 }
 
 .icon-bomberdrone {
-  background-image: url('icons/Bomberdone.svg');
+  background-image: url('icons/Bomberdrone.svg');
 }
 
 .icon-sonic {
@@ -270,6 +270,31 @@
 
 .icon-deathray {
   background-image: url('icons/Deathray.svg');
+}
+.iconContainer {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+}
+.upgradeCount {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: yellow;
+  color: black;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 1;
+}
+.weaponClassIcon {
+  position: relative;
+  z-index: 0;
 }
 
 
@@ -448,7 +473,8 @@ let freezeEffectUpgrades = {
     bomberDrones: 0,
     deathRay: 0,
     acid: 0,
-    freeze: 0
+    freeze: 0,
+    boomerang: 0
 
   };
 
@@ -638,9 +664,12 @@ const resizeCanvas = () => {
       isMusicPlaying = true;
     }
 
+let initialSlowDown = true;
+
 function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   document.getElementById('leaderboard-container').style.display = 'none';
+
 
   if (ship.laserTimer > 0) {
     ship.laserTimer--;
@@ -661,17 +690,31 @@ if (keys['ArrowUp'] || keys['w']) {
 
   // Generate thruster particles
   generateThrusterParticles();
+  initialSlowDown = true; 
+
 } else if (keys['ArrowDown'] || keys['s']) {
+
+    if (initialSlowDown) {
+    // Apply stronger deceleration if the ship was moving at high speed
+    ship.velocityX *= 0.75;
+    ship.velocityY *= 0.75;
+    if (Math.abs(ship.velocityX) < 2 && Math.abs(ship.velocityY) < 2) {
+      initialSlowDown = false; // Disable the stronger deceleration after initial slowdown
+    } }
+    else {
+
   // Apply strong deceleration if moving forward
   ship.velocityX *= 0.97;
   ship.velocityY *= 0.97;
 
-  if (Math.abs(ship.velocityX) < 2 && Math.abs(ship.velocityY) < 2) {
+  }
+
+  if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
     if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
     playRandomThrusterSound();
 
     // Move backwards with higher initial acceleration
-    const initialBackwardAcceleration = ship.acceleration * 5; // Increased initial backward acceleration
+    const initialBackwardAcceleration = ship.acceleration * 2; // Increased initial backward acceleration
     const backwardSpeed = ship.maxSpeed; // Increased backward speed limit
     ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
     ship.velocityY += initialBackwardAcceleration * Math.cos(angle);
@@ -1761,7 +1804,7 @@ function applyUpgrade(upgrade) {
     break;
   case 'Increase Acid Bomb Size':
     acidBombUpgrades.size++;
-    acidBomb.size = 50 * acidBombUpgrades.size;
+    acidBomb.size = 20 + (30 * acidBombUpgrades.size);
     break;
   case 'Activate Freeze Effect':
     activateWeaponClass('freeze');
@@ -1842,11 +1885,50 @@ function drawActiveWeaponClasses() {
   container.innerHTML = ''; // Clear previous content
 
   for (const weaponClass of activeWeaponClasses) {
+    const iconContainer = document.createElement('div');
+    iconContainer.classList.add('iconContainer');
+
     const icon = document.createElement('div');
     icon.classList.add('weaponClassIcon', `icon-${weaponClass.toLowerCase().replace(/\s+/g, '')}`);
-    container.appendChild(icon);
+
+    // Create a span element to display the number of upgrades
+    const upgradeCount = document.createElement('span');
+    upgradeCount.classList.add('upgradeCount');
+    upgradeCount.textContent = getUpgradeCount(weaponClass); // Get the number of upgrades for the weapon class
+
+    // Append the icon and upgrade count to the container
+    iconContainer.appendChild(icon);
+    iconContainer.appendChild(upgradeCount);
+    container.appendChild(iconContainer);
   }
 }
+
+
+function getUpgradeCount(weaponClass) {
+  switch (weaponClass) {
+    case 'explosive':
+      return ship.explosiveLaserLevel;
+    case 'turret':
+      return turretUpgrades.range + turretUpgrades.fireRate + turretUpgrades.damage;
+    case 'drone':
+      return droneUpgrades.laserInterval; // Assuming this is the main upgrade for drones
+    case 'sonic':
+      return sonicBlast.range / 50 + sonicBlast.damage + (300 - sonicBlast.cooldown) / 30; // Example calculation
+    case 'bomberdrone':
+      return bomberDroneUpgrades.speed + bomberDroneUpgrades.bombRadius / 10 + bomberDroneUpgrades.bombDamage;
+    case 'deathray':
+      return deathRayUpgrades.length + deathRayUpgrades.width + deathRayUpgrades.cooldown;
+    case 'acid':
+      return acidBombUpgrades.duration + acidBombUpgrades.cooldown + acidBombUpgrades.size;
+    case 'freeze':
+      return freezeEffectUpgrades.duration + freezeEffectUpgrades.cooldown;
+    case 'boomerang':
+      return boomerangUpgrades.speed + boomerangUpgrades.damage;
+    default:
+      return 0;
+  }
+}
+
 
 
     function updateCoinsDisplay() {
@@ -1917,7 +1999,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.363)`, 20, 30);
+    ctx.fillText(`(v 0.364)`, 20, 30);
 //Level: ${level} - XP: ${xp}/${xpToNextLevel}
     if(!isMobile())
       ctx.fillText("\'m\' to toggle music 'p\' to pause", 20, canvas.height - 30);
