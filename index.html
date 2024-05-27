@@ -440,7 +440,7 @@
       accelerationLevel: 1,
       rotationSpeedLevel: 1,
       maxBulletsLevel: 1,
-      explosiveLaserLevel: 1,
+      explosiveLaserLevel: 0,
       laserCooldown: 30,
       laserTimer: 0,
       laserCooldownLevel: 1,
@@ -1695,9 +1695,10 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.32)`, 20, 30);
+    ctx.fillText(`(v 0.33)`, 20, 30);
 //Level: ${level} - XP: ${xp}/${xpToNextLevel}
-      ctx.fillText("\'m\' to toggle music", 20, canvas.height - 30);
+    if(!isMobile())
+      ctx.fillText("\'m\' to toggle music 'p\' to pause", 20, canvas.height - 30);
 
   }
 
@@ -2152,11 +2153,24 @@ function updateDeathRay() {
 
 
 let keys = {};
+let isPaused = false;
 
 function handleKeyDown(event) {
   keys[event.key] = true;
 
-  if (event.key === 'b') {
+  if (event.key === 'p') {
+      if(isPaused)  {
+
+        gameLoop = setInterval(update, 1000 / 60); // Resume game loop
+        isPaused = false;
+
+      } else {
+
+          clearInterval(gameLoop);
+          isPaused = true; 
+
+    }
+  } else if (event.key === 'b') {
     if (marketplace.style.display === 'block') {
       exitMarketplace();
     } else {
