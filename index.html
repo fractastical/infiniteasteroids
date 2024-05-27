@@ -653,24 +653,44 @@ function update() {
   }
 
   // Apply thrust based on key states
-  if (keys['ArrowUp'] || keys['w']) {
-    if(!toggleOff)
-      backgroundMusic.play(); // Resume the background music (if hasn't started)
+if (keys['ArrowUp'] || keys['w']) {
+  if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
+  playRandomThrusterSound();
+
+  ship.velocityX += ship.acceleration * Math.sin(angle);
+  ship.velocityY -= ship.acceleration * Math.cos(angle);
+
+  // Generate thruster particles
+  generateThrusterParticles();
+} else if (keys['ArrowDown'] || keys['s']) {
+  // Apply strong deceleration if moving forward
+  ship.velocityX *= 0.97;
+  ship.velocityY *= 0.97;
+
+  if (Math.abs(ship.velocityX) < 0.1 && Math.abs(ship.velocityY) < 0.1) {
+    if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
     playRandomThrusterSound();
 
-    ship.velocityX += ship.acceleration * Math.sin(angle);
-    ship.velocityY -= ship.acceleration * Math.cos(angle);
+    // Move backwards
+    const backwardSpeed = ship.maxSpeed / 3;
+    ship.velocityX -= (ship.acceleration / 2) * Math.sin(angle);
+    ship.velocityY += (ship.acceleration / 2) * Math.cos(angle);
 
-    // Generate thruster particles
+    // Limit backward speed
+    const currentSpeed = Math.sqrt(ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY);
+    if (currentSpeed > backwardSpeed) {
+      ship.velocityX = (ship.velocityX / currentSpeed) * backwardSpeed;
+      ship.velocityY = (ship.velocityY / currentSpeed) * backwardSpeed;
+    }
+
+    // Generate thruster particles for backward movement
     generateThrusterParticles();
-  } else if (keys['ArrowDown'] || keys['s']) {
-    ship.velocityX *= 0.97; // Strong deceleration factor
-    ship.velocityY *= 0.97;
-  } else {
-    // Apply natural deceleration when no thrust key is pressed
-    ship.velocityX *= ship.deceleration;
-    ship.velocityY *= ship.deceleration;
   }
+} else {
+  // Apply natural deceleration when no thrust key is pressed
+  ship.velocityX *= ship.deceleration;
+  ship.velocityY *= ship.deceleration;
+}
 
 
   // Update ship position based on velocity
@@ -1897,7 +1917,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.36)`, 20, 30);
+    ctx.fillText(`(v 0.361)`, 20, 30);
 //Level: ${level} - XP: ${xp}/${xpToNextLevel}
     if(!isMobile())
       ctx.fillText("\'m\' to toggle music 'p\' to pause", 20, canvas.height - 30);
