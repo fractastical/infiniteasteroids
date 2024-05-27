@@ -393,6 +393,35 @@
     let xp = 0;
     let xpToNextLevel = 100;
 
+  let acidBomb = {
+    cooldown: 300,
+    timer: 0,
+    duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
+    damagePerSecond: 1,
+    size: 50,
+    activeBombs: [],
+    activeAreas: []
+  };
+
+  let acidBombUpgrades = {
+    duration: 1,
+    cooldown: 1,
+    size: 1
+  };
+
+let freezeEffect = {
+  cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
+  timer: 0,
+  duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
+  active: false,
+  remainingDuration: 0
+};
+
+let freezeEffectUpgrades = {
+  duration: 1,
+  cooldown: 1
+};
+
   let damageReport = {
     lasers: 0,
     explosiveLasers: 0,
@@ -400,7 +429,10 @@
     turret: 0,
     sonicBlast: 0,
     bomberDrones: 0,
-    deathRay: 0
+    deathRay: 0,
+    acid: 0,
+    freeze: 0
+
   };
 
 
@@ -677,6 +709,20 @@ function update() {
     updateDeathRay();
   }
 
+  if (activeWeaponClasses.includes('acid')) {
+    if (acidBomb.timer > 0) {
+      acidBomb.timer--;
+    } else {
+      fireAcidBomb();
+    }
+  }
+
+  updateAcidBombs();
+  updateAcidAreas();
+  drawAcidBombs();
+  drawAcidAreas();
+
+
   drawShip();
   drawActiveWeaponClasses();
 
@@ -828,6 +874,15 @@ function updateSonicBlast() {
   }
 }
 
+function drawAcidBombs() {
+  ctx.fillStyle = 'green';
+  for (let i = 0; i < acidBomb.activeBombs.length; i++) {
+    let bomb = acidBomb.activeBombs[i];
+    ctx.beginPath();
+    ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
 
 // Function to handle laser collisions
 function checkLaserCollisions(lasers, isShip) {
@@ -1471,7 +1526,9 @@ function getRandomUpgrades(count) {
     ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
     ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
     ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
-    ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray'])
+    ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']),
+    ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb'])
+
 
   ];
 
@@ -1574,6 +1631,21 @@ function applyUpgrade(upgrade) {
       deathRayUpgrades.cooldown++;
       deathRay.cooldown = Math.max(60, 300 - 30 * deathRayUpgrades.cooldown);
       break;
+  case 'Activate Acid Bomb':
+    activateWeaponClass('acid');
+    break;
+  case 'Increase Acid Bomb Duration':
+    acidBombUpgrades.duration++;
+    acidBomb.duration = 300 * acidBombUpgrades.duration;
+    break;
+  case 'Decrease Acid Bomb Cooldown':
+    acidBombUpgrades.cooldown++;
+    acidBomb.cooldown = Math.max(60, 300 - 30 * acidBombUpgrades.cooldown);
+    break;
+  case 'Increase Acid Bomb Size':
+    acidBombUpgrades.size++;
+    acidBomb.size = 50 * acidBombUpgrades.size;
+    break;
 
 
   }
@@ -1600,7 +1672,8 @@ function activateWeaponClass(weaponClass) {
         bomberDrones = [];
         bomberDroneUpgrades = {
           speed: 1,
-          bombRadius: 50,          bombDamage: 2
+          bombRadius: 50,          
+          bombDamage: 2
         };
         buyBomberDrone();
         break;
@@ -2107,6 +2180,88 @@ function activateDeathRay() {
   if (deathRay.timer === 0) {
     deathRayActive = true;
     deathRay.timer = deathRay.cooldown;
+  }
+}
+
+function fireAcidBomb() {
+  if (acidBomb.timer === 0) {
+    let angle = Math.random() * 2 * Math.PI; // Random direction
+    let bomb = {
+      x: ship.x,
+      y: ship.y,
+      radius: acidBomb.size,
+      duration: acidBomb.duration,
+      dx: Math.cos(angle),
+      dy: Math.sin(angle),
+      distanceTraveled: 0
+    };
+    acidBomb.activeBombs.push(bomb);
+    acidBomb.timer = acidBomb.cooldown;
+  }
+}
+
+function updateAcidBombs() {
+  for (let i = acidBomb.activeBombs.length - 1; i >= 0; i--) {
+    let bomb = acidBomb.activeBombs[i];
+    bomb.x += bomb.dx * 2;
+    bomb.y += bomb.dy * 2;
+    bomb.distanceTraveled += 2;
+
+    if (bomb.distanceTraveled >= 150) {
+      createAcidExplosion(bomb.x, bomb.y, bomb.radius, bomb.duration);
+      acidBomb.activeBombs.splice(i, 1);
+    }
+  }
+}
+
+function createAcidExplosion(x, y, radius, duration) {
+  createExplosion(x, y, 0); // Create visual explosion effect
+
+  let acidArea = {
+    x: x,
+    y: y,
+    radius: radius,
+    duration: duration
+  };
+  acidBomb.activeAreas.push(acidArea);
+}
+
+function updateAcidAreas() {
+  for (let i = acidBomb.activeAreas.length - 1; i >= 0; i--) {
+    let area = acidBomb.activeAreas[i];
+    area.duration--;
+
+    for (let j = asteroids.length - 1; j >= 0; j--) {
+      let asteroid = asteroids[j];
+      let dx = asteroid.x - area.x;
+      let dy = asteroid.y - area.y;
+      let distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < area.radius) {
+        let actualDamage = Math.min(acidBomb.damagePerSecond, asteroid.hitPoints);
+        asteroid.hitPoints -= actualDamage;
+        damageReport.acid += actualDamage;
+
+        if (asteroid.hitPoints <= 0) {
+          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+          asteroids.splice(j, 1);
+        }
+      }
+    }
+
+    if (area.duration <= 0) {
+      acidBomb.activeAreas.splice(i, 1);
+    }
+  }
+}
+
+
+function drawAcidAreas() {
+  ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+  for (let i = 0; i < acidBomb.activeAreas.length; i++) {
+    let area = acidBomb.activeAreas[i];
+    ctx.beginPath();
+    ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
 
