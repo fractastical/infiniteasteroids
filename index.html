@@ -1758,12 +1758,15 @@ function applyUpgrade(upgrade) {
       break;
     case 'Increase Sonic Blast Range':
       sonicBlast.range += 50;
+      sonicBlast.rangeLevel++; 
       break;
     case 'Increase Sonic Blast Damage':
+      sonicBlast.damageLevel++; 
       sonicBlast.damage++;
       break;
     case 'Decrease Sonic Blast Cooldown':
       sonicBlast.cooldown = Math.max(60, sonicBlast.cooldown - 30);
+      sonicBlast.cooldownLevel ++; 
       break;
     case 'Activate Bomber Drone':
       activateWeaponClass('bomberdrone');
@@ -2003,7 +2006,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.365)`, 20, 30);
+    ctx.fillText(`(v 0.366)`, 20, 30);
 //Level: ${level} - XP: ${xp}/${xpToNextLevel}
     if(!isMobile())
       ctx.fillText("\'m\' to toggle music 'p\' to pause", 20, canvas.height - 30);
