@@ -461,13 +461,13 @@
 
     let turret = {
           x: 0,
-          y: 0,
+          y: 0,s
           size: 10,
           rotationSpeed: 2,
-          fireInterval: 60,
+          fireInterval: 120,
           fireTimer: 0,
           range: 400,
-          damage: 1,
+          damage: 2,
           color: 'cyan',
           lasers: [] // Initialize the turret's lasers array
     };
@@ -937,7 +937,7 @@ function buyDrone() {
       direction: Math.random() * Math.PI * 2,
       lasers: [],
       laserSpeed: 2 * droneUpgrades.laserSpeed,
-      laserInterval: 240 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
+      laserInterval: 120 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
       laserTimer: 0
     };
     drones.push(drone);
@@ -998,13 +998,10 @@ function updateTurret() {
 }
 
 function updateTurretLasers() {
-    // console.log(turret.lasers.length);
-
   for (let i = turret.lasers.length - 1; i >= 0; i--) {
     let laser = turret.lasers[i];
     laser.x += Math.cos(laser.rotation) * 2;
     laser.y += Math.sin(laser.rotation) * 2;
-    // console.log("up");
     if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
       turret.lasers.splice(i, 1);
     }
@@ -1097,7 +1094,7 @@ function upgradeDrone(attribute) {
           drone.laserSpeed = 5 * droneUpgrades.laserSpeed;
           break;
         case 'laserInterval':
-          drone.laserInterval = 240 / droneUpgrades.laserInterval;
+          drone.laserInterval = 120 / droneUpgrades.laserInterval;
           break;
       }
     });
@@ -1417,15 +1414,15 @@ function endGame() {
             break;
         case 'turretRange':
           turretUpgrades.range++;
-          turret.range = 30 * turretUpgrades.range;
+          turret.range = 200 * turretUpgrades.range;
           break;
         case 'turretFireRate':
           turretUpgrades.fireRate++;
-          turret.fireInterval = Math.max(10, 360 - (5 * turretUpgrades.fireRate));
+          turret.fireInterval = 120 / turretUpgrades.fireRate;
           break;
         case 'turretDamage':
           turretUpgrades.damage++;
-          turret.damage = turretUpgrades.damage;
+          turret.damage = turretUpgrades.damage + 1;
           break;
         }
 
@@ -1513,11 +1510,11 @@ function applyUpgrade(upgrade) {
       break;
     case 'Increase Turret Range':
       turretUpgrades.range++;
-      turret.range = 30 * turretUpgrades.range;
+      turret.range = 200 * turretUpgrades.range;
       break;
     case 'Increase Turret Firerate':
       turretUpgrades.fireRate++;
-      turret.fireInterval = Math.max(10, 360 - (5 * turretUpgrades.fireRate));
+      turret.fireInterval = 120 / turretUpgrades.fireRate;
       break;
     case 'Increase Turret Damage':
       turretUpgrades.damage++;
@@ -1529,7 +1526,7 @@ function applyUpgrade(upgrade) {
     case 'Increase Drone Firerate':
       droneUpgrades.laserInterval++;
       drones.forEach(drone => {
-        drone.laserInterval = 240 / droneUpgrades.laserInterval;
+        drone.laserInterval = 120 / droneUpgrades.laserInterval;
       });
       break;
     case 'Activate Sonic Blast':
@@ -1698,7 +1695,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.310) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
+    ctx.fillText(`(v 0.32) Level: ${level} - XP: ${xp}/${xpToNextLevel}`, 20, 30);
 
       ctx.fillText("\'m\' to toggle music", 20, canvas.height - 30);
 
