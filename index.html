@@ -995,6 +995,9 @@ function checkLaserCollisions(lasers, isShip) {
         asteroid.hitPoints -= actualDamage;
 
         if (asteroid.hitPoints <= 0) {
+          if (asteroid.isLarge) {
+            createSmallerAsteroids(asteroid.x, asteroid.y, asteroid.size, asteroid.speed, 1); // Split into smaller asteroids
+          }
           createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
           asteroids.splice(j, 1);
         } else {
@@ -1029,6 +1032,7 @@ function checkLaserCollisions(lasers, isShip) {
     }
   }
 }
+
 
 
 const meteorDestroySounds = [
@@ -2041,22 +2045,47 @@ let chanceForHardenedAsteroid = 5;
 let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
 let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
 
+function createSmallerAsteroids(x, y, size, speed, hitPoints) {
+  const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
+  const speedMultiplier = 0.6; // Decrease speed for smaller asteroids
+  const newSize = size / 2; // New size for smaller asteroids
+
+  for (let i = 0; i < 3; i++) {
+    const angleVariation = (Math.random() - 0.5) * 0.7; // Random variation between -0.1 and 0.1 radians
+    const angle = baseAngles[i] + angleVariation;
+
+    let asteroid = {
+      x: x,
+      y: y,
+      size: newSize,
+      speed: speed * speedMultiplier,
+      dx: Math.cos(angle) * speed * speedMultiplier,
+      dy: Math.sin(angle) * speed * speedMultiplier,
+      hitPoints: hitPoints,
+      color: 'gray'
+    };
+    asteroids.push(asteroid);
+  }
+}
+
+
 function createAsteroids() {
   let numberOfAsteroids = 10 + (wave - 1) * 1.8;
 
   for (let i = 0; i < numberOfAsteroids; i++) {
+    let isLargeAsteroid = Math.random() < 0.1; // 10% chance for a large asteroid
     let isSmallAsteroid = Math.random() * 100 < chanceForSmallAsteroid;
     let isVerySmallAsteroid = Math.random() * 100 < chanceForVerySmallAsteroid;
     let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
     let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
     let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
 
-    let asteroidSize = isSmallAsteroid ? 10 : 20;
-    let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : 0.1;
+    let asteroidSize = isLargeAsteroid ? 40 : isSmallAsteroid ? 10 : 20;
+    let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : isLargeAsteroid ? 0.05 : 0.1;
 
     if (isVerySmallAsteroid) {
       asteroidSize = 5;
-      asteroidSpeedMultiplier = .5;
+      asteroidSpeedMultiplier = 0.5;
     }
 
     let x, y;
@@ -2083,7 +2112,10 @@ function createAsteroids() {
     let hitPoints;
     let color;
 
-    if (isMegaHardenedAsteroid) {
+    if (isLargeAsteroid) {
+      hitPoints = wave; // Higher hit points for larger asteroids
+      color = 'darkgray';
+    } else if (isMegaHardenedAsteroid) {
       hitPoints = 10 + wave;
       color = '#301934'; // Very dark purple for mega hardened asteroids
     } else if (isVeryHardenedAsteroid) {
@@ -2106,7 +2138,8 @@ function createAsteroids() {
       dx: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
       dy: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
       hitPoints: hitPoints,
-      color: color
+      color: color,
+      isLarge: isLargeAsteroid
     };
 
     asteroids.push(asteroid);
@@ -2118,10 +2151,10 @@ function createAsteroids() {
   chanceForVeryHardenedAsteroid += 0.2; // Increase the chance for very hardened asteroids
   chanceForMegaHardenedAsteroid += 0.1; // Increase the chance for mega hardened asteroids
 
+  // Trigger the asteroid cluster every few waves (e.g., every 5 waves)
   if (wave % 3 === 0) {
     createAsteroidCluster();
   }
-
 }
 
 
