@@ -13,16 +13,6 @@
       border: 1px solid black;
       background-color: black;
     }
-  .bottom-icons {
-    position: fixed;
-    bottom: 10px;
-    left: 50%; /* Center align horizontally */
-    transform: translateX(-50%);
-    z-index: 1000; /* Ensure icons are on top */
-    display: flex; /* Use flexbox for layout */
-    justify-content: center; /* Center align the icons */
-    gap: 10px; /* Add spacing between icons */
-  }
 
   /* Joystick styling */
   #joystick {
@@ -242,35 +232,51 @@
 
 .weaponClassIcon {
   display: inline-block;
-  width: 50px; /* Increase size for better visibility */
-  height: 50px; /* Increase size for better visibility */
+  width: 36px; /* Ensure the size matches the canvas */
+  height: 36px; /* Ensure the size matches the canvas */
   margin-right: 10px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-color: blue; /* Blue background for visibility */
+  background-color: white; /* Black background */
   border-radius: 50%; /* Make icons circular */
   position: relative; /* Relative position to add cooldown indicator */
-  z-index: 1001; /* Ensure the icons are on top */
+  z-index: 2; /* Ensure icon is on top */
 }
 
-.cooldownOverlay {
+.cooldown-indicator {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: -5px; /* Adjust to move up */
+  left: -5px; /* Adjust to move left */
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  pointer-events: none; /* Allow clicking through the overlay */
-  z-index: 1002; /* Ensure the overlay is on top of the icon */
+  box-sizing: border-box;
+  z-index: 1; /* Ensure cooldown indicator is behind the icon */
+  pointer-events: none; /* Make sure it doesn't block interactions */
 }
 
+/* Position the bottom icons container */
 .bottom-icons {
   position: fixed;
   bottom: 10px;
-  width: 100%;
-  text-align: center;
-  z-index: 1000; /* Ensure the container is on top */
+  left: 50%; /* Center align horizontally */
+  transform: translateX(-50%);
+  z-index: 1001; /* Ensure icons are on top */
+  display: flex; /* Use flexbox for layout */
+  justify-content: center; /* Center align the icons */
+/*  gap: 10px; /* Add spacing between icons */*/
 }
+
+  .bottom-icons {
+    position: fixed;
+    bottom: 10px;
+    left: 50%; /* Center align horizontally */
+    transform: translateX(-50%);
+    z-index: 1000; /* Ensure icons are on top */
+    display: flex; /* Use flexbox for layout */
+    justify-content: center; /* Center align the icons */
+/*    gap: 10px; /* Add spacing between icons */*/
+  }
 
 .icon-explosive {
   background-image: url('icons/Explosivelaser.svg');
@@ -315,10 +321,6 @@
   font-size: 12px;
   font-weight: bold;
   z-index: 1;
-}
-.weaponClassIcon {
-  position: relative;
-  z-index: 0;
 }
 
 
@@ -2084,15 +2086,13 @@ function drawActiveWeaponClasses() {
     container.innerHTML = ''; // Clear previous content
 
     activeWeaponClasses.forEach(weaponClass => {
+        // Create the icon element
         const icon = document.createElement('div');
         icon.classList.add('weaponClassIcon', `icon-${weaponClass.toLowerCase().replace(/\s+/g, '')}`);
 
         // Add the cooldown indicator container
         const cooldownIndicator = document.createElement('div');
         cooldownIndicator.classList.add('cooldown-indicator');
-        icon.appendChild(cooldownIndicator);
-
-        container.appendChild(icon);
 
         // Draw the cooldown indicator using Canvas
         const canvas = document.createElement('canvas');
@@ -2127,14 +2127,19 @@ function drawActiveWeaponClasses() {
         if (cooldown > 0) {
             const startAngle = -Math.PI / 2; // Start at the top
             const endAngle = startAngle + (2 * Math.PI * (1 - cooldown / maxCooldown));
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
             ctx.lineWidth = 4;
             ctx.beginPath();
             ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2 - 4, startAngle, endAngle);
             ctx.stroke();
         }
+
+        // Append the cooldown indicator and icon to the container
+        container.appendChild(icon);
+        container.appendChild(cooldownIndicator);
     });
 }
+
 function drawCooldownIndicator(x, y, radius, cooldown, maxCooldown) {
     if (cooldown <= 0) return;
 
