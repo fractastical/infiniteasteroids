@@ -870,8 +870,6 @@ if (keys['ArrowUp'] || keys['w']) {
     if (invincibilityTimer <= 0) invincible = false;
   }
 
-  drawLives();
-  drawScore();
   updateExplosions();
   drawExplosions();
 
@@ -888,7 +886,29 @@ if (keys['ArrowUp'] || keys['w']) {
   // Update and draw particles
   updateParticles();
   drawParticles();
+
+  drawEdgeOverlay();
+  drawLives();
+  drawScore();
+
 }
+
+function drawEdgeOverlay() {
+  const overlayWidth = canvas.width * 0.05;
+  const overlayHeight = canvas.height * 0.05;
+
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.99)'; // Semi-transparent black color
+
+  // Top overlay
+  ctx.fillRect(0, 0, canvas.width, overlayHeight);
+  // Bottom overlay
+  ctx.fillRect(0, canvas.height - overlayHeight, canvas.width, overlayHeight);
+  // Left overlay
+  ctx.fillRect(0, 0, overlayWidth, canvas.height);
+  // Right overlay
+  ctx.fillRect(canvas.width - overlayWidth, 0, overlayWidth, canvas.height);
+}
+
 
 // Function to generate thruster particles
 function generateThrusterParticles() {
@@ -2159,24 +2179,41 @@ function createAsteroids() {
 
 
 function createAsteroidCluster() {
-  const clusterSize = wave + Math.floor(Math.random() * 5); // Random cluster size between 5 and 10
-  const startX = Math.random() < 0.5 ? 0 : canvas.width;
-  const startY = Math.random() < 0.5 ? 0 : canvas.height;
-  const targetX = startX === 0 ? canvas.width : 0;
-  const targetY = startY === 0 ? canvas.height : 0;
-  const speed = 0.1 + Math.random() * 0.6;
+  const clusterSize = 10; // Number of asteroids in the cluster
+  const clusterSpeed = 2 * Math.pow(1.02, wave - 1); // Base speed for the cluster
+  const speedVariation = 0.01; // Speed variation percentage (1%)
+
+  // Determine the starting corner (top-left, top-right, bottom-left, bottom-right)
+  const corners = [
+    { x: 0, y: 0 },
+    { x: canvas.width, y: 0 },
+    { x: 0, y: canvas.height },
+    { x: canvas.width, y: canvas.height }
+  ];
+  const startCorner = corners[Math.floor(Math.random() * corners.length)];
+
+  // Determine the target corner (opposite of the starting corner)
+  const targetCorner = {
+    x: canvas.width - startCorner.x,
+    y: canvas.height - startCorner.y
+  };
 
   for (let i = 0; i < clusterSize; i++) {
+    // Calculate a random variation in speed
+    const speedMultiplier = 1 + (Math.random() * 2 - 1) * speedVariation;
+
+    // Create the asteroid with slightly varied speed
     let asteroid = {
-      x: startX + (Math.random() - 0.5) * 170,
-      y: startY + (Math.random() - 0.5) * 170,
-      size: 15,
-      speed: speed,
-      dx: (targetX - startX) / 300,
-      dy: (targetY - startY) / 300,
-      hitPoints: 2,
+      x: startCorner.x,
+      y: startCorner.y,
+      size: 20,
+      speed: clusterSpeed * speedMultiplier,
+      dx: (targetCorner.x - startCorner.x) / canvas.width * clusterSpeed * speedMultiplier,
+      dy: (targetCorner.y - startCorner.y) / canvas.height * clusterSpeed * speedMultiplier,
+      hitPoints: 5, // Hit points for larger asteroids
       color: 'gray'
     };
+
     asteroids.push(asteroid);
   }
 }
