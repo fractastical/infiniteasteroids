@@ -451,6 +451,20 @@
     damage: 1
   };
 
+let homingMissile = {
+  cooldown: 300,
+  timer: 0,
+  speed: 2,
+  damage: 5,
+  activeMissiles: []
+};
+
+let homingMissileUpgrades = {
+  speed: 1,
+  damage: 1,
+  cooldown: 1
+};
+
 let freezeEffect = {
   cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
   timer: 0,
@@ -474,7 +488,8 @@ let freezeEffectUpgrades = {
     deathRay: 0,
     acid: 0,
     freeze: 0,
-    boomerang: 0
+    boomerang: 0,
+    homing: 0
 
   };
 
@@ -827,6 +842,17 @@ if (keys['ArrowUp'] || keys['w']) {
   updateLasers();
   drawLasers();
 
+  if (activeWeaponClasses.includes('homingmissile')) {
+    if (homingMissile.timer > 0) {
+      homingMissile.timer--;
+    } else {
+      fireHomingMissile();
+    }
+  }
+
+  updateHomingMissiles();
+  drawHomingMissiles();
+
   if (turret.bought) {
     updateTurret();
     updateTurretLasers();
@@ -1001,6 +1027,57 @@ function drawAcidBombs() {
     ctx.fill();
   }
 }
+
+function fireHomingMissile() {
+  if (homingMissile.timer === 0) {
+    let missile = {
+      x: ship.x,
+      y: ship.y,
+      target: findNearestAsteroid(),
+      speed: homingMissile.speed * homingMissileUpgrades.speed,
+      damage: homingMissile.damage * homingMissileUpgrades.damage
+    };
+    homingMissile.activeMissiles.push(missile);
+    homingMissile.timer = homingMissile.cooldown;
+  }
+}
+
+function updateHomingMissiles() {
+  for (let i = homingMissile.activeMissiles.length - 1; i >= 0; i--) {
+    let missile = homingMissile.activeMissiles[i];
+    if (missile.target) {
+      let dx = missile.target.x - missile.x;
+      let dy = missile.target.y - missile.y;
+      let distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < missile.target.size) {
+        createExplosion(missile.target.x, missile.target.y);
+        let index = asteroids.indexOf(missile.target);
+        asteroids.splice(index, 1);
+        homingMissile.activeMissiles.splice(i, 1);
+        continue;
+      }
+
+      let angle = Math.atan2(dy, dx);
+      missile.x += missile.speed * Math.cos(angle);
+      missile.y += missile.speed * Math.sin(angle);
+    } else {
+      homingMissile.activeMissiles.splice(i, 1);
+    }
+  }
+}
+
+function drawHomingMissiles() {
+  ctx.fillStyle = 'red';
+  for (let i = 0; i < homingMissile.activeMissiles.length; i++) {
+    let missile = homingMissile.activeMissiles[i];
+    ctx.beginPath();
+    ctx.arc(missile.x, missile.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+
 
 // Function to handle laser collisions
 function checkLaserCollisions(lasers, isShip) {
@@ -1276,6 +1353,21 @@ function drawTurret() {
   ctx.fillStyle = 'lime';
   ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size + 2, turret.size);
   ctx.restore();
+}
+
+function findNearestAsteroid() {
+  let nearestAsteroid = null;
+  let nearestDistance = Infinity;
+  for (let i = 0; i < asteroids.length; i++) {
+    let dx = ship.x - asteroids[i].x;
+    let dy = ship.y - asteroids[i].y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < nearestDistance) {
+      nearestAsteroid = asteroids[i];
+      nearestDistance = distance;
+    }
+  }
+  return nearestAsteroid;
 }
 
 
@@ -1576,16 +1668,17 @@ function endGame() {
   // Display damage report in the lower left corner
   ctx.font = '14px Arial';
   ctx.textAlign = 'left';
-  ctx.fillText(`Damage Report:`, 20, canvas.height - 240);
-  ctx.fillText(`Lasers: ${damageReport.lasers}`, 20, canvas.height - 220);
-  ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 20, canvas.height - 200);
-  ctx.fillText(`Turret: ${damageReport.turret}`, 20, canvas.height - 180);
-  ctx.fillText(`Drones: ${damageReport.drones}`, 20, canvas.height - 160);
-  ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 20, canvas.height - 140);
-  ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 20, canvas.height - 120);
-  ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 20, canvas.height - 100);
-  ctx.fillText(`Acid: ${damageReport.acid}`, 20, canvas.height - 80);
-  ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 20, canvas.height - 60);
+  ctx.fillText(`Damage Report:`, 80, canvas.height - 260);
+  ctx.fillText(`Lasers: ${damageReport.lasers}`, 80, canvas.height - 240);
+  ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 80, canvas.height - 220);
+  ctx.fillText(`Turret: ${damageReport.turret}`, 80, canvas.height - 200);
+  ctx.fillText(`Drones: ${damageReport.drones}`, 80, canvas.height - 180);
+  ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 80, canvas.height - 160);
+  ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 80, canvas.height - 140);
+  ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 80, canvas.height - 120);
+  ctx.fillText(`Acid: ${damageReport.acid}`, 80, canvas.height - 100);
+  ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 80, canvas.height - 80);
+  ctx.fillText(`Nano: ${damageReport.homing}`, 80, canvas.height - 60);
 
   // Show the restart button
   restartButton.style.display = 'block';
@@ -1722,7 +1815,8 @@ function getRandomUpgrades(count) {
     ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']),
     ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
     ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
-    ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang'])
+    ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']),
+    ...(activeWeaponClasses.includes('homingmissile') ? ['Increase Nano Swarm Speed', 'Increase Nano Swarm Damage', 'Decrease Nano Swarm Cooldown'] : ['Activate Nano Swarm'])
 
 
 
@@ -1869,7 +1963,17 @@ function applyUpgrade(upgrade) {
     boomerangUpgrades.damage++;
     boomerang.damage = boomerangUpgrades.damage;
     break;
-
+  case 'Activate Homing Missile':
+    activateWeaponClass('homingmissile');
+    break;
+  case 'Boost Homing Missile':
+    homingMissileUpgrades.damage++;
+    homingMissileUpgrades.speed++;
+    break;
+  case 'Decrease Homing Missile Cooldown':
+    homingMissileUpgrades.cooldown++;
+    homingMissile.cooldown = Math.max(20, 120 - 30 * homingMissileUpgrades.cooldown);
+    break;
   }
 }
 
@@ -1909,6 +2013,10 @@ function activateWeaponClass(weaponClass) {
         deathRay.length = 1000;
         deathRay.width = 50;
         deathRay.cooldown = 300;
+        break;
+      case 'homingmissile':
+        homingMissile.cooldown = 120;
+        homingMissile.timer = 0;
         break;
       case 'freeze':
         freezeEffect.duration = 30;
@@ -1966,6 +2074,9 @@ function getUpgradeCount(weaponClass) {
       return freezeEffectUpgrades.duration + freezeEffectUpgrades.cooldown - 1;
     case 'boomerang':
       return boomerangUpgrades.speed + boomerangUpgrades.damage - 1;
+    case 'homingmissile':
+      return homingMissileUpgrades.speed + homingMissileUpgrades.damage + homingMissileUpgrades.cooldown - 2;
+
     default:
       return 0;
   }
@@ -2041,7 +2152,7 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.370)`, 20, 30);
+    ctx.fillText(`(v 0.373)`, 20, 30);
     ctx.fillText(`Level: ${level}`, canvas.width - 120, canvas.height - 30);
 
     if(!isMobile())
