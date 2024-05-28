@@ -1615,6 +1615,7 @@ function endGame() {
             break;
         case 'laserCooldown':
             ship.laserCooldownLevel++;
+            ship.maxBulletsLevel++;
             ship.laserCooldown = Math.max(5, ship.laserCooldown - 3);
             break;
         case 'rotationSpeed':
@@ -1678,7 +1679,7 @@ function levelUp() {
 function getRandomUpgrades(count) {
   const availableUpgrades = [
     'Increase Laser Level',
-    'Increase Max Bullets',
+    // 'Increase Max Bullets',
     'Decrease Laser Cooldown',
     'Increase Rotation Speed',
     ...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']),
@@ -1712,11 +1713,11 @@ function applyUpgrade(upgrade) {
     case 'Increase Laser Level':
       ship.laserLevel++;
       break;
-    case 'Increase Max Bullets':
-      ship.maxBulletsLevel++;
-      break;
+    // case 'Increase Max Bullets':
+    //   break;
     case 'Decrease Laser Cooldown':
       ship.laserCooldownLevel++;
+      ship.maxBulletsLevel++;
       ship.laserCooldown = Math.max(5, ship.laserCooldown - 3);
       break;
     case 'Increase Rotation Speed':
