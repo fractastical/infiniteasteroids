@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Nacho blaster</title>
   <style>
-    body, html {
+    body,
+    html {
       margin: 0;
       padding: 0;
-      overflow: hidden; /* Prevent scrolling */
+      overflow: hidden;
+      /* Prevent scrolling */
     }
 
     canvas {
@@ -14,97 +17,119 @@
       background-color: black;
     }
 
-  /* Joystick styling */
-  #joystick {
-    position: absolute;
-    bottom: 30px;  /* Closer to the bottom */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 140px;  /* Increased width by 40% */
-    height: 140px; /* Increased height by 40% */
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 3px solid #fff;
-    border-radius: 50%;
-    display: none; /* Hide by default */
-  }
+    /* Joystick styling */
+    #joystick {
+      position: absolute;
+      bottom: 30px;
+      /* Closer to the bottom */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      /* Increased width by 40% */
+      height: 140px;
+      /* Increased height by 40% */
+      background-color: rgba(255, 255, 255, 0.2);
+      border: 3px solid #fff;
+      border-radius: 50%;
+      display: none;
+      /* Hide by default */
+    }
 
-  #joystick-inner {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60px;  /* Adjusted inner circle size */
-    height: 60px;  /* Adjusted inner circle size */
-    background-color: white;
-    border-radius: 50%;
-    border: 2px solid #fff;  /* Added border for better visibility */
-  }
+    #joystick-inner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      /* Adjusted inner circle size */
+      height: 60px;
+      /* Adjusted inner circle size */
+      background-color: white;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      /* Added border for better visibility */
+    }
 
-  #joystick .handle {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 70px;  /* Increased width by 40% */
-    height: 70px; /* Increased height by 40% */
-    background-color: rgba(255, 255, 255, 0.7);
-    border: 2px solid #fff;
-    border-radius: 50%;
-  }
-  #marketplace {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #111; /* Dark background */
-    padding: 20px;
-    border: 3px solid #4e15ac; /* Red border */
-    color: #0f0; /* Green text color */
-    width: 90%;
-    max-width: 400px;
-    box-sizing: border-box;
-    font-family: 'Press Start 2P', cursive; /* Arcade font */
+    #joystick .handle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      /* Increased width by 40% */
+      height: 70px;
+      /* Increased height by 40% */
+      background-color: rgba(255, 255, 255, 0.7);
+      border: 2px solid #fff;
+      border-radius: 50%;
+    }
 
-    text-align: center;
-  }
+    #marketplace {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #111;
+      /* Dark background */
+      padding: 20px;
+      border: 3px solid #4e15ac;
+      /* Red border */
+      color: #0f0;
+      /* Green text color */
+      width: 90%;
+      max-width: 400px;
+      box-sizing: border-box;
+      font-family: 'Press Start 2P', cursive;
+      /* Arcade font */
 
-  #marketplace h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
+      text-align: center;
+    }
 
-  #marketplace p, #marketplace button {
-    font-size: 14px;
-    margin: 10px 0;
-  }
+    #marketplace h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
 
-  #marketplace button {
-    background-color: #222; /* Dark button background */
-    color: #0f0; /* Green text color */
-    border: 2px solid #f00; /* Red border */
-    padding: 10px;
-    width: 100%;
-    cursor: pointer;
-    font-family: 'Press Start 2P', cursive; /* Arcade font */
-  }
+    #marketplace p,
+    #marketplace button {
+      font-size: 14px;
+      margin: 10px 0;
+    }
 
-  #marketplace button:hover {
-    background-color: #333; /* Slightly lighter background on hover */
-  }
-  #restartButton {
-    position: absolute;
-    top: 70%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px 40px;
-    font-size: 24px;
-    display: none;
-    background-color: white;
-    border: 2px solid black;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+    #marketplace button {
+      background-color: #222;
+      /* Dark button background */
+      color: #0f0;
+      /* Green text color */
+      border: 2px solid #f00;
+      /* Red border */
+      padding: 10px;
+      width: 100%;
+      cursor: pointer;
+      font-family: 'Press Start 2P', cursive;
+      /* Arcade font */
+    }
+
+    #marketplace button:hover {
+      background-color: #333;
+      /* Slightly lighter background on hover */
+    }
+
+    #restartButton {
+      position: absolute;
+      top: 70%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px 40px;
+      font-size: 24px;
+      display: none;
+      background-color: white;
+      border: 2px solid black;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
     #startScreen {
       display: flex;
       justify-content: center;
@@ -116,238 +141,269 @@
       height: 100%;
       color: white;
       z-index: 10;
-      background-color: #111; /* Dark background */
+      background-color: #111;
+      /* Dark background */
       padding: 20px;
-      color: #0f0; 
+      color: #0f0;
       box-sizing: border-box;
-      font-family: 'Press Start 2P', cursive; /* Arcade font */
+      font-family: 'Press Start 2P', cursive;
+      /* Arcade font */
       text-align: center;
 
     }
 
 
-  #startScreen h2 {
-    font-size: 4em; /* Increased heading size */
-    margin-bottom: 20px;
-  }
+    #startScreen h2 {
+      font-size: 4em;
+      /* Increased heading size */
+      margin-bottom: 20px;
+    }
 
-  #startScreen p {
-    font-size: 2.2em; /* Increased paragraph size */
-    margin-bottom: 20px;
-  }
+    #startScreen p {
+      font-size: 2.2em;
+      /* Increased paragraph size */
+      margin-bottom: 20px;
+    }
 
-  #startScreen button {
-    font-size: 1.2em; /* Increased button text size */
-    padding: 10px 20px;
-  }
+    #startScreen button {
+      font-size: 1.2em;
+      /* Increased button text size */
+      padding: 10px 20px;
+    }
 
-  #leaderboard-container {
-    display: none;
-    position: absolute;
-    top: 25%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #111; /* Dark background */
-    padding: 20px;
-    border: 3px solid #f00; /* Red border */
-    color: #0f0; /* Green text color */
-    width: 90%;
-    max-width: 400px;
-    box-sizing: border-box;
-    font-family: 'Press Start 2P', cursive; /* Arcade font */
-    text-align: center;
-  }
+    #leaderboard-container {
+      display: none;
+      position: absolute;
+      top: 25%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #111;
+      /* Dark background */
+      padding: 20px;
+      border: 3px solid #f00;
+      /* Red border */
+      color: #0f0;
+      /* Green text color */
+      width: 90%;
+      max-width: 400px;
+      box-sizing: border-box;
+      font-family: 'Press Start 2P', cursive;
+      /* Arcade font */
+      text-align: center;
+    }
 
-  #leaderboard h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
+    #leaderboard h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
 
-  #leaderboard ol {
-    list-style: none;
-    padding: 0;
-  }
+    #leaderboard ol {
+      list-style: none;
+      padding: 0;
+    }
 
-  #leaderboard ol li {
-    font-size: 14px;
-    margin: 10px 0;
-    border-bottom: 1px solid #f00; /* Red border for each entry */
-    padding-bottom: 5px;
-  }
+    #leaderboard ol li {
+      font-size: 14px;
+      margin: 10px 0;
+      border-bottom: 1px solid #f00;
+      /* Red border for each entry */
+      padding-bottom: 5px;
+    }
 
-  #xpBarContainer {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 20px;
-    background-color: #333;
-    border: 2px solid #fff;
-    border-radius: 10px;
-    overflow: hidden;
-  }
+    #xpBarContainer {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 20px;
+      background-color: #333;
+      border: 2px solid #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
 
-  #xpBar {
-    width: 0;
-    height: 100%;
-    background-color: #0f0;
-    transition: width 0.5s ease; /* Smooth transition effect */
-  }
+    #xpBar {
+      width: 0;
+      height: 100%;
+      background-color: #0f0;
+      transition: width 0.5s ease;
+      /* Smooth transition effect */
+    }
 
-  /* Styles for the level-up modal */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 100;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  max-width: 400px;
-  background-color: #111;
-  border: 3px solid #4e15ac;
-  color: #0f0;
-  padding: 20px;
-  box-sizing: border-box;
-  text-align: center;
-  font-family: 'Press Start 2P', cursive;
-}
+    /* Styles for the level-up modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 400px;
+      background-color: #111;
+      border: 3px solid #4e15ac;
+      color: #0f0;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+      font-family: 'Press Start 2P', cursive;
+    }
 
-.modal-content button {
-  background-color: #222;
-  color: #0f0;
-  border: 2px solid #4e15ac;
-  padding: 10px;
-  margin: 10px 0;
-  width: 100%;
-  cursor: pointer;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 16px;
-}
+    .modal-content button {
+      background-color: #222;
+      color: #0f0;
+      border: 2px solid #4e15ac;
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      cursor: pointer;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 16px;
+    }
 
-.modal-content button:hover {
-  background-color: #333;
-}
+    .modal-content button:hover {
+      background-color: #333;
+    }
 
-.weaponClassIcon {
-  display: inline-block;
-  width: 36px; /* Ensure the size matches the canvas */
-  height: 36px; /* Ensure the size matches the canvas */
-  margin-right: 10px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-color: white; /* Black background */
-  border-radius: 50%; /* Make icons circular */
-  position: relative; /* Relative position to add cooldown indicator */
-  z-index: 2; /* Ensure icon is on top */
-}
+    .weaponClassIcon {
+      display: inline-block;
+      width: 36px;
+      /* Ensure the size matches the canvas */
+      height: 36px;
+      /* Ensure the size matches the canvas */
+      margin-right: 10px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-color: white;
+      /* Black background */
+      border-radius: 50%;
+      /* Make icons circular */
+      position: relative;
+      /* Relative position to add cooldown indicator */
+      z-index: 2;
+      /* Ensure icon is on top */
+    }
 
-.cooldown-indicator {
-  position: absolute;
-  top: -5px; /* Adjust to move up */
-  left: -5px; /* Adjust to move left */
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  box-sizing: border-box;
-  z-index: 1; /* Ensure cooldown indicator is behind the icon */
-  pointer-events: none; /* Make sure it doesn't block interactions */
-}
+    .cooldown-indicator {
+      position: absolute;
+      top: -5px;
+      /* Adjust to move up */
+      left: -5px;
+      /* Adjust to move left */
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-sizing: border-box;
+      z-index: 1;
+      /* Ensure cooldown indicator is behind the icon */
+      pointer-events: none;
+      /* Make sure it doesn't block interactions */
+    }
 
-/* Position the bottom icons container */
-.bottom-icons {
-  position: fixed;
-  bottom: 10px;
-  left: 50%; /* Center align horizontally */
-  transform: translateX(-50%);
-  z-index: 1001; /* Ensure icons are on top */
-  display: flex; /* Use flexbox for layout */
-  justify-content: center; /* Center align the icons */
-/*  gap: 10px; /* Add spacing between icons */*/
-}
+    /* Position the bottom icons container */
+    .bottom-icons {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      /* Center align horizontally */
+      transform: translateX(-50%);
+      z-index: 1001;
+      /* Ensure icons are on top */
+      display: flex;
+      /* Use flexbox for layout */
+      justify-content: center;
+      /* Center align the icons */
+      /*  gap: 10px; /* Add spacing between icons */
+      */
+    }
 
-  .bottom-icons {
-    position: fixed;
-    bottom: 10px;
-    left: 50%; /* Center align horizontally */
-    transform: translateX(-50%);
-    z-index: 1000; /* Ensure icons are on top */
-    display: flex; /* Use flexbox for layout */
-    justify-content: center; /* Center align the icons */
-/*    gap: 10px; /* Add spacing between icons */*/
-  }
+    .bottom-icons {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      /* Center align horizontally */
+      transform: translateX(-50%);
+      z-index: 1000;
+      /* Ensure icons are on top */
+      display: flex;
+      /* Use flexbox for layout */
+      justify-content: center;
+      /* Center align the icons */
+      /*    gap: 10px; /* Add spacing between icons */
+      */
+    }
 
-.icon-explosive {
-  background-image: url('icons/Explosivelaser.svg');
-}
+    .icon-explosive {
+      background-image: url('icons/Explosivelaser.svg');
+    }
 
-.icon-turret {
-  background-image: url('icons/Autocannon.svg');
-}
+    .icon-turret {
+      background-image: url('icons/Autocannon.svg');
+    }
 
-.icon-drone {
-  background-image: url('icons/Laserdrone.svg');
-}
+    .icon-drone {
+      background-image: url('icons/Laserdrone.svg');
+    }
 
-.icon-bomberdrone {
-  background-image: url('icons/Bomberdrone.svg');
-}
+    .icon-bomberdrone {
+      background-image: url('icons/Bomberdrone.svg');
+    }
 
-.icon-sonic {
-  background-image: url('icons/Sonicray.svg');
-}
+    .icon-sonic {
+      background-image: url('icons/Sonicray.svg');
+    }
 
-.icon-deathray {
-  background-image: url('icons/Deathray.svg');
-}
-.iconContainer {
-  position: relative;
-  display: inline-block;
-  margin-right: 10px;
-}
-.upgradeCount {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  background-color: yellow;
-  color: black;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  font-weight: bold;
-  z-index: 1;
-}
+    .icon-deathray {
+      background-image: url('icons/Deathray.svg');
+    }
 
+    .iconContainer {
+      position: relative;
+      display: inline-block;
+      margin-right: 10px;
+    }
 
-
+    .upgradeCount {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: yellow;
+      color: black;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+      font-weight: bold;
+      z-index: 1;
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 </head>
+
 <body>
 
 
   <div id="xpBarContainer">
-  <div id="xpBar"></div>
+    <div id="xpBar"></div>
   </div>
 
 
-<div id="levelUpModal" class="modal">
-  <div class="modal-content">
-    <h2>Level Up!</h2>
-    <p>Choose an upgrade:</p>
-    <button id="upgrade1" onclick="selectUpgrade(1)"></button>
-    <button id="upgrade2" onclick="selectUpgrade(2)"></button>
-    <button id="upgrade3" onclick="selectUpgrade(3)"></button>
+  <div id="levelUpModal" class="modal">
+    <div class="modal-content">
+      <h2>Level Up!</h2>
+      <p>Choose an upgrade:</p>
+      <button id="upgrade1" onclick="selectUpgrade(1)"></button>
+      <button id="upgrade2" onclick="selectUpgrade(2)"></button>
+      <button id="upgrade3" onclick="selectUpgrade(3)"></button>
+    </div>
   </div>
-</div>
 
-<div id="activeWeaponClassesContainer" class="bottom-icons"></div>
+  <div id="activeWeaponClassesContainer" class="bottom-icons"></div>
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
   <div id="joystick">
@@ -367,49 +423,58 @@
   </div>
 
   <div id="marketplace">
-		<h2>Marketplace</h2>
-		<p>Coins: <span id="coins">0</span></p>
-		<button onclick="upgrade('lasers')">Upgrade Lasers (Cost: 100)</button> Level: <span id="laserLevel">1</span><br>
-  <button onclick="upgrade('maxbullets')">Upgrade Max Bullets (Cost: 100)</button> Level: <span id="maxBulletsLevel">1</span><br>
-<button onclick="upgrade('laserCooldown')">Upgrade Laser Cooldown (Cost: 100)</button> Level: <span id="laserCooldownLevel">1</span><br>
-    <button onclick="upgrade('explosivelaser')">Explosive Lasers (Cost: 100)</button> Level: <span id="explosiveLaserLevel">1</span><br>
+    <h2>Marketplace</h2>
+    <p>Coins: <span id="coins">0</span></p>
+    <button onclick="upgrade('lasers')">Upgrade Lasers (Cost: 100)</button> Level: <span id="laserLevel">1</span><br>
+    <button onclick="upgrade('maxbullets')">Upgrade Max Bullets (Cost: 100)</button> Level: <span
+      id="maxBulletsLevel">1</span><br>
+    <button onclick="upgrade('laserCooldown')">Upgrade Laser Cooldown (Cost: 100)</button> Level: <span
+      id="laserCooldownLevel">1</span><br>
+    <button onclick="upgrade('explosivelaser')">Explosive Lasers (Cost: 100)</button> Level: <span
+      id="explosiveLaserLevel">1</span><br>
 
-		<!-- <button onclick="upgrade('acceleration')">Upgrade Acceleration (Cost: 100)</button> Level: <span id="accelerationLevel">1</span><br> -->
-		<button onclick="upgrade('rotationSpeed')">Upgrade Rotation Speed (Cost: 100)</button> Level: <span id="rotationSpeedLevel">1</span><br>
-		<button onclick="buyDrone()">Buy Drone (Cost: 800)</button><br>
-		<button onclick="upgradeDrone('speed')">Upgrade Drone Speed (Cost: 200)</button> Level: <span id="droneSpeedLevel">1</span><br>
-		<!-- <button onclick="upgradeDrone('laserSpeed')">Upgrade Drone Laser Speed (Cost: 200)</button> Level: <span id="droneLaserSpeedLevel">1</span><br> -->
-		<button onclick="upgradeDrone('laserInterval')">Upgrade Drone Firing Frequency (Cost: 200)</button> Level: <span id="droneLaserIntervalLevel">1</span><br>
+    <!-- <button onclick="upgrade('acceleration')">Upgrade Acceleration (Cost: 100)</button> Level: <span id="accelerationLevel">1</span><br> -->
+    <button onclick="upgrade('rotationSpeed')">Upgrade Rotation Speed (Cost: 100)</button> Level: <span
+      id="rotationSpeedLevel">1</span><br>
+    <button onclick="buyDrone()">Buy Drone (Cost: 800)</button><br>
+    <button onclick="upgradeDrone('speed')">Upgrade Drone Speed (Cost: 200)</button> Level: <span
+      id="droneSpeedLevel">1</span><br>
+    <!-- <button onclick="upgradeDrone('laserSpeed')">Upgrade Drone Laser Speed (Cost: 200)</button> Level: <span id="droneLaserSpeedLevel">1</span><br> -->
+    <button onclick="upgradeDrone('laserInterval')">Upgrade Drone Firing Frequency (Cost: 200)</button> Level: <span
+      id="droneLaserIntervalLevel">1</span><br>
     <button onclick="buyTurret()">Buy Autocannon (Cost: 1000)</button><br>
-  <button onclick="upgrade('turretRange')">Upgrade Autocannon Range (Cost: 200)</button> Level: <span id="turretRangeLevel">1</span><br>
-  <button onclick="upgrade('turretFireRate')">Upgrade Autocannon Fire Rate (Cost: 200)</button> Level: <span id="turretFireRateLevel">1</span><br>
-  <button onclick="upgrade('turretDamage')">Upgrade Autocannon Damage (Cost: 200)</button> Level: <span id="turretDamageLevel">1</span><br>
-		<button onclick="exitMarketplace()">Exit Marketplace</button>
+    <button onclick="upgrade('turretRange')">Upgrade Autocannon Range (Cost: 200)</button> Level: <span
+      id="turretRangeLevel">1</span><br>
+    <button onclick="upgrade('turretFireRate')">Upgrade Autocannon Fire Rate (Cost: 200)</button> Level: <span
+      id="turretFireRateLevel">1</span><br>
+    <button onclick="upgrade('turretDamage')">Upgrade Autocannon Damage (Cost: 200)</button> Level: <span
+      id="turretDamageLevel">1</span><br>
+    <button onclick="exitMarketplace()">Exit Marketplace</button>
   </div>
 
   <div id="leaderboard-container" style="display:none;">
-  <div id="leaderboard">
-    <h2>Leaderboard</h2>
-    <ol id="leaderboard-list"></ol>
+    <div id="leaderboard">
+      <h2>Leaderboard</h2>
+      <ol id="leaderboard-list"></ol>
+    </div>
   </div>
-</div>
 
- <audio id="background-music" src="sounds/music_loop.mp3" loop></audio>
+  <audio id="background-music" src="sounds/music_loop.mp3" loop></audio>
 
-<audio id="meteor-destroy-1" src="sounds/meteor_destroy.mp3"></audio>
-<audio id="meteor-destroy-2" src="sounds/meteor_destroy2.mp3"></audio>
-<audio id="meteor-destroy-3" src="sounds/meteor_destroy3.mp3"></audio>
+  <audio id="meteor-destroy-1" src="sounds/meteor_destroy.mp3"></audio>
+  <audio id="meteor-destroy-2" src="sounds/meteor_destroy2.mp3"></audio>
+  <audio id="meteor-destroy-3" src="sounds/meteor_destroy3.mp3"></audio>
 
-<audio id="shot-sound-1" src="sounds/shot1.mp3"></audio>
-<audio id="shot-sound-2" src="sounds/shot2.mp3"></audio>
-<audio id="shot-sound-3" src="sounds/shot3.mp3"></audio>
+  <audio id="shot-sound-1" src="sounds/shot1.mp3"></audio>
+  <audio id="shot-sound-2" src="sounds/shot2.mp3"></audio>
+  <audio id="shot-sound-3" src="sounds/shot3.mp3"></audio>
 
-<audio id="thruster-sound-1" src="sounds/thruster1.mp3"></audio>
-<audio id="thruster-sound-2" src="sounds/thruster2.mp3"></audio>
-<audio id="thruster-sound-3" src="sounds/thruster3.mp3"></audio>
+  <audio id="thruster-sound-1" src="sounds/thruster1.mp3"></audio>
+  <audio id="thruster-sound-2" src="sounds/thruster2.mp3"></audio>
+  <audio id="thruster-sound-3" src="sounds/thruster3.mp3"></audio>
 
 
-<audio id="ship-destroyed" src="sounds/ship_destroyed.mp3"></audio>
+  <audio id="ship-destroyed" src="sounds/ship_destroyed.mp3"></audio>
 
   <button id="restartButton" style="display: none;">Restart</button>
 
@@ -419,24 +484,24 @@
     const ctx = canvas.getContext('2d');
     const joystick = document.getElementById('joystick');
     const joystickInner = document.getElementById('joystick-inner');
-  	const joystickHandle = document.getElementById('joystickHandle');
-  	const restartButton = document.getElementById('restartButton');
+    const joystickHandle = document.getElementById('joystickHandle');
+    const restartButton = document.getElementById('restartButton');
     const backgroundMusic = document.getElementById('background-music');
 
-  	let isTouchingJoystick = false;
-  	let joystickStartX, joystickStartY;
-  let isMusicPlaying = true; // Flag to track music state
+    let isTouchingJoystick = false;
+    let joystickStartX, joystickStartY;
+    let isMusicPlaying = true; // Flag to track music state
 
     const marketplace = document.getElementById('marketplace');
     const coinsDisplay = document.getElementById('coins');
 
-  	const laserLevelDisplay = document.getElementById('laserLevel');
-  	// const accelerationLevelDisplay = document.getElementById('accelerationLevel');
+    const laserLevelDisplay = document.getElementById('laserLevel');
+    // const accelerationLevelDisplay = document.getElementById('accelerationLevel');
     const maxBulletsLevelDisplay = document.getElementById('maxBulletsLevel');
-  	const rotationSpeedLevelDisplay = document.getElementById('rotationSpeedLevel');
-  	const droneSpeedLevelDisplay = document.getElementById('droneSpeedLevel');
-  	// const droneLaserSpeedLevelDisplay = document.getElementById('droneLaserSpeedLevel');
-  	const droneLaserIntervalLevelDisplay = document.getElementById('droneLaserIntervalLevel');
+    const rotationSpeedLevelDisplay = document.getElementById('rotationSpeedLevel');
+    const droneSpeedLevelDisplay = document.getElementById('droneSpeedLevel');
+    // const droneLaserSpeedLevelDisplay = document.getElementById('droneLaserSpeedLevel');
+    const droneLaserIntervalLevelDisplay = document.getElementById('droneLaserIntervalLevel');
 
     let activeWeaponClasses = []; // Array to store active weapon classes
     let particles = []; // Array to store thruster particles
@@ -445,95 +510,95 @@
     let xp = 0;
     let xpToNextLevel = 100;
 
-  let acidBomb = {
-    cooldown: 300,
-    timer: 0,
-    duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
-    damagePerSecond: 1,
-    size: 50,
-    activeBombs: [],
-    activeAreas: []
-  };
+    let acidBomb = {
+      cooldown: 300,
+      timer: 0,
+      duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
+      damagePerSecond: 1,
+      size: 50,
+      activeBombs: [],
+      activeAreas: []
+    };
 
-  let acidBombUpgrades = {
-    duration: 1,
-    cooldown: 1,
-    size: 1
-  };
+    let acidBombUpgrades = {
+      duration: 1,
+      cooldown: 1,
+      size: 1
+    };
 
-  let boomerang = {
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-    size: 10,
-    speed: 2,
-    damage: 1,
-    dx: 3,
-    dy: 3,
-    active: false
-  };
+    let boomerang = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      size: 10,
+      speed: 2,
+      damage: 1,
+      dx: 3,
+      dy: 3,
+      active: false
+    };
 
-  let boomerangUpgrades = {
-    speed: 1,
-    damage: 1
-  };
+    let boomerangUpgrades = {
+      speed: 1,
+      damage: 1
+    };
 
-let homingMissile = {
-  cooldown: 300,
-  timer: 0,
-  speed: 2,
-  damage: 5,
-  activeMissiles: []
-};
+    let homingMissile = {
+      cooldown: 300,
+      timer: 0,
+      speed: 2,
+      damage: 5,
+      activeMissiles: []
+    };
 
-let homingMissileUpgrades = {
-  speed: 1,
-  damage: 1,
-  cooldown: 1
-};
+    let homingMissileUpgrades = {
+      speed: 1,
+      damage: 1,
+      cooldown: 1
+    };
 
-let freezeEffect = {
-  cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
-  timer: 0,
-  duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
-  active: false,
-  remainingDuration: 0
-};
+    let freezeEffect = {
+      cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
+      timer: 0,
+      duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
+      active: false,
+      remainingDuration: 0
+    };
 
-let freezeEffectUpgrades = {
-  duration: 1,
-  cooldown: 1
-};
+    let freezeEffectUpgrades = {
+      duration: 1,
+      cooldown: 1
+    };
 
-  let damageReport = {
-    lasers: 0,
-    explosiveLasers: 0,
-    drones: 0,
-    turret: 0,
-    sonicBlast: 0,
-    bomberDrones: 0,
-    deathRay: 0,
-    acid: 0,
-    freeze: 0,
-    boomerang: 0,
-    homing: 0
+    let damageReport = {
+      lasers: 0,
+      explosiveLasers: 0,
+      drones: 0,
+      turret: 0,
+      sonicBlast: 0,
+      bomberDrones: 0,
+      deathRay: 0,
+      acid: 0,
+      freeze: 0,
+      boomerang: 0,
+      homing: 0
 
-  };
+    };
 
 
-  let deathRay = {
+    let deathRay = {
       length: 1000,
       width: 50,
       cooldown: 300,
       timer: 0
-  };
+    };
 
-  let deathRayActive = false;
+    let deathRayActive = false;
 
-  let deathRayUpgrades = {
+    let deathRayUpgrades = {
       length: 1,
       width: 1,
       cooldown: 1
-  };
+    };
 
 
     let superWeapons = {
@@ -579,16 +644,16 @@ let freezeEffectUpgrades = {
     };
 
     let turret = {
-          x: 0,
-          y: 0,
-          size: 10,
-          rotationSpeed: 2,
-          fireInterval: 120,
-          fireTimer: 0,
-          range: 400,
-          damage: 3,
-          color: 'cyan',
-          lasers: [] // Initialize the turret's lasers array
+      x: 0,
+      y: 0,
+      size: 10,
+      rotationSpeed: 2,
+      fireInterval: 120,
+      fireTimer: 0,
+      range: 400,
+      damage: 3,
+      color: 'cyan',
+      lasers: [] // Initialize the turret's lasers array
     };
 
     let turretUpgrades = {
@@ -597,43 +662,43 @@ let freezeEffectUpgrades = {
       damage: 1
     };
 
-let sonicBlast = {
-  cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
-  timer: 0, // Current cooldown timer
-  range: 120, // Range of the sonic blast
-  speed: 2, // Speed of the sonic blast wave
-  damage: 1, // Damage dealt by the sonic blast
-  waves: [], // Array to store the active sonic blast waves
-  rangeLevel : 1,
-  damageLevel : 1,
-  cooldownLevel : 1
+    let sonicBlast = {
+      cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
+      timer: 0, // Current cooldown timer
+      range: 120, // Range of the sonic blast
+      speed: 2, // Speed of the sonic blast wave
+      damage: 1, // Damage dealt by the sonic blast
+      waves: [], // Array to store the active sonic blast waves
+      rangeLevel: 1,
+      damageLevel: 1,
+      cooldownLevel: 1
 
-};
-
-
+    };
 
 
-	// let upgrades = {
-	//   explosiveLasers: 0, // Initial level of explosive lasers
-	//   emp: 0
-	// };
 
 
-const resizeCanvas = () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  resetShip();
-  // Scale the canvas to handle high DPI screens
-  // ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    // let upgrades = {
+    //   explosiveLasers: 0, // Initial level of explosive lasers
+    //   emp: 0
+    // };
 
-  // // Reposition the ship to the center of the canvas
-  // ship.x = canvas.width / 2 / window.devicePixelRatio;
-  // ship.y = canvas.height - 50 / window.devicePixelRatio;
-};
-		resizeCanvas();
-		
 
-// KEY CONFIG VARs
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      resetShip();
+      // Scale the canvas to handle high DPI screens
+      // ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+      // // Reposition the ship to the center of the canvas
+      // ship.x = canvas.width / 2 / window.devicePixelRatio;
+      // ship.y = canvas.height - 50 / window.devicePixelRatio;
+    };
+    resizeCanvas();
+
+
+    // KEY CONFIG VARs
     let coins = 10000;
 
 
@@ -650,17 +715,17 @@ const resizeCanvas = () => {
     let waveMessageTimer = 0;
     const waveMessageDuration = 180; // 3 seconds (60 FPS)
     let asteroidsKilled = 0;
-  	let drones = [];
-  	const droneCost = 800;
-  	let spawnCooldown = 12; // Cooldown time in seconds
-  let spawnTimer = spawnCooldown;
-  let bonusCoins = 0;
+    let drones = [];
+    const droneCost = 800;
+    let spawnCooldown = 12; // Cooldown time in seconds
+    let spawnTimer = spawnCooldown;
+    let bonusCoins = 0;
 
-	let droneUpgrades = {
-	  speed: 1,
-	  laserSpeed: 1,
-	  laserInterval: 1
-	};
+    let droneUpgrades = {
+      speed: 1,
+      laserSpeed: 1,
+      laserInterval: 1
+    };
 
 
     // Event listeners for keyboard input
@@ -669,32 +734,32 @@ const resizeCanvas = () => {
 
 
 
-	// canvas.addEventListener('touchmove', (e) => {
-	//   if (isTouching) {
-	//     let touchX = e.touches[0].clientX;
-	//     let touchY = e.touches[0].clientY;
-	//     let deltaX = touchX - touchStartX;
-	//     let deltaY = touchY - touchStartY;
+    // canvas.addEventListener('touchmove', (e) => {
+    //   if (isTouching) {
+    //     let touchX = e.touches[0].clientX;
+    //     let touchY = e.touches[0].clientY;
+    //     let deltaX = touchX - touchStartX;
+    //     let deltaY = touchY - touchStartY;
 
-	//     ship.rotation = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-	//     ship.speed = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY) / 15, ship.maxSpeed); // Changed divisor from 10 to 5 for easier control
+    //     ship.rotation = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+    //     ship.speed = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY) / 15, ship.maxSpeed); // Changed divisor from 10 to 5 for easier control
 
-	//     touchStartX = touchX;
-	//     touchStartY = touchY;
-	//   }
-	// });
+    //     touchStartX = touchX;
+    //     touchStartY = touchY;
+    //   }
+    // });
 
-	canvas.addEventListener('touchstart', (e) => {
+    canvas.addEventListener('touchstart', (e) => {
 
-		// lower left corner to access store
-		// if (e.touches[0].clientX < canvas.width / 5 && e.touches[0].clientY > canvas.height * 4 / 5) {
-	  //   pauseGameForMarketplace();
-	  // }
+      // lower left corner to access store
+      // if (e.touches[0].clientX < canvas.width / 5 && e.touches[0].clientY > canvas.height * 4 / 5) {
+      //   pauseGameForMarketplace();
+      // }
 
-	  if (e.target === canvas && e.touches.length === 2) { // Require two fingers to fire
-	    ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: 2 });
-	  }
-	});
+      if (e.target === canvas && e.touches.length === 2) { // Require two fingers to fire
+        ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: 2 });
+      }
+    });
 
     // Game loop
     function startGame() {
@@ -704,669 +769,670 @@ const resizeCanvas = () => {
       ship.laserTimer = 0;
       invincibilityTimer = invincibilityDuration;
       gameLoop = setInterval(update, 1000 / 60); // 60 FPS
-      if(!toggleOff)
+      if (!toggleOff)
         backgroundMusic.play(); // Play the background music
       isMusicPlaying = true;
     }
 
-let initialSlowDown = true;
+    let initialSlowDown = true;
 
-function update() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  document.getElementById('leaderboard-container').style.display = 'none';
+    function update() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      document.getElementById('leaderboard-container').style.display = 'none';
 
 
-  if (ship.laserTimer > 0) {
-    ship.laserTimer--;
-  }
-
-  let angle = ship.rotation * Math.PI / 180;
-
-  if (isMobile()) {
-    keys[' '] = true;
-  }
-
-if (keys['ArrowUp'] || keys['w']) {
-  if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
-  playRandomThrusterSound();
-
-  ship.velocityX += ship.acceleration * Math.sin(angle);
-  ship.velocityY -= ship.acceleration * Math.cos(angle);
-
-  // Generate thruster particles
-  generateThrusterParticles();
-  initialSlowDown = true; 
-
-} else if (keys['ArrowDown'] || keys['s']) {
-
-    if (initialSlowDown) {
-    // Apply stronger deceleration if the ship was moving at high speed
-    ship.velocityX *= 0.75;
-    ship.velocityY *= 0.75;
-    if (Math.abs(ship.velocityX) < 2 && Math.abs(ship.velocityY) < 2) {
-      initialSlowDown = false; // Disable the stronger deceleration after initial slowdown
-    } }
-    else {
-
-  // Apply strong deceleration if moving forward
-  ship.velocityX *= 0.97;
-  ship.velocityY *= 0.97;
-
-  }
-
-  if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
-    if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
-    playRandomThrusterSound();
-
-    // Move backwards with higher initial acceleration
-    const initialBackwardAcceleration = ship.acceleration * 1.5; // Increased initial backward acceleration
-    const backwardSpeed = ship.maxSpeed; // Increased backward speed limit
-    ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
-    ship.velocityY += initialBackwardAcceleration * Math.cos(angle);
-
-    // Limit backward speed
-    // const currentSpeed = Math.sqrt(ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY);
-    // if (currentSpeed > backwardSpeed) {
-    //   ship.velocityX = (ship.velocityX / currentSpeed) * backwardSpeed;
-    //   ship.velocityY = (ship.velocityY / currentSpeed) * backwardSpeed;
-    // }
-
-    // Generate thruster particles for backward movement
-    generateThrusterParticles();
-  }
-} else {
-  // Apply natural deceleration when no thrust key is pressed
-  ship.velocityX *= ship.deceleration;
-  ship.velocityY *= ship.deceleration;
-}
-
-
-  // Update ship position based on velocity
-  ship.x += ship.velocityX;
-  ship.y += ship.velocityY;
-
-  // Wrap the ship around the screen edges
-  if (ship.x < 0) ship.x = canvas.width;
-  else if (ship.x > canvas.width) ship.x = 0;
-  if (ship.y < 0) ship.y = canvas.height;
-  else if (ship.y > canvas.height) ship.y = 0;
-
-  // Handle ship rotation based on key states
-  if (keys['ArrowLeft'] || keys['a']) {
-    ship.rotation -= ship.rotationSpeed;
-  }
-  if (keys['ArrowRight'] || keys['d']) {
-    ship.rotation += ship.rotationSpeed;
-  }
-
-  // Handle shooting based on key state and cooldown
-  if (keys[' '] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
-    if(!toggleOff)
-      backgroundMusic.play(); // Resume the background music (if hasn't started)
-    ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: ship.laserLevel + 1 });
-    ship.laserTimer = ship.laserCooldown;
-    playRandomShotSound();
-  }
-
-
-  if (activeWeaponClasses.includes('sonic')) {
-    // Update sonic blast cooldown
-    if (sonicBlast.timer > 0) {
-      sonicBlast.timer--;
-    } else {
-      activateSonicBlast();
-    }
-  }
-
-  // Update sonic blast waves
-  updateSonicBlast();
-  drawSonicBlast();
-
-  if (activeWeaponClasses.includes('deathray')) {
-    if (deathRay.timer > 0) {
-      deathRay.timer--;
-    } else {
-      activateDeathRay();
-    }
-  }
-
-  if (deathRayActive) {
-    updateDeathRay();
-  }
-
-  if (activeWeaponClasses.includes('acid')) {
-    if (acidBomb.timer > 0) {
-      acidBomb.timer--;
-    } else {
-      fireAcidBomb();
-    }
-  }
-
-
-  if (activeWeaponClasses.includes('freeze')) {
-    if (freezeEffect.timer > 0) {
-      freezeEffect.timer--;
-    } else {
-      activateFreezeEffect();
-    }
-  }
-
-  updateFreezeEffect();
-
-  updateAcidBombs();
-  updateAcidAreas();
-  drawAcidBombs();
-  drawAcidAreas();
-
-
-  drawShip();
-  drawActiveWeaponClasses();
-
-  updateBoomerang();
-  drawBoomerang();
-
-  updateLasers();
-  drawLasers();
-
-  if (activeWeaponClasses.includes('homingmissile')) {
-    if (homingMissile.timer > 0) {
-      homingMissile.timer--;
-    } else {
-      fireHomingMissile();
-    }
-  }
-
-  updateHomingMissiles();
-  drawHomingMissiles();
-
-  if (turret.bought) {
-    updateTurret();
-    updateTurretLasers();
-    drawTurretLasers();
-    drawTurret();
-  }
-
-  if (activeWeaponClasses.includes('bomberdrone')) {
-    updateBomberDrones();
-    drawBomberDrones();
-  }
-
-  updateDrones();
-  drawDrones();
-
-  updateAsteroids();
-  drawAsteroids();
-
-  if (!invincible) {
-    for (let i = 0; i < asteroids.length; i++) {
-      if (isColliding(ship, asteroids[i])) {
-        createExplosion(ship.x, ship.y);
-        resetShip();
-        lives--;
-        playShipDestroyedSound();
-        invincible = true;
-        invincibilityTimer = invincibilityDuration;
-        if (lives === 0) gameOver = true;
-      }
-    }
-  }
-
-  checkLaserCollisions(ship.lasers, true);
-
-  if (turret.bought) {
-    checkLaserCollisions(turret.lasers, false);
-  }
-
-  if (invincible) {
-    invincibilityTimer--;
-    if (invincibilityTimer <= 0) invincible = false;
-  }
-
-  updateExplosions();
-  drawExplosions();
-
-  spawnTimer -= 1 / 60; // Assuming 60 FPS
-
-  if (spawnTimer <= 0) {
-    wave++;
-    createAsteroids();
-    spawnTimer = spawnCooldown;
-  }
-
-  if (gameOver) endGame();
-
-  // Update and draw particles
-  updateParticles();
-  drawParticles();
-
-  drawEdgeOverlay();
-  drawLives();
-  drawScore();
-  if (gameOver) drawDamageReport();
-
-
-}
-
-function drawEdgeOverlay() {
-  const overlayWidth = canvas.width * 0.05;
-  const overlayHeight = canvas.height * 0.05;
-
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.99)'; // Semi-transparent black color
-
-  // Top overlay
-  ctx.fillRect(0, 0, canvas.width, overlayHeight);
-  // Bottom overlay
-  ctx.fillRect(0, canvas.height - overlayHeight, canvas.width, overlayHeight);
-  // Left overlay
-  ctx.fillRect(0, 0, overlayWidth, canvas.height);
-  // Right overlay
-  ctx.fillRect(canvas.width - overlayWidth, 0, overlayWidth, canvas.height);
-}
-
-
-// Function to generate thruster particles
-function generateThrusterParticles() {
-  const angle = ship.rotation * Math.PI / 180;
-  const particle = {
-    x: ship.x - Math.sin(angle) * ship.size,
-    y: ship.y + Math.cos(angle) * ship.size,
-    size: Math.random() * 3 + 1,
-    speed: Math.random() * 2 + 1,
-    direction: angle + Math.PI,
-    life: Math.random() * 30 + 20,
-    color: 'rgba(255, 165, 0, 0.8)'
-  };
-  particles.push(particle);
-}
-
-// Function to update particles
-function updateParticles() {
-  for (let i = particles.length - 1; i >= 0; i--) {
-    const particle = particles[i];
-    particle.x += Math.sin(particle.direction) * particle.speed;
-    particle.y -= Math.cos(particle.direction) * particle.speed;
-    particle.life--;
-    if (particle.life <= 0) {
-      particles.splice(i, 1);
-    }
-  }
-}
-
-// Function to draw particles
-function drawParticles() {
-  for (const particle of particles) {
-    ctx.fillStyle = particle.color;
-    ctx.beginPath();
-    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
-
-
-function isMobile() {
-  return /Mobi|Android/i.test(navigator.userAgent);
-
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  if (isMobile()) {
-    document.getElementById('joystick').style.display = 'block';
-    document.getElementById('startScreen').style.display = 'flex';
-  } else {
-    startGame();
-  }
-});
-
-
-function updateSonicBlast() {
-  for (let i = 0; i < sonicBlast.waves.length; i++) {
-    const wave = sonicBlast.waves[i];
-    wave.radius += sonicBlast.speed;
-
-    for (let j = 0; j < asteroids.length; j++) {
-      const asteroid = asteroids[j];
-      if (isColliding(wave, asteroid) && !wave.hitAsteroids.includes(asteroid.id)) {
-        wave.hitAsteroids.push(asteroid.id);
-        let actualDamage = Math.min(sonicBlast.damage, asteroid.hitPoints);
-        asteroid.hitPoints -= actualDamage;
-        damageReport.sonicBlast += actualDamage;
-
-        if (asteroid.hitPoints <= 0) {
-          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
-          asteroids.splice(j, 1);
-          j--;
-        }
-      }
-    }
-
-    if (wave.radius > sonicBlast.range) {
-      sonicBlast.waves.splice(i, 1);
-      i--;
-    }
-  }
-}
-
-function drawAcidBombs() {
-  ctx.fillStyle = 'green';
-  for (let i = 0; i < acidBomb.activeBombs.length; i++) {
-    let bomb = acidBomb.activeBombs[i];
-    ctx.beginPath();
-    ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
-function fireHomingMissile() {
-  if (homingMissile.timer === 0) {
-    let missile = {
-      x: ship.x,
-      y: ship.y,
-      target: findNearestAsteroid(),
-      speed: homingMissile.speed * homingMissileUpgrades.speed,
-      damage: homingMissile.damage * homingMissileUpgrades.damage
-    };
-    homingMissile.activeMissiles.push(missile);
-    homingMissile.timer = homingMissile.cooldown;
-  }
-}
-
-function updateHomingMissiles() {
-  for (let i = homingMissile.activeMissiles.length - 1; i >= 0; i--) {
-    let missile = homingMissile.activeMissiles[i];
-    if (missile.target) {
-      let dx = missile.target.x - missile.x;
-      let dy = missile.target.y - missile.y;
-      let distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < missile.target.size) {
-        createExplosion(missile.target.x, missile.target.y);
-        let index = asteroids.indexOf(missile.target);
-        asteroids.splice(index, 1);
-        homingMissile.activeMissiles.splice(i, 1);
-        continue;
+      if (ship.laserTimer > 0) {
+        ship.laserTimer--;
       }
 
-      let angle = Math.atan2(dy, dx);
-      missile.x += missile.speed * Math.cos(angle);
-      missile.y += missile.speed * Math.sin(angle);
-    } else {
-      homingMissile.activeMissiles.splice(i, 1);
-    }
-  }
-}
+      let angle = ship.rotation * Math.PI / 180;
 
-function drawHomingMissiles() {
-  ctx.fillStyle = 'red';
-  for (let i = 0; i < homingMissile.activeMissiles.length; i++) {
-    let missile = homingMissile.activeMissiles[i];
-    ctx.beginPath();
-    ctx.arc(missile.x, missile.y, 5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
+      if (isMobile()) {
+        keys[' '] = true;
+      }
 
+      if (keys['ArrowUp'] || keys['w']) {
+        if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
+        playRandomThrusterSound();
 
+        ship.velocityX += ship.acceleration * Math.sin(angle);
+        ship.velocityY -= ship.acceleration * Math.cos(angle);
 
-// Function to handle laser collisions
-function checkLaserCollisions(lasers, isShip) {
-  for (let i = lasers.length - 1; i >= 0; i--) {
-    let laser = lasers[i];
-    for (let j = asteroids.length - 1; j >= 0; j--) {
-      let asteroid = asteroids[j];
-      if (isColliding(laser, asteroid)) {
-        let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
+        // Generate thruster particles
+        generateThrusterParticles();
+        initialSlowDown = true;
 
-        let actualDamage = Math.min(damage, asteroid.hitPoints); // Ensure we don't overkill the asteroid
-        asteroid.hitPoints -= actualDamage;
+      } else if (keys['ArrowDown'] || keys['s']) {
 
-        if (asteroid.hitPoints <= 0) {
-          if (asteroid.isLarge) {
-            createSmallerAsteroids(asteroid.x, asteroid.y, asteroid.size, asteroid.speed, 1); // Split into smaller asteroids
+        if (initialSlowDown) {
+          // Apply stronger deceleration if the ship was moving at high speed
+          ship.velocityX *= 0.75;
+          ship.velocityY *= 0.75;
+          if (Math.abs(ship.velocityX) < 2 && Math.abs(ship.velocityY) < 2) {
+            initialSlowDown = false; // Disable the stronger deceleration after initial slowdown
           }
-          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
-          asteroids.splice(j, 1);
-        } else {
-          // Lighten the color slightly
-          let colorValue = Math.max(40, 30 + (asteroid.hitPoints * 3)); // Adjust color value
-          asteroid.color = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
+        }
+        else {
+
+          // Apply strong deceleration if moving forward
+          ship.velocityX *= 0.97;
+          ship.velocityY *= 0.97;
+
         }
 
-        lasers.splice(i, 1);
-        score += actualDamage * 50; // Increase score based on actual damage
-        asteroidsKilled++;
-        playRandomMeteorDestroySound();
-        coins += actualDamage * 20; // Add coins based on actual damage
-        increaseXP(actualDamage * 20); // Increase XP based on actual damage
+        if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
+          if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
+          playRandomThrusterSound();
 
-        // Track damage
-        if (isShip) {
-          damageReport.lasers += actualDamage;
+          // Move backwards with higher initial acceleration
+          const initialBackwardAcceleration = ship.acceleration * 1.5; // Increased initial backward acceleration
+          const backwardSpeed = ship.maxSpeed; // Increased backward speed limit
+          ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
+          ship.velocityY += initialBackwardAcceleration * Math.cos(angle);
 
-          // Handle explosive laser effect
-          if (ship.explosiveLaserLevel > 0) {
-            createExplosion(laser.x, laser.y, 0);
-            let areaDamage = createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 30, ship.laserLevel); // Increase radius based on explosiveLaserLevel and damage based on laserLevel
-            damageReport.explosiveLasers += areaDamage;
-          }
-        } else {
-          damageReport.turret += actualDamage;
+          // Limit backward speed
+          // const currentSpeed = Math.sqrt(ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY);
+          // if (currentSpeed > backwardSpeed) {
+          //   ship.velocityX = (ship.velocityX / currentSpeed) * backwardSpeed;
+          //   ship.velocityY = (ship.velocityY / currentSpeed) * backwardSpeed;
+          // }
+
+          // Generate thruster particles for backward movement
+          generateThrusterParticles();
         }
-
-        break;
+      } else {
+        // Apply natural deceleration when no thrust key is pressed
+        ship.velocityX *= ship.deceleration;
+        ship.velocityY *= ship.deceleration;
       }
+
+
+      // Update ship position based on velocity
+      ship.x += ship.velocityX;
+      ship.y += ship.velocityY;
+
+      // Wrap the ship around the screen edges
+      if (ship.x < 0) ship.x = canvas.width;
+      else if (ship.x > canvas.width) ship.x = 0;
+      if (ship.y < 0) ship.y = canvas.height;
+      else if (ship.y > canvas.height) ship.y = 0;
+
+      // Handle ship rotation based on key states
+      if (keys['ArrowLeft'] || keys['a']) {
+        ship.rotation -= ship.rotationSpeed;
+      }
+      if (keys['ArrowRight'] || keys['d']) {
+        ship.rotation += ship.rotationSpeed;
+      }
+
+      // Handle shooting based on key state and cooldown
+      if (keys[' '] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
+        if (!toggleOff)
+          backgroundMusic.play(); // Resume the background music (if hasn't started)
+        ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: ship.laserLevel + 1 });
+        ship.laserTimer = ship.laserCooldown;
+        playRandomShotSound();
+      }
+
+
+      if (activeWeaponClasses.includes('sonic')) {
+        // Update sonic blast cooldown
+        if (sonicBlast.timer > 0) {
+          sonicBlast.timer--;
+        } else {
+          activateSonicBlast();
+        }
+      }
+
+      // Update sonic blast waves
+      updateSonicBlast();
+      drawSonicBlast();
+
+      if (activeWeaponClasses.includes('deathray')) {
+        if (deathRay.timer > 0) {
+          deathRay.timer--;
+        } else {
+          activateDeathRay();
+        }
+      }
+
+      if (deathRayActive) {
+        updateDeathRay();
+      }
+
+      if (activeWeaponClasses.includes('acid')) {
+        if (acidBomb.timer > 0) {
+          acidBomb.timer--;
+        } else {
+          fireAcidBomb();
+        }
+      }
+
+
+      if (activeWeaponClasses.includes('freeze')) {
+        if (freezeEffect.timer > 0) {
+          freezeEffect.timer--;
+        } else {
+          activateFreezeEffect();
+        }
+      }
+
+      updateFreezeEffect();
+
+      updateAcidBombs();
+      updateAcidAreas();
+      drawAcidBombs();
+      drawAcidAreas();
+
+
+      drawShip();
+      drawActiveWeaponClasses();
+
+      updateBoomerang();
+      drawBoomerang();
+
+      updateLasers();
+      drawLasers();
+
+      if (activeWeaponClasses.includes('homingmissile')) {
+        if (homingMissile.timer > 0) {
+          homingMissile.timer--;
+        } else {
+          fireHomingMissile();
+        }
+      }
+
+      updateHomingMissiles();
+      drawHomingMissiles();
+
+      if (turret.bought) {
+        updateTurret();
+        updateTurretLasers();
+        drawTurretLasers();
+        drawTurret();
+      }
+
+      if (activeWeaponClasses.includes('bomberdrone')) {
+        updateBomberDrones();
+        drawBomberDrones();
+      }
+
+      updateDrones();
+      drawDrones();
+
+      updateAsteroids();
+      drawAsteroids();
+
+      if (!invincible) {
+        for (let i = 0; i < asteroids.length; i++) {
+          if (isColliding(ship, asteroids[i])) {
+            createExplosion(ship.x, ship.y);
+            resetShip();
+            lives--;
+            playShipDestroyedSound();
+            invincible = true;
+            invincibilityTimer = invincibilityDuration;
+            if (lives === 0) gameOver = true;
+          }
+        }
+      }
+
+      checkLaserCollisions(ship.lasers, true);
+
+      if (turret.bought) {
+        checkLaserCollisions(turret.lasers, false);
+      }
+
+      if (invincible) {
+        invincibilityTimer--;
+        if (invincibilityTimer <= 0) invincible = false;
+      }
+
+      updateExplosions();
+      drawExplosions();
+
+      spawnTimer -= 1 / 60; // Assuming 60 FPS
+
+      if (spawnTimer <= 0) {
+        wave++;
+        createAsteroids();
+        spawnTimer = spawnCooldown;
+      }
+
+      if (gameOver) endGame();
+
+      // Update and draw particles
+      updateParticles();
+      drawParticles();
+
+      drawEdgeOverlay();
+      drawLives();
+      drawScore();
+      if (gameOver) drawDamageReport();
+
+
     }
-  }
-}
+
+    function drawEdgeOverlay() {
+      const overlayWidth = canvas.width * 0.05;
+      const overlayHeight = canvas.height * 0.05;
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.99)'; // Semi-transparent black color
+
+      // Top overlay
+      ctx.fillRect(0, 0, canvas.width, overlayHeight);
+      // Bottom overlay
+      ctx.fillRect(0, canvas.height - overlayHeight, canvas.width, overlayHeight);
+      // Left overlay
+      ctx.fillRect(0, 0, overlayWidth, canvas.height);
+      // Right overlay
+      ctx.fillRect(canvas.width - overlayWidth, 0, overlayWidth, canvas.height);
+    }
 
 
-
-const meteorDestroySounds = [
-  document.getElementById('meteor-destroy-1'),
-  document.getElementById('meteor-destroy-2'),
-  document.getElementById('meteor-destroy-3')
-];
-
-// Get the audio elements for shots
-const shotSounds = [
-  document.getElementById('shot-sound-1'),
-  document.getElementById('shot-sound-2'),
-  document.getElementById('shot-sound-3')
-];
-
-// Get the audio elements for thrusters
-const thrusterSounds = [
-  document.getElementById('thruster-sound-1'),
-  document.getElementById('thruster-sound-2'),
-  document.getElementById('thruster-sound-3')
-];
-
-
-// Get the audio elements for thrusters
-const shipDestroyedSounds = [
-  document.getElementById('ship-destroyed')
-];
-
-// Function to play a random shot sound
-function playRandomShotSound() {
-  if(!toggleSoundOff) {
-    const randomIndex = Math.floor(Math.random() * shotSounds.length);
-    shotSounds[randomIndex].play();
-  }
-}
-
-// Function to play a random thruster sound
-function playRandomThrusterSound() {
-  if(!toggleSoundOff) {
-    const randomIndex = Math.floor(Math.random() * thrusterSounds.length);
-    thrusterSounds[randomIndex].play();
-  }
-}
-
-function playRandomMeteorDestroySound() {
-  if(!toggleSoundOff) {
-    const randomIndex = Math.floor(Math.random() * meteorDestroySounds.length);
-    meteorDestroySounds[randomIndex].play();
-  }
-}
-
-
-function playShipDestroyedSound() {
-  if(!toggleSoundOff) {
-    const randomIndex = Math.floor(Math.random() * shipDestroyedSounds.length);
-    shipDestroyedSounds[randomIndex].play();
-  }
-}
-
-
-// Function to buy drones
-function buyDrone() {
-  // if (coins >= droneCost) {
-  //   coins -= droneCost;
-    let drone = {
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      size: 10,
-      speed: 0.5 * droneUpgrades.speed,
-      direction: Math.random() * Math.PI * 2,
-      lasers: [],
-      laserSpeed: 2 * droneUpgrades.laserSpeed,
-      laserInterval: 80 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
-      laserTimer: 0
-    };
-    drones.push(drone);
-    // updateCoinsDisplay();
-  // }
-}
-
-function buyBomberDrone() {
-  let bomberDrone = {
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-    size: 12,
-    speed: 0.5 * bomberDroneUpgrades.speed,
-    direction: Math.random() * Math.PI * 2,
-    bombs: [],
-    bombInterval: 120,
-    bombTimer: 0
-  };
-  bomberDrones.push(bomberDrone);
-}
-
-
-function buyTurret() {
-  if (!turret.bought && coins >= 1000) {
-    coins -= 1000;
-    turret.bought = true;
-    turret.x = ship.x;
-    turret.y = ship.y;
-    updateCoinsDisplay();
-  }
-}
-
-
-function updateTurret() {
-  let nearestAsteroid = findNearestAsteroidInRange();
-  if (nearestAsteroid) {
-    let dx = nearestAsteroid.x - turret.x;
-    let dy = nearestAsteroid.y - turret.y;
-    let angle = Math.atan2(dy, dx);
-    turret.rotation = angle;
-
-    turret.fireTimer++;
-    if (turret.fireTimer >= turret.fireInterval) {
-      turret.fireTimer = 0;
-      let laser = {
-        x: turret.x,
-        y: turret.y,
-        rotation: turret.rotation,
-        size: 2,
-        color: 'blue' // Set the turret laser color to blue
+    // Function to generate thruster particles
+    function generateThrusterParticles() {
+      const angle = ship.rotation * Math.PI / 180;
+      const particle = {
+        x: ship.x - Math.sin(angle) * ship.size,
+        y: ship.y + Math.cos(angle) * ship.size,
+        size: Math.random() * 3 + 1,
+        speed: Math.random() * 2 + 1,
+        direction: angle + Math.PI,
+        life: Math.random() * 30 + 20,
+        color: 'rgba(255, 165, 0, 0.8)'
       };
-      turret.lasers.push(laser);
+      particles.push(particle);
     }
-  }
 
-  turret.x = ship.x;
-  turret.y = ship.y;
-}
-
-function updateTurretLasers() {
-  for (let i = turret.lasers.length - 1; i >= 0; i--) {
-    let laser = turret.lasers[i];
-    laser.x += Math.cos(laser.rotation) * 2;
-    laser.y += Math.sin(laser.rotation) * 2;
-    if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
-      turret.lasers.splice(i, 1);
-    }
-  }
-}
-
-
-function drawTurretLasers() {
-        // console.log(turret.lasers.length);
-
-  for (let i = 0; i < turret.lasers.length; i++) {
-      // console.log('blue');
-    let laser = turret.lasers[i];
-    ctx.fillStyle = turret.color;
-    // ctx.fillStyle = 'cyan';
-    // console.log(laser.x + " , " + laser.y);
-    ctx.fillRect(laser.x - laser.size * 2, laser.y - laser.size * 2, laser.size * 2, laser.size * 2);
-  }
-}
-
-
-function updateBoomerang() {
-  if (!boomerang.active) return;
-
-  boomerang.x += boomerang.dx * boomerang.speed;
-  boomerang.y += boomerang.dy * boomerang.speed;
-
-  // Bounce off the edges of the screen
-  if (boomerang.x < 0 || boomerang.x > canvas.width) {
-    boomerang.dx = -boomerang.dx;
-  }
-  if (boomerang.y < 0 || boomerang.y > canvas.height) {
-    boomerang.dy = -boomerang.dy;
-  }
-
-  // Check collision with asteroids
-  for (let i = 0; i < asteroids.length; i++) {
-    let asteroid = asteroids[i];
-    if (isColliding(boomerang, asteroid)) {
-      let actualDamage = Math.min(boomerang.damage, asteroid.hitPoints);
-      asteroid.hitPoints -= actualDamage;
-      damageReport.boomerang += actualDamage;
-
-      if (asteroid.hitPoints <= 0) {
-        createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
-        asteroids.splice(i, 1);
-        score += actualDamage * 50;
-        coins += actualDamage * 20;
-        increaseXP(actualDamage * 20);
+    // Function to update particles
+    function updateParticles() {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const particle = particles[i];
+        particle.x += Math.sin(particle.direction) * particle.speed;
+        particle.y -= Math.cos(particle.direction) * particle.speed;
+        particle.life--;
+        if (particle.life <= 0) {
+          particles.splice(i, 1);
+        }
       }
     }
-  }
-}
 
-function drawBoomerang() {
-  if (!boomerang.active) return;
+    // Function to draw particles
+    function drawParticles() {
+      for (const particle of particles) {
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
 
-  ctx.fillStyle = 'orange';
-  ctx.beginPath();
-  ctx.arc(boomerang.x, boomerang.y, boomerang.size, 0, Math.PI * 2);
-  ctx.closePath();
-  ctx.fill();
-}
 
-function activateBoomerang() {
-  boomerang.active = true;
-  boomerang.x = canvas.width / 2;
-  boomerang.y = canvas.height / 2;
-  boomerang.dx = (Math.random() * 2 - 1) * boomerang.speed;
-  boomerang.dy = (Math.random() * 2 - 1) * boomerang.speed;
-}
+
+    function isMobile() {
+      return /Mobi|Android/i.test(navigator.userAgent);
+
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (isMobile()) {
+        document.getElementById('joystick').style.display = 'block';
+        document.getElementById('startScreen').style.display = 'flex';
+      } else {
+        startGame();
+      }
+    });
+
+
+    function updateSonicBlast() {
+      for (let i = 0; i < sonicBlast.waves.length; i++) {
+        const wave = sonicBlast.waves[i];
+        wave.radius += sonicBlast.speed;
+
+        for (let j = 0; j < asteroids.length; j++) {
+          const asteroid = asteroids[j];
+          if (isColliding(wave, asteroid) && !wave.hitAsteroids.includes(asteroid.id)) {
+            wave.hitAsteroids.push(asteroid.id);
+            let actualDamage = Math.min(sonicBlast.damage, asteroid.hitPoints);
+            asteroid.hitPoints -= actualDamage;
+            damageReport.sonicBlast += actualDamage;
+
+            if (asteroid.hitPoints <= 0) {
+              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+              asteroids.splice(j, 1);
+              j--;
+            }
+          }
+        }
+
+        if (wave.radius > sonicBlast.range) {
+          sonicBlast.waves.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    function drawAcidBombs() {
+      ctx.fillStyle = 'green';
+      for (let i = 0; i < acidBomb.activeBombs.length; i++) {
+        let bomb = acidBomb.activeBombs[i];
+        ctx.beginPath();
+        ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function fireHomingMissile() {
+      if (homingMissile.timer === 0) {
+        let missile = {
+          x: ship.x,
+          y: ship.y,
+          target: findNearestAsteroid(),
+          speed: homingMissile.speed * homingMissileUpgrades.speed,
+          damage: homingMissile.damage * homingMissileUpgrades.damage
+        };
+        homingMissile.activeMissiles.push(missile);
+        homingMissile.timer = homingMissile.cooldown;
+      }
+    }
+
+    function updateHomingMissiles() {
+      for (let i = homingMissile.activeMissiles.length - 1; i >= 0; i--) {
+        let missile = homingMissile.activeMissiles[i];
+        if (missile.target) {
+          let dx = missile.target.x - missile.x;
+          let dy = missile.target.y - missile.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < missile.target.size) {
+            createExplosion(missile.target.x, missile.target.y);
+            let index = asteroids.indexOf(missile.target);
+            asteroids.splice(index, 1);
+            homingMissile.activeMissiles.splice(i, 1);
+            continue;
+          }
+
+          let angle = Math.atan2(dy, dx);
+          missile.x += missile.speed * Math.cos(angle);
+          missile.y += missile.speed * Math.sin(angle);
+        } else {
+          homingMissile.activeMissiles.splice(i, 1);
+        }
+      }
+    }
+
+    function drawHomingMissiles() {
+      ctx.fillStyle = 'red';
+      for (let i = 0; i < homingMissile.activeMissiles.length; i++) {
+        let missile = homingMissile.activeMissiles[i];
+        ctx.beginPath();
+        ctx.arc(missile.x, missile.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+
+
+    // Function to handle laser collisions
+    function checkLaserCollisions(lasers, isShip) {
+      for (let i = lasers.length - 1; i >= 0; i--) {
+        let laser = lasers[i];
+        for (let j = asteroids.length - 1; j >= 0; j--) {
+          let asteroid = asteroids[j];
+          if (isColliding(laser, asteroid)) {
+            let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
+
+            let actualDamage = Math.min(damage, asteroid.hitPoints); // Ensure we don't overkill the asteroid
+            asteroid.hitPoints -= actualDamage;
+
+            if (asteroid.hitPoints <= 0) {
+              if (asteroid.isLarge) {
+                createSmallerAsteroids(asteroid.x, asteroid.y, asteroid.size, asteroid.speed, 1); // Split into smaller asteroids
+              }
+              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+              asteroids.splice(j, 1);
+            } else {
+              // Lighten the color slightly
+              let colorValue = Math.max(40, 30 + (asteroid.hitPoints * 3)); // Adjust color value
+              asteroid.color = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
+            }
+
+            lasers.splice(i, 1);
+            score += actualDamage * 50; // Increase score based on actual damage
+            asteroidsKilled++;
+            playRandomMeteorDestroySound();
+            coins += actualDamage * 20; // Add coins based on actual damage
+            increaseXP(actualDamage * 20); // Increase XP based on actual damage
+
+            // Track damage
+            if (isShip) {
+              damageReport.lasers += actualDamage;
+
+              // Handle explosive laser effect
+              if (ship.explosiveLaserLevel > 0) {
+                createExplosion(laser.x, laser.y, 0);
+                let areaDamage = createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 30, ship.laserLevel); // Increase radius based on explosiveLaserLevel and damage based on laserLevel
+                damageReport.explosiveLasers += areaDamage;
+              }
+            } else {
+              damageReport.turret += actualDamage;
+            }
+
+            break;
+          }
+        }
+      }
+    }
+
+
+
+    const meteorDestroySounds = [
+      document.getElementById('meteor-destroy-1'),
+      document.getElementById('meteor-destroy-2'),
+      document.getElementById('meteor-destroy-3')
+    ];
+
+    // Get the audio elements for shots
+    const shotSounds = [
+      document.getElementById('shot-sound-1'),
+      document.getElementById('shot-sound-2'),
+      document.getElementById('shot-sound-3')
+    ];
+
+    // Get the audio elements for thrusters
+    const thrusterSounds = [
+      document.getElementById('thruster-sound-1'),
+      document.getElementById('thruster-sound-2'),
+      document.getElementById('thruster-sound-3')
+    ];
+
+
+    // Get the audio elements for thrusters
+    const shipDestroyedSounds = [
+      document.getElementById('ship-destroyed')
+    ];
+
+    // Function to play a random shot sound
+    function playRandomShotSound() {
+      if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * shotSounds.length);
+        shotSounds[randomIndex].play();
+      }
+    }
+
+    // Function to play a random thruster sound
+    function playRandomThrusterSound() {
+      if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * thrusterSounds.length);
+        thrusterSounds[randomIndex].play();
+      }
+    }
+
+    function playRandomMeteorDestroySound() {
+      if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * meteorDestroySounds.length);
+        meteorDestroySounds[randomIndex].play();
+      }
+    }
+
+
+    function playShipDestroyedSound() {
+      if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * shipDestroyedSounds.length);
+        shipDestroyedSounds[randomIndex].play();
+      }
+    }
+
+
+    // Function to buy drones
+    function buyDrone() {
+      // if (coins >= droneCost) {
+      //   coins -= droneCost;
+      let drone = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: 10,
+        speed: 0.5 * droneUpgrades.speed,
+        direction: Math.random() * Math.PI * 2,
+        lasers: [],
+        laserSpeed: 2 * droneUpgrades.laserSpeed,
+        laserInterval: 80 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
+        laserTimer: 0
+      };
+      drones.push(drone);
+      // updateCoinsDisplay();
+      // }
+    }
+
+    function buyBomberDrone() {
+      let bomberDrone = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: 12,
+        speed: 0.5 * bomberDroneUpgrades.speed,
+        direction: Math.random() * Math.PI * 2,
+        bombs: [],
+        bombInterval: 120,
+        bombTimer: 0
+      };
+      bomberDrones.push(bomberDrone);
+    }
+
+
+    function buyTurret() {
+      if (!turret.bought && coins >= 1000) {
+        coins -= 1000;
+        turret.bought = true;
+        turret.x = ship.x;
+        turret.y = ship.y;
+        updateCoinsDisplay();
+      }
+    }
+
+
+    function updateTurret() {
+      let nearestAsteroid = findNearestAsteroidInRange();
+      if (nearestAsteroid) {
+        let dx = nearestAsteroid.x - turret.x;
+        let dy = nearestAsteroid.y - turret.y;
+        let angle = Math.atan2(dy, dx);
+        turret.rotation = angle;
+
+        turret.fireTimer++;
+        if (turret.fireTimer >= turret.fireInterval) {
+          turret.fireTimer = 0;
+          let laser = {
+            x: turret.x,
+            y: turret.y,
+            rotation: turret.rotation,
+            size: 2,
+            color: 'blue' // Set the turret laser color to blue
+          };
+          turret.lasers.push(laser);
+        }
+      }
+
+      turret.x = ship.x;
+      turret.y = ship.y;
+    }
+
+    function updateTurretLasers() {
+      for (let i = turret.lasers.length - 1; i >= 0; i--) {
+        let laser = turret.lasers[i];
+        laser.x += Math.cos(laser.rotation) * 2;
+        laser.y += Math.sin(laser.rotation) * 2;
+        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
+          turret.lasers.splice(i, 1);
+        }
+      }
+    }
+
+
+    function drawTurretLasers() {
+      // console.log(turret.lasers.length);
+
+      for (let i = 0; i < turret.lasers.length; i++) {
+        // console.log('blue');
+        let laser = turret.lasers[i];
+        ctx.fillStyle = turret.color;
+        // ctx.fillStyle = 'cyan';
+        // console.log(laser.x + " , " + laser.y);
+        ctx.fillRect(laser.x - laser.size * 2, laser.y - laser.size * 2, laser.size * 2, laser.size * 2);
+      }
+    }
+
+
+    function updateBoomerang() {
+      if (!boomerang.active) return;
+
+      boomerang.x += boomerang.dx * boomerang.speed;
+      boomerang.y += boomerang.dy * boomerang.speed;
+
+      // Bounce off the edges of the screen
+      if (boomerang.x < 0 || boomerang.x > canvas.width) {
+        boomerang.dx = -boomerang.dx;
+      }
+      if (boomerang.y < 0 || boomerang.y > canvas.height) {
+        boomerang.dy = -boomerang.dy;
+      }
+
+      // Check collision with asteroids
+      for (let i = 0; i < asteroids.length; i++) {
+        let asteroid = asteroids[i];
+        if (isColliding(boomerang, asteroid)) {
+          let actualDamage = Math.min(boomerang.damage, asteroid.hitPoints);
+          asteroid.hitPoints -= actualDamage;
+          damageReport.boomerang += actualDamage;
+
+          if (asteroid.hitPoints <= 0) {
+            createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+            asteroids.splice(i, 1);
+            score += actualDamage * 50;
+            coins += actualDamage * 20;
+            increaseXP(actualDamage * 20);
+          }
+        }
+      }
+    }
+
+    function drawBoomerang() {
+      if (!boomerang.active) return;
+
+      ctx.fillStyle = 'orange';
+      ctx.beginPath();
+      ctx.arc(boomerang.x, boomerang.y, boomerang.size, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function activateBoomerang() {
+      boomerang.active = true;
+      boomerang.x = canvas.width / 2;
+      boomerang.y = canvas.height / 2;
+      boomerang.dx = (Math.random() * 2 - 1) * boomerang.speed;
+      boomerang.dy = (Math.random() * 2 - 1) * boomerang.speed;
+    }
 
     // function drawLasers() {
     //   ctx.fillStyle = 'red';
@@ -1375,260 +1441,260 @@ function activateBoomerang() {
     //   }
     // }
 
-function drawTurret() {
-  ctx.save();
-  ctx.translate(turret.x, turret.y);
-  ctx.rotate(turret.rotation * Math.PI / 180);
-  ctx.fillStyle = 'lime';
-  ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size + 2, turret.size);
-  ctx.restore();
-}
-
-function findNearestAsteroid() {
-  let nearestAsteroid = null;
-  let nearestDistance = Infinity;
-  for (let i = 0; i < asteroids.length; i++) {
-    let dx = ship.x - asteroids[i].x;
-    let dy = ship.y - asteroids[i].y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < nearestDistance) {
-      nearestAsteroid = asteroids[i];
-      nearestDistance = distance;
-    }
-  }
-  return nearestAsteroid;
-}
-
-
-function findNearestAsteroidInRange() {
-  let nearestAsteroid = null;
-  let nearestDistance = Infinity;
-  for (let i = 0; i < asteroids.length; i++) {
-    let dx = turret.x - asteroids[i].x;
-    let dy = turret.y - asteroids[i].y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < nearestDistance && distance <= turret.range) {
-      nearestAsteroid = asteroids[i];
-      nearestDistance = distance;
-    }
-  }
-  return nearestAsteroid;
-}
-
-
-function drawSonicBlast() {
-  ctx.strokeStyle = 'blue';
-  ctx.lineWidth = 1;
-  for (let i = 0; i < sonicBlast.waves.length; i++) {
-    const wave = sonicBlast.waves[i];
-    ctx.beginPath();
-    ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-}
-
-
-function selectUpgrade(choice) {
-  const upgrades = window.levelUpgrades;
-  applyUpgrade(upgrades[choice - 1]);
-  document.getElementById('levelUpModal').style.display = 'none';
-
-  // Resume the game
-  gameLoop = setInterval(update, 1000 / 60); // 60 FPS
-}
-
-
-function upgradeDrone(attribute) {
-  const cost = 200;
-  if (coins >= cost) {
-    coins -= cost;
-    droneUpgrades[attribute]++;
-
-    // Update existing drones with new upgrade levels
-    drones.forEach(drone => {
-      switch (attribute) {
-        case 'speed':
-          drone.speed = 2 * droneUpgrades.speed;
-          break;
-        case 'laserSpeed':
-          drone.laserSpeed = 5 * droneUpgrades.laserSpeed;
-          break;
-        case 'laserInterval':
-          drone.laserInterval = 120 / droneUpgrades.laserInterval;
-          break;
-      }
-    });
-    updateCoinsDisplay();
-    updateMarketplaceDisplay();
-
-  }
-}
-
-// Update all drones
-function updateDrones() {
-  drones.forEach(drone => {
-    const dx = ship.x - drone.x;
-    const dy = ship.y - drone.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance > 200) { // If the drone is too far from the ship
-      const angleToShip = Math.atan2(dy, dx);
-      drone.direction = angleToShip; // Change direction towards the ship
+    function drawTurret() {
+      ctx.save();
+      ctx.translate(turret.x, turret.y);
+      ctx.rotate(turret.rotation * Math.PI / 180);
+      ctx.fillStyle = 'lime';
+      ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size + 2, turret.size);
+      ctx.restore();
     }
 
-    drone.x += Math.cos(drone.direction) * drone.speed;
-    drone.y += Math.sin(drone.direction) * drone.speed;
-
-    if (drone.x < 0) drone.x = canvas.width;
-    else if (drone.x > canvas.width) drone.x = 0;
-    if (drone.y < 0) drone.y = canvas.height;
-    else if (drone.y > canvas.height) drone.y = 0;
-
-    for (let i = drone.lasers.length - 1; i >= 0; i--) {
-      let laser = drone.lasers[i];
-      laser.x += Math.cos(laser.direction) * drone.laserSpeed;
-      laser.y += Math.sin(laser.direction) * drone.laserSpeed;
-
-      if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
-        drone.lasers.splice(i, 1);
-      }
-    }
-
-    drone.laserTimer++;
-    if (drone.laserTimer >= drone.laserInterval) {
-      drone.laserTimer = 0;
-      let laser = {
-        x: drone.x,
-        y: drone.y,
-        direction: Math.random() * Math.PI * 2,
-        size: 2
-      };
-      drone.lasers.push(laser);
-    }
-
-    // Track damage for drone lasers
-    drone.lasers.forEach(laser => {
-      for (let j = asteroids.length - 1; j >= 0; j--) {
-        let asteroid = asteroids[j];
-        if (isColliding(laser, asteroid)) {
-          let actualDamage = Math.min(drone.laserSpeed, asteroid.hitPoints);
-          asteroid.hitPoints -= actualDamage;
-          damageReport.drones += actualDamage;
-        }
-      }
-    });
-
-    checkLaserCollisions(drone.lasers, false);
-  });
-}
-
-
-function updateBomberDrones() {
-  bomberDrones.forEach(drone => {
-    const dx = ship.x - drone.x;
-    const dy = ship.y - drone.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance > 200) {
-      const angleToShip = Math.atan2(dy, dx);
-      drone.direction = angleToShip;
-    }
-
-    drone.x += Math.cos(drone.direction) * drone.speed;
-    drone.y += Math.sin(drone.direction) * drone.speed;
-
-    if (drone.x < 0) drone.x = canvas.width;
-    else if (drone.x > canvas.width) drone.x = 0;
-    if (drone.y < 0) drone.y = canvas.height;
-    else if (drone.y > canvas.height) drone.y = 0;
-
-    drone.bombTimer++;
-    if (drone.bombTimer >= drone.bombInterval) {
-      drone.bombTimer = 0;
-      let bomb = {
-        x: drone.x,
-        y: drone.y,
-        radius: bomberDroneUpgrades.bombRadius,
-        damage: bomberDroneUpgrades.bombDamage
-      };
-      drone.bombs.push(bomb);
-    }
-
-    for (let i = drone.bombs.length - 1; i >= 0; i--) {
-      let bomb = drone.bombs[i];
-      for (let j = asteroids.length - 1; j >= 0; j--) {
-        let asteroid = asteroids[j];
-        let dx = bomb.x - asteroid.x;
-        let dy = bomb.y - asteroid.y;
+    function findNearestAsteroid() {
+      let nearestAsteroid = null;
+      let nearestDistance = Infinity;
+      for (let i = 0; i < asteroids.length; i++) {
+        let dx = ship.x - asteroids[i].x;
+        let dy = ship.y - asteroids[i].y;
         let distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < bomb.radius + asteroid.size) {
-          let actualDamage = Math.min(bomb.damage, asteroid.hitPoints);
-          asteroid.hitPoints -= actualDamage;
-          damageReport.bomberDrones += actualDamage;
-
-          if (asteroid.hitPoints <= 0) {
-            createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
-            asteroids.splice(j, 1);
-            score += 50;
-            increaseXP(20);
-          }
-          createExplosion(bomb.x, bomb.y, 1);
-          drone.bombs.splice(i, 1);
-          break;
+        if (distance < nearestDistance) {
+          nearestAsteroid = asteroids[i];
+          nearestDistance = distance;
         }
       }
-      if (bomb.x < 0 || bomb.x > canvas.width || bomb.y < 0 || bomb.y > canvas.height) {
-        drone.bombs.splice(i, 1);
+      return nearestAsteroid;
+    }
+
+
+    function findNearestAsteroidInRange() {
+      let nearestAsteroid = null;
+      let nearestDistance = Infinity;
+      for (let i = 0; i < asteroids.length; i++) {
+        let dx = turret.x - asteroids[i].x;
+        let dy = turret.y - asteroids[i].y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < nearestDistance && distance <= turret.range) {
+          nearestAsteroid = asteroids[i];
+          nearestDistance = distance;
+        }
+      }
+      return nearestAsteroid;
+    }
+
+
+    function drawSonicBlast() {
+      ctx.strokeStyle = 'blue';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < sonicBlast.waves.length; i++) {
+        const wave = sonicBlast.waves[i];
+        ctx.beginPath();
+        ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
+        ctx.stroke();
       }
     }
-  });
-}
 
-function drawDrones() {
-  drones.forEach(drone => {
-    ctx.save();
-    ctx.translate(drone.x, drone.y);
-    ctx.rotate(drone.direction);
-    ctx.beginPath();
-    ctx.moveTo(0, -drone.size);
-    ctx.lineTo(-drone.size, drone.size);
-    ctx.lineTo(drone.size, drone.size);
-    ctx.closePath();
-    ctx.fillStyle = 'cyan';
-    ctx.fill();
-    ctx.restore();
 
-    ctx.fillStyle = 'cyan';
-    for (let i = 0; i < drone.lasers.length; i++) {
-      let laser = drone.lasers[i];
-      ctx.fillRect(laser.x - 1, laser.y - 1, 2, 2);
+    function selectUpgrade(choice) {
+      const upgrades = window.levelUpgrades;
+      applyUpgrade(upgrades[choice - 1]);
+      document.getElementById('levelUpModal').style.display = 'none';
+
+      // Resume the game
+      gameLoop = setInterval(update, 1000 / 60); // 60 FPS
     }
-  });
-}
 
-function drawBomberDrones() {
-  bomberDrones.forEach(drone => {
-    ctx.save();
-    ctx.translate(drone.x, drone.y);
-    ctx.rotate(drone.direction);
-    ctx.beginPath();
-    ctx.moveTo(0, -drone.size);
-    ctx.lineTo(-drone.size, drone.size);
-    ctx.lineTo(drone.size, drone.size);
-    ctx.closePath();
-    ctx.fillStyle = 'magenta';
-    ctx.fill();
-    ctx.restore();
 
-    // Draw bombs
-    ctx.fillStyle = 'orange';
-    drone.bombs.forEach(bomb => {
-      ctx.beginPath();
-      ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
-      ctx.fill();
-    });
-  });
-}
+    function upgradeDrone(attribute) {
+      const cost = 200;
+      if (coins >= cost) {
+        coins -= cost;
+        droneUpgrades[attribute]++;
+
+        // Update existing drones with new upgrade levels
+        drones.forEach(drone => {
+          switch (attribute) {
+            case 'speed':
+              drone.speed = 2 * droneUpgrades.speed;
+              break;
+            case 'laserSpeed':
+              drone.laserSpeed = 5 * droneUpgrades.laserSpeed;
+              break;
+            case 'laserInterval':
+              drone.laserInterval = 120 / droneUpgrades.laserInterval;
+              break;
+          }
+        });
+        updateCoinsDisplay();
+        updateMarketplaceDisplay();
+
+      }
+    }
+
+    // Update all drones
+    function updateDrones() {
+      drones.forEach(drone => {
+        const dx = ship.x - drone.x;
+        const dy = ship.y - drone.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 200) { // If the drone is too far from the ship
+          const angleToShip = Math.atan2(dy, dx);
+          drone.direction = angleToShip; // Change direction towards the ship
+        }
+
+        drone.x += Math.cos(drone.direction) * drone.speed;
+        drone.y += Math.sin(drone.direction) * drone.speed;
+
+        if (drone.x < 0) drone.x = canvas.width;
+        else if (drone.x > canvas.width) drone.x = 0;
+        if (drone.y < 0) drone.y = canvas.height;
+        else if (drone.y > canvas.height) drone.y = 0;
+
+        for (let i = drone.lasers.length - 1; i >= 0; i--) {
+          let laser = drone.lasers[i];
+          laser.x += Math.cos(laser.direction) * drone.laserSpeed;
+          laser.y += Math.sin(laser.direction) * drone.laserSpeed;
+
+          if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
+            drone.lasers.splice(i, 1);
+          }
+        }
+
+        drone.laserTimer++;
+        if (drone.laserTimer >= drone.laserInterval) {
+          drone.laserTimer = 0;
+          let laser = {
+            x: drone.x,
+            y: drone.y,
+            direction: Math.random() * Math.PI * 2,
+            size: 2
+          };
+          drone.lasers.push(laser);
+        }
+
+        // Track damage for drone lasers
+        drone.lasers.forEach(laser => {
+          for (let j = asteroids.length - 1; j >= 0; j--) {
+            let asteroid = asteroids[j];
+            if (isColliding(laser, asteroid)) {
+              let actualDamage = Math.min(drone.laserSpeed, asteroid.hitPoints);
+              asteroid.hitPoints -= actualDamage;
+              damageReport.drones += actualDamage;
+            }
+          }
+        });
+
+        checkLaserCollisions(drone.lasers, false);
+      });
+    }
+
+
+    function updateBomberDrones() {
+      bomberDrones.forEach(drone => {
+        const dx = ship.x - drone.x;
+        const dy = ship.y - drone.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 200) {
+          const angleToShip = Math.atan2(dy, dx);
+          drone.direction = angleToShip;
+        }
+
+        drone.x += Math.cos(drone.direction) * drone.speed;
+        drone.y += Math.sin(drone.direction) * drone.speed;
+
+        if (drone.x < 0) drone.x = canvas.width;
+        else if (drone.x > canvas.width) drone.x = 0;
+        if (drone.y < 0) drone.y = canvas.height;
+        else if (drone.y > canvas.height) drone.y = 0;
+
+        drone.bombTimer++;
+        if (drone.bombTimer >= drone.bombInterval) {
+          drone.bombTimer = 0;
+          let bomb = {
+            x: drone.x,
+            y: drone.y,
+            radius: bomberDroneUpgrades.bombRadius,
+            damage: bomberDroneUpgrades.bombDamage
+          };
+          drone.bombs.push(bomb);
+        }
+
+        for (let i = drone.bombs.length - 1; i >= 0; i--) {
+          let bomb = drone.bombs[i];
+          for (let j = asteroids.length - 1; j >= 0; j--) {
+            let asteroid = asteroids[j];
+            let dx = bomb.x - asteroid.x;
+            let dy = bomb.y - asteroid.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < bomb.radius + asteroid.size) {
+              let actualDamage = Math.min(bomb.damage, asteroid.hitPoints);
+              asteroid.hitPoints -= actualDamage;
+              damageReport.bomberDrones += actualDamage;
+
+              if (asteroid.hitPoints <= 0) {
+                createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+                asteroids.splice(j, 1);
+                score += 50;
+                increaseXP(20);
+              }
+              createExplosion(bomb.x, bomb.y, 1);
+              drone.bombs.splice(i, 1);
+              break;
+            }
+          }
+          if (bomb.x < 0 || bomb.x > canvas.width || bomb.y < 0 || bomb.y > canvas.height) {
+            drone.bombs.splice(i, 1);
+          }
+        }
+      });
+    }
+
+    function drawDrones() {
+      drones.forEach(drone => {
+        ctx.save();
+        ctx.translate(drone.x, drone.y);
+        ctx.rotate(drone.direction);
+        ctx.beginPath();
+        ctx.moveTo(0, -drone.size);
+        ctx.lineTo(-drone.size, drone.size);
+        ctx.lineTo(drone.size, drone.size);
+        ctx.closePath();
+        ctx.fillStyle = 'cyan';
+        ctx.fill();
+        ctx.restore();
+
+        ctx.fillStyle = 'cyan';
+        for (let i = 0; i < drone.lasers.length; i++) {
+          let laser = drone.lasers[i];
+          ctx.fillRect(laser.x - 1, laser.y - 1, 2, 2);
+        }
+      });
+    }
+
+    function drawBomberDrones() {
+      bomberDrones.forEach(drone => {
+        ctx.save();
+        ctx.translate(drone.x, drone.y);
+        ctx.rotate(drone.direction);
+        ctx.beginPath();
+        ctx.moveTo(0, -drone.size);
+        ctx.lineTo(-drone.size, drone.size);
+        ctx.lineTo(drone.size, drone.size);
+        ctx.closePath();
+        ctx.fillStyle = 'magenta';
+        ctx.fill();
+        ctx.restore();
+
+        // Draw bombs
+        ctx.fillStyle = 'orange';
+        drone.bombs.forEach(bomb => {
+          ctx.beginPath();
+          ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      });
+    }
 
 
 
@@ -1643,11 +1709,11 @@ function drawBomberDrones() {
       ctx.fillStyle = 'white';
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
-      let coinmessage =  'Coins: ' + coins;
-      if(isMobile())
-          coinmessage = coinmessage + '    tap for store';
+      let coinmessage = 'Coins: ' + coins;
+      if (isMobile())
+        coinmessage = coinmessage + '    tap for store';
       else
-          coinmessage = coinmessage +  "    'b' for store";
+        coinmessage = coinmessage + "    'b' for store";
 
       ctx.fillText(coinmessage, 20, canvas.height - 30);
     }
@@ -1673,85 +1739,84 @@ function drawBomberDrones() {
     //   }
     // }
 
-function endGame() {
-  clearInterval(gameLoop);
-  backgroundMusic.pause(); // Stop the background music
+    function endGame() {
+      clearInterval(gameLoop);
+      backgroundMusic.pause(); // Stop the background music
 
-  ctx.fillStyle = 'white';
-  ctx.font = '40px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
-  ctx.font = '20px Arial';
+      ctx.fillStyle = 'white';
+      ctx.font = '40px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
+      ctx.font = '20px Arial';
 
-  ctx.fillText(`Level: ${level}`, canvas.width / 2, canvas.height / 2 + 40);
+      ctx.fillText(`Level: ${level}`, canvas.width / 2, canvas.height / 2 + 40);
 
-  ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 70);
-  ctx.fillText(`Asteroids Destroyed: ${asteroidsKilled}`, canvas.width / 2, canvas.height / 2 + 100);
-
-
-  // Calculate and display coins for next round
-  bonusCoins = Math.floor(score * 0.06);
-  coins += bonusCoins;
-  // ctx.fillText(`Bonus Coins for Next Round: ${bonusCoins}`, canvas.width / 2, canvas.height / 2 + 100);
-
-  // Display damage report in the lower left corner
-  // ctx.font = '14px Arial';
-  // ctx.textAlign = 'left';
-  // ctx.fillText(`Damage Report:`, 80, canvas.height - 260);
-  // ctx.fillText(`Lasers: ${damageReport.lasers}`, 80, canvas.height - 240);
-  // ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 80, canvas.height - 220);
-  // ctx.fillText(`Turret: ${damageReport.turret}`, 80, canvas.height - 200);
-  // ctx.fillText(`Drones: ${damageReport.drones}`, 80, canvas.height - 180);
-  // ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 80, canvas.height - 160);
-  // ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 80, canvas.height - 140);
-  // ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 80, canvas.height - 120);
-  // ctx.fillText(`Acid: ${damageReport.acid}`, 80, canvas.height - 100);
-  // ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 80, canvas.height - 80);
-  // ctx.fillText(`Nano: ${damageReport.homing}`, 80, canvas.height - 60);
-
-  // Show the restart button
-  restartButton.style.display = 'block';
-
-  fetchLeaderboard();
-
-  const a = new URLSearchParams(window.location.href)
-
-  if(a && a.get('inMsgId'))
-  {
-    fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-webhook/test-score?userId=${a.get('userId')}&score=${score}&inMsgId=${a.get('inMsgId').split('#')[0]}`, {
-        method: 'POST'
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-  }
-
-}
+      ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 70);
+      ctx.fillText(`Asteroids Destroyed: ${asteroidsKilled}`, canvas.width / 2, canvas.height / 2 + 100);
 
 
-function drawDamageReport() {
-  ctx.fillStyle = 'white';
-  ctx.font = '14px Arial';
-  ctx.textAlign = 'left';
-  ctx.fillText(`Damage Report:`, 20, canvas.height - 260);
-  ctx.fillText(`Lasers: ${damageReport.lasers}`, 20, canvas.height - 240);
-  ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 20, canvas.height - 220);
-  ctx.fillText(`Turret: ${damageReport.turret}`, 20, canvas.height - 200);
-  ctx.fillText(`Drones: ${damageReport.drones}`, 20, canvas.height - 180);
-  ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 20, canvas.height - 160);
-  ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 20, canvas.height - 140);
-  ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 20, canvas.height - 120);
-  ctx.fillText(`Acid: ${damageReport.acid}`, 20, canvas.height - 100);
-  ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 20, canvas.height - 80);
-  ctx.fillText(`Nano: ${damageReport.homing}`, 20, canvas.height - 60);
+      // Calculate and display coins for next round
+      bonusCoins = Math.floor(score * 0.06);
+      coins += bonusCoins;
+      // ctx.fillText(`Bonus Coins for Next Round: ${bonusCoins}`, canvas.width / 2, canvas.height / 2 + 100);
+
+      // Display damage report in the lower left corner
+      // ctx.font = '14px Arial';
+      // ctx.textAlign = 'left';
+      // ctx.fillText(`Damage Report:`, 80, canvas.height - 260);
+      // ctx.fillText(`Lasers: ${damageReport.lasers}`, 80, canvas.height - 240);
+      // ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 80, canvas.height - 220);
+      // ctx.fillText(`Turret: ${damageReport.turret}`, 80, canvas.height - 200);
+      // ctx.fillText(`Drones: ${damageReport.drones}`, 80, canvas.height - 180);
+      // ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 80, canvas.height - 160);
+      // ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 80, canvas.height - 140);
+      // ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 80, canvas.height - 120);
+      // ctx.fillText(`Acid: ${damageReport.acid}`, 80, canvas.height - 100);
+      // ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 80, canvas.height - 80);
+      // ctx.fillText(`Nano: ${damageReport.homing}`, 80, canvas.height - 60);
+
+      // Show the restart button
+      restartButton.style.display = 'block';
+
+      fetchLeaderboard();
+
+      const a = new URLSearchParams(window.location.href)
+
+      if (a && a.get('inMsgId')) {
+        fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-webhook/test-score?userId=${a.get('userId')}&score=${score}&inMsgId=${a.get('inMsgId').split('#')[0]}`, {
+          method: 'POST'
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log('Success:', data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }
+
+    }
+
+
+    function drawDamageReport() {
+      ctx.fillStyle = 'white';
+      ctx.font = '14px Arial';
+      ctx.textAlign = 'left';
+      ctx.fillText(`Damage Report:`, 20, canvas.height - 260);
+      ctx.fillText(`Lasers: ${damageReport.lasers}`, 20, canvas.height - 240);
+      ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 20, canvas.height - 220);
+      ctx.fillText(`Turret: ${damageReport.turret}`, 20, canvas.height - 200);
+      ctx.fillText(`Drones: ${damageReport.drones}`, 20, canvas.height - 180);
+      ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 20, canvas.height - 160);
+      ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 20, canvas.height - 140);
+      ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 20, canvas.height - 120);
+      ctx.fillText(`Acid: ${damageReport.acid}`, 20, canvas.height - 100);
+      ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 20, canvas.height - 80);
+      ctx.fillText(`Nano: ${damageReport.homing}`, 20, canvas.height - 60);
 
 
 
-}
+    }
 
     function pauseGameForMarketplace() {
       clearInterval(gameLoop);
@@ -1760,15 +1825,15 @@ function drawDamageReport() {
 
     }
 
-	function exitMarketplace() {
-	  marketplace.style.display = 'none';
-	  invincible = true;
-	  invincibilityTimer = invincibilityDuration;
-	  updateMarketplaceDisplay(); // Update display to reflect current levels
-	  gameLoop = setInterval(update, 1000 / 60); // Resume game loop
-    backgroundMusic.play(); // Resume the background music
+    function exitMarketplace() {
+      marketplace.style.display = 'none';
+      invincible = true;
+      invincibilityTimer = invincibilityDuration;
+      updateMarketplaceDisplay(); // Update display to reflect current levels
+      gameLoop = setInterval(update, 1000 / 60); // Resume game loop
+      backgroundMusic.play(); // Resume the background music
 
-	}
+    }
 
     function upgrade(attribute) {
       const cost = 100;
@@ -1788,35 +1853,35 @@ function drawDamageReport() {
             ship.accelerationLevel++;
             ship.acceleration = 0.1 * ship.accelerationLevel;
             break;
-        case 'laserCooldown':
+          case 'laserCooldown':
             ship.laserCooldownLevel++;
             ship.maxBulletsLevel++;
             ship.laserCooldown = Math.max(5, ship.laserCooldown - 3);
             break;
-        case 'rotationSpeed':
+          case 'rotationSpeed':
             ship.rotationSpeedLevel++;
             ship.rotationSpeed = 2 * ship.rotationSpeedLevel;
             break;
-        case 'turretRange':
-          turretUpgrades.range++;
-          turret.range = 200 * turretUpgrades.range;
-          break;
-        case 'turretFireRate':
-          turretUpgrades.fireRate++;
-          turret.fireInterval = 120 / turretUpgrades.fireRate;
-          break;
-        case 'turretDamage':
-          turretUpgrades.damage++;
-          turret.damage = turretUpgrades.damage + 1;
-          break;
-        case 'boomerangSpeed':
-          boomerangUpgrades.speed++;
-          boomerang.speed = 2 * boomerangUpgrades.speed;
-        break;
-        case 'boomerangDamage':
-          boomerangUpgrades.damage++;
-          boomerang.damage = boomerangUpgrades.damage;
-        break;
+          case 'turretRange':
+            turretUpgrades.range++;
+            turret.range = 200 * turretUpgrades.range;
+            break;
+          case 'turretFireRate':
+            turretUpgrades.fireRate++;
+            turret.fireInterval = 120 / turretUpgrades.fireRate;
+            break;
+          case 'turretDamage':
+            turretUpgrades.damage++;
+            turret.damage = turretUpgrades.damage + 1;
+            break;
+          case 'boomerangSpeed':
+            boomerangUpgrades.speed++;
+            boomerang.speed = 2 * boomerangUpgrades.speed;
+            break;
+          case 'boomerangDamage':
+            boomerangUpgrades.damage++;
+            boomerang.damage = boomerangUpgrades.damage;
+            break;
 
         }
 
@@ -1825,329 +1890,329 @@ function drawDamageReport() {
       }
     }
 
-function levelUp() {
-  level++;
-  xp = 0;  // Reset XP
-  xpToNextLevel = Math.floor(xpToNextLevel * 1.2); // Increase XP required for next level
-  updateXPBar();
+    function levelUp() {
+      level++;
+      xp = 0;  // Reset XP
+      xpToNextLevel = Math.floor(xpToNextLevel * 1.2); // Increase XP required for next level
+      updateXPBar();
 
-  // Generate three random upgrades
-  const upgrades = getRandomUpgrades(3);
+      // Generate three random upgrades
+      const upgrades = getRandomUpgrades(3);
 
-  // Display the level-up modal
-  const levelUpModal = document.getElementById('levelUpModal');
-  document.getElementById('upgrade1').textContent = `1. ${upgrades[0]}`;
-  document.getElementById('upgrade2').textContent = `2. ${upgrades[1]}`;
-  document.getElementById('upgrade3').textContent = `3. ${upgrades[2]}`;
-  levelUpModal.style.display = 'block';
+      // Display the level-up modal
+      const levelUpModal = document.getElementById('levelUpModal');
+      document.getElementById('upgrade1').textContent = `1. ${upgrades[0]}`;
+      document.getElementById('upgrade2').textContent = `2. ${upgrades[1]}`;
+      document.getElementById('upgrade3').textContent = `3. ${upgrades[2]}`;
+      levelUpModal.style.display = 'block';
 
-  // Store upgrades in a global variable for later use
-  window.levelUpgrades = upgrades;
+      // Store upgrades in a global variable for later use
+      window.levelUpgrades = upgrades;
 
-  // Pause the game
-  clearInterval(gameLoop);
+      // Pause the game
+      clearInterval(gameLoop);
 
-  invincible = true;
-  invincibilityTimer = invincibilityDuration;
-}
-
-function getRandomUpgrades(count) {
-  const availableUpgrades = [
-    'Increase Laser Level',
-    // 'Increase Max Bullets',
-    'Decrease Laser Cooldown',
-    'Increase Rotation Speed',
-    ...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']),
-    ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
-    ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
-    ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
-    ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
-    ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']),
-    ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
-    ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
-    ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']),
-    ...(activeWeaponClasses.includes('homingmissile') ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : ['Activate Nano Swarm'])
-
-
-
-
-  ];
-
-  const upgrades = [];
-  for (let i = 0; i < count; i++) {
-    if (availableUpgrades.length === 0) break; // Exit loop if no more upgrades available
-    const randomIndex = Math.floor(Math.random() * availableUpgrades.length);
-    upgrades.push(availableUpgrades[randomIndex]);
-    availableUpgrades.splice(randomIndex, 1);
-  }
-
-  return upgrades;
-}
-
-function applyUpgrade(upgrade) {
-  switch (upgrade) {
-    case 'Increase Laser Level':
-      ship.laserLevel++;
-      break;
-    // case 'Increase Max Bullets':
-    //   break;
-    case 'Decrease Laser Cooldown':
-      ship.laserCooldownLevel++;
-      ship.maxBulletsLevel++;
-      ship.laserCooldown = Math.max(5, ship.laserCooldown - 3);
-      break;
-    case 'Increase Rotation Speed':
-      ship.rotationSpeedLevel++;
-      ship.rotationSpeed = 2 * ship.rotationSpeedLevel;
-      break;
-    case 'Activate Explosive Laser':
-      activateWeaponClass('explosive');
-      break;
-    case 'Increase Explosive Laser Level':
-      ship.explosiveLaserLevel++;
-      break;
-    case 'Activate Turret':
-      activateWeaponClass('turret');
-      break;
-    case 'Increase Turret Range':
-      turretUpgrades.range++;
-      turret.range = 200 * turretUpgrades.range;
-      break;
-    case 'Increase Turret Firerate':
-      turretUpgrades.fireRate++;
-      turret.fireInterval = 120 / turretUpgrades.fireRate;
-      break;
-    case 'Increase Turret Damage':
-      turretUpgrades.damage++;
-      turret.damage = turretUpgrades.damage;
-      break;
-    case 'Activate Drone':
-      activateWeaponClass('drone');
-      break;
-    case 'Increase Drone Firerate':
-      droneUpgrades.laserInterval++;
-      drones.forEach(drone => {
-        drone.laserInterval = 80 / droneUpgrades.laserInterval;
-      });
-      break;
-    case 'Activate Sonic Blast':
-      activateWeaponClass('sonic');
-      break;
-    case 'Increase Sonic Blast Range':
-      sonicBlast.range += 50;
-      sonicBlast.rangeLevel++; 
-      break;
-    case 'Increase Sonic Blast Damage':
-      sonicBlast.damageLevel++; 
-      sonicBlast.damage++;
-      break;
-    case 'Decrease Sonic Blast Cooldown':
-      sonicBlast.cooldown = Math.max(60, sonicBlast.cooldown - 30);
-      sonicBlast.cooldownLevel ++; 
-      break;
-    case 'Activate Bomber Drone':
-      activateWeaponClass('bomberdrone');
-      break;
-    case 'Increase Bomber Drone Speed':
-      bomberDroneUpgrades.speed += 0.2;
-      bomberDrones.forEach(drone => {
-        drone.speed = 0.5 * bomberDroneUpgrades.speed;
-      });
-      break;
-    case 'Increase Bomber Drone Bomb Radius':
-      bomberDroneUpgrades.bombRadius += 10;
-      bomberDroneUpgrades.bombRadiusLevel++;
-      break;
-    case 'Increase Bomber Drone Bomb Damage':
-      bomberDroneUpgrades.bombDamage++;
-      break;
-  case 'Activate Death Ray':
-    activateWeaponClass('deathray');
-    break;
-  case 'Increase Death Ray Length':
-      deathRayUpgrades.length++;
-      deathRay.length = 1000 * deathRayUpgrades.length;
-      break;
-  case 'Increase Death Ray Width':
-      deathRayUpgrades.width++;
-      deathRay.width = 50 * deathRayUpgrades.width;
-      break;
-  case 'Decrease Death Ray Cooldown':
-      deathRayUpgrades.cooldown++;
-      deathRay.cooldown = Math.max(60, 300 - 30 * deathRayUpgrades.cooldown);
-      break;
-  case 'Activate Acid Bomb':
-    activateWeaponClass('acid');
-    break;
-  case 'Increase Acid Bomb Duration':
-    acidBombUpgrades.duration++;
-    acidBomb.duration = 300 * acidBombUpgrades.duration;
-    break;
-  case 'Decrease Acid Bomb Cooldown':
-    acidBombUpgrades.cooldown++;
-    acidBomb.cooldown = Math.max(60, 300 - 30 * acidBombUpgrades.cooldown);
-    break;
-  case 'Increase Acid Bomb Size':
-    acidBombUpgrades.size++;
-    acidBomb.size = 20 + (30 * acidBombUpgrades.size);
-    break;
-  case 'Activate Freeze Effect':
-    activateWeaponClass('freeze');
-    break;
-  case 'Increase Freeze Duration':
-    freezeEffectUpgrades.duration++;
-    freezeEffect.duration = 20 + (10 * freezeEffectUpgrades.duration);
-    break;
-  case 'Decrease Freeze Cooldown':
-    freezeEffectUpgrades.cooldown++;
-    freezeEffect.cooldown = Math.max(60, 600 - 60 * freezeEffectUpgrades.cooldown);
-    break;
-  case 'Activate Boomerang':
-    activateWeaponClass('boomerang');
-    break;
-  case 'Increase Boomerang Speed':
-    boomerangUpgrades.speed++;
-    boomerang.speed = 2 * boomerangUpgrades.speed;
-    break;
-  case 'Increase Boomerang Damage':
-    boomerangUpgrades.damage++;
-    boomerang.damage = boomerangUpgrades.damage;
-    break;
-  case 'Activate Nano Swarm':
-    activateWeaponClass('homingmissile');
-    break;
-  case 'Boost Nano Swarm':
-    homingMissileUpgrades.damage++;
-    homingMissileUpgrades.speed++;
-    break;
-  case 'Decrease Nano Swarm Cooldown':
-    homingMissileUpgrades.cooldown++;
-    homingMissile.cooldown = Math.max(20, 120 - 30 * homingMissileUpgrades.cooldown);
-    break;
-  }
-}
-
-function activateWeaponClass(weaponClass) {
-  // temporarily remove restrictions
-  if (!activeWeaponClasses.includes(weaponClass) && activeWeaponClasses.length < 6) {
-    activeWeaponClasses.push(weaponClass);
-    switch (weaponClass) {
-      case 'explosive':
-        ship.explosiveLaserLevel = 1;
-        break;
-      case 'turret':
-        turret.bought = true;
-        turretUpgrades.range = 1;
-        turretUpgrades.fireRate = 1;
-        turretUpgrades.damage = 1;
-        break;
-      case 'drone':
-        buyDrone();
-        break;
-      case 'bomberdrone':
-        bomberDrones = [];
-        bomberDroneUpgrades = {
-          speed: 1,
-          bombRadius: 50,  
-          bombRadiusLevel: 1,        
-          bombDamage: 2
-        };
-        buyBomberDrone();
-        break;
-      case 'sonic':
-        sonicBlast.range = 200;
-        sonicBlast.damage = 1;
-        sonicBlast.cooldown = 300;
-        break;
-      case 'deathray':
-        deathRay.length = 1000;
-        deathRay.width = 50;
-        deathRay.cooldown = 300;
-        break;
-      case 'homingmissile':
-        homingMissile.cooldown = 120;
-        homingMissile.timer = 0;
-        break;
-      case 'freeze':
-        freezeEffect.duration = 30;
-        freezeEffect.cooldown = 600;
-        break;
-      case 'boomerang':
-        activateBoomerang();
-      break;
-
+      invincible = true;
+      invincibilityTimer = invincibilityDuration;
     }
 
-  }
-}
-// Update function to draw active weapon classes with cooldown indicators
-function drawActiveWeaponClasses() {
-  const container = document.getElementById('activeWeaponClassesContainer');
-  container.innerHTML = ''; // Clear previous content
-
-  for (const weaponClass of activeWeaponClasses) {
-    const iconContainer = document.createElement('div');
-    iconContainer.classList.add('iconContainer');
-
-    const icon = document.createElement('div');
-    icon.classList.add('weaponClassIcon', `icon-${weaponClass.toLowerCase().replace(/\s+/g, '')}`);
-
-    // Create a span element to display the number of upgrades
-    const upgradeCount = document.createElement('span');
-    upgradeCount.classList.add('upgradeCount');
-    upgradeCount.textContent = getUpgradeCount(weaponClass); // Get the number of upgrades for the weapon class
-
-    // Append the icon and upgrade count to the container
-    iconContainer.appendChild(icon);
-    iconContainer.appendChild(upgradeCount);
-    container.appendChild(iconContainer);
-  }
-}
-
-function drawCooldownIndicator(x, y, radius, cooldown, maxCooldown) {
-    if (cooldown <= 0) return;
-
-    const startAngle = -Math.PI / 2; // Start at the top
-    const endAngle = startAngle + (2 * Math.PI * (1 - cooldown / maxCooldown));
-
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(x, y, radius, startAngle, endAngle);
-    ctx.stroke();
-    ctx.restore();
-}
+    function getRandomUpgrades(count) {
+      const availableUpgrades = [
+        'Increase Laser Level',
+        // 'Increase Max Bullets',
+        'Decrease Laser Cooldown',
+        'Increase Rotation Speed',
+        ...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']),
+        ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
+        ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
+        ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
+        ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
+        ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']),
+        ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
+        ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
+        ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']),
+        ...(activeWeaponClasses.includes('homingmissile') ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : ['Activate Nano Swarm'])
 
 
 
-function getUpgradeCount(weaponClass) {
-  switch (weaponClass) {
-    case 'explosive':
-      return ship.explosiveLaserLevel;
-    case 'turret':
-      return turretUpgrades.range + turretUpgrades.fireRate + turretUpgrades.damage - 2;
-    case 'drone':
-      return droneUpgrades.laserInterval; // Assuming this is the main upgrade for drones
-    case 'sonic':
-      return sonicBlast.rangeLevel + sonicBlast.damageLevel + sonicBlast.cooldownLevel - 2; // Example calculation
-    case 'bomberdrone':
-      return bomberDroneUpgrades.speed + bomberDroneUpgrades.bombRadiusLevel + bomberDroneUpgrades.bombDamage - 3;
-    case 'deathray':
-      return deathRayUpgrades.length + deathRayUpgrades.width + deathRayUpgrades.cooldown - 2;
-    case 'acid':
-      return acidBombUpgrades.duration + acidBombUpgrades.cooldown + acidBombUpgrades.size - 2;
-    case 'freeze':
-      return freezeEffectUpgrades.duration + freezeEffectUpgrades.cooldown - 1;
-    case 'boomerang':
-      return boomerangUpgrades.speed + boomerangUpgrades.damage - 1;
-    case 'homingmissile':
-      return homingMissileUpgrades.speed + homingMissileUpgrades.damage + homingMissileUpgrades.cooldown - 2;
 
-    default:
-      return 0;
-  }
-}
+      ];
+
+      const upgrades = [];
+      for (let i = 0; i < count; i++) {
+        if (availableUpgrades.length === 0) break; // Exit loop if no more upgrades available
+        const randomIndex = Math.floor(Math.random() * availableUpgrades.length);
+        upgrades.push(availableUpgrades[randomIndex]);
+        availableUpgrades.splice(randomIndex, 1);
+      }
+
+      return upgrades;
+    }
+
+    function applyUpgrade(upgrade) {
+      switch (upgrade) {
+        case 'Increase Laser Level':
+          ship.laserLevel++;
+          break;
+        // case 'Increase Max Bullets':
+        //   break;
+        case 'Decrease Laser Cooldown':
+          ship.laserCooldownLevel++;
+          ship.maxBulletsLevel++;
+          ship.laserCooldown = Math.max(5, ship.laserCooldown - 3);
+          break;
+        case 'Increase Rotation Speed':
+          ship.rotationSpeedLevel++;
+          ship.rotationSpeed = 2 * ship.rotationSpeedLevel;
+          break;
+        case 'Activate Explosive Laser':
+          activateWeaponClass('explosive');
+          break;
+        case 'Increase Explosive Laser Level':
+          ship.explosiveLaserLevel++;
+          break;
+        case 'Activate Turret':
+          activateWeaponClass('turret');
+          break;
+        case 'Increase Turret Range':
+          turretUpgrades.range++;
+          turret.range = 200 * turretUpgrades.range;
+          break;
+        case 'Increase Turret Firerate':
+          turretUpgrades.fireRate++;
+          turret.fireInterval = 120 / turretUpgrades.fireRate;
+          break;
+        case 'Increase Turret Damage':
+          turretUpgrades.damage++;
+          turret.damage = turretUpgrades.damage;
+          break;
+        case 'Activate Drone':
+          activateWeaponClass('drone');
+          break;
+        case 'Increase Drone Firerate':
+          droneUpgrades.laserInterval++;
+          drones.forEach(drone => {
+            drone.laserInterval = 80 / droneUpgrades.laserInterval;
+          });
+          break;
+        case 'Activate Sonic Blast':
+          activateWeaponClass('sonic');
+          break;
+        case 'Increase Sonic Blast Range':
+          sonicBlast.range += 50;
+          sonicBlast.rangeLevel++;
+          break;
+        case 'Increase Sonic Blast Damage':
+          sonicBlast.damageLevel++;
+          sonicBlast.damage++;
+          break;
+        case 'Decrease Sonic Blast Cooldown':
+          sonicBlast.cooldown = Math.max(60, sonicBlast.cooldown - 30);
+          sonicBlast.cooldownLevel++;
+          break;
+        case 'Activate Bomber Drone':
+          activateWeaponClass('bomberdrone');
+          break;
+        case 'Increase Bomber Drone Speed':
+          bomberDroneUpgrades.speed += 0.2;
+          bomberDrones.forEach(drone => {
+            drone.speed = 0.5 * bomberDroneUpgrades.speed;
+          });
+          break;
+        case 'Increase Bomber Drone Bomb Radius':
+          bomberDroneUpgrades.bombRadius += 10;
+          bomberDroneUpgrades.bombRadiusLevel++;
+          break;
+        case 'Increase Bomber Drone Bomb Damage':
+          bomberDroneUpgrades.bombDamage++;
+          break;
+        case 'Activate Death Ray':
+          activateWeaponClass('deathray');
+          break;
+        case 'Increase Death Ray Length':
+          deathRayUpgrades.length++;
+          deathRay.length = 1000 * deathRayUpgrades.length;
+          break;
+        case 'Increase Death Ray Width':
+          deathRayUpgrades.width++;
+          deathRay.width = 50 * deathRayUpgrades.width;
+          break;
+        case 'Decrease Death Ray Cooldown':
+          deathRayUpgrades.cooldown++;
+          deathRay.cooldown = Math.max(60, 300 - 30 * deathRayUpgrades.cooldown);
+          break;
+        case 'Activate Acid Bomb':
+          activateWeaponClass('acid');
+          break;
+        case 'Increase Acid Bomb Duration':
+          acidBombUpgrades.duration++;
+          acidBomb.duration = 300 * acidBombUpgrades.duration;
+          break;
+        case 'Decrease Acid Bomb Cooldown':
+          acidBombUpgrades.cooldown++;
+          acidBomb.cooldown = Math.max(60, 300 - 30 * acidBombUpgrades.cooldown);
+          break;
+        case 'Increase Acid Bomb Size':
+          acidBombUpgrades.size++;
+          acidBomb.size = 20 + (30 * acidBombUpgrades.size);
+          break;
+        case 'Activate Freeze Effect':
+          activateWeaponClass('freeze');
+          break;
+        case 'Increase Freeze Duration':
+          freezeEffectUpgrades.duration++;
+          freezeEffect.duration = 20 + (10 * freezeEffectUpgrades.duration);
+          break;
+        case 'Decrease Freeze Cooldown':
+          freezeEffectUpgrades.cooldown++;
+          freezeEffect.cooldown = Math.max(60, 600 - 60 * freezeEffectUpgrades.cooldown);
+          break;
+        case 'Activate Boomerang':
+          activateWeaponClass('boomerang');
+          break;
+        case 'Increase Boomerang Speed':
+          boomerangUpgrades.speed++;
+          boomerang.speed = 2 * boomerangUpgrades.speed;
+          break;
+        case 'Increase Boomerang Damage':
+          boomerangUpgrades.damage++;
+          boomerang.damage = boomerangUpgrades.damage;
+          break;
+        case 'Activate Nano Swarm':
+          activateWeaponClass('homingmissile');
+          break;
+        case 'Boost Nano Swarm':
+          homingMissileUpgrades.damage++;
+          homingMissileUpgrades.speed++;
+          break;
+        case 'Decrease Nano Swarm Cooldown':
+          homingMissileUpgrades.cooldown++;
+          homingMissile.cooldown = Math.max(20, 120 - 30 * homingMissileUpgrades.cooldown);
+          break;
+      }
+    }
+
+    function activateWeaponClass(weaponClass) {
+      // temporarily remove restrictions
+      if (!activeWeaponClasses.includes(weaponClass) && activeWeaponClasses.length < 6) {
+        activeWeaponClasses.push(weaponClass);
+        switch (weaponClass) {
+          case 'explosive':
+            ship.explosiveLaserLevel = 1;
+            break;
+          case 'turret':
+            turret.bought = true;
+            turretUpgrades.range = 1;
+            turretUpgrades.fireRate = 1;
+            turretUpgrades.damage = 1;
+            break;
+          case 'drone':
+            buyDrone();
+            break;
+          case 'bomberdrone':
+            bomberDrones = [];
+            bomberDroneUpgrades = {
+              speed: 1,
+              bombRadius: 50,
+              bombRadiusLevel: 1,
+              bombDamage: 2
+            };
+            buyBomberDrone();
+            break;
+          case 'sonic':
+            sonicBlast.range = 200;
+            sonicBlast.damage = 1;
+            sonicBlast.cooldown = 300;
+            break;
+          case 'deathray':
+            deathRay.length = 1000;
+            deathRay.width = 50;
+            deathRay.cooldown = 300;
+            break;
+          case 'homingmissile':
+            homingMissile.cooldown = 120;
+            homingMissile.timer = 0;
+            break;
+          case 'freeze':
+            freezeEffect.duration = 30;
+            freezeEffect.cooldown = 600;
+            break;
+          case 'boomerang':
+            activateBoomerang();
+            break;
+
+        }
+
+      }
+    }
+    // Update function to draw active weapon classes with cooldown indicators
+    function drawActiveWeaponClasses() {
+      const container = document.getElementById('activeWeaponClassesContainer');
+      container.innerHTML = ''; // Clear previous content
+
+      for (const weaponClass of activeWeaponClasses) {
+        const iconContainer = document.createElement('div');
+        iconContainer.classList.add('iconContainer');
+
+        const icon = document.createElement('div');
+        icon.classList.add('weaponClassIcon', `icon-${weaponClass.toLowerCase().replace(/\s+/g, '')}`);
+
+        // Create a span element to display the number of upgrades
+        const upgradeCount = document.createElement('span');
+        upgradeCount.classList.add('upgradeCount');
+        upgradeCount.textContent = getUpgradeCount(weaponClass); // Get the number of upgrades for the weapon class
+
+        // Append the icon and upgrade count to the container
+        iconContainer.appendChild(icon);
+        iconContainer.appendChild(upgradeCount);
+        container.appendChild(iconContainer);
+      }
+    }
+
+    function drawCooldownIndicator(x, y, radius, cooldown, maxCooldown) {
+      if (cooldown <= 0) return;
+
+      const startAngle = -Math.PI / 2; // Start at the top
+      const endAngle = startAngle + (2 * Math.PI * (1 - cooldown / maxCooldown));
+
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, startAngle, endAngle);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+
+
+    function getUpgradeCount(weaponClass) {
+      switch (weaponClass) {
+        case 'explosive':
+          return ship.explosiveLaserLevel;
+        case 'turret':
+          return turretUpgrades.range + turretUpgrades.fireRate + turretUpgrades.damage - 2;
+        case 'drone':
+          return droneUpgrades.laserInterval; // Assuming this is the main upgrade for drones
+        case 'sonic':
+          return sonicBlast.rangeLevel + sonicBlast.damageLevel + sonicBlast.cooldownLevel - 2; // Example calculation
+        case 'bomberdrone':
+          return bomberDroneUpgrades.speed + bomberDroneUpgrades.bombRadiusLevel + bomberDroneUpgrades.bombDamage - 3;
+        case 'deathray':
+          return deathRayUpgrades.length + deathRayUpgrades.width + deathRayUpgrades.cooldown - 2;
+        case 'acid':
+          return acidBombUpgrades.duration + acidBombUpgrades.cooldown + acidBombUpgrades.size - 2;
+        case 'freeze':
+          return freezeEffectUpgrades.duration + freezeEffectUpgrades.cooldown - 1;
+        case 'boomerang':
+          return boomerangUpgrades.speed + boomerangUpgrades.damage - 1;
+        case 'homingmissile':
+          return homingMissileUpgrades.speed + homingMissileUpgrades.damage + homingMissileUpgrades.cooldown - 2;
+
+        default:
+          return 0;
+      }
+    }
 
 
 
@@ -2195,37 +2260,37 @@ function getUpgradeCount(weaponClass) {
       }
     }
 
-function isColliding(obj1, obj2) {
-  if (obj1.radius) {
-    // Circular collision detection for sonic blast wave
-    let dx = obj1.x - obj2.x;
-    let dy = obj1.y - obj2.y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
-    return distance < obj1.radius + obj2.size;
-  } else {
-    // Original collision detection
-    let dx = obj1.x - obj2.x;
-    let dy = obj1.y - obj2.y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
-    return distance < (obj1.size || 1) + obj2.size;
-  }
-}
+    function isColliding(obj1, obj2) {
+      if (obj1.radius) {
+        // Circular collision detection for sonic blast wave
+        let dx = obj1.x - obj2.x;
+        let dy = obj1.y - obj2.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < obj1.radius + obj2.size;
+      } else {
+        // Original collision detection
+        let dx = obj1.x - obj2.x;
+        let dy = obj1.y - obj2.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < (obj1.size || 1) + obj2.size;
+      }
+    }
 
 
 
 
-  function drawScore() {
-    ctx.fillStyle = 'white';
-    ctx.font = '20px Arial';
-    ctx.textAlign = 'left';
-    //version
-    ctx.fillText(`(v 0.375)`, 20, 30);
-    ctx.fillText(`Level: ${level}`, canvas.width - 120, canvas.height - 30);
+    function drawScore() {
+      ctx.fillStyle = 'white';
+      ctx.font = '20px Arial';
+      ctx.textAlign = 'left';
+      //version
+      ctx.fillText(`(v 0.375)`, 20, 30);
+      ctx.fillText(`Level: ${level}`, canvas.width - 120, canvas.height - 30);
 
-    if(!isMobile())
-      ctx.fillText("\'m\' to toggle music  \'n\' for sound 'p\' to pause", 20, canvas.height - 30);
+      if (!isMobile())
+        ctx.fillText("\'m\' to toggle music  \'n\' for sound 'p\' to pause", 20, canvas.height - 30);
 
-  }
+    }
 
 
 
@@ -2237,186 +2302,186 @@ function isColliding(obj1, obj2) {
       ctx.fillText('Wave ' + wave, canvas.width / 2, canvas.height / 2);
     }
 
-let chanceForSmallAsteroid = 3;
-let chanceForVerySmallAsteroid = 1;
-let chanceForHardenedAsteroid = 5;
-let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
-let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
+    let chanceForSmallAsteroid = 3;
+    let chanceForVerySmallAsteroid = 1;
+    let chanceForHardenedAsteroid = 5;
+    let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
+    let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
 
-function createSmallerAsteroids(x, y, size, speed, hitPoints) {
-  const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
-  const speedMultiplier = 0.6; // Decrease speed for smaller asteroids
-  const newSize = size / 2; // New size for smaller asteroids
+    function createSmallerAsteroids(x, y, size, speed, hitPoints) {
+      const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
+      const speedMultiplier = 0.6; // Decrease speed for smaller asteroids
+      const newSize = size / 2; // New size for smaller asteroids
 
-  for (let i = 0; i < 3; i++) {
-    const angleVariation = (Math.random() - 0.5) * 0.7; // Random variation between -0.1 and 0.1 radians
-    const angle = baseAngles[i] + angleVariation;
+      for (let i = 0; i < 3; i++) {
+        const angleVariation = (Math.random() - 0.5) * 0.7; // Random variation between -0.1 and 0.1 radians
+        const angle = baseAngles[i] + angleVariation;
 
-    let asteroid = {
-      x: x,
-      y: y,
-      size: newSize,
-      speed: speed * speedMultiplier,
-      dx: Math.cos(angle) * speed * speedMultiplier,
-      dy: Math.sin(angle) * speed * speedMultiplier,
-      hitPoints: hitPoints,
-      color: 'gray'
-    };
-    asteroids.push(asteroid);
-  }
-}
-
-
-function createAsteroids() {
-  let numberOfAsteroids = 10 + (wave - 1) * 1.8;
-
-  for (let i = 0; i < numberOfAsteroids; i++) {
-    let isLargeAsteroid = Math.random() < 0.1; // 10% chance for a large asteroid
-    let isSmallAsteroid = Math.random() * 100 < chanceForSmallAsteroid;
-    let isVerySmallAsteroid = Math.random() * 100 < chanceForVerySmallAsteroid;
-    let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
-    let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
-    let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
-
-    let asteroidSize = isLargeAsteroid ? 40 : isSmallAsteroid ? 10 : 20;
-    let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : isLargeAsteroid ? 0.05 : 0.1;
-
-    if (isVerySmallAsteroid) {
-      asteroidSize = 5;
-      asteroidSpeedMultiplier = 0.5;
+        let asteroid = {
+          x: x,
+          y: y,
+          size: newSize,
+          speed: speed * speedMultiplier,
+          dx: Math.cos(angle) * speed * speedMultiplier,
+          dy: Math.sin(angle) * speed * speedMultiplier,
+          hitPoints: hitPoints,
+          color: 'gray'
+        };
+        asteroids.push(asteroid);
+      }
     }
 
-    let x, y;
-    let spawnArea = Math.random();
 
-    if (spawnArea < 0.25) {
-      // Top edge
-      x = Math.random() * canvas.width;
-      y = Math.random() * (canvas.height * 0.1);
-    } else if (spawnArea < 0.5) {
-      // Right edge
-      x = canvas.width * 0.9 + Math.random() * (canvas.width * 0.1);
-      y = Math.random() * canvas.height;
-    } else if (spawnArea < 0.75) {
-      // Bottom edge
-      x = Math.random() * canvas.width;
-      y = canvas.height * 0.9 + Math.random() * (canvas.height * 0.1);
-    } else {
-      // Left edge
-      x = Math.random() * (canvas.width * 0.1);
-      y = Math.random() * canvas.height;
+    function createAsteroids() {
+      let numberOfAsteroids = 10 + (wave - 1) * 1.8;
+
+      for (let i = 0; i < numberOfAsteroids; i++) {
+        let isLargeAsteroid = Math.random() < 0.1; // 10% chance for a large asteroid
+        let isSmallAsteroid = Math.random() * 100 < chanceForSmallAsteroid;
+        let isVerySmallAsteroid = Math.random() * 100 < chanceForVerySmallAsteroid;
+        let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
+        let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
+        let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
+
+        let asteroidSize = isLargeAsteroid ? 40 : isSmallAsteroid ? 10 : 20;
+        let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : isLargeAsteroid ? 0.05 : 0.1;
+
+        if (isVerySmallAsteroid) {
+          asteroidSize = 5;
+          asteroidSpeedMultiplier = 0.5;
+        }
+
+        let x, y;
+        let spawnArea = Math.random();
+
+        if (spawnArea < 0.25) {
+          // Top edge
+          x = Math.random() * canvas.width;
+          y = Math.random() * (canvas.height * 0.1);
+        } else if (spawnArea < 0.5) {
+          // Right edge
+          x = canvas.width * 0.9 + Math.random() * (canvas.width * 0.1);
+          y = Math.random() * canvas.height;
+        } else if (spawnArea < 0.75) {
+          // Bottom edge
+          x = Math.random() * canvas.width;
+          y = canvas.height * 0.9 + Math.random() * (canvas.height * 0.1);
+        } else {
+          // Left edge
+          x = Math.random() * (canvas.width * 0.1);
+          y = Math.random() * canvas.height;
+        }
+
+        let hitPoints;
+        let color;
+
+        if (isLargeAsteroid) {
+          hitPoints = wave; // Higher hit points for larger asteroids
+          color = 'darkgray';
+        } else if (isMegaHardenedAsteroid) {
+          hitPoints = 10 + wave;
+          color = '#301934'; // Very dark purple for mega hardened asteroids
+        } else if (isVeryHardenedAsteroid) {
+          hitPoints = 15;
+          color = '#0A1414'; // Very dark green color for very hardened asteroids
+        } else if (isHardenedAsteroid) {
+          hitPoints = Math.floor(Math.random() * 5) + 3; // Random hitpoints between 5 and 8
+          color = '#172727'; // Dark green color for hardened asteroids
+        } else {
+          hitPoints = 1;
+          color = 'gray';
+        }
+
+        let asteroid = {
+          id: Date.now() + Math.random(), // Generate a unique ID for each asteroid
+          x: x,
+          y: y,
+          size: asteroidSize,
+          speed: 2 * Math.pow(1.02, wave - 1),
+          dx: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
+          dy: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
+          hitPoints: hitPoints,
+          color: color,
+          isLarge: isLargeAsteroid
+        };
+
+        asteroids.push(asteroid);
+      }
+
+      chanceForSmallAsteroid += 0.5;
+      chanceForVerySmallAsteroid += 0.1;
+      chanceForHardenedAsteroid += 0.5;
+      chanceForVeryHardenedAsteroid += 0.2; // Increase the chance for very hardened asteroids
+      chanceForMegaHardenedAsteroid += 0.1; // Increase the chance for mega hardened asteroids
+
+      // Trigger the asteroid cluster every few waves (e.g., every 5 waves)
+      if (wave % 3 === 0) {
+        createAsteroidCluster();
+      }
     }
 
-    let hitPoints;
-    let color;
 
-    if (isLargeAsteroid) {
-      hitPoints = wave; // Higher hit points for larger asteroids
-      color = 'darkgray';
-    } else if (isMegaHardenedAsteroid) {
-      hitPoints = 10 + wave;
-      color = '#301934'; // Very dark purple for mega hardened asteroids
-    } else if (isVeryHardenedAsteroid) {
-      hitPoints = 15;
-      color = '#0A1414'; // Very dark green color for very hardened asteroids
-    } else if (isHardenedAsteroid) {
-      hitPoints = Math.floor(Math.random() * 5) + 3; // Random hitpoints between 5 and 8
-      color = '#172727'; // Dark green color for hardened asteroids
-    } else {
-      hitPoints = 1;
-      color = 'gray';
+    function createAsteroidCluster() {
+      const clusterSize = 10; // Number of asteroids in the cluster
+      const clusterSpeed = 2 * Math.pow(1.02, wave - 1); // Base speed for the cluster
+      const speedVariation = 0.01; // Speed variation percentage (1%)
+
+      // Determine the starting corner (top-left, top-right, bottom-left, bottom-right)
+      const corners = [
+        { x: 0, y: 0 },
+        { x: canvas.width, y: 0 },
+        { x: 0, y: canvas.height },
+        { x: canvas.width, y: canvas.height }
+      ];
+      const startCorner = corners[Math.floor(Math.random() * corners.length)];
+
+      // Determine the target corner (opposite of the starting corner)
+      const targetCorner = {
+        x: canvas.width - startCorner.x,
+        y: canvas.height - startCorner.y
+      };
+
+      for (let i = 0; i < clusterSize; i++) {
+        // Calculate a random variation in speed
+        const speedMultiplier = 1 + (Math.random() * 2 - 1) * speedVariation;
+
+        // Create the asteroid with slightly varied speed
+        let asteroid = {
+          x: startCorner.x,
+          y: startCorner.y,
+          size: 20,
+          speed: clusterSpeed * speedMultiplier,
+          dx: (targetCorner.x - startCorner.x) / canvas.width * clusterSpeed * speedMultiplier,
+          dy: (targetCorner.y - startCorner.y) / canvas.height * clusterSpeed * speedMultiplier,
+          hitPoints: 5, // Hit points for larger asteroids
+          color: 'gray'
+        };
+
+        asteroids.push(asteroid);
+      }
     }
-
-    let asteroid = {
-      id: Date.now() + Math.random(), // Generate a unique ID for each asteroid
-      x: x,
-      y: y,
-      size: asteroidSize,
-      speed: 2 * Math.pow(1.02, wave - 1),
-      dx: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
-      dy: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
-      hitPoints: hitPoints,
-      color: color,
-      isLarge: isLargeAsteroid
-    };
-
-    asteroids.push(asteroid);
-  }
-
-  chanceForSmallAsteroid += 0.5;
-  chanceForVerySmallAsteroid += 0.1;
-  chanceForHardenedAsteroid += 0.5;
-  chanceForVeryHardenedAsteroid += 0.2; // Increase the chance for very hardened asteroids
-  chanceForMegaHardenedAsteroid += 0.1; // Increase the chance for mega hardened asteroids
-
-  // Trigger the asteroid cluster every few waves (e.g., every 5 waves)
-  if (wave % 3 === 0) {
-    createAsteroidCluster();
-  }
-}
-
-
-function createAsteroidCluster() {
-  const clusterSize = 10; // Number of asteroids in the cluster
-  const clusterSpeed = 2 * Math.pow(1.02, wave - 1); // Base speed for the cluster
-  const speedVariation = 0.01; // Speed variation percentage (1%)
-
-  // Determine the starting corner (top-left, top-right, bottom-left, bottom-right)
-  const corners = [
-    { x: 0, y: 0 },
-    { x: canvas.width, y: 0 },
-    { x: 0, y: canvas.height },
-    { x: canvas.width, y: canvas.height }
-  ];
-  const startCorner = corners[Math.floor(Math.random() * corners.length)];
-
-  // Determine the target corner (opposite of the starting corner)
-  const targetCorner = {
-    x: canvas.width - startCorner.x,
-    y: canvas.height - startCorner.y
-  };
-
-  for (let i = 0; i < clusterSize; i++) {
-    // Calculate a random variation in speed
-    const speedMultiplier = 1 + (Math.random() * 2 - 1) * speedVariation;
-
-    // Create the asteroid with slightly varied speed
-    let asteroid = {
-      x: startCorner.x,
-      y: startCorner.y,
-      size: 20,
-      speed: clusterSpeed * speedMultiplier,
-      dx: (targetCorner.x - startCorner.x) / canvas.width * clusterSpeed * speedMultiplier,
-      dy: (targetCorner.y - startCorner.y) / canvas.height * clusterSpeed * speedMultiplier,
-      hitPoints: 5, // Hit points for larger asteroids
-      color: 'gray'
-    };
-
-    asteroids.push(asteroid);
-  }
-}
 
     // Update asteroids
-function updateAsteroids() {
-  if (!freezeEffect.active) {
-    for (let i = 0; i < asteroids.length; i++) {
-      asteroids[i].x += asteroids[i].dx * asteroids[i].speed;
-      asteroids[i].y += asteroids[i].dy * asteroids[i].speed;
+    function updateAsteroids() {
+      if (!freezeEffect.active) {
+        for (let i = 0; i < asteroids.length; i++) {
+          asteroids[i].x += asteroids[i].dx * asteroids[i].speed;
+          asteroids[i].y += asteroids[i].dy * asteroids[i].speed;
 
-      // Wrap asteroids around the screen
-      if (asteroids[i].x < 0) {
-        asteroids[i].x = canvas.width;
-      } else if (asteroids[i].x > canvas.width) {
-        asteroids[i].x = 0;
-      }
-      if (asteroids[i].y < 0) {
-        asteroids[i].y = canvas.height;
-      } else if (asteroids[i].y > canvas.height) {
-        asteroids[i].y = 0;
+          // Wrap asteroids around the screen
+          if (asteroids[i].x < 0) {
+            asteroids[i].x = canvas.width;
+          } else if (asteroids[i].x > canvas.width) {
+            asteroids[i].x = 0;
+          }
+          if (asteroids[i].y < 0) {
+            asteroids[i].y = canvas.height;
+          } else if (asteroids[i].y > canvas.height) {
+            asteroids[i].y = 0;
+          }
+        }
       }
     }
-  }
-}
 
     // Draw asteroids
     function drawAsteroids() {
@@ -2431,121 +2496,121 @@ function updateAsteroids() {
 
 
 
-	// Function to create area damage
-function createAreaDamage(x, y, radius, damage = 1) {
-  let totalDamage = 0;
-  for (let i = asteroids.length - 1; i >= 0; i--) {
-    let asteroid = asteroids[i];
-    let dx = asteroid.x - x;
-    let dy = asteroid.y - y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < radius) {
-      let actualDamage = Math.min(damage, asteroid.hitPoints);
-      asteroid.hitPoints -= actualDamage;
-      totalDamage += actualDamage;
+    // Function to create area damage
+    function createAreaDamage(x, y, radius, damage = 1) {
+      let totalDamage = 0;
+      for (let i = asteroids.length - 1; i >= 0; i--) {
+        let asteroid = asteroids[i];
+        let dx = asteroid.x - x;
+        let dy = asteroid.y - y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < radius) {
+          let actualDamage = Math.min(damage, asteroid.hitPoints);
+          asteroid.hitPoints -= actualDamage;
+          totalDamage += actualDamage;
 
-      if (asteroid.hitPoints <= 0) {
-        createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
-        asteroids.splice(i, 1);
+          if (asteroid.hitPoints <= 0) {
+            createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+            asteroids.splice(i, 1);
+          }
+
+          coins += actualDamage * 15;
+          increaseXP(actualDamage * 15);
+          score += actualDamage * 50;
+        }
+      }
+      return totalDamage;
+    }
+
+
+    function increaseXP(amount) {
+      xp += amount;
+      updateXPBar();
+      if (xp >= xpToNextLevel) {
+        levelUp();
+      }
+    }
+
+    function updateXPBar() {
+      const xpBar = document.getElementById('xpBar');
+      const xpPercentage = (xp / xpToNextLevel) * 100;
+      xpBar.style.width = xpPercentage + '%';
+    }
+
+
+    function createExplosion(x, y, hitpoints = 0) {
+      const baseSize = 20; // Base size for explosions
+      const sizeReductionFactor = 1; // Size reduction per hitpoint
+
+      const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
+      const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015
+
+      let randomColor;
+      if (hitpoints > 7) {
+        randomColor = getRandomPurpleShade();
+      } else if (hitpoints > 1) {
+        randomColor = getRandomBlueShade();
+      } else {
+        randomColor = getRandomOrangeShade();
       }
 
-      coins += actualDamage * 15;
-      increaseXP(actualDamage * 15);
-      score += actualDamage * 50;
+      let explosion = {
+        x: x,
+        y: y,
+        size: randomSize,
+        alpha: 1,
+        alphaDecay: randomAlphaDecay,
+        color: randomColor
+      };
+      explosions.push(explosion);
     }
-  }
-  return totalDamage;
-}
 
-
-  function increaseXP(amount) {
-  xp += amount;
-  updateXPBar();
-  if (xp >= xpToNextLevel) {
-    levelUp();
-  }
-}
-
-function updateXPBar() {
-  const xpBar = document.getElementById('xpBar');
-  const xpPercentage = (xp / xpToNextLevel) * 100;
-  xpBar.style.width = xpPercentage + '%';
-}
-
-
-function createExplosion(x, y, hitpoints = 0) {
-  const baseSize = 20; // Base size for explosions
-  const sizeReductionFactor = 1; // Size reduction per hitpoint
-
-  const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
-  const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015
-
-  let randomColor;
-  if (hitpoints > 7) {
-    randomColor = getRandomPurpleShade();
-  } else if (hitpoints > 1) {
-    randomColor = getRandomBlueShade();
-  } else {
-    randomColor = getRandomOrangeShade();
-  }
-
-  let explosion = {
-    x: x,
-    y: y,
-    size: randomSize,
-    alpha: 1,
-    alphaDecay: randomAlphaDecay,
-    color: randomColor
-  };
-  explosions.push(explosion);
-}
-
-// Function to get a random shade of orange
-function getRandomOrangeShade() {
-  const shades = ['#FF4500', '#FF6347', '#FF8C00', '#FFA500', '#FF7F50'];
-  return shades[Math.floor(Math.random() * shades.length)];
-}
-
-function getRandomBlueShade() {
-  const shades = ['#1E90FF', '#00BFFF', '#87CEFA', '#4682B4', '#5F9EA0'];
-  return shades[Math.floor(Math.random() * shades.length)];
-}
-
-function getRandomPurpleShade() {
-  const shades = ['#800080', '#8B008B', '#9370DB', '#9400D3', '#9932CC', '#BA55D3', '#DA70D6', '#DDA0DD', '#EE82EE', '#FF00FF'];
-  return shades[Math.floor(Math.random() * shades.length)];
-}
-// Function to get a random shade of red
-function getRandomRedShade() {
-  const shades = ['#FF0000', '#DC143C', '#B22222', '#FF6347', '#FF4500'];
-  return shades[Math.floor(Math.random() * shades.length)];
-}
-
-// Update explosions with random alpha decay
-function updateExplosions() {
-  for (let i = 0; i < explosions.length; i++) {
-    explosions[i].size += 1;
-    explosions[i].alpha -= explosions[i].alphaDecay;
-    if (explosions[i].alpha <= 0) {
-      explosions.splice(i, 1);
-      i--;
+    // Function to get a random shade of orange
+    function getRandomOrangeShade() {
+      const shades = ['#FF4500', '#FF6347', '#FF8C00', '#FFA500', '#FF7F50'];
+      return shades[Math.floor(Math.random() * shades.length)];
     }
-  }
-}
 
-	// Draw explosions with random colors
-	function drawExplosions() {
-	  for (let i = 0; i < explosions.length; i++) {
-	    ctx.save();
-	    ctx.globalAlpha = explosions[i].alpha;
-	    ctx.beginPath();
-	    ctx.arc(explosions[i].x, explosions[i].y, explosions[i].size, 0, Math.PI * 2);
-	    ctx.closePath();
-	    ctx.fillStyle = explosions[i].color;
-	    ctx.fill();
-	    ctx.restore();
-	  }
-	}
+    function getRandomBlueShade() {
+      const shades = ['#1E90FF', '#00BFFF', '#87CEFA', '#4682B4', '#5F9EA0'];
+      return shades[Math.floor(Math.random() * shades.length)];
+    }
+
+    function getRandomPurpleShade() {
+      const shades = ['#800080', '#8B008B', '#9370DB', '#9400D3', '#9932CC', '#BA55D3', '#DA70D6', '#DDA0DD', '#EE82EE', '#FF00FF'];
+      return shades[Math.floor(Math.random() * shades.length)];
+    }
+    // Function to get a random shade of red
+    function getRandomRedShade() {
+      const shades = ['#FF0000', '#DC143C', '#B22222', '#FF6347', '#FF4500'];
+      return shades[Math.floor(Math.random() * shades.length)];
+    }
+
+    // Update explosions with random alpha decay
+    function updateExplosions() {
+      for (let i = 0; i < explosions.length; i++) {
+        explosions[i].size += 1;
+        explosions[i].alpha -= explosions[i].alphaDecay;
+        if (explosions[i].alpha <= 0) {
+          explosions.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    // Draw explosions with random colors
+    function drawExplosions() {
+      for (let i = 0; i < explosions.length; i++) {
+        ctx.save();
+        ctx.globalAlpha = explosions[i].alpha;
+        ctx.beginPath();
+        ctx.arc(explosions[i].x, explosions[i].y, explosions[i].size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fillStyle = explosions[i].color;
+        ctx.fill();
+        ctx.restore();
+      }
+    }
 
     // Reset ship position
     function resetShip() {
@@ -2608,22 +2673,22 @@ function updateExplosions() {
       }
     }
 
-	// Function to update marketplace display
-	function updateMarketplaceDisplay() {
-	  coinsDisplay.textContent = coins;
-	  laserLevelDisplay.textContent = ship.laserLevel;
-	  // accelerationLevelDisplay.textContent = ship.accelerationLevel;
-    document.getElementById('laserCooldownLevel').textContent = ship.laserCooldownLevel;
-    document.getElementById('explosiveLaserLevel').textContent = ship.explosiveLaserLevel;
-    document.getElementById('turretRangeLevel').textContent = turretUpgrades.range;
-    document.getElementById('turretFireRateLevel').textContent = turretUpgrades.fireRate;
-    document.getElementById('turretDamageLevel').textContent = turretUpgrades.damage;
-	  rotationSpeedLevelDisplay.textContent = ship.rotationSpeedLevel;
-    maxBulletsLevelDisplay.textContent = ship.maxBulletsLevel;
-	  droneSpeedLevelDisplay.textContent = droneUpgrades.speed;
-	  // droneLaserSpeedLevelDisplay.textContent = droneUpgrades.laserSpeed;
-	  droneLaserIntervalLevelDisplay.textContent = droneUpgrades.laserInterval;
-	}
+    // Function to update marketplace display
+    function updateMarketplaceDisplay() {
+      coinsDisplay.textContent = coins;
+      laserLevelDisplay.textContent = ship.laserLevel;
+      // accelerationLevelDisplay.textContent = ship.accelerationLevel;
+      document.getElementById('laserCooldownLevel').textContent = ship.laserCooldownLevel;
+      document.getElementById('explosiveLaserLevel').textContent = ship.explosiveLaserLevel;
+      document.getElementById('turretRangeLevel').textContent = turretUpgrades.range;
+      document.getElementById('turretFireRateLevel').textContent = turretUpgrades.fireRate;
+      document.getElementById('turretDamageLevel').textContent = turretUpgrades.damage;
+      rotationSpeedLevelDisplay.textContent = ship.rotationSpeedLevel;
+      maxBulletsLevelDisplay.textContent = ship.maxBulletsLevel;
+      droneSpeedLevelDisplay.textContent = droneUpgrades.speed;
+      // droneLaserSpeedLevelDisplay.textContent = droneUpgrades.laserSpeed;
+      droneLaserIntervalLevelDisplay.textContent = droneUpgrades.laserInterval;
+    }
 
     function activateMissile() {
       // Find the nearest asteroid to the ship
@@ -2687,136 +2752,136 @@ function updateExplosions() {
       }
     }
 
-  function activateSonicBlast() {
-    if (sonicBlast.timer === 0) {
-      sonicBlast.waves.push({
-        x: ship.x,
-        y: ship.y,
-        radius: 0,
-        hitAsteroids: [], // Array to store the IDs of hit asteroids
-      });
-      sonicBlast.timer = sonicBlast.cooldown;
+    function activateSonicBlast() {
+      if (sonicBlast.timer === 0) {
+        sonicBlast.waves.push({
+          x: ship.x,
+          y: ship.y,
+          radius: 0,
+          hitAsteroids: [], // Array to store the IDs of hit asteroids
+        });
+        sonicBlast.timer = sonicBlast.cooldown;
+      }
     }
-  }
 
 
 
-function activateDeathRay() {
-  if (deathRay.timer === 0) {
-    deathRayActive = true;
-    deathRay.timer = deathRay.cooldown;
-  }
-}
-
-function activateFreezeEffect() {
-  if (freezeEffect.timer === 0) {
-    freezeEffect.active = true;
-    freezeEffect.remainingDuration = freezeEffect.duration;
-    freezeEffect.timer = freezeEffect.cooldown;
-  }
-}
-
-
-function updateFreezeEffect() {
-  if (freezeEffect.timer > 0) {
-    freezeEffect.timer--;
-  }
-
-  if (freezeEffect.active) {
-    freezeEffect.remainingDuration--;
-
-    if (freezeEffect.remainingDuration <= 0) {
-      freezeEffect.active = false;
+    function activateDeathRay() {
+      if (deathRay.timer === 0) {
+        deathRayActive = true;
+        deathRay.timer = deathRay.cooldown;
+      }
     }
-  }
-}
 
-
-function fireAcidBomb() {
-  if (acidBomb.timer === 0) {
-    let angle = Math.random() * 2 * Math.PI; // Random direction
-    let bomb = {
-      x: ship.x,
-      y: ship.y,
-      radius: acidBomb.size,
-      duration: acidBomb.duration,
-      dx: Math.cos(angle),
-      dy: Math.sin(angle),
-      distanceTraveled: 0
-    };
-    acidBomb.activeBombs.push(bomb);
-    acidBomb.timer = acidBomb.cooldown;
-  }
-}
-
-function updateAcidBombs() {
-  for (let i = acidBomb.activeBombs.length - 1; i >= 0; i--) {
-    let bomb = acidBomb.activeBombs[i];
-    bomb.x += bomb.dx * 2;
-    bomb.y += bomb.dy * 2;
-    bomb.distanceTraveled += 2;
-
-    if (bomb.distanceTraveled >= 150) {
-      createAcidExplosion(bomb.x, bomb.y, bomb.radius, bomb.duration);
-      acidBomb.activeBombs.splice(i, 1);
+    function activateFreezeEffect() {
+      if (freezeEffect.timer === 0) {
+        freezeEffect.active = true;
+        freezeEffect.remainingDuration = freezeEffect.duration;
+        freezeEffect.timer = freezeEffect.cooldown;
+      }
     }
-  }
-}
 
-function createAcidExplosion(x, y, radius, duration) {
-  createExplosion(x, y, 0); // Create visual explosion effect
 
-  let acidArea = {
-    x: x,
-    y: y,
-    radius: radius,
-    duration: duration
-  };
-  acidBomb.activeAreas.push(acidArea);
-}
+    function updateFreezeEffect() {
+      if (freezeEffect.timer > 0) {
+        freezeEffect.timer--;
+      }
 
-function updateAcidAreas() {
-  for (let i = acidBomb.activeAreas.length - 1; i >= 0; i--) {
-    let area = acidBomb.activeAreas[i];
-    area.duration--;
+      if (freezeEffect.active) {
+        freezeEffect.remainingDuration--;
 
-    for (let j = asteroids.length - 1; j >= 0; j--) {
-      let asteroid = asteroids[j];
-      let dx = asteroid.x - area.x;
-      let dy = asteroid.y - area.y;
-      let distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance < area.radius) {
-        let actualDamage = Math.min(acidBomb.damagePerSecond, asteroid.hitPoints);
-        asteroid.hitPoints -= actualDamage;
-        damageReport.acid += actualDamage;
-
-        if (asteroid.hitPoints <= 0) {
-          createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
-          asteroids.splice(j, 1);
+        if (freezeEffect.remainingDuration <= 0) {
+          freezeEffect.active = false;
         }
       }
     }
 
-    if (area.duration <= 0) {
-      acidBomb.activeAreas.splice(i, 1);
+
+    function fireAcidBomb() {
+      if (acidBomb.timer === 0) {
+        let angle = Math.random() * 2 * Math.PI; // Random direction
+        let bomb = {
+          x: ship.x,
+          y: ship.y,
+          radius: acidBomb.size,
+          duration: acidBomb.duration,
+          dx: Math.cos(angle),
+          dy: Math.sin(angle),
+          distanceTraveled: 0
+        };
+        acidBomb.activeBombs.push(bomb);
+        acidBomb.timer = acidBomb.cooldown;
+      }
     }
-  }
-}
+
+    function updateAcidBombs() {
+      for (let i = acidBomb.activeBombs.length - 1; i >= 0; i--) {
+        let bomb = acidBomb.activeBombs[i];
+        bomb.x += bomb.dx * 2;
+        bomb.y += bomb.dy * 2;
+        bomb.distanceTraveled += 2;
+
+        if (bomb.distanceTraveled >= 150) {
+          createAcidExplosion(bomb.x, bomb.y, bomb.radius, bomb.duration);
+          acidBomb.activeBombs.splice(i, 1);
+        }
+      }
+    }
+
+    function createAcidExplosion(x, y, radius, duration) {
+      createExplosion(x, y, 0); // Create visual explosion effect
+
+      let acidArea = {
+        x: x,
+        y: y,
+        radius: radius,
+        duration: duration
+      };
+      acidBomb.activeAreas.push(acidArea);
+    }
+
+    function updateAcidAreas() {
+      for (let i = acidBomb.activeAreas.length - 1; i >= 0; i--) {
+        let area = acidBomb.activeAreas[i];
+        area.duration--;
+
+        for (let j = asteroids.length - 1; j >= 0; j--) {
+          let asteroid = asteroids[j];
+          let dx = asteroid.x - area.x;
+          let dy = asteroid.y - area.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < area.radius) {
+            let actualDamage = Math.min(acidBomb.damagePerSecond, asteroid.hitPoints);
+            asteroid.hitPoints -= actualDamage;
+            damageReport.acid += actualDamage;
+
+            if (asteroid.hitPoints <= 0) {
+              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+              asteroids.splice(j, 1);
+            }
+          }
+        }
+
+        if (area.duration <= 0) {
+          acidBomb.activeAreas.splice(i, 1);
+        }
+      }
+    }
 
 
-function drawAcidAreas() {
-  ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
-  for (let i = 0; i < acidBomb.activeAreas.length; i++) {
-    let area = acidBomb.activeAreas[i];
-    ctx.beginPath();
-    ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
+    function drawAcidAreas() {
+      ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+      for (let i = 0; i < acidBomb.activeAreas.length; i++) {
+        let area = acidBomb.activeAreas[i];
+        ctx.beginPath();
+        ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
 
 
-function updateDeathRay() {
-    if (deathRayActive) {
+    function updateDeathRay() {
+      if (deathRayActive) {
         // Define the area of effect for the Death Ray
         let rayLength = deathRay.length;
         let rayWidth = deathRay.width;
@@ -2835,16 +2900,16 @@ function updateDeathRay() {
 
         // Check for collisions with asteroids
         for (let i = asteroids.length - 1; i >= 0; i--) {
-            let asteroid = asteroids[i];
-            let dx = asteroid.x - ship.x;
-            let dy = asteroid.y - ship.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
+          let asteroid = asteroids[i];
+          let dx = asteroid.x - ship.x;
+          let dy = asteroid.y - ship.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
-                createExplosion(asteroid.x, asteroid.y);
-                asteroids.splice(i, 1);
-                damageReport.deathRay += asteroid.hitPoints;
-            }
+          if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
+            createExplosion(asteroid.x, asteroid.y);
+            asteroids.splice(i, 1);
+            damageReport.deathRay += asteroid.hitPoints;
+          }
         }
 
         // Draw the Death Ray as a triangle
@@ -2858,400 +2923,401 @@ function updateDeathRay() {
         ctx.fill();
         ctx.restore();
         deathRayActive = false;
-    }
+      }
 
-    if (deathRay.timer > 0) {
+      if (deathRay.timer > 0) {
         deathRay.timer--;
+      }
     }
-}
 
 
-let keys = {};
-let isPaused = false;
+    let keys = {};
+    let isPaused = false;
 
-function handleKeyDown(event) {
-  keys[event.key] = true;
+    function handleKeyDown(event) {
+      keys[event.key] = true;
 
-  if (event.key === 'p') {
-      if(isPaused)  {
+      if (event.key === 'p') {
+        if (isPaused) {
 
-        gameLoop = setInterval(update, 1000 / 60); // Resume game loop
-        isPaused = false;
+          gameLoop = setInterval(update, 1000 / 60); // Resume game loop
+          isPaused = false;
 
-      } else {
+        } else {
 
           clearInterval(gameLoop);
-          isPaused = true; 
+          isPaused = true;
 
-    }
-  // } 
+        }
+        // } 
 
-  // else if (event.key === 'b') {
-  //   if (marketplace.style.display === 'block') {
-  //     exitMarketplace();
-  //   } else {
-  //     pauseGameForMarketplace();
-  //   }
+        // else if (event.key === 'b') {
+        //   if (marketplace.style.display === 'block') {
+        //     exitMarketplace();
+        //   } else {
+        //     pauseGameForMarketplace();
+        //   }
 
-  } else if (event.key === 'm') {
-    toggleMusic();
-  } else if (event.key === 'n') {
-    toggleSound();
-  }
-}
-
-function handleKeyUp(event) {
-  keys[event.key] = false;
-}
-
-let toggleOff = false;
-let toggleSoundOff = false;
-
-function toggleMusic() {
-  if(!toggleOff)
-    toggleOff = true;
-  backgroundMusic.pause();
-
-  if (isMusicPlaying) {
-    backgroundMusic.pause();
-  } else {
-    backgroundMusic.play();
-  }
-  isMusicPlaying = !isMusicPlaying;
-}
-
-function toggleSound() {
-  if(!toggleSoundOff)
-    toggleSoundOff = true;
-  else
-     toggleSoundOff = false;
-
-}
-
-
-
-async function fetchLeaderboard() {
-  const userId = 190933907; // Replace with dynamic user ID if available
-  const response = await fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-webhook/game-leaderboard?userId=${userId}&inMsgId=AQAAAEgOAACDL96FnHtAzSUv6iI`);
-  const leaderboard = await response.json();
-  displayLeaderboard(leaderboard);
-}
-
-function displayLeaderboard(leaderboard) {
-  const leaderboardContainer = document.getElementById('leaderboard');
-  leaderboardContainer.innerHTML = '<h2>Leaderboard</h2><ol id="leaderboard-list"></ol>';
-  const leaderboardList = document.getElementById('leaderboard-list');
-
-  leaderboard.forEach(entry => {
-    const listItem = document.createElement('li');
-    listItem.textContent = `${entry.position}. ${entry.user.first_name} ${entry.user.last_name || ''} - ${entry.score}`;
-    leaderboardList.appendChild(listItem);
-  });
-
-  document.getElementById('leaderboard-container').style.display = 'block';
-  document.getElementById('coins').textContent = coins;
-}
-
-
-	window.addEventListener('resize', resizeCanvas);
-
-	joystick.addEventListener('touchstart', (e) => {
-	  isTouchingJoystick = true;
-	  joystickStartX = e.touches[0].clientX;
-	  joystickStartY = e.touches[0].clientY;
-	});
-
-canvas.addEventListener('touchstart', (e) => {
-  if (e.touches.length === 1) {
-    const touch = e.touches[0];
-    const touchX = touch.clientX;
-
-    const canvasWidth = canvas.width;
-    const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
-
-    if (touchX < partWidth) {
-      // Hard left turn
-      ship.rotation -= (ship.rotationSpeed * 3);
-    } else if (touchX < partWidth * 2) {
-      // Soft left turn
-      ship.rotation -= ship.rotationSpeed;
-    } else if (touchX < partWidth * 3) {
-      // Acceleration
-      if (ship.speed < ship.maxSpeed) {
-        ship.speed += (ship.acceleration * 7);
-        ship.velocityX += ship.acceleration * Math.sin(angle);
-        ship.velocityY -= ship.acceleration * Math.cos(angle);
-
+      } else if (event.key === 'm') {
+        toggleMusic();
+      } else if (event.key === 'n') {
+        toggleSound();
       }
-    } else if (touchX < partWidth * 4) {
-      // Soft right turn
-      ship.rotation += ship.rotationSpeed;
-    } else {
-      // Hard right turn
-      ship.rotation += (ship.rotationSpeed * 3);
     }
-  }
-});
 
-	joystick.addEventListener('touchmove', (e) => {
-	  if (isTouchingJoystick) {
-	    const touchX = e.touches[0].clientX;
-	    const touchY = e.touches[0].clientY;
-	    const deltaX = touchX - joystickStartX;
-	    const deltaY = touchY - joystickStartY;
-
-	    // Calculate angle and distance from the center
-	    const angle = Math.atan2(deltaY, deltaX);
-	    const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
-
-	    // Update joystick handle position
-	    joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
-
-	    // Update ship rotation and speed based on joystick movement
-	    ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
-	    ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
-
-	    e.preventDefault();
-	  }
-	});
-
-	joystick.addEventListener('touchend', () => {
-	  isTouchingJoystick = false;
-	  ship.speed = 0;
-	  joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
-	});
-
-restartButton.addEventListener('click', () => {
-  restartButton.style.display = 'none';
-  lives = 3;
-  score = 0;
-  wave = 1;
-  asteroidsKilled = 0;
-  
-  // Reset coins and XP
-  coins = 0;
-  level = 1;
-  xpToNextLevel = 100;
-  xp = 0;
-  
-  // Reset asteroids and drones
-  asteroids = [];
-  drones = [];
-  
-  // Reset turret upgrades
-  turret.bought = false;
-  // Reset active weapon classes
-  activeWeaponClasses = [];
-  
-
-     level = 1;
-     xp = 0;
-     xpToNextLevel = 100;
-
-   acidBomb = {
-    cooldown: 300,
-    timer: 0,
-    duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
-    damagePerSecond: 1,
-    size: 50,
-    activeBombs: [],
-    activeAreas: []
-  };
-
-   acidBombUpgrades = {
-    duration: 1,
-    cooldown: 1,
-    size: 1
-  };
-
-   boomerang = {
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-    size: 10,
-    speed: 2,
-    damage: 1,
-    dx: 3,
-    dy: 3,
-    active: false
-  };
-
-   boomerangUpgrades = {
-    speed: 1,
-    damage: 1
-  };
-
- homingMissile = {
-  cooldown: 300,
-  timer: 0,
-  speed: 2,
-  damage: 5,
-  activeMissiles: []
-};
-
- homingMissileUpgrades = {
-  speed: 1,
-  damage: 1,
-  cooldown: 1
-};
-
- freezeEffect = {
-  cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
-  timer: 0,
-  duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
-  active: false,
-  remainingDuration: 0
-};
-
- freezeEffectUpgrades = {
-  duration: 1,
-  cooldown: 1
-};
-
-  damageReport = {
-    lasers: 0,
-    explosiveLasers: 0,
-    drones: 0,
-    turret: 0,
-    sonicBlast: 0,
-    bomberDrones: 0,
-    deathRay: 0,
-    acid: 0,
-    freeze: 0,
-    boomerang: 0,
-    homing: 0
-
-  };
-
-
-  deathRay = {
-      length: 1000,
-      width: 50,
-      cooldown: 300,
-      timer: 0
-  };
-
-  deathRayActive = false;
-
-  deathRayUpgrades = {
-      length: 1,
-      width: 1,
-      cooldown: 1
-  };
-
-
-
-    ship = {
-      x: canvas.width / 2,
-      y: canvas.height - 50,
-      size: 20,
-      speed: 0,
-      acceleration: 0.15,
-      deceleration: 0.99,
-      maxSpeed: 5,
-      rotation: 0,
-      rotationSpeed: 2.5,
-      lasers: [],
-      velocityX: 0,
-      velocityY: 0,
-      laserLevel: 1,
-      accelerationLevel: 1,
-      rotationSpeedLevel: 1,
-      maxBulletsLevel: 1,
-      explosiveLaserLevel: 0,
-      laserCooldown: 30,
-      laserTimer: 0,
-      laserCooldownLevel: 1,
-
-    };
-
-    drone = {
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      size: 10,
-      speed: 0.0001,
-      direction: Math.random() * Math.PI * 2,
-      lasers: [],
-      laserSpeed: 3,
-      laserInterval: 80, // Fire lasers every 120 frames (2 second)
-      laserTimer: 0
-    };
-
-    turret = {
-          x: 0,
-          y: 0,
-          size: 10,
-          rotationSpeed: 2,
-          fireInterval: 120,
-          fireTimer: 0,
-          range: 400,
-          damage: 3,
-          color: 'cyan',
-          lasers: [] // Initialize the turret's lasers array
-    };
-
-    turretUpgrades = {
-      range: 1,
-      fireRate: 1,
-      damage: 1
-    };
-
-sonicBlast = {
-  cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
-  timer: 0, // Current cooldown timer
-  range: 120, // Range of the sonic blast
-  speed: 2, // Speed of the sonic blast wave
-  damage: 1, // Damage dealt by the sonic blast
-  waves: [], // Array to store the active sonic blast waves
-  rangeLevel : 1,
-  damageLevel : 1,
-  cooldownLevel : 1
-
-};
-
-  // Reset game state
-  gameOver = false;
-  invincible = true;
-  invincibilityTimer = invincibilityDuration;
-  document.getElementById('leaderboard-container').style.display = 'none';
-  
-  // Reset spawn variables
-  spawnTimer = spawnCooldown;
-  chanceForSmallAsteroid = 3;
-  chanceForVerySmallAsteroid = 1;
-  chanceForHardenedAsteroid = 5;
-  chanceForVeryHardenedAsteroid = 2;
-  
-  // Reset ship position
-  resetShip();
-  
-
-  bomberDrones = [];
-  bomberDroneUpgrades = {
-    speed: 1,
-    bombRadiusLevel : 1,
-    bombRadius: 50,
-    bombDamage: 2
-  };
-
-  // Start a new game
-  createAsteroids();
-  startGame();
-});
-
-document.addEventListener('keydown', function(event) {
-  if (document.getElementById('levelUpModal').style.display === 'block') {
-    if (event.key === '1') {
-      selectUpgrade(1);
-    } else if (event.key === '2') {
-      selectUpgrade(2);
-    } else if (event.key === '3') {
-      selectUpgrade(3);
+    function handleKeyUp(event) {
+      keys[event.key] = false;
     }
-  }
-});
+
+    let toggleOff = false;
+    let toggleSoundOff = false;
+
+    function toggleMusic() {
+      if (!toggleOff)
+        toggleOff = true;
+      backgroundMusic.pause();
+
+      if (isMusicPlaying) {
+        backgroundMusic.pause();
+      } else {
+        backgroundMusic.play();
+      }
+      isMusicPlaying = !isMusicPlaying;
+    }
+
+    function toggleSound() {
+      if (!toggleSoundOff)
+        toggleSoundOff = true;
+      else
+        toggleSoundOff = false;
+
+    }
+
+
+
+    async function fetchLeaderboard() {
+      const userId = 190933907; // Replace with dynamic user ID if available
+      const response = await fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-webhook/game-leaderboard?userId=${userId}&inMsgId=AQAAAEgOAACDL96FnHtAzSUv6iI`);
+      const leaderboard = await response.json();
+      displayLeaderboard(leaderboard);
+    }
+
+    function displayLeaderboard(leaderboard) {
+      const leaderboardContainer = document.getElementById('leaderboard');
+      leaderboardContainer.innerHTML = '<h2>Leaderboard</h2><ol id="leaderboard-list"></ol>';
+      const leaderboardList = document.getElementById('leaderboard-list');
+
+      leaderboard.forEach(entry => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${entry.position}. ${entry.user.first_name} ${entry.user.last_name || ''} - ${entry.score}`;
+        leaderboardList.appendChild(listItem);
+      });
+
+      document.getElementById('leaderboard-container').style.display = 'block';
+      document.getElementById('coins').textContent = coins;
+    }
+
+
+    window.addEventListener('resize', resizeCanvas);
+
+    joystick.addEventListener('touchstart', (e) => {
+      isTouchingJoystick = true;
+      joystickStartX = e.touches[0].clientX;
+      joystickStartY = e.touches[0].clientY;
+    });
+
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const touchX = touch.clientX;
+
+        const canvasWidth = canvas.width;
+        const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
+
+        if (touchX < partWidth) {
+          // Hard left turn
+          ship.rotation -= (ship.rotationSpeed * 3);
+        } else if (touchX < partWidth * 2) {
+          // Soft left turn
+          ship.rotation -= ship.rotationSpeed;
+        } else if (touchX < partWidth * 3) {
+          // Acceleration
+          if (ship.speed < ship.maxSpeed) {
+            ship.speed += (ship.acceleration * 7);
+            ship.velocityX += ship.acceleration * Math.sin(angle);
+            ship.velocityY -= ship.acceleration * Math.cos(angle);
+
+          }
+        } else if (touchX < partWidth * 4) {
+          // Soft right turn
+          ship.rotation += ship.rotationSpeed;
+        } else {
+          // Hard right turn
+          ship.rotation += (ship.rotationSpeed * 3);
+        }
+      }
+    });
+
+    joystick.addEventListener('touchmove', (e) => {
+      if (isTouchingJoystick) {
+        const touchX = e.touches[0].clientX;
+        const touchY = e.touches[0].clientY;
+        const deltaX = touchX - joystickStartX;
+        const deltaY = touchY - joystickStartY;
+
+        // Calculate angle and distance from the center
+        const angle = Math.atan2(deltaY, deltaX);
+        const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
+
+        // Update joystick handle position
+        joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
+
+        // Update ship rotation and speed based on joystick movement
+        ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
+        ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
+
+        e.preventDefault();
+      }
+    });
+
+    joystick.addEventListener('touchend', () => {
+      isTouchingJoystick = false;
+      ship.speed = 0;
+      joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
+    });
+
+    restartButton.addEventListener('click', () => {
+      restartButton.style.display = 'none';
+      lives = 3;
+      score = 0;
+      wave = 1;
+      asteroidsKilled = 0;
+
+      // Reset coins and XP
+      coins = 0;
+      level = 1;
+      xpToNextLevel = 100;
+      xp = 0;
+
+      // Reset asteroids and drones
+      asteroids = [];
+      drones = [];
+
+      // Reset turret upgrades
+      turret.bought = false;
+      // Reset active weapon classes
+      activeWeaponClasses = [];
+
+
+      level = 1;
+      xp = 0;
+      xpToNextLevel = 100;
+
+      acidBomb = {
+        cooldown: 300,
+        timer: 0,
+        duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
+        damagePerSecond: 1,
+        size: 50,
+        activeBombs: [],
+        activeAreas: []
+      };
+
+      acidBombUpgrades = {
+        duration: 1,
+        cooldown: 1,
+        size: 1
+      };
+
+      boomerang = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: 10,
+        speed: 2,
+        damage: 1,
+        dx: 3,
+        dy: 3,
+        active: false
+      };
+
+      boomerangUpgrades = {
+        speed: 1,
+        damage: 1
+      };
+
+      homingMissile = {
+        cooldown: 300,
+        timer: 0,
+        speed: 2,
+        damage: 5,
+        activeMissiles: []
+      };
+
+      homingMissileUpgrades = {
+        speed: 1,
+        damage: 1,
+        cooldown: 1
+      };
+
+      freezeEffect = {
+        cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
+        timer: 0,
+        duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
+        active: false,
+        remainingDuration: 0
+      };
+
+      freezeEffectUpgrades = {
+        duration: 1,
+        cooldown: 1
+      };
+
+      damageReport = {
+        lasers: 0,
+        explosiveLasers: 0,
+        drones: 0,
+        turret: 0,
+        sonicBlast: 0,
+        bomberDrones: 0,
+        deathRay: 0,
+        acid: 0,
+        freeze: 0,
+        boomerang: 0,
+        homing: 0
+
+      };
+
+
+      deathRay = {
+        length: 1000,
+        width: 50,
+        cooldown: 300,
+        timer: 0
+      };
+
+      deathRayActive = false;
+
+      deathRayUpgrades = {
+        length: 1,
+        width: 1,
+        cooldown: 1
+      };
+
+
+
+      ship = {
+        x: canvas.width / 2,
+        y: canvas.height - 50,
+        size: 20,
+        speed: 0,
+        acceleration: 0.15,
+        deceleration: 0.99,
+        maxSpeed: 5,
+        rotation: 0,
+        rotationSpeed: 2.5,
+        lasers: [],
+        velocityX: 0,
+        velocityY: 0,
+        laserLevel: 1,
+        accelerationLevel: 1,
+        rotationSpeedLevel: 1,
+        maxBulletsLevel: 1,
+        explosiveLaserLevel: 0,
+        laserCooldown: 30,
+        laserTimer: 0,
+        laserCooldownLevel: 1,
+
+      };
+
+      drone = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: 10,
+        speed: 0.0001,
+        direction: Math.random() * Math.PI * 2,
+        lasers: [],
+        laserSpeed: 3,
+        laserInterval: 80, // Fire lasers every 120 frames (2 second)
+        laserTimer: 0
+      };
+
+      turret = {
+        x: 0,
+        y: 0,
+        size: 10,
+        rotationSpeed: 2,
+        fireInterval: 120,
+        fireTimer: 0,
+        range: 400,
+        damage: 3,
+        color: 'cyan',
+        lasers: [] // Initialize the turret's lasers array
+      };
+
+      turretUpgrades = {
+        range: 1,
+        fireRate: 1,
+        damage: 1
+      };
+
+      sonicBlast = {
+        cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
+        timer: 0, // Current cooldown timer
+        range: 120, // Range of the sonic blast
+        speed: 2, // Speed of the sonic blast wave
+        damage: 1, // Damage dealt by the sonic blast
+        waves: [], // Array to store the active sonic blast waves
+        rangeLevel: 1,
+        damageLevel: 1,
+        cooldownLevel: 1
+
+      };
+
+      // Reset game state
+      gameOver = false;
+      invincible = true;
+      invincibilityTimer = invincibilityDuration;
+      document.getElementById('leaderboard-container').style.display = 'none';
+
+      // Reset spawn variables
+      spawnTimer = spawnCooldown;
+      chanceForSmallAsteroid = 3;
+      chanceForVerySmallAsteroid = 1;
+      chanceForHardenedAsteroid = 5;
+      chanceForVeryHardenedAsteroid = 2;
+
+      // Reset ship position
+      resetShip();
+
+
+      bomberDrones = [];
+      bomberDroneUpgrades = {
+        speed: 1,
+        bombRadiusLevel: 1,
+        bombRadius: 50,
+        bombDamage: 2
+      };
+
+      // Start a new game
+      createAsteroids();
+      startGame();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (document.getElementById('levelUpModal').style.display === 'block') {
+        if (event.key === '1') {
+          selectUpgrade(1);
+        } else if (event.key === '2') {
+          selectUpgrade(2);
+        } else if (event.key === '3') {
+          selectUpgrade(3);
+        }
+      }
+    });
 
     // Start the game
     // startGame();
   </script>
 </body>
+
 </html>
