@@ -2082,62 +2082,26 @@ function activateWeaponClass(weaponClass) {
 }
 // Update function to draw active weapon classes with cooldown indicators
 function drawActiveWeaponClasses() {
-    const container = document.getElementById('activeWeaponClassesContainer');
-    container.innerHTML = ''; // Clear previous content
+  const container = document.getElementById('activeWeaponClassesContainer');
+  container.innerHTML = ''; // Clear previous content
 
-    activeWeaponClasses.forEach(weaponClass => {
-        // Create the icon element
-        const icon = document.createElement('div');
-        icon.classList.add('weaponClassIcon', `icon-${weaponClass.toLowerCase().replace(/\s+/g, '')}`);
+  for (const weaponClass of activeWeaponClasses) {
+    const iconContainer = document.createElement('div');
+    iconContainer.classList.add('iconContainer');
 
-        // Add the cooldown indicator container
-        const cooldownIndicator = document.createElement('div');
-        cooldownIndicator.classList.add('cooldown-indicator');
+    const icon = document.createElement('div');
+    icon.classList.add('weaponClassIcon', `icon-${weaponClass.toLowerCase().replace(/\s+/g, '')}`);
 
-        // Draw the cooldown indicator using Canvas
-        const canvas = document.createElement('canvas');
-        canvas.width = 50;
-        canvas.height = 50;
-        cooldownIndicator.appendChild(canvas);
+    // Create a span element to display the number of upgrades
+    const upgradeCount = document.createElement('span');
+    upgradeCount.classList.add('upgradeCount');
+    upgradeCount.textContent = getUpgradeCount(weaponClass); // Get the number of upgrades for the weapon class
 
-        const ctx = canvas.getContext('2d');
-        let cooldown = 0, maxCooldown = 1;
-
-        switch (weaponClass) {
-            case 'sonic':
-                cooldown = sonicBlast.timer;
-                maxCooldown = sonicBlast.cooldown;
-                break;
-            case 'deathray':
-                cooldown = deathRay.timer;
-                maxCooldown = deathRay.cooldown;
-                break;
-            case 'acid':
-                cooldown = acidBomb.timer;
-                maxCooldown = acidBomb.cooldown;
-                break;
-            case 'freeze':
-                cooldown = freezeEffect.timer;
-                maxCooldown = freezeEffect.cooldown;
-                break;
-            // Add cases for other weapons with cooldowns as needed
-        }
-
-        // Draw the cooldown indicator
-        if (cooldown > 0) {
-            const startAngle = -Math.PI / 2; // Start at the top
-            const endAngle = startAngle + (2 * Math.PI * (1 - cooldown / maxCooldown));
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2 - 4, startAngle, endAngle);
-            ctx.stroke();
-        }
-
-        // Append the cooldown indicator and icon to the container
-        container.appendChild(icon);
-        container.appendChild(cooldownIndicator);
-    });
+    // Append the icon and upgrade count to the container
+    iconContainer.appendChild(icon);
+    iconContainer.appendChild(upgradeCount);
+    container.appendChild(iconContainer);
+  }
 }
 
 function drawCooldownIndicator(x, y, radius, cooldown, maxCooldown) {
