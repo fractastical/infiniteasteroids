@@ -916,6 +916,8 @@ if (keys['ArrowUp'] || keys['w']) {
   drawEdgeOverlay();
   drawLives();
   drawScore();
+  if (gameOver) drawDamageReport();
+
 
 }
 
@@ -1666,19 +1668,19 @@ function endGame() {
   // ctx.fillText(`Bonus Coins for Next Round: ${bonusCoins}`, canvas.width / 2, canvas.height / 2 + 100);
 
   // Display damage report in the lower left corner
-  ctx.font = '14px Arial';
-  ctx.textAlign = 'left';
-  ctx.fillText(`Damage Report:`, 80, canvas.height - 260);
-  ctx.fillText(`Lasers: ${damageReport.lasers}`, 80, canvas.height - 240);
-  ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 80, canvas.height - 220);
-  ctx.fillText(`Turret: ${damageReport.turret}`, 80, canvas.height - 200);
-  ctx.fillText(`Drones: ${damageReport.drones}`, 80, canvas.height - 180);
-  ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 80, canvas.height - 160);
-  ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 80, canvas.height - 140);
-  ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 80, canvas.height - 120);
-  ctx.fillText(`Acid: ${damageReport.acid}`, 80, canvas.height - 100);
-  ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 80, canvas.height - 80);
-  ctx.fillText(`Nano: ${damageReport.homing}`, 80, canvas.height - 60);
+  // ctx.font = '14px Arial';
+  // ctx.textAlign = 'left';
+  // ctx.fillText(`Damage Report:`, 80, canvas.height - 260);
+  // ctx.fillText(`Lasers: ${damageReport.lasers}`, 80, canvas.height - 240);
+  // ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 80, canvas.height - 220);
+  // ctx.fillText(`Turret: ${damageReport.turret}`, 80, canvas.height - 200);
+  // ctx.fillText(`Drones: ${damageReport.drones}`, 80, canvas.height - 180);
+  // ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 80, canvas.height - 160);
+  // ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 80, canvas.height - 140);
+  // ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 80, canvas.height - 120);
+  // ctx.fillText(`Acid: ${damageReport.acid}`, 80, canvas.height - 100);
+  // ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 80, canvas.height - 80);
+  // ctx.fillText(`Nano: ${damageReport.homing}`, 80, canvas.height - 60);
 
   // Show the restart button
   restartButton.style.display = 'block';
@@ -1700,6 +1702,27 @@ function endGame() {
         console.error('Error:', error);
     });
   }
+
+}
+
+
+function drawDamageReport() {
+  ctx.fillStyle = 'white';
+  ctx.font = '14px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(`Damage Report:`, 20, canvas.height - 260);
+  ctx.fillText(`Lasers: ${damageReport.lasers}`, 20, canvas.height - 240);
+  ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 20, canvas.height - 220);
+  ctx.fillText(`Turret: ${damageReport.turret}`, 20, canvas.height - 200);
+  ctx.fillText(`Drones: ${damageReport.drones}`, 20, canvas.height - 180);
+  ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 20, canvas.height - 160);
+  ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 20, canvas.height - 140);
+  ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 20, canvas.height - 120);
+  ctx.fillText(`Acid: ${damageReport.acid}`, 20, canvas.height - 100);
+  ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 20, canvas.height - 80);
+  ctx.fillText(`Nano: ${damageReport.homing}`, 20, canvas.height - 60);
+
+
 
 }
 
@@ -1807,16 +1830,16 @@ function getRandomUpgrades(count) {
     // 'Increase Max Bullets',
     'Decrease Laser Cooldown',
     'Increase Rotation Speed',
-    ...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']),
-    ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
-    ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
-    ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
-    ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
+    // ...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']),
+    // ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
+    // ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
+    // ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
+    // ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
     ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']),
-    ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
-    ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
+    // ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
+    // ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
     ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']),
-    ...(activeWeaponClasses.includes('homingmissile') ? ['Increase Nano Swarm Speed', 'Increase Nano Swarm Damage', 'Decrease Nano Swarm Cooldown'] : ['Activate Nano Swarm'])
+    ...(activeWeaponClasses.includes('homingmissile') ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : ['Activate Nano Swarm'])
 
 
 
@@ -1963,14 +1986,14 @@ function applyUpgrade(upgrade) {
     boomerangUpgrades.damage++;
     boomerang.damage = boomerangUpgrades.damage;
     break;
-  case 'Activate Homing Missile':
+  case 'Activate Nano Swarm':
     activateWeaponClass('homingmissile');
     break;
-  case 'Boost Homing Missile':
+  case 'Boost Nano Swarm':
     homingMissileUpgrades.damage++;
     homingMissileUpgrades.speed++;
     break;
-  case 'Decrease Homing Missile Cooldown':
+  case 'Decrease Nano Swarm Cooldown':
     homingMissileUpgrades.cooldown++;
     homingMissile.cooldown = Math.max(20, 120 - 30 * homingMissileUpgrades.cooldown);
     break;
@@ -2754,9 +2777,17 @@ function updateDeathRay() {
         let rayLength = deathRay.length;
         let rayWidth = deathRay.width;
 
-        // Calculate the coordinates of the ray's end point
+        // Calculate the angle for the endpoints to create a fan effect
+        let spreadAngle = Math.PI / (15 - deathRayUpgrades.width); // Adjust the spread angle for a wider fan effect
+
         let endX = ship.x + rayLength * Math.sin(ship.rotation * Math.PI / 180);
         let endY = ship.y - rayLength * Math.cos(ship.rotation * Math.PI / 180);
+
+        let leftEndX = ship.x + rayLength * Math.sin((ship.rotation * Math.PI / 180) - spreadAngle);
+        let leftEndY = ship.y - rayLength * Math.cos((ship.rotation * Math.PI / 180) - spreadAngle);
+
+        let rightEndX = ship.x + rayLength * Math.sin((ship.rotation * Math.PI / 180) + spreadAngle);
+        let rightEndY = ship.y - rayLength * Math.cos((ship.rotation * Math.PI / 180) + spreadAngle);
 
         // Check for collisions with asteroids
         for (let i = asteroids.length - 1; i >= 0; i--) {
@@ -2772,16 +2803,16 @@ function updateDeathRay() {
             }
         }
 
-        // Draw the Death Ray
+        // Draw the Death Ray as a triangle
         ctx.save();
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = rayWidth;
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
         ctx.beginPath();
         ctx.moveTo(ship.x, ship.y);
-        ctx.lineTo(endX, endY);
-        ctx.stroke();
+        ctx.lineTo(leftEndX, leftEndY);
+        ctx.lineTo(rightEndX, rightEndY);
+        ctx.closePath();
+        ctx.fill();
         ctx.restore();
-
         deathRayActive = false;
     }
 
@@ -2789,7 +2820,6 @@ function updateDeathRay() {
         deathRay.timer--;
     }
 }
-
 
 
 let keys = {};
