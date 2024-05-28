@@ -1059,25 +1059,33 @@ const shipDestroyedSounds = [
 
 // Function to play a random shot sound
 function playRandomShotSound() {
-  const randomIndex = Math.floor(Math.random() * shotSounds.length);
-  shotSounds[randomIndex].play();
+  if(!toggleSoundOff) {
+    const randomIndex = Math.floor(Math.random() * shotSounds.length);
+    shotSounds[randomIndex].play();
+  }
 }
 
 // Function to play a random thruster sound
 function playRandomThrusterSound() {
-  const randomIndex = Math.floor(Math.random() * thrusterSounds.length);
-  thrusterSounds[randomIndex].play();
+  if(!toggleSoundOff) {
+    const randomIndex = Math.floor(Math.random() * thrusterSounds.length);
+    thrusterSounds[randomIndex].play();
+  }
 }
 
 function playRandomMeteorDestroySound() {
-  const randomIndex = Math.floor(Math.random() * meteorDestroySounds.length);
-  meteorDestroySounds[randomIndex].play();
+  if(!toggleSoundOff) {
+    const randomIndex = Math.floor(Math.random() * meteorDestroySounds.length);
+    meteorDestroySounds[randomIndex].play();
+  }
 }
 
 
 function playShipDestroyedSound() {
-  const randomIndex = Math.floor(Math.random() * shipDestroyedSounds.length);
-  shipDestroyedSounds[randomIndex].play();
+  if(!toggleSoundOff) {
+    const randomIndex = Math.floor(Math.random() * shipDestroyedSounds.length);
+    shipDestroyedSounds[randomIndex].play();
+  }
 }
 
 
@@ -2009,11 +2017,11 @@ function isColliding(obj1, obj2) {
     ctx.font = '20px Arial';
     ctx.textAlign = 'left';
     //version
-    ctx.fillText(`(v 0.369)`, 20, 30);
+    ctx.fillText(`(v 0.370)`, 20, 30);
     ctx.fillText(`Level: ${level}`, canvas.width - 120, canvas.height - 30);
 
     if(!isMobile())
-      ctx.fillText("\'m\' to toggle music 'p\' to pause", 20, canvas.height - 30);
+      ctx.fillText("\'m\' to toggle music  \'n\' for sound 'p\' to pause", 20, canvas.height - 30);
 
   }
 
@@ -2632,6 +2640,8 @@ function handleKeyDown(event) {
 
   } else if (event.key === 'm') {
     toggleMusic();
+  } else if (event.key === 'n') {
+    toggleSound();
   }
 }
 
@@ -2640,6 +2650,7 @@ function handleKeyUp(event) {
 }
 
 let toggleOff = false;
+let toggleSoundOff = false;
 
 function toggleMusic() {
   if(!toggleOff)
@@ -2653,6 +2664,15 @@ function toggleMusic() {
   }
   isMusicPlaying = !isMusicPlaying;
 }
+
+function toggleSound() {
+  if(!toggleSoundOff)
+    toggleSoundOff = true;
+  else
+     toggleSoundOff = false;
+
+}
+
 
 
 async function fetchLeaderboard() {
