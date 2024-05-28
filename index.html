@@ -371,7 +371,7 @@
       background-image: url('icons/Freeze.svg');
     }
 
-    .icon-homing {
+    .icon-homingmissile {
       background-image: url('icons/Basiclaser.svg');
     }
 
@@ -2301,7 +2301,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.376)`, 20, 30);
+      ctx.fillText(`(v 0.377)`, 20, 30);
       ctx.fillText(`Level: ${level}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -2440,7 +2440,7 @@
 
     function createAsteroidCluster() {
       const clusterSize = 10; // Number of asteroids in the cluster
-      const clusterSpeed = 2 * Math.pow(1.02, wave - 1); // Base speed for the cluster
+      const clusterSpeed = 1.4 * Math.pow(1.02, wave - 1); // Base speed for the cluster
       const speedVariation = 0.01; // Speed variation percentage (1%)
 
       // Determine the starting corner (top-left, top-right, bottom-left, bottom-right)
