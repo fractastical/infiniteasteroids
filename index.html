@@ -2240,16 +2240,13 @@
     // Draw the ship
     function drawShip() {
       if (!invincible || (invincibilityTimer % 20 < 10)) {
+        const shipImage = new Image();
+        shipImage.src = 'icons/nachospaceshipgold.png';
+
         ctx.save();
         ctx.translate(ship.x, ship.y);
         ctx.rotate(ship.rotation * Math.PI / 180);
-        ctx.beginPath();
-        ctx.moveTo(0, -ship.size);
-        ctx.lineTo(-ship.size, ship.size);
-        ctx.lineTo(ship.size, ship.size);
-        ctx.closePath();
-        ctx.fillStyle = 'yellow';
-        ctx.fill();
+        ctx.drawImage(shipImage, -ship.size, -ship.size, ship.size * 2, ship.size * 2);
         ctx.restore();
       }
     }
@@ -2395,8 +2392,47 @@
       }
     }
 
+    const asteroidImages = [];
+
+    // preloadAsteroidImages();
+
+    // function preloadAsteroidImages() {
+    //   const imagePaths = [
+    //     '../roids/8bitroid_1014.png',
+    //     '../roids/8bitroid_1736.png',
+    //     '../roids/8bitroid_2286.png',
+    //     // Add more asteroid image paths as needed
+    //   ];
+
+    //   imagePaths.forEach(path => {
+    //     const image = new Image();
+    //     image.src = path;
+    //     asteroidImages.push(image);
+    //   });
+    // }
+
 
     function createAsteroids() {
+
+      const asteroidImages = [
+        'roids/8bitroid_1014.png',
+        'roids/8bitroid_1736.png',
+        'roids/8bitroid_2286.png',
+        'roids/8bitroid_2304.png',
+        'roids/8bitroid_3112.png',
+        'roids/8bitroid_4221.png',
+        'roids/8bitroid_6102.png',
+        'roids/8bitroid_6841.png',
+        'roids/8bitroid_7003.png',
+        'roids/8bitroid_7268.png',
+        'roids/8bitroid_8284.png',
+        'roids/8bitroid_8868.png',
+        'roids/8bitroid_9692.png',
+        'roids/8bitroid_9697.png',
+
+        // Add more asteroid image paths as needed
+      ];
+
       let numberOfAsteroids = 10 + (wave - 1) * 1.8;
 
       for (let i = 0; i < numberOfAsteroids; i++) {
@@ -2409,6 +2445,9 @@
 
         let asteroidSize = isLargeAsteroid ? 40 : isSmallAsteroid ? 10 : 20;
         let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : isLargeAsteroid ? 0.05 : 0.1;
+
+        const randomIndex = Math.floor(Math.random() * asteroidImages.length);
+        const asteroidImage = asteroidImages[randomIndex];
 
         if (isVerySmallAsteroid) {
           asteroidSize = 5;
@@ -2466,7 +2505,8 @@
           dy: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
           hitPoints: hitPoints,
           color: color,
-          isLarge: isLargeAsteroid
+          isLarge: isLargeAsteroid,
+          image: asteroidImage
         };
 
         asteroids.push(asteroid);
@@ -2547,14 +2587,17 @@
       }
     }
 
-    // Draw asteroids
+
     function drawAsteroids() {
       for (let i = 0; i < asteroids.length; i++) {
-        ctx.fillStyle = asteroids[i].color;
-        ctx.beginPath();
-        ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.fill();
+        const asteroidImage = new Image();
+        asteroidImage.src = asteroids[i].image;
+        if (!asteroidImage.src)
+          asteroidImage.src = "roids/8bitroid_1014.png";
+        ctx.save();
+        ctx.translate(asteroids[i].x, asteroids[i].y);
+        ctx.drawImage(asteroidImage, -asteroids[i].size, -asteroids[i].size, asteroids[i].size * 2, asteroids[i].size * 2);
+        ctx.restore();
       }
     }
 
