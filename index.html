@@ -1647,7 +1647,9 @@
 
         if (distance > 200) {
           const angleToShip = Math.atan2(dy, dx);
-          drone.direction = angleToShip;
+          const deviationAngle = (Math.random() - 0.5) * (Math.PI / 3);
+          drone.direction = angleToShip + deviationAngle;
+
         }
 
         drone.x += Math.cos(drone.direction) * drone.speed;
