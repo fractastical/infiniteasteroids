@@ -2641,7 +2641,9 @@
       for (let i = 0; i < asteroids.length; i++) {
         const asteroidImage = new Image();
         asteroidImage.src = asteroids[i].image;
-        if (!asteroidImage.src)
+        // asteroidImage.src = "roids/8bitroid_2657.png";
+
+        if (!asteroidImage.src || asteroidImage.src.length < 5)
           asteroidImage.src = "roids/8bitroid_2657.png";
         ctx.save();
         ctx.translate(asteroids[i].x, asteroids[i].y);
