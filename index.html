@@ -543,6 +543,15 @@
       size: 1
     };
 
+    const alienImage = new Image();
+    alienImage.src = 'icons/little_alien_ship.png';
+
+    let alien = null;
+    let alienLaser = null;
+    const alienLaserSpeed = 2;
+    const alienLaserSize = 5;
+
+
     let boomerang = {
       x: canvas.width / 2,
       y: canvas.height / 2,
@@ -1007,6 +1016,10 @@
 
       updateExplosions();
       drawExplosions();
+
+      updateAlien();
+      updateAlienLaser();
+
 
       spawnTimer -= 1 / 60; // Assuming 60 FPS
 
@@ -2584,6 +2597,19 @@
       if (wave % 3 === 0) {
         createAsteroidCluster();
       }
+
+      if (wave % 5 === 0 && !alien) {
+        alien = {
+          x: canvas.width / 2,
+          y: 50,
+          size: 40,
+          speed: 1,
+          direction: Math.PI / 2,
+          shootTimer: 0,
+          shootInterval: 120 // Adjust the shooting interval as desired
+        };
+      }
+
     }
 
 
@@ -2648,6 +2674,76 @@
         }
       }
     }
+
+    function updateAlien() {
+      if (!alien) return;
+
+      alien.x += Math.cos(alien.direction) * alien.speed;
+      alien.y += Math.sin(alien.direction) * alien.speed;
+
+      alien.shootTimer++;
+      if (alien.shootTimer >= alien.shootInterval) {
+        alien.shootTimer = 0;
+        shootAlienLaser();
+      }
+
+      // Wrap the alien around the screen edges
+      if (alien.x < 0) alien.x = canvas.width;
+      else if (alien.x > canvas.width) alien.x = 0;
+      if (alien.y < 0) alien.y = canvas.height;
+      else if (alien.y > canvas.height) alien.y = 0;
+    }
+
+    function drawAlien() {
+      if (!alien) return;
+
+      ctx.save();
+      ctx.translate(alien.x, alien.y);
+      ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+      ctx.restore();
+    }
+
+    function shootAlienLaser() {
+      if (!alien) return;
+
+      const dx = ship.x - alien.x;
+      const dy = ship.y - alien.y;
+      const angle = Math.atan2(dy, dx);
+
+      alienLaser = {
+        x: alien.x,
+        y: alien.y,
+        dx: Math.cos(angle) * alienLaserSpeed,
+        dy: Math.sin(angle) * alienLaserSpeed
+      };
+    }
+
+    function updateAlienLaser() {
+      if (!alienLaser) return;
+
+      alienLaser.x += alienLaser.dx;
+      alienLaser.y += alienLaser.dy;
+
+      // Remove the laser if it goes off-screen
+      if (
+        alienLaser.x < 0 ||
+        alienLaser.x > canvas.width ||
+        alienLaser.y < 0 ||
+        alienLaser.y > canvas.height
+      ) {
+        alienLaser = null;
+      }
+    }
+
+    function drawAlienLaser() {
+      if (!alienLaser) return;
+
+      ctx.fillStyle = 'green';
+      ctx.beginPath();
+      ctx.arc(alienLaser.x, alienLaser.y, alienLaserSize, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
 
 
     function drawAsteroids() {
