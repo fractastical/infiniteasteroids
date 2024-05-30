@@ -1180,15 +1180,20 @@
     }
 
     function drawHomingMissiles() {
-      ctx.fillStyle = 'red';
       for (let i = 0; i < homingMissile.activeMissiles.length; i++) {
         let missile = homingMissile.activeMissiles[i];
-        ctx.beginPath();
-        ctx.arc(missile.x, missile.y, 5, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.save();
+        ctx.translate(missile.x, missile.y);
+
+        // Calculate the rotation angle based on the missile's direction
+        let angle = Math.atan2(missile.dy, missile.dx);
+        ctx.rotate(angle);
+
+        // Draw the homing missile image
+        ctx.drawImage(droneImages.nanoDrone, -5, -5, 10, 10);
+        ctx.restore();
       }
     }
-
 
 
     // Function to handle laser collisions
@@ -1313,6 +1318,7 @@
         speed: 0.5 * droneUpgrades.speed,
         direction: Math.random() * Math.PI * 2,
         lasers: [],
+        image: droneImages.regularDrone,
         laserSpeed: 2 * droneUpgrades.laserSpeed,
         laserInterval: 80 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
         laserTimer: 0
@@ -1329,6 +1335,7 @@
         size: 12,
         speed: 0.5 * bomberDroneUpgrades.speed,
         direction: Math.random() * Math.PI * 2,
+        image: droneImages.bomberDrone,
         bombs: [],
         bombInterval: 120,
         bombTimer: 0
@@ -1669,17 +1676,24 @@
 
     function drawDrones() {
       drones.forEach(drone => {
+
         ctx.save();
         ctx.translate(drone.x, drone.y);
         ctx.rotate(drone.direction);
-        ctx.beginPath();
-        ctx.moveTo(0, -drone.size);
-        ctx.lineTo(-drone.size, drone.size);
-        ctx.lineTo(drone.size, drone.size);
-        ctx.closePath();
-        ctx.fillStyle = 'cyan';
-        ctx.fill();
+        ctx.drawImage(drone.image, -drone.size, -drone.size, drone.size * 2, drone.size * 2);
         ctx.restore();
+
+        // ctx.save();
+        // ctx.translate(drone.x, drone.y);
+        // ctx.rotate(drone.direction);
+        // ctx.beginPath();
+        // ctx.moveTo(0, -drone.size);
+        // ctx.lineTo(-drone.size, drone.size);
+        // ctx.lineTo(drone.size, drone.size);
+        // ctx.closePath();
+        // ctx.fillStyle = 'cyan';
+        // ctx.fill();
+        // ctx.restore();
 
         ctx.fillStyle = 'cyan';
         for (let i = 0; i < drone.lasers.length; i++) {
@@ -1691,17 +1705,24 @@
 
     function drawBomberDrones() {
       bomberDrones.forEach(drone => {
+
         ctx.save();
         ctx.translate(drone.x, drone.y);
         ctx.rotate(drone.direction);
-        ctx.beginPath();
-        ctx.moveTo(0, -drone.size);
-        ctx.lineTo(-drone.size, drone.size);
-        ctx.lineTo(drone.size, drone.size);
-        ctx.closePath();
-        ctx.fillStyle = 'magenta';
-        ctx.fill();
+        ctx.drawImage(drone.image, -drone.size, -drone.size, drone.size * 2, drone.size * 2);
         ctx.restore();
+
+        // ctx.save();
+        // ctx.translate(drone.x, drone.y);
+        // ctx.rotate(drone.direction);
+        // ctx.beginPath();
+        // ctx.moveTo(0, -drone.size);
+        // ctx.lineTo(-drone.size, drone.size);
+        // ctx.lineTo(drone.size, drone.size);
+        // ctx.closePath();
+        // ctx.fillStyle = 'magenta';
+        // ctx.fill();
+        // ctx.restore();
 
         // Draw bombs
         ctx.fillStyle = 'orange';
@@ -2398,10 +2419,21 @@
 
     // function preloadAsteroidImages() {
     //   const imagePaths = [
-    //     '../roids/8bitroid_1014.png',
-    //     '../roids/8bitroid_1736.png',
-    //     '../roids/8bitroid_2286.png',
-    //     // Add more asteroid image paths as needed
+    //     'roids/8bitroid_2657.png',
+    //     'roids/8bitroid_3590.png',
+    //     'roids/8bitroid_4692.png',
+    //     'roids/8bitroid_5715.png',
+    //     'roids/8bitroid_6560.png',
+    //     'roids/8bitroid_7406.png',
+    //     'roids/8bitroid_8170.png',
+    //     'roids/8bitroid_8775.png',
+    //     'roids/8bitroid_8824.png',
+    //     'roids/8bitroid_8892.png',
+    //     'roids/8bitroid_9074.png',
+    //     'roids/8bitroid_9292.png',
+    //     'roids/8bitroid_9449.png',
+    //     'roids/8bitroid_9460.png',
+
     //   ];
 
     //   imagePaths.forEach(path => {
@@ -2412,23 +2444,40 @@
     // }
 
 
+    const droneImages = {
+      regularDrone: 'icons/laserdrone.png',
+      bomberDrone: 'icons/bomberdrone.png',
+      nanoDrone: 'icons/nanodrone.png',
+    };
+
+    function preloadDroneImages() {
+      for (const droneType in droneImages) {
+        const image = new Image();
+        image.src = droneImages[droneType];
+        droneImages[droneType] = image;
+      }
+    }
+
+    // Call the preloadDroneImages function before starting the game
+    preloadDroneImages();
+
     function createAsteroids() {
 
       const asteroidImages = [
-        'roids/8bitroid_1014.png',
-        'roids/8bitroid_1736.png',
-        'roids/8bitroid_2286.png',
-        'roids/8bitroid_2304.png',
-        'roids/8bitroid_3112.png',
-        'roids/8bitroid_4221.png',
-        'roids/8bitroid_6102.png',
-        'roids/8bitroid_6841.png',
-        'roids/8bitroid_7003.png',
-        'roids/8bitroid_7268.png',
-        'roids/8bitroid_8284.png',
-        'roids/8bitroid_8868.png',
-        'roids/8bitroid_9692.png',
-        'roids/8bitroid_9697.png',
+        'roids/8bitroid_2657.png',
+        'roids/8bitroid_3590.png',
+        'roids/8bitroid_4692.png',
+        'roids/8bitroid_5715.png',
+        'roids/8bitroid_6560.png',
+        'roids/8bitroid_7406.png',
+        'roids/8bitroid_8170.png',
+        'roids/8bitroid_8775.png',
+        'roids/8bitroid_8824.png',
+        'roids/8bitroid_8892.png',
+        'roids/8bitroid_9074.png',
+        'roids/8bitroid_9292.png',
+        'roids/8bitroid_9449.png',
+        'roids/8bitroid_9460.png',
 
         // Add more asteroid image paths as needed
       ];
@@ -2593,7 +2642,7 @@
         const asteroidImage = new Image();
         asteroidImage.src = asteroids[i].image;
         if (!asteroidImage.src)
-          asteroidImage.src = "roids/8bitroid_1014.png";
+          asteroidImage.src = "roids/8bitroid_2657.png";
         ctx.save();
         ctx.translate(asteroids[i].x, asteroids[i].y);
         ctx.drawImage(asteroidImage, -asteroids[i].size, -asteroids[i].size, asteroids[i].size * 2, asteroids[i].size * 2);
