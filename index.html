@@ -1116,7 +1116,7 @@
             damageReport.sonicBlast += actualDamage;
 
             if (asteroid.hitPoints <= 0) {
-              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints, asteroid.image);
               asteroids.splice(j, 1);
               j--;
             }
@@ -1212,7 +1212,7 @@
               if (asteroid.isLarge) {
                 createSmallerAsteroids(asteroid.x, asteroid.y, asteroid.size, asteroid.speed, 1); // Split into smaller asteroids
               }
-              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints, asteroid.image);
               asteroids.splice(j, 1);
             } else {
               // Lighten the color slightly
@@ -1413,6 +1413,9 @@
       boomerang.x += boomerang.dx * boomerang.speed;
       boomerang.y += boomerang.dy * boomerang.speed;
 
+      // Calculate the rotation angle based on the boomerang's velocity
+      boomerang.angle = Math.atan2(boomerang.dy, boomerang.dx);
+
       // Bounce off the edges of the screen
       if (boomerang.x < 0 || boomerang.x > canvas.width) {
         boomerang.dx = -boomerang.dx;
@@ -1440,14 +1443,24 @@
       }
     }
 
+    const boomerangImage = new Image();
+    boomerangImage.src = 'icons/Boomeranggold.png';
+
     function drawBoomerang() {
       if (!boomerang.active) return;
 
-      ctx.fillStyle = 'orange';
-      ctx.beginPath();
-      ctx.arc(boomerang.x, boomerang.y, boomerang.size, 0, Math.PI * 2);
-      ctx.closePath();
-      ctx.fill();
+      // ctx.fillStyle = 'orange';
+      // ctx.beginPath();
+      // ctx.arc(boomerang.x, boomerang.y, boomerang.size, 0, Math.PI * 2);
+      // ctx.closePath();
+      // ctx.fill();
+
+      ctx.save();
+      ctx.translate(boomerang.x, boomerang.y);
+      ctx.rotate(boomerang.angle);
+      ctx.drawImage(boomerangImage, -boomerang.size / 2, -boomerang.size / 2, boomerang.size * 3, boomerang.size * 3);
+      ctx.restore();
+
     }
 
     function activateBoomerang() {
@@ -1657,7 +1670,7 @@
               damageReport.bomberDrones += actualDamage;
 
               if (asteroid.hitPoints <= 0) {
-                createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+                createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints, asteroid.image);
                 asteroids.splice(j, 1);
                 score += 50;
                 increaseXP(20);
@@ -1960,14 +1973,14 @@
         // 'Increase Max Bullets',
         'Decrease Laser Cooldown',
         'Increase Rotation Speed',
-        ...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']),
-        ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
-        ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
-        ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
-        ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
-        ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']),
-        ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
-        ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
+        // ...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']),
+        // ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
+        // ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
+        // ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
+        // ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
+        // ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']),
+        // ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
+        // ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
         ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']),
         ...(activeWeaponClasses.includes('homingmissile') ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : ['Activate Nano Swarm'])
 
@@ -2640,11 +2653,13 @@
     function drawAsteroids() {
       for (let i = 0; i < asteroids.length; i++) {
         const asteroidImage = new Image();
-        asteroidImage.src = asteroids[i].image;
+        // asteroidImage.src = asteroids[i].image;
         // asteroidImage.src = "roids/8bitroid_2657.png";
-
-        if (!asteroidImage.src || asteroidImage.src.length < 5)
+        // console.log(asteroidImage.src);
+        if (asteroids[i].image == undefined || asteroids[i].image.length < 5)
           asteroidImage.src = "roids/8bitroid_2657.png";
+        else
+          asteroidImage.src = asteroids[i].image;
         ctx.save();
         ctx.translate(asteroids[i].x, asteroids[i].y);
         ctx.drawImage(asteroidImage, -asteroids[i].size, -asteroids[i].size, asteroids[i].size * 2, asteroids[i].size * 2);
@@ -2668,7 +2683,7 @@
           totalDamage += actualDamage;
 
           if (asteroid.hitPoints <= 0) {
-            createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+            createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints, asteroid.image);
             asteroids.splice(i, 1);
           }
 
@@ -2696,12 +2711,46 @@
     }
 
 
-    function createExplosion(x, y, hitpoints = 0) {
+    function createExplosion(x, y, hitpoints = 1, asteroidImage = "") {
       const baseSize = 20; // Base size for explosions
       const sizeReductionFactor = 1; // Size reduction per hitpoint
 
+
       const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
       const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015
+      const canvas = document.createElement('canvas');
+
+      if (asteroidImage && asteroidImage.length > 5 && false) {
+
+        const ctx = canvas.getContext('2d');
+        canvas.width = baseSize;
+        canvas.height = baseSize;
+        ctx.drawImage(asteroidImage, 0, 0, baseSize, baseSize);
+        const imageData = ctx.getImageData(0, 0, baseSize, baseSize);
+        const pixels = imageData.data;
+
+        // Create explosion particles using the extracted pixels
+        for (let i = 0; i < pixels.length; i += 4) {
+          const r = pixels[i];
+          const g = pixels[i + 1];
+          const b = pixels[i + 2];
+          const a = pixels[i + 3];
+
+          if (a > 0) {
+            const particle = {
+              x: x + (i / 4) % size - size / 2,
+              y: y + Math.floor((i / 4) / size) - size / 2,
+              color: `rgba(${r}, ${g}, ${b}, ${a})`,
+              size: Math.random() * 3 + 1,
+              speed: Math.random() * 3 + 1,
+              direction: Math.random() * Math.PI * 2
+            };
+            explosions.push(particle);
+          }
+        }
+      }
+
+
 
       let randomColor;
       if (hitpoints > 7) {
@@ -3015,7 +3064,7 @@
             damageReport.acid += actualDamage;
 
             if (asteroid.hitPoints <= 0) {
-              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints, asteroid.image);
               asteroids.splice(j, 1);
             }
           }
@@ -3065,7 +3114,7 @@
           let distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
-            createExplosion(asteroid.x, asteroid.y);
+            createExplosion(asteroid.x, asteroid.y, 1, asteroid.image);
             asteroids.splice(i, 1);
             damageReport.deathRay += asteroid.hitPoints;
           }
