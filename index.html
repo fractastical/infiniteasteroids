@@ -430,12 +430,13 @@
   <div id="startScreen">
     <div>
       <h2>Welcome to Nacho Blaster!</h2>
-      <p>Use the joystick to move your ship.</p>
-      <p>Tap the left and right sides of the screen to rotate your ship.</p>
-      <p>Tap the center of the screen to accelerate.</p>
+      <p>Select a Mode to Start:</p>
+      <button onclick="initializeGame(GameModes.EASY)">Easy</button>
+      <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
+      <button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button>
       <!-- <p>Tap lower left for store.</p> -->
       <!-- <p>Tap with two fingers to fire.</p> -->
-      <button onclick="startGame()">Start Game</button>
+      <!-- <button onclick="startGame()">Start Game</button> -->
     </div>
   </div>
 
@@ -543,6 +544,18 @@
       size: 1
     };
 
+    const GameModes = {
+      EASY: 'easy',
+      NORMAL: 'normal',
+      HARD: 'hard'
+    };
+
+    let currentMode = GameModes.EASY; // Start with Easy mode by default
+    let modesUnlocked = {
+      normal: false,
+      hard: false
+    };
+
     const alienImage = new Image();
     alienImage.src = 'icons/little_alien_ship.png';
 
@@ -589,6 +602,7 @@
       active: false,
       remainingDuration: 0
     };
+
 
     let freezeEffectUpgrades = {
       duration: 1,
@@ -1111,7 +1125,7 @@
         document.getElementById('joystick').style.display = 'block';
         document.getElementById('startScreen').style.display = 'flex';
       } else {
-        startGame();
+        // startGame();
       }
     });
 
@@ -1142,6 +1156,30 @@
           i--;
         }
       }
+    }
+
+
+    let asteroidDifficultySpeedMultiplier = 1;
+    let levelUpXPMultiplier = 1.2;
+
+    function initializeGame(mode) {
+      switch (mode) {
+        case GameModes.EASY:
+          asteroidDifficultySpeedMultiplier = 0.7;
+          levelUpXPMultiplier = 1.1;
+          break;
+        case GameModes.NORMAL:
+          numberOfAsteroids = 10;
+          asteroidSpeedMultiplier = 1;
+          levelUpXPMultiplier = 1.2;
+          break;
+        case GameModes.HARD:
+          asteroidSpeedMultiplier = 1.1;
+          levelUpXPMultiplier = 1.3;
+          break;
+      }
+      currentMode = mode;
+      startGame();
     }
 
     function drawAcidBombs() {
@@ -1962,7 +2000,7 @@
     function levelUp() {
       level++;
       xp = 0;  // Reset XP
-      xpToNextLevel = Math.floor(xpToNextLevel * 1.2); // Increase XP required for next level
+      xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier); // Increase XP required for next level
       updateXPBar();
 
       // Generate three random upgrades
@@ -2397,7 +2435,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.403)`, 20, 30);
+      ctx.fillText(`(v 0.501)`, 20, 30);
       ctx.fillText(`Level: ${level}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -2580,9 +2618,9 @@
           x: x,
           y: y,
           size: asteroidSize,
-          speed: 2 * Math.pow(1.02, wave - 1),
-          dx: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
-          dy: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1),
+          speed: 2 * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
+          dx: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
+          dy: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
           hitPoints: hitPoints,
           color: color,
           isLarge: isLargeAsteroid,
@@ -2813,8 +2851,8 @@
 
 
     function createExplosion(x, y, hitpoints = 1, asteroidImage = "") {
-      const baseSize = 20; // Base size for explosions
-      const sizeReductionFactor = 1; // Size reduction per hitpoint
+      const baseSize = 15; // Base size for explosions
+      const sizeReductionFactor = 1.5; // Size reduction per hitpoint
 
 
       const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
