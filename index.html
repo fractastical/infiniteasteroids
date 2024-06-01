@@ -790,6 +790,7 @@
     // Game loop
     function startGame() {
       document.getElementById('startScreen').style.display = 'none';
+      startGamingSessionApi();
       createAsteroids();
       invincible = true;
       ship.laserTimer = 0;
@@ -1587,7 +1588,7 @@
         const dy = ship.y - drone.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance > 200) { // If the drone is too far from the ship
+        if (distance > 250) { // If the drone is too far from the ship
           const angleToShip = Math.atan2(dy, dx);
           drone.direction = angleToShip; // Change direction towards the ship
         }
@@ -1807,6 +1808,7 @@
 
     function endGame() {
       clearInterval(gameLoop);
+      endGameSessionApi();
       backgroundMusic.pause(); // Stop the background music
 
       ctx.fillStyle = 'white';
@@ -1844,22 +1846,23 @@
       // Show the restart button
       restartButton.style.display = 'block';
 
+      endGameSessionApi();
       fetchLeaderboard();
 
-      const a = new URLSearchParams(window.location.href)
+      // const a = new URLSearchParams(window.location.href)
 
-      if (a && a.get('inMsgId')) {
-        fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-webhook/test-score?userId=${a.get('userId')}&score=${score}&inMsgId=${a.get('inMsgId').split('#')[0]}`, {
-          method: 'POST'
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Success:', data);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-      }
+      // if (a && a.get('inMsgId')) {
+      //   fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-webhook/test-score?userId=${a.get('userId')}&score=${score}&inMsgId=${a.get('inMsgId').split('#')[0]}`, {
+      //     method: 'POST'
+      //   })
+      //     .then(response => response.json())
+      //     .then(data => {
+      //       console.log('Success:', data);
+      //     })
+      //     .catch(error => {
+      //       console.error('Error:', error);
+      //     });
+      // }
 
     }
 
@@ -3301,27 +3304,7 @@
 
 
 
-    async function fetchLeaderboard() {
-      const userId = 190933907; // Replace with dynamic user ID if available
-      const response = await fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-webhook/game-leaderboard?userId=${userId}&inMsgId=AQAAAEgOAACDL96FnHtAzSUv6iI`);
-      const leaderboard = await response.json();
-      displayLeaderboard(leaderboard);
-    }
 
-    function displayLeaderboard(leaderboard) {
-      const leaderboardContainer = document.getElementById('leaderboard');
-      leaderboardContainer.innerHTML = '<h2>Leaderboard</h2><ol id="leaderboard-list"></ol>';
-      const leaderboardList = document.getElementById('leaderboard-list');
-
-      leaderboard.forEach(entry => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${entry.position}. ${entry.user.first_name} ${entry.user.last_name || ''} - ${entry.score}`;
-        leaderboardList.appendChild(listItem);
-      });
-
-      document.getElementById('leaderboard-container').style.display = 'block';
-      document.getElementById('coins').textContent = coins;
-    }
 
 
     window.addEventListener('resize', resizeCanvas);
@@ -3624,76 +3607,9 @@
     // Start the game
     // startGame();
 
-    const baseUrl = 'https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api';
-    let gameSessionId = '';
-
-    function startGamingSessionApi() {
-      const a = new URLSearchParams(window.location.href);
-
-      const gameRequestId = a.get('gameRequestId');
-
-      fetch(`${baseUrl}/telegram-game/start-game?gameRequestId=${gameRequestId}`, {
-        method: 'POST'
-      })
-        .then(response => response.json())
-        .then(data => {
-          gameSessionId = data;
-          console.log('Success:', data);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
-
-    function endGameSessionApi(score) {
-      const a = new URLSearchParams(window.location.href);
-
-      const gameRequestId = a.get('gameRequestId');
-
-      const inMsgId = a.get('inMsgId').split('#')[0];
-      const userId = a.get('userId');
-
-      fetch(`${baseUrl}/telegram-game/end-game?gameRequestId=${gameRequestId}&gameSessionId=${gameSessionId}&inMsgId=${inMsgId}&userId=${userId}&score=${score}`, {
-        method: 'POST'
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success:', data);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
-
-    function getLeaderboard() {
-
-      return fetch(`${baseUrl}/telegram-game/leaderboard`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success leaderboard fetch:', data);
-          return data;
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
-
-    function getActivityStats() {
-      return fetch(`${baseUrl}/telegram-game/activity-stats`, {
-        method: 'GET'
-      }).then(s => s.json())
-        .then(data => {
-          console.log('Success activity stats fetch:', data);
-          return data;
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        })
-    }
 
   </script>
 </body>
 
 </html>
+<script src="infinite/leaderboard_20240530164424.js?v=20240530164450"></script>
