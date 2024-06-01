@@ -1,0 +1,62 @@
+features
+
+- add upgrade rarity
+
+
+pickables
+  - insta xp fill
+  - insta fill
+
+
+
+beat on level easy (+10% XP bonus, 20% less roids, slower roids)
+beat on level normal
+beat on level hard (10% more roids, faster roids)
+
+beat level 10
+beat level 20
+beat level 30
+
+beat the boss
+
+survive 5:00 without firing
+
+beat level 20 with only lasers
+beat level 20 with only 
+
+beat wtih jimmy fandango
+beat wtih radical rick
+beat with oomy sally 
+beat with brazilia gooey
+beat with monsteroo 
+beat with alfredo  
+
+characters:
+
+jimmy fandango
+radical rick
+oomy sally 
+gooey brazilia 
+monsteroo 
+alfredo  
+
+unlocks:
+
+coins for win: 0.1% of XP
+
+
+start with 1..3 upgrades 
+luck: more rarity 
+
+alien mines
+shield 
+sonic ray
+acid bomb 
+double laser 
+double turret 
+triple laser
+triple turret
+double boomerang
+double drone
+double bomber drone
+damage + 5%  (10 levels)
