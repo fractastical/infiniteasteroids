@@ -2791,18 +2791,23 @@
 
     function drawAsteroids() {
       for (let i = 0; i < asteroids.length; i++) {
-        const asteroidImage = new Image();
+        ctx.fillStyle = asteroids[i].color;
+        ctx.beginPath();
+        ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+        // const asteroidImage = new Image();
         // asteroidImage.src = asteroids[i].image;
         // asteroidImage.src = "roids/8bitroid_2657.png";
         // console.log(asteroidImage.src);
-        if (asteroids[i].image == undefined || asteroids[i].image.length < 5)
-          asteroidImage.src = "roids/8bitroid_2657.png";
-        else
-          asteroidImage.src = asteroids[i].image;
-        ctx.save();
-        ctx.translate(asteroids[i].x, asteroids[i].y);
-        ctx.drawImage(asteroidImage, -asteroids[i].size, -asteroids[i].size, asteroids[i].size * 2, asteroids[i].size * 2);
-        ctx.restore();
+        // if (asteroids[i].image == undefined || asteroids[i].image.length < 5)
+        //   asteroidImage.src = "roids/8bitroid_2657.png";
+        // else
+        //   asteroidImage.src = asteroids[i].image;
+        // ctx.save();
+        // ctx.translate(asteroids[i].x, asteroids[i].y);
+        // ctx.drawImage(asteroidImage, -asteroids[i].size, -asteroids[i].size, asteroids[i].size * 2, asteroids[i].size * 2);
+        // ctx.restore();
       }
     }
 
