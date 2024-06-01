@@ -397,6 +397,33 @@
       font-weight: bold;
       z-index: 1;
     }
+
+    #achievementsContainer {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    #achievementsList {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .achievement {
+      display: flex;
+      align-items: center;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #222;
+      color: #0f0;
+    }
+
+    .achievement img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
@@ -431,9 +458,18 @@
     <div>
       <h2>Welcome to Nacho Blaster!</h2>
       <p>Select a Mode to Start:</p>
-      <button onclick="initializeGame(GameModes.EASY)">Easy</button>
-      <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
-      <button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button>
+      <button id="easyButton" onclick="initializeGame(GameModes.EASY)">Easy</button>
+      <button id="normalButton" onclick="initializeGame(GameModes.NORMAL)" disabled>Normal</button>
+      <button id="hardButton" onclick="initializeGame(GameModes.HARD)" disabled>Hard</button>
+
+      <div id="achievementsContainer">
+        <h3>Your Achievements</h3>
+        <div id="achievementsList"></div>
+      </div>
+
+
+      <!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
+      <button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button> -->
       <!-- <p>Tap lower left for store.</p> -->
       <!-- <p>Tap with two fingers to fire.</p> -->
       <!-- <button onclick="startGame()">Start Game</button> -->
@@ -1122,6 +1158,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      loadUnlocks();
+      loadAchievements();
+      populateAchievements();
       if (isMobile()) {
         document.getElementById('joystick').style.display = 'block';
         document.getElementById('startScreen').style.display = 'flex';
@@ -1855,7 +1894,12 @@
       } else if (currentMode === GameModes.NORMAL && wave > 29) {
         modesUnlocked.hard = true;
       }
+      if (wave > 1)
+        achievements += "white hat";
+
+
       saveUnlocks();
+
 
       ctx.fillStyle = 'white';
       ctx.font = '40px Arial';
@@ -1863,7 +1907,9 @@
       ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
       ctx.font = '20px Arial';
 
+
       ctx.fillText(`Level: ${level}`, canvas.width / 2, canvas.height / 2 + 40);
+
 
       ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 70);
       ctx.fillText(`Asteroids Destroyed: ${asteroidsKilled}`, canvas.width / 2, canvas.height / 2 + 100);
@@ -1894,6 +1940,7 @@
 
       endGameSessionApi();
       fetchLeaderboard();
+      updateAchievementsAtEnd();
 
       // const a = new URLSearchParams(window.location.href)
 
@@ -3662,25 +3709,119 @@
       localStorage.setItem('NachoBlasterAchievements', JSON.stringify(achievements));
     }
 
+    function saveAchievements() {
+      localStorage.setItem('achievements', JSON.stringify(Achievements));
+    }
+
+    function loadAchievements() {
+      const savedAchievements = localStorage.getItem('achievements');
+      if (savedAchievements) {
+        Object.assign(Achievements, JSON.parse(savedAchievements));
+      }
+    }
+
+
     function loadUnlocks() {
       const savedUnlocks = localStorage.getItem('NachoBlasterModesUnlocked');
       const achievements = localStorage.getItem('NachoBlasterAchievements');
 
       if (savedUnlocks) {
         modesUnlocked = JSON.parse(savedUnlocks);
+        document.getElementById('normalButton').disabled = !modesUnlocked.normal;
+        document.getElementById('hardButton').disabled = !modesUnlocked.hard;
       }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       loadUnlocks();
+      populateAchievements();
       if (isMobile()) {
         document.getElementById('joystick').style.display = 'block';
         document.getElementById('startScreen').style.display = 'flex';
       } else {
-        startGame();
+        // startGame();
       }
     });
 
+
+
+
+    function populateAchievements() {
+      const achievementsList = document.getElementById('achievementsList');
+      achievementsList.innerHTML = '';
+
+      for (const key in Achievements) {
+        if (Achievements.hasOwnProperty(key)) {
+          const achievement = Achievements[key];
+          const achieved = achievement.reached || (achievement.damage && achievement.damage >= achievement.required);
+
+          const achievementElement = document.createElement('div');
+          achievementElement.classList.add('achievement');
+          achievementElement.style.opacity = achieved ? '1' : '0.5';
+
+          const icon = document.createElement('img');
+          icon.src = achievement.icon;
+          icon.alt = achievement.description;
+          achievementElement.appendChild(icon);
+
+          const description = document.createElement('span');
+          description.textContent = achievement.description;
+          achievementElement.appendChild(description);
+
+          achievementsList.appendChild(achievementElement);
+        }
+      }
+    }
+
+
+    const Achievements = {
+      reach_wave_5: { reached: false, icon: 'achievements/_2022.png', description: 'Reach Wave 5' },
+      reach_wave_10: { reached: false, icon: 'achievements/_2469.png', description: 'Reach Wave 10' },
+      reach_wave_15: { reached: false, icon: 'achievements/_2469.png', description: 'Reach Wave 15' },
+      reach_wave_20: { reached: false, icon: 'achievements/_2531.png', description: 'Reach Wave 20' },
+      reach_wave_25: { reached: false, icon: 'achievements/_2469.png', description: 'Reach Wave 25' },
+      destroy_100_asteroids: { reached: false, icon: 'achievements/_3933.png', description: 'Destroy 100 Asteroids in One Game' },
+      // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
+      acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/_3640.png', description: 'Deal 10,000 Damage with Acid Bomb' },
+      explosive_laser_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/_3658.png', description: 'Deal 10,000 Damage with Explosive Laser' },
+      no_lives_lost: { reached: false, icon: 'achievements/_5373.png', description: 'Survived with No Lives Lost' },
+    };
+
+    function updateAchievementsAtEnd() {
+      if (wave >= 5) {
+        Achievements.reach_wave_5.reached = true;
+      }
+      if (wave >= 10) {
+        Achievements.reach_wave_10.reached = true;
+      }
+      if (wave >= 15) {
+        Achievements.reach_wave_15.reached = true;
+      }
+      if (wave >= 20) {
+        Achievements.reach_wave_20.reached = true;
+      }
+      if (wave >= 25) {
+        Achievements.reach_wave_25.reached = true;
+      }
+      if (damageReport.acid >= Achievements.acid_bomb_damage.required) {
+        Achievements.acid_bomb_damage.reached = true;
+      }
+      if (damageReport.explosiveLasers >= Achievements.explosive_laser_damage.required) {
+        Achievements.explosive_laser_damage.reached = true;
+      }
+      if (asteroidsKilled >= 100) {
+        Achievements.destroy_100_asteroids.reached = true;
+      }
+      // if (asteroidsKilled >= 500) {
+      //   Achievements.destroy_500_asteroids.reached = true;
+      // }
+      if (lives === 3) {
+        Achievements.no_lives_lost.reached = true;
+      }
+
+      saveAchievements();
+      populateAchievements();
+    }
 
 
   </script>
