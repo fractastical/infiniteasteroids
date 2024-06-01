@@ -772,6 +772,7 @@
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
+    let achievements = [];
 
 
     // canvas.addEventListener('touchmove', (e) => {
@@ -1848,6 +1849,13 @@
       clearInterval(gameLoop);
       endGameSessionApi();
       backgroundMusic.pause(); // Stop the background music
+
+      if (currentMode === GameModes.EASY && wave > 29) {
+        modesUnlocked.normal = true;
+      } else if (currentMode === GameModes.NORMAL && wave > 29) {
+        modesUnlocked.hard = true;
+      }
+      saveUnlocks();
 
       ctx.fillStyle = 'white';
       ctx.font = '40px Arial';
@@ -3649,6 +3657,30 @@
 
     // Start the game
     // startGame();
+    function saveUnlocks() {
+      localStorage.setItem('NachoBlasterModesUnlocked', JSON.stringify(modesUnlocked));
+      localStorage.setItem('NachoBlasterAchievements', JSON.stringify(achievements));
+    }
+
+    function loadUnlocks() {
+      const savedUnlocks = localStorage.getItem('NachoBlasterModesUnlocked');
+      const achievements = localStorage.getItem('NachoBlasterAchievements');
+
+      if (savedUnlocks) {
+        modesUnlocked = JSON.parse(savedUnlocks);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUnlocks();
+      if (isMobile()) {
+        document.getElementById('joystick').style.display = 'block';
+        document.getElementById('startScreen').style.display = 'flex';
+      } else {
+        startGame();
+      }
+    });
+
 
 
   </script>
