@@ -858,6 +858,9 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       document.getElementById('leaderboard-container').style.display = 'none';
 
+      // don't let people play with negative lives
+      if (lives < 0)
+        return;
 
       if (ship.laserTimer > 0) {
         ship.laserTimer--;
@@ -1894,8 +1897,6 @@
       } else if (currentMode === GameModes.NORMAL && wave > 29) {
         modesUnlocked.hard = true;
       }
-      if (wave > 1)
-        achievements += "white hat";
 
 
       saveUnlocks();
@@ -3704,33 +3705,7 @@
 
     // Start the game
     // startGame();
-    function saveUnlocks() {
-      localStorage.setItem('NachoBlasterModesUnlocked', JSON.stringify(modesUnlocked));
-      localStorage.setItem('NachoBlasterAchievements', JSON.stringify(achievements));
-    }
 
-    function saveAchievements() {
-      localStorage.setItem('achievements', JSON.stringify(Achievements));
-    }
-
-    function loadAchievements() {
-      const savedAchievements = localStorage.getItem('achievements');
-      if (savedAchievements) {
-        Object.assign(Achievements, JSON.parse(savedAchievements));
-      }
-    }
-
-
-    function loadUnlocks() {
-      const savedUnlocks = localStorage.getItem('NachoBlasterModesUnlocked');
-      const achievements = localStorage.getItem('NachoBlasterAchievements');
-
-      if (savedUnlocks) {
-        modesUnlocked = JSON.parse(savedUnlocks);
-        document.getElementById('normalButton').disabled = !modesUnlocked.normal;
-        document.getElementById('hardButton').disabled = !modesUnlocked.hard;
-      }
-    }
 
     document.addEventListener('DOMContentLoaded', () => {
       loadUnlocks();
