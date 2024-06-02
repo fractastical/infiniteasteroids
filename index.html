@@ -597,11 +597,13 @@
 
     const alienImage = new Image();
     alienImage.src = 'icons/little_alien_ship_green.png';
-    // alienImage.src = 'achievements/orpheus.png';
+    const bossAlienImage = new Image();
+    bossAlienImage.src = 'icons/alien_boss_ship_green.png';
+
 
     let alien = null;
     let alienLaser = null;
-    const alienLaserSpeed = 2;
+    const alienLaserSpeed = 2.2;
     const alienLaserSize = 4;
 
 
@@ -648,6 +650,9 @@
       duration: 1,
       cooldown: 1
     };
+
+    let aliens = [];
+    let alienLasers = [];
 
     let damageReport = {
       lasers: 0,
@@ -1076,10 +1081,15 @@
       updateExplosions();
       drawExplosions();
 
-      updateAlien();
-      drawAlien();
-      updateAlienLaser();
-      drawAlienLaser();
+      updateBossAlien();
+      drawBossAlien();
+      updateBossAlienLaser();
+      drawBossAlienLaser();
+
+      updateAliens();
+      updateAlienLasers();
+      drawAliens();
+      drawAlienLasers();
 
 
       spawnTimer -= 1 / 60; // Assuming 60 FPS
@@ -1087,7 +1097,10 @@
       if (spawnTimer <= 0) {
         wave++;
         createAsteroids();
+        spawnAliens(wave); // Spawn aliens based on the current wave
         spawnTimer = spawnCooldown;
+
+
       }
 
       if (gameOver) endGame();
@@ -1302,19 +1315,47 @@
       }
     }
 
+    function handleLaserAlienCollision(laser, alien) {
+      createExplosion(alien.x, alien.y);
+      aliens.splice(aliens.indexOf(alien), 1);
+      ship.lasers.splice(ship.lasers.indexOf(laser), 1);
+      increaseXP(200);
+      score += 200; // Adjust the score as needed
+    }
+
 
     // Function to handle laser collisions
     function checkLaserCollisions(lasers, isShip) {
       for (let i = lasers.length - 1; i >= 0; i--) {
         let laser = lasers[i];
 
+        for (let j = aliens.length - 1; j >= 0; j--) {
+          const alien = aliens[j];
+          if (isColliding(laser, alien)) {
+            handleLaserAlienCollision(laser, alien);
+            break;
+          }
+        }
+
         if (alien && isColliding(laser, alien)) {
-          createExplosion(alien.x, alien.y, 15);
-          alien = null; // Destroy alien
-          increaseXP(20 * 20);
+
+          let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
+          let actualDamage = Math.min(damage, alien.hitpoints); // Ensure we don't overkill the asteroid
+          alien.hitpoints -= actualDamage;
+
+          createExplosion(alien.x, alien.y);
+
+          if (alien.hitpoints <= 0) {
+            createExplosion(alien.x, alien.y, 15);
+            alien = null; // Destroy alien
+            increaseXP(30 * 20);
+            score += 1000;
+          }
           lasers.splice(i, 1); // Remove laser
           break;
         }
+
+
 
         for (let j = asteroids.length - 1; j >= 0; j--) {
           let asteroid = asteroids[j];
@@ -2514,7 +2555,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.503)`, 20, 30);
+      ctx.fillText(`(v 0.504)`, 20, 30);
       ctx.fillText(`Level: ${level}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -2720,7 +2761,7 @@
         createAsteroidCluster();
       }
 
-      if (wave % 1 === 0 && !alien) {
+      if (wave % 10 === 0 && !alien) {
         alien = {
           x: 20,
           y: 50,
@@ -2728,6 +2769,7 @@
           speed: 1,
           direction: Math.PI / 2,
           shootTimer: 0,
+          hitpoints: 15,
           shootInterval: 120 // Adjust the shooting interval as desired
         };
       }
@@ -2796,7 +2838,170 @@
         }
       }
     }
-    function updateAlien() {
+
+    function spawnAliens(wave) {
+      const aliensToSpawn = getAliensToSpawn(wave);
+      console.log(aliensToSpawn);
+      const corners = [
+        { x: 0, y: 0 }, // Top-left corner
+        { x: canvas.width, y: 0 }, // Top-right corner
+        { x: 0, y: canvas.height }, // Bottom-left corner
+        { x: canvas.width, y: canvas.height } // Bottom-right corner
+      ];
+
+      for (let i = 0; i < aliensToSpawn; i++) {
+        const cornerIndex = i % corners.length;
+        const { x, y } = corners[cornerIndex];
+
+        let newAlien = {
+          x: x,
+          y: y,
+          size: 30,
+          speed: 0.5,
+          direction: Math.random() * Math.PI * 2,
+          shootTimer: 0,
+          shootInterval: 100 // Adjust this value as needed
+        };
+
+        aliens.push(newAlien);
+      }
+    }
+
+    function getAliensToSpawn(wave) {
+      // if (wave == 30) return 4;
+      // if (wave == 25) return 3;
+      // if (wave == 20) return 2;
+      // if (wave == 15) return 1;
+      // if (wave > 0) return 4;
+      return 0;
+    }
+
+
+    function updateAliens() {
+      aliens.forEach(alien => {
+        const dx = ship.x - alien.x;
+        const dy = ship.y - alien.y;
+        const angle = Math.atan2(dy, dx);
+
+        alien.x += Math.cos(angle) * alien.speed;
+        alien.y += Math.sin(angle) * alien.speed;
+
+        alien.shootTimer++;
+        if (alien.shootTimer >= alien.shootInterval) {
+          alien.shootTimer = 0;
+          shootAlienLaser(alien);
+        }
+
+        // Wrap the alien around the screen edges
+        if (alien.x < 0) alien.x = canvas.width;
+        else if (alien.x > canvas.width) alien.x = 0;
+        if (alien.y < 0) alien.y = canvas.height;
+        else if (alien.y > canvas.height) alien.y = 0;
+      });
+    }
+
+    function drawAliens() {
+      aliens.forEach(alien => {
+        ctx.save();
+        ctx.translate(alien.x, alien.y);
+        ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+        ctx.restore();
+      });
+    }
+
+    function drawAliens() {
+      aliens.forEach(alien => {
+        ctx.save();
+        ctx.translate(alien.x, alien.y);
+        ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+        ctx.restore();
+      });
+    }
+
+    function shootAlienLaser(alien) {
+      const dx = ship.x - alien.x;
+      const dy = ship.y - alien.y;
+      const angle = Math.atan2(dy, dx);
+
+      alienLasers.push({
+        x: alien.x,
+        y: alien.y,
+        dx: Math.cos(angle) * alienLaserSpeed,
+        dy: Math.sin(angle) * alienLaserSpeed
+      });
+    }
+
+    function updateAlienLasers() {
+      for (let i = alienLasers.length - 1; i >= 0; i--) {
+        const laser = alienLasers[i];
+        laser.x += laser.dx;
+        laser.y += laser.dy;
+
+        if (!invincible && isColliding(laser, ship)) {
+          createExplosion(ship.x, ship.y);
+          resetShip();
+          lives--;
+          playShipDestroyedSound();
+          invincible = true;
+          invincibilityTimer = invincibilityDuration;
+          if (lives === 0) gameOver = true;
+          return;
+        }
+
+
+        // Remove the laser if it goes off-screen
+        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
+          alienLasers.splice(i, 1);
+        }
+      }
+    }
+
+    function drawAlienLasers() {
+      alienLasers.forEach(laser => {
+        ctx.fillStyle = 'green';
+        ctx.beginPath();
+        ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+
+    function shootAlienLaser(alien) {
+      const dx = ship.x - alien.x;
+      const dy = ship.y - alien.y;
+      const angle = Math.atan2(dy, dx);
+
+      alienLasers.push({
+        x: alien.x,
+        y: alien.y,
+        dx: Math.cos(angle) * alienLaserSpeed,
+        dy: Math.sin(angle) * alienLaserSpeed
+      });
+    }
+
+    function updateAlienLasers() {
+      for (let i = alienLasers.length - 1; i >= 0; i--) {
+        const laser = alienLasers[i];
+        laser.x += laser.dx;
+        laser.y += laser.dy;
+
+        // Remove the laser if it goes off-screen
+        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
+          alienLasers.splice(i, 1);
+        }
+      }
+    }
+
+    function drawAlienLasers() {
+      alienLasers.forEach(laser => {
+        ctx.fillStyle = 'green';
+        ctx.beginPath();
+        ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function updateBossAlien() {
       if (!alien) return;
 
       // Calculate direction towards the ship
@@ -2812,7 +3017,7 @@
       alien.shootTimer++;
       if (alien.shootTimer >= alien.shootInterval) {
         alien.shootTimer = 0;
-        shootAlienLaser();
+        shootBossAlienLaser();
       }
 
       // Wrap the alien around the screen edges
@@ -2822,18 +3027,18 @@
       else if (alien.y > canvas.height) alien.y = 0;
     }
 
-    function drawAlien() {
+    function drawBossAlien() {
       if (!alien) return;
-      console.log("drawing alien");
+      // console.log("drawing alien");
       ctx.save();
       ctx.translate(alien.x, alien.y);
-      ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+      ctx.drawImage(bossAlienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
       ctx.restore();
     }
 
-    function shootAlienLaser() {
+    function shootBossAlienLaser() {
       if (!alien) return;
-      console.log("shooting laser");
+      // console.log("shooting laser");
       const dx = ship.x - alien.x;
       const dy = ship.y - alien.y;
       const angle = Math.atan2(dy, dx);
@@ -2846,7 +3051,7 @@
       };
     }
 
-    function updateAlienLaser() {
+    function updateBossAlienLaser() {
       if (!alienLaser) return;
 
       alienLaser.x += alienLaser.dx;
@@ -2861,7 +3066,7 @@
         invincible = true;
         invincibilityTimer = invincibilityDuration;
         if (lives === 0) gameOver = true;
-
+        return;
       }
 
 
@@ -2876,7 +3081,7 @@
       }
     }
 
-    function drawAlienLaser() {
+    function drawBossAlienLaser() {
       if (!alienLaser) return;
 
       ctx.fillStyle = 'green';
