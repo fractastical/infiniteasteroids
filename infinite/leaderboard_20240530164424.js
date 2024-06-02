@@ -24,6 +24,7 @@ function startGamingSessionApi() {
     });
 }
 
+
 // implement in gameOver function
 
 function endGameSessionApi(score) {
@@ -57,6 +58,7 @@ async function fetchLeaderboard() {
 
 async function getLeaderboard() {
   const a = new URLSearchParams(window.location.href);
+
   if (!a.get('userId')) return;
 
   return fetch(`${baseUrl}/telegram-game/leaderboard?userId=${a.get('userId')}`, {
@@ -90,6 +92,61 @@ function getActivityStats() {
       console.error('Error:', error);
     })
 }
+
+
+function saveAchievements() {
+
+  localStorage.setItem('achievements', JSON.stringify(Achievements));
+
+  const a = new URLSearchParams(window.location.href);
+
+  if (!a.get('userId')) return;
+
+  const gameRequestId = a.get('gameRequestId');
+  //POST
+  // https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-game/user-data?userId=190933907&gameId=infinitewar
+
+  fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-game/user-data?userId=190933907&gameId=NachoBlaster`, {
+    method: 'POST'
+  })
+    .then(response => response.json())
+    .then(data => {
+      achievements = JSON.stringify(Achievements);
+      console.log('Success:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+function saveUnlocks() {
+  localStorage.setItem('NachoBlasterModesUnlocked', JSON.stringify(modesUnlocked));
+  localStorage.setItem('NachoBlasterAchievements', JSON.stringify(Achievements));
+
+}
+
+function loadAchievements() {
+  const savedAchievements = localStorage.getItem('achievements');
+  if (savedAchievements) {
+    Object.assign(Achievements, JSON.parse(savedAchievements));
+  }
+}
+
+
+function loadUnlocks() {
+  const savedUnlocks = localStorage.getItem('NachoBlasterModesUnlocked');
+  const achievements = localStorage.getItem('NachoBlasterAchievements');
+
+  if (savedUnlocks) {
+    modesUnlocked = JSON.parse(savedUnlocks);
+    document.getElementById('normalButton').disabled = !modesUnlocked.normal;
+    document.getElementById('hardButton').disabled = !modesUnlocked.hard;
+  }
+}
+
+
+
+
 
 
 function displayLeaderboard(leaderboard) {
