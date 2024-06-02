@@ -1182,7 +1182,7 @@
           const asteroid = asteroids[j];
           if (isColliding(wave, asteroid) && !wave.hitAsteroids.includes(asteroid.id)) {
             wave.hitAsteroids.push(asteroid.id);
-            let actualDamage = Math.min(sonicBlast.damage, asteroid.hitPoints);
+            let actualDamage = Math.min(sonicBlast.damage * 2, asteroid.hitPoints);
             asteroid.hitPoints -= actualDamage;
             damageReport.sonicBlast += actualDamage;
 
@@ -1329,7 +1329,7 @@
               // Handle explosive laser effect
               if (ship.explosiveLaserLevel > 0) {
                 createExplosion(laser.x, laser.y, 0);
-                let areaDamage = createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 30, ship.laserLevel); // Increase radius based on explosiveLaserLevel and damage based on laserLevel
+                let areaDamage = createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 15, ship.laserLevel); // Increase radius based on explosiveLaserLevel and damage based on laserLevel
                 damageReport.explosiveLasers += areaDamage;
               }
             } else {
@@ -2217,7 +2217,7 @@
           break;
         case 'Increase Acid Bomb Size':
           acidBombUpgrades.size++;
-          acidBomb.size = 20 + (30 * acidBombUpgrades.size);
+          acidBomb.size = 20 + (20 * acidBombUpgrades.size);
           break;
         case 'Activate Freeze Effect':
           activateWeaponClass('freeze');
@@ -2491,7 +2491,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.502)`, 20, 30);
+      ctx.fillText(`(v 0.503)`, 20, 30);
       ctx.fillText(`Level: ${level}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
