@@ -839,7 +839,7 @@
     let gameOver = false;
     let invincible = false;
     let invincibilityTimer = 0;
-    const invincibilityDuration = 120; // 2 seconds (60 FPS)
+    const invincibilityDuration = 220; // 3.5 seconds (60 FPS)
     let wave = 1;
     let waveMessageTimer = 0;
     const waveMessageDuration = 180; // 3 seconds (60 FPS)
@@ -2121,7 +2121,7 @@
     function exitMarketplace() {
       marketplace.style.display = 'none';
       invincible = true;
-      invincibilityTimer = invincibilityDuration;
+      invincibilityTimer = invincibilityDuration / 2;
       updateMarketplaceDisplay(); // Update display to reflect current levels
       gameLoop = setInterval(update, 1000 / 60); // Resume game loop
       backgroundMusic.play(); // Resume the background music
@@ -2655,7 +2655,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.516)`, 20, 30);
+      ctx.fillText(`(v 0.517)`, 20, 30);
       ctx.fillText(`Wave: ${wave}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
