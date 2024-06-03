@@ -2020,11 +2020,11 @@
       saveTimeTaken(timeTaken); // Save the time taken to local storage
 
       console.log("this run: " + timeTaken);
-      if (currentMode === GameModes.EASY && wave > 29) {
+      if (currentMode === GameModes.EASY && wave > 30) {
         modesUnlocked.normal = true;
-      } else if (currentMode === GameModes.NORMAL && wave > 29) {
+      } else if (currentMode === GameModes.NORMAL && wave > 30) {
         modesUnlocked.hard = true;
-      } else if (currentMode === GameModes.HARD && wave > 29) {
+      } else if (currentMode === GameModes.HARD && wave > 30) {
         modesUnlocked.hero = true;
       }
 
@@ -4274,16 +4274,16 @@
       if (lives === 3) {
         Achievements.no_lives_lost.reached = true;
       }
-      if (!Achievements.complete_easy_mode.reached && currentMode === GameModes.EASY && wave >= 30) {
+      if (!Achievements.complete_easy_mode.reached && currentMode === GameModes.EASY && wave >= 31) {
         Achievements.complete_easy_mode.reached = true;
       }
-      if (!Achievements.complete_normal_mode.reached && currentMode === GameModes.NORMAL && wave >= 30) {
+      if (!Achievements.complete_normal_mode.reached && currentMode === GameModes.NORMAL && wave >= 31) {
         Achievements.complete_normal_mode.reached = true;
       }
-      if (!Achievements.complete_hard_mode.reached && currentMode === GameModes.HARD && wave >= 30) {
+      if (!Achievements.complete_hard_mode.reached && currentMode === GameModes.HARD && wave >= 31) {
         Achievements.complete_hard_mode.reached = true;
       }
-      if (!Achievements.complete_hero_mode.reached && currentMode === GameModes.HERO && wave >= 30) {
+      if (!Achievements.complete_hero_mode.reached && currentMode === GameModes.HERO && wave >= 31) {
         Achievements.complete_hero_mode.reached = true;
       }
       if (!Achievements.death_ray_damage.reached && damageReport.deathRay >= Achievements.death_ray_damage.required) {
