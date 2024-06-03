@@ -891,8 +891,14 @@
       }
     });
 
+    let gameStartTime;
+    let gameEndTime;
+
+
     // Game loop
     function startGame() {
+      gameStartTime = new Date();
+
       document.getElementById('startScreen').style.display = 'none';
       startGamingSessionApi();
       createAsteroids();
@@ -1995,11 +2001,24 @@
     //   }
     // }
 
+    function saveTimeTaken(timeTaken) {
+      localStorage.setItem('timeTaken', timeTaken);
+    }
+
+    function getTimeTaken() {
+      return localStorage.getItem('timeTaken');
+    }
+
     function endGame() {
       clearInterval(gameLoop);
       endGameSessionApi();
       backgroundMusic.pause(); // Stop the background music
+      gameEndTime = new Date();
 
+      const timeTaken = gameEndTime - gameStartTime; // Time in milliseconds
+      saveTimeTaken(timeTaken); // Save the time taken to local storage
+
+      console.log("this run: " + timeTaken);
       if (currentMode === GameModes.EASY && wave > 29) {
         modesUnlocked.normal = true;
       } else if (currentMode === GameModes.NORMAL && wave > 29) {
@@ -3133,28 +3152,41 @@
     }
 
 
+    // function drawAsteroids() {
+    //   for (let i = 0; i < asteroids.length; i++) {
+    //     ctx.fillStyle = asteroids[i].color;
+    //     ctx.beginPath();
+    //     ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
+    //     ctx.closePath();
+    //     ctx.fill();
+    //     // const asteroidImage = new Image();
+    //     // asteroidImage.src = asteroids[i].image;
+    //     // asteroidImage.src = "roids/8bitroid_2657.png";
+    //     // console.log(asteroidImage.src);
+    //     // if (asteroids[i].image == undefined || asteroids[i].image.length < 5)
+    //     //   asteroidImage.src = "roids/8bitroid_2657.png";
+    //     // else
+    //     //   asteroidImage.src = asteroids[i].image;
+    //     // ctx.save();
+    //     // ctx.translate(asteroids[i].x, asteroids[i].y);
+    //     // ctx.drawImage(asteroidImage, -asteroids[i].size, -asteroids[i].size, asteroids[i].size * 2, asteroids[i].size * 2);
+    //     // ctx.restore();
+    //   }
+    // }
 
+    // makes ship invisible
     function drawAsteroids() {
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < asteroids.length; i++) {
-        ctx.fillStyle = asteroids[i].color;
+        ctx.strokeStyle = asteroids[i].color;
+        ctx.lineWidth = asteroids[i].hitpoints; // Set the line width to the asteroid's hitpoints
         ctx.beginPath();
         ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
         ctx.closePath();
-        ctx.fill();
-        // const asteroidImage = new Image();
-        // asteroidImage.src = asteroids[i].image;
-        // asteroidImage.src = "roids/8bitroid_2657.png";
-        // console.log(asteroidImage.src);
-        // if (asteroids[i].image == undefined || asteroids[i].image.length < 5)
-        //   asteroidImage.src = "roids/8bitroid_2657.png";
-        // else
-        //   asteroidImage.src = asteroids[i].image;
-        // ctx.save();
-        // ctx.translate(asteroids[i].x, asteroids[i].y);
-        // ctx.drawImage(asteroidImage, -asteroids[i].size, -asteroids[i].size, asteroids[i].size * 2, asteroids[i].size * 2);
-        // ctx.restore();
+        ctx.stroke(); // Draw only the outline
       }
     }
+
 
 
 
@@ -4204,16 +4236,16 @@
       if (lives === 3) {
         Achievements.no_lives_lost.reached = true;
       }
-      if (!Achievements.complete_easy_mode.reached && difficulty === 'easy' && wave >= 30) {
+      if (!Achievements.complete_easy_mode.reached && currentMode === GameModes.EASY && wave >= 30) {
         Achievements.complete_easy_mode.reached = true;
       }
-      if (!Achievements.complete_normal_mode.reached && difficulty === 'normal' && wave >= 30) {
+      if (!Achievements.complete_normal_mode.reached && currentMode === GameModes.NORMAL && wave >= 30) {
         Achievements.complete_normal_mode.reached = true;
       }
-      if (!Achievements.complete_hard_mode.reached && difficulty === 'hard' && wave >= 30) {
+      if (!Achievements.complete_hard_mode.reached && currentMode === GameModes.HARD && wave >= 30) {
         Achievements.complete_hard_mode.reached = true;
       }
-      if (!Achievements.complete_hero_mode.reached && difficulty === 'hero' && wave >= 30) {
+      if (!Achievements.complete_hero_mode.reached && currentMode === GameModes.HERO && wave >= 30) {
         Achievements.complete_hero_mode.reached = true;
       }
       if (!Achievements.death_ray_damage.reached && damageReport.deathRay >= Achievements.death_ray_damage.required) {
