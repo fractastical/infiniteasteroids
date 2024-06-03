@@ -3217,7 +3217,7 @@
       // ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < asteroids.length; i++) {
         ctx.strokeStyle = asteroids[i].color;
-        ctx.lineWidth = asteroids[i].hitpoints; // Set the line width to the asteroid's hitpoints
+        ctx.lineWidth = asteroids[i].hitpoints + 4; // Set the line width to the asteroid's hitpoints
         ctx.beginPath();
         ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
         ctx.closePath();
@@ -3688,7 +3688,7 @@
           let distance = Math.sqrt(dx * dx + dy * dy);
           if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
             createExplosion(alien.x, alien.y, 12);
-            alien.splice(i, 1);
+            alien.splice(j, 1);
             damageReport.deathRay += alien.hitPoints;
             increaseXP(alien.hitPoints * 20);
 
