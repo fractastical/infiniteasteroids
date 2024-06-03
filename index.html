@@ -1363,8 +1363,9 @@
       createExplosion(alien.x, alien.y);
       aliens.splice(aliens.indexOf(alien), 1);
       ship.lasers.splice(ship.lasers.indexOf(laser), 1);
-      increaseXP(200);
-      score += 200; // Adjust the score as needed
+      increaseXP(300);
+      aliensKilled++;
+      score += 300; // Adjust the score as needed
     }
 
 
@@ -1392,6 +1393,7 @@
           if (alien.hitpoints <= 0) {
             createExplosion(alien.x, alien.y, 15);
             alien = null; // Destroy alien
+            aliensKilled++;
             increaseXP(30 * 20);
             score += 1000;
           }
@@ -2599,7 +2601,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.505)`, 20, 30);
+      ctx.fillText(`(v 0.506)`, 20, 30);
       ctx.fillText(`Level: ${level}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -2912,10 +2914,10 @@
     }
 
     function getAliensToSpawn(wave) {
-      // if (wave == 30) return 4;
-      // if (wave == 25) return 3;
-      // if (wave == 20) return 2;
-      // if (wave == 15) return 1;
+      if (wave == 30) return 4;
+      if (wave == 25) return 3;
+      if (wave == 15) return 2;
+      if (wave == 5) return 1;
       // if (wave > 0) return 4;
       return 0;
     }
@@ -2976,12 +2978,15 @@
     }
 
     function updateAlienLasers() {
+
       for (let i = alienLasers.length - 1; i >= 0; i--) {
         const laser = alienLasers[i];
         laser.x += laser.dx;
         laser.y += laser.dy;
 
         if (!invincible && isColliding(laser, ship)) {
+          console.log("collide");
+
           createExplosion(ship.x, ship.y);
           resetShip();
           lives--;
@@ -3023,18 +3028,6 @@
       });
     }
 
-    function updateAlienLasers() {
-      for (let i = alienLasers.length - 1; i >= 0; i--) {
-        const laser = alienLasers[i];
-        laser.x += laser.dx;
-        laser.y += laser.dy;
-
-        // Remove the laser if it goes off-screen
-        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
-          alienLasers.splice(i, 1);
-        }
-      }
-    }
 
     function drawAlienLasers() {
       alienLasers.forEach(laser => {
@@ -3608,586 +3601,602 @@
             createExplosion(asteroid.x, asteroid.y, 1, asteroid.image);
             asteroids.splice(i, 1);
             damageReport.deathRay += asteroid.hitPoints;
+            increaseXP(asteroid.hitPoints * 20);
+
           }
         }
 
-        // Draw the Death Ray as a triangle
-        ctx.save();
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-        ctx.beginPath();
-        ctx.moveTo(ship.x, ship.y);
-        ctx.lineTo(leftEndX, leftEndY);
-        ctx.lineTo(rightEndX, rightEndY);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-        deathRayActive = false;
-      }
-
-      if (deathRay.timer > 0) {
-        deathRay.timer--;
-      }
-    }
+        for (let j = aliens.length - 1; j >= 0; j--) {
+          const alien = aliens[j];
+          let dx = alien.x - ship.x;
+          let dy = alien.y - ship.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
+            createExplosion(alien.x, alien.y, 12);
+            alien.splice(i, 1);
+            alien.deathRay += asteroid.hitPoints;
+            increaseXP(alien.hitPoints * 20);
+          }
 
 
-    let keys = {};
-    let isPaused = false;
-
-    function handleKeyDown(event) {
-      keys[event.key] = true;
-
-      if (event.key === 'i') {
-        console.log("toggle1");
-        toggleWeaponInfo();
-      } else if (event.key === 'p') {
-        if (isPaused) {
-
-          gameLoop = setInterval(update, 1000 / 60); // Resume game loop
-          isPaused = false;
-
-        } else {
-
-          clearInterval(gameLoop);
-          isPaused = true;
-
+          // Draw the Death Ray as a triangle
+          ctx.save();
+          ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+          ctx.beginPath();
+          ctx.moveTo(ship.x, ship.y);
+          ctx.lineTo(leftEndX, leftEndY);
+          ctx.lineTo(rightEndX, rightEndY);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+          deathRayActive = false;
         }
-        // } 
 
-        // else if (event.key === 'b') {
-        //   if (marketplace.style.display === 'block') {
-        //     exitMarketplace();
-        //   } else {
-        //     pauseGameForMarketplace();
-        //   }
-
-      } else if (event.key === 'm') {
-        toggleMusic();
-      } else if (event.key === 'n') {
-        toggleSound();
+        if (deathRay.timer > 0) {
+          deathRay.timer--;
+        }
       }
-    }
 
-    function handleKeyUp(event) {
-      keys[event.key] = false;
-    }
 
-    let toggleOff = false;
-    let toggleSoundOff = false;
+      let keys = {};
+      let isPaused = false;
 
-    function toggleMusic() {
-      if (!toggleOff)
-        toggleOff = true;
-      backgroundMusic.pause();
+      function handleKeyDown(event) {
+        keys[event.key] = true;
 
-      if (isMusicPlaying) {
+        if (event.key === 'i') {
+          console.log("toggle1");
+          toggleWeaponInfo();
+        } else if (event.key === 'p') {
+          if (isPaused) {
+
+            gameLoop = setInterval(update, 1000 / 60); // Resume game loop
+            isPaused = false;
+
+          } else {
+
+            clearInterval(gameLoop);
+            isPaused = true;
+
+          }
+          // } 
+
+          // else if (event.key === 'b') {
+          //   if (marketplace.style.display === 'block') {
+          //     exitMarketplace();
+          //   } else {
+          //     pauseGameForMarketplace();
+          //   }
+
+        } else if (event.key === 'm') {
+          toggleMusic();
+        } else if (event.key === 'n') {
+          toggleSound();
+        }
+      }
+
+      function handleKeyUp(event) {
+        keys[event.key] = false;
+      }
+
+      let toggleOff = false;
+      let toggleSoundOff = false;
+
+      function toggleMusic() {
+        if (!toggleOff)
+          toggleOff = true;
         backgroundMusic.pause();
-      } else {
-        backgroundMusic.play();
-      }
-      isMusicPlaying = !isMusicPlaying;
-    }
 
-    function toggleSound() {
-      if (!toggleSoundOff)
-        toggleSoundOff = true;
-      else
-        toggleSoundOff = false;
-
-    }
-
-
-
-
-
-
-    window.addEventListener('resize', resizeCanvas);
-
-    joystick.addEventListener('touchstart', (e) => {
-      isTouchingJoystick = true;
-      joystickStartX = e.touches[0].clientX;
-      joystickStartY = e.touches[0].clientY;
-    });
-
-    canvas.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        const touch = e.touches[0];
-        const touchX = touch.clientX;
-
-        const canvasWidth = canvas.width;
-        const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
-
-        if (touchX < partWidth) {
-          // Hard left turn
-          ship.rotation -= (ship.rotationSpeed * 3);
-        } else if (touchX < partWidth * 2) {
-          // Soft left turn
-          ship.rotation -= ship.rotationSpeed;
-        } else if (touchX < partWidth * 3) {
-          // Acceleration
-          if (ship.speed < ship.maxSpeed) {
-            ship.speed += (ship.acceleration * 7);
-            ship.velocityX += ship.acceleration * Math.sin(angle);
-            ship.velocityY -= ship.acceleration * Math.cos(angle);
-
-          }
-        } else if (touchX < partWidth * 4) {
-          // Soft right turn
-          ship.rotation += ship.rotationSpeed;
+        if (isMusicPlaying) {
+          backgroundMusic.pause();
         } else {
-          // Hard right turn
-          ship.rotation += (ship.rotationSpeed * 3);
+          backgroundMusic.play();
         }
+        isMusicPlaying = !isMusicPlaying;
       }
-    });
 
-    joystick.addEventListener('touchmove', (e) => {
-      if (isTouchingJoystick) {
-        const touchX = e.touches[0].clientX;
-        const touchY = e.touches[0].clientY;
-        const deltaX = touchX - joystickStartX;
-        const deltaY = touchY - joystickStartY;
+      function toggleSound() {
+        if (!toggleSoundOff)
+          toggleSoundOff = true;
+        else
+          toggleSoundOff = false;
 
-        // Calculate angle and distance from the center
-        const angle = Math.atan2(deltaY, deltaX);
-        const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
-
-        // Update joystick handle position
-        joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
-
-        // Update ship rotation and speed based on joystick movement
-        ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
-        ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
-
-        e.preventDefault();
       }
-    });
-
-    joystick.addEventListener('touchend', () => {
-      isTouchingJoystick = false;
-      ship.speed = 0;
-      joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
-    });
-
-    restartButton.addEventListener('click', () => {
-      restartButton.style.display = 'none';
-      lives = 3;
-      score = 0;
-      wave = 1;
-      asteroidsKilled = 0;
-
-      // Reset coins and XP
-      coins = 0;
-      level = 1;
-      xpToNextLevel = 100;
-      xp = 0;
-
-      // Reset asteroids and drones
-      asteroids = [];
-      drones = [];
-
-      // Reset turret upgrades
-      turret.bought = false;
-      // Reset active weapon classes
-      activeWeaponClasses = [];
-
-
-      level = 1;
-      xp = 0;
-      xpToNextLevel = 100;
-
-      acidBomb = {
-        cooldown: 300,
-        timer: 0,
-        duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
-        damagePerSecond: 1,
-        size: 50,
-        activeBombs: [],
-        activeAreas: []
-      };
-
-      acidBombUpgrades = {
-        duration: 1,
-        cooldown: 1,
-        size: 1
-      };
-
-      boomerang = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        size: 10,
-        speed: 2,
-        damage: 1,
-        dx: 3,
-        dy: 3,
-        active: false
-      };
-
-      boomerangUpgrades = {
-        speed: 1,
-        damage: 1
-      };
-
-      homingMissile = {
-        cooldown: 300,
-        timer: 0,
-        speed: 2,
-        damage: 5,
-        activeMissiles: []
-      };
-
-      homingMissileUpgrades = {
-        speed: 1,
-        damage: 1,
-        cooldown: 1
-      };
-
-      freezeEffect = {
-        cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
-        timer: 0,
-        duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
-        active: false,
-        remainingDuration: 0
-      };
-
-      freezeEffectUpgrades = {
-        duration: 1,
-        cooldown: 1
-      };
-
-      damageReport = {
-        lasers: 0,
-        explosiveLasers: 0,
-        drones: 0,
-        turret: 0,
-        sonicBlast: 0,
-        bomberDrones: 0,
-        deathRay: 0,
-        acid: 0,
-        freeze: 0,
-        boomerang: 0,
-        homing: 0
-
-      };
-
-
-      deathRay = {
-        length: 1000,
-        width: 50,
-        cooldown: 300,
-        timer: 0
-      };
-
-      deathRayActive = false;
-
-      deathRayUpgrades = {
-        length: 1,
-        width: 1,
-        cooldown: 1
-      };
 
 
 
-      ship = {
-        x: canvas.width / 2,
-        y: canvas.height - 50,
-        size: 20,
-        speed: 0,
-        acceleration: 0.15,
-        deceleration: 0.99,
-        maxSpeed: 5,
-        rotation: 0,
-        rotationSpeed: 2.5,
-        lasers: [],
-        velocityX: 0,
-        velocityY: 0,
-        laserLevel: 1,
-        accelerationLevel: 1,
-        rotationSpeedLevel: 1,
-        maxBulletsLevel: 1,
-        explosiveLaserLevel: 0,
-        laserCooldown: 30,
-        laserTimer: 0,
-        laserCooldownLevel: 1,
-
-      };
-
-      drone = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        size: 10,
-        speed: 0.0001,
-        direction: Math.random() * Math.PI * 2,
-        lasers: [],
-        laserSpeed: 3,
-        laserInterval: 80, // Fire lasers every 120 frames (2 second)
-        laserTimer: 0
-      };
-
-      turret = {
-        x: 0,
-        y: 0,
-        size: 10,
-        rotationSpeed: 2,
-        fireInterval: 120,
-        fireTimer: 0,
-        range: 400,
-        damage: 3,
-        color: 'cyan',
-        lasers: [] // Initialize the turret's lasers array
-      };
-
-      turretUpgrades = {
-        range: 1,
-        fireRate: 1,
-        damage: 1
-      };
-
-      sonicBlast = {
-        cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
-        timer: 0, // Current cooldown timer
-        range: 120, // Range of the sonic blast
-        speed: 2, // Speed of the sonic blast wave
-        damage: 1, // Damage dealt by the sonic blast
-        waves: [], // Array to store the active sonic blast waves
-        rangeLevel: 1,
-        damageLevel: 1,
-        cooldownLevel: 1
-
-      };
-
-      // Reset game state
-      gameOver = false;
-      invincible = true;
-      invincibilityTimer = invincibilityDuration;
-      document.getElementById('leaderboard-container').style.display = 'none';
-
-      // Reset spawn variables
-      spawnTimer = spawnCooldown;
-      chanceForSmallAsteroid = 3;
-      chanceForVerySmallAsteroid = 1;
-      chanceForHardenedAsteroid = 5;
-      chanceForVeryHardenedAsteroid = 2;
-
-      // Reset ship position
-      resetShip();
 
 
-      bomberDrones = [];
-      bomberDroneUpgrades = {
-        speed: 1,
-        bombRadiusLevel: 1,
-        bombRadius: 50,
-        bombDamage: 2
-      };
 
-      // Start a new game
-      createAsteroids();
-      startGame();
-    });
+      window.addEventListener('resize', resizeCanvas);
 
-    document.addEventListener('keydown', function (event) {
-      if (document.getElementById('levelUpModal').style.display === 'block') {
-        if (event.key === '1') {
-          selectUpgrade(1);
-        } else if (event.key === '2') {
-          selectUpgrade(2);
-        } else if (event.key === '3') {
-          selectUpgrade(3);
+      joystick.addEventListener('touchstart', (e) => {
+        isTouchingJoystick = true;
+        joystickStartX = e.touches[0].clientX;
+        joystickStartY = e.touches[0].clientY;
+      });
+
+      canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          const touch = e.touches[0];
+          const touchX = touch.clientX;
+
+          const canvasWidth = canvas.width;
+          const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
+
+          if (touchX < partWidth) {
+            // Hard left turn
+            ship.rotation -= (ship.rotationSpeed * 3);
+          } else if (touchX < partWidth * 2) {
+            // Soft left turn
+            ship.rotation -= ship.rotationSpeed;
+          } else if (touchX < partWidth * 3) {
+            // Acceleration
+            if (ship.speed < ship.maxSpeed) {
+              ship.speed += (ship.acceleration * 7);
+              ship.velocityX += ship.acceleration * Math.sin(angle);
+              ship.velocityY -= ship.acceleration * Math.cos(angle);
+
+            }
+          } else if (touchX < partWidth * 4) {
+            // Soft right turn
+            ship.rotation += ship.rotationSpeed;
+          } else {
+            // Hard right turn
+            ship.rotation += (ship.rotationSpeed * 3);
+          }
         }
+      });
+
+      joystick.addEventListener('touchmove', (e) => {
+        if (isTouchingJoystick) {
+          const touchX = e.touches[0].clientX;
+          const touchY = e.touches[0].clientY;
+          const deltaX = touchX - joystickStartX;
+          const deltaY = touchY - joystickStartY;
+
+          // Calculate angle and distance from the center
+          const angle = Math.atan2(deltaY, deltaX);
+          const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
+
+          // Update joystick handle position
+          joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
+
+          // Update ship rotation and speed based on joystick movement
+          ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
+          ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
+
+          e.preventDefault();
+        }
+      });
+
+      joystick.addEventListener('touchend', () => {
+        isTouchingJoystick = false;
+        ship.speed = 0;
+        joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
+      });
+
+      restartButton.addEventListener('click', () => {
+        restartButton.style.display = 'none';
+        lives = 3;
+        score = 0;
+        wave = 1;
+        asteroidsKilled = 0;
+        aliensKilled = 0;
+
+        // Reset coins and XP
+        coins = 0;
+        level = 1;
+        xpToNextLevel = 100;
+        xp = 0;
+
+        // Reset asteroids and drones
+        asteroids = [];
+        drones = [];
+
+        // Reset turret upgrades
+        turret.bought = false;
+        // Reset active weapon classes
+        activeWeaponClasses = [];
+
+
+        level = 1;
+        xp = 0;
+        xpToNextLevel = 100;
+
+        acidBomb = {
+          cooldown: 300,
+          timer: 0,
+          duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
+          damagePerSecond: 1,
+          size: 50,
+          activeBombs: [],
+          activeAreas: []
+        };
+
+        acidBombUpgrades = {
+          duration: 1,
+          cooldown: 1,
+          size: 1
+        };
+
+        boomerang = {
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          size: 10,
+          speed: 2,
+          damage: 1,
+          dx: 3,
+          dy: 3,
+          active: false
+        };
+
+        boomerangUpgrades = {
+          speed: 1,
+          damage: 1
+        };
+
+        homingMissile = {
+          cooldown: 300,
+          timer: 0,
+          speed: 2,
+          damage: 5,
+          activeMissiles: []
+        };
+
+        homingMissileUpgrades = {
+          speed: 1,
+          damage: 1,
+          cooldown: 1
+        };
+
+        freezeEffect = {
+          cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
+          timer: 0,
+          duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
+          active: false,
+          remainingDuration: 0
+        };
+
+        freezeEffectUpgrades = {
+          duration: 1,
+          cooldown: 1
+        };
+
+        damageReport = {
+          lasers: 0,
+          explosiveLasers: 0,
+          drones: 0,
+          turret: 0,
+          sonicBlast: 0,
+          bomberDrones: 0,
+          deathRay: 0,
+          acid: 0,
+          freeze: 0,
+          boomerang: 0,
+          homing: 0
+
+        };
+
+
+        deathRay = {
+          length: 1000,
+          width: 50,
+          cooldown: 300,
+          timer: 0
+        };
+
+        deathRayActive = false;
+
+        deathRayUpgrades = {
+          length: 1,
+          width: 1,
+          cooldown: 1
+        };
+
+
+
+        ship = {
+          x: canvas.width / 2,
+          y: canvas.height - 50,
+          size: 20,
+          speed: 0,
+          acceleration: 0.15,
+          deceleration: 0.99,
+          maxSpeed: 5,
+          rotation: 0,
+          rotationSpeed: 2.5,
+          lasers: [],
+          velocityX: 0,
+          velocityY: 0,
+          laserLevel: 1,
+          accelerationLevel: 1,
+          rotationSpeedLevel: 1,
+          maxBulletsLevel: 1,
+          explosiveLaserLevel: 0,
+          laserCooldown: 30,
+          laserTimer: 0,
+          laserCooldownLevel: 1,
+
+        };
+
+        drone = {
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          size: 10,
+          speed: 0.0001,
+          direction: Math.random() * Math.PI * 2,
+          lasers: [],
+          laserSpeed: 3,
+          laserInterval: 80, // Fire lasers every 120 frames (2 second)
+          laserTimer: 0
+        };
+
+        turret = {
+          x: 0,
+          y: 0,
+          size: 10,
+          rotationSpeed: 2,
+          fireInterval: 120,
+          fireTimer: 0,
+          range: 400,
+          damage: 3,
+          color: 'cyan',
+          lasers: [] // Initialize the turret's lasers array
+        };
+
+        turretUpgrades = {
+          range: 1,
+          fireRate: 1,
+          damage: 1
+        };
+
+        sonicBlast = {
+          cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
+          timer: 0, // Current cooldown timer
+          range: 120, // Range of the sonic blast
+          speed: 2, // Speed of the sonic blast wave
+          damage: 1, // Damage dealt by the sonic blast
+          waves: [], // Array to store the active sonic blast waves
+          rangeLevel: 1,
+          damageLevel: 1,
+          cooldownLevel: 1
+
+        };
+
+        // Reset game state
+        gameOver = false;
+        invincible = true;
+        invincibilityTimer = invincibilityDuration;
+        document.getElementById('leaderboard-container').style.display = 'none';
+
+        // Reset spawn variables
+        spawnTimer = spawnCooldown;
+        chanceForSmallAsteroid = 3;
+        chanceForVerySmallAsteroid = 1;
+        chanceForHardenedAsteroid = 5;
+        chanceForVeryHardenedAsteroid = 2;
+
+        // Reset ship position
+        resetShip();
+
+
+        bomberDrones = [];
+        bomberDroneUpgrades = {
+          speed: 1,
+          bombRadiusLevel: 1,
+          bombRadius: 50,
+          bombDamage: 2
+        };
+
+        // Start a new game
+        createAsteroids();
+        startGame();
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (document.getElementById('levelUpModal').style.display === 'block') {
+          if (event.key === '1') {
+            selectUpgrade(1);
+          } else if (event.key === '2') {
+            selectUpgrade(2);
+          } else if (event.key === '3') {
+            selectUpgrade(3);
+          }
+        }
+      });
+
+      // Start the game
+      // startGame();
+
+
+      document.addEventListener('DOMContentLoaded', () => {
+        loadUnlocks();
+        populateAchievements();
+        if (isMobile()) {
+          document.getElementById('joystick').style.display = 'block';
+          document.getElementById('startScreen').style.display = 'flex';
+        } else {
+          // startGame();
+        }
+      });
+
+
+      const weapons = [
+        {
+          name: 'Basic Laser',
+          description: 'Standard weapon. Fires straight lasers.',
+          icon: 'icons/basiclaser.svg'
+        },
+        {
+          name: 'Explosive Laser',
+          description: 'Lasers explode on impact, causing area damage.',
+          icon: 'icons/Explosivelaser.svg'
+        },
+        {
+          name: 'Laser Drone',
+          description: 'Drone that flies around you shooting randomly.',
+          icon: 'icons/laserdrone.png'
+        },
+        {
+          name: 'Bomber Drone',
+          description: 'Drone that flies around you shooting randomly.',
+          icon: 'icons/bomberdrone.svg'
+        },
+        {
+          name: 'Acid Bomb',
+          description: 'Releases acid that deals damage over time in an area.',
+          icon: 'icons/acidbomb.svg'
+        },
+        {
+          name: 'Sonic Blast',
+          description: 'Creates a wave that damages all enemies in its path.',
+          icon: 'icons/sonicray.svg'
+        },
+        {
+          name: 'Death Ray',
+          description: 'Fire a beam that melts and instakills everything in its path.',
+          icon: 'icons/Deathray.svg'
+        },
+        {
+          name: 'Boomerang',
+          description: 'A boomerang that bounces around the level.',
+          icon: 'icons/Boomerang.svg'
+        },
+        {
+          name: 'Freeze Ray',
+          description: 'Freezes enemies in place for a short duration.',
+          icon: 'icons/Freeze.svg'
+        },
+        {
+          name: 'Nano Swarm',
+          description: 'A swarm of nanobots that seek and destroy enemies.',
+          icon: 'icons/nanodrone.png'
+        },
+        {
+          name: 'Turret',
+          description: 'Deploys a turret that automatically shoots at enemies.',
+          icon: 'icons/Autocannon.svg'
+        }
+      ];
+
+      function toggleWeaponInfo() {
+        const weaponInfoDiv = document.getElementById('weaponInfo');
+        console.log(weaponInfoDiv);
+        weaponInfoDiv.style.display = weaponInfoDiv.style.display === 'none' ? 'block' : 'none';
+        console.log("toggle2");
+
+        // Won't place nicely together with above
+        // if (isPaused) {
+
+        //   gameLoop = setInterval(update, 1000 / 60); // Resume game loop
+        //   isPaused = false;
+
+        // } else {
+
+        //   clearInterval(gameLoop);
+        //   isPaused = true;
+
+        // }
+
+
       }
-    });
 
-    // Start the game
-    // startGame();
-
-
-    document.addEventListener('DOMContentLoaded', () => {
-      loadUnlocks();
-      populateAchievements();
-      if (isMobile()) {
-        document.getElementById('joystick').style.display = 'block';
-        document.getElementById('startScreen').style.display = 'flex';
-      } else {
-        // startGame();
-      }
-    });
-
-
-    const weapons = [
-      {
-        name: 'Basic Laser',
-        description: 'Standard weapon. Fires straight lasers.',
-        icon: 'icons/basiclaser.svg'
-      },
-      {
-        name: 'Explosive Laser',
-        description: 'Lasers explode on impact, causing area damage.',
-        icon: 'icons/Explosivelaser.svg'
-      },
-      {
-        name: 'Laser Drone',
-        description: 'Drone that flies around you shooting randomly.',
-        icon: 'icons/laserdrone.png'
-      },
-      {
-        name: 'Bomber Drone',
-        description: 'Drone that flies around you shooting randomly.',
-        icon: 'icons/bomberdrone.svg'
-      },
-      {
-        name: 'Acid Bomb',
-        description: 'Releases acid that deals damage over time in an area.',
-        icon: 'icons/acidbomb.svg'
-      },
-      {
-        name: 'Sonic Blast',
-        description: 'Creates a wave that damages all enemies in its path.',
-        icon: 'icons/sonicray.svg'
-      },
-      {
-        name: 'Death Ray',
-        description: 'Fire a beam that melts and instakills everything in its path.',
-        icon: 'icons/Deathray.svg'
-      },
-      {
-        name: 'Boomerang',
-        description: 'A boomerang that bounces around the level.',
-        icon: 'icons/Boomerang.svg'
-      },
-      {
-        name: 'Freeze Ray',
-        description: 'Freezes enemies in place for a short duration.',
-        icon: 'icons/Freeze.svg'
-      },
-      {
-        name: 'Nano Swarm',
-        description: 'A swarm of nanobots that seek and destroy enemies.',
-        icon: 'icons/nanodrone.png'
-      },
-      {
-        name: 'Turret',
-        description: 'Deploys a turret that automatically shoots at enemies.',
-        icon: 'icons/Autocannon.svg'
-      }
-    ];
-
-    function toggleWeaponInfo() {
-      const weaponInfoDiv = document.getElementById('weaponInfo');
-      console.log(weaponInfoDiv);
-      weaponInfoDiv.style.display = weaponInfoDiv.style.display === 'none' ? 'block' : 'none';
-      console.log("toggle2");
-
-      // Won't place nicely together with above
-      // if (isPaused) {
-
-      //   gameLoop = setInterval(update, 1000 / 60); // Resume game loop
-      //   isPaused = false;
-
-      // } else {
-
-      //   clearInterval(gameLoop);
-      //   isPaused = true;
-
-      // }
-
-
-    }
-
-    function loadWeaponInfo() {
-      const weaponsContainer = document.getElementById('weaponsContainer');
-      weaponsContainer.innerHTML = '';
-      weapons.forEach(weapon => {
-        const weaponDiv = document.createElement('div');
-        weaponDiv.className = 'weapon';
-        weaponDiv.innerHTML = `
+      function loadWeaponInfo() {
+        const weaponsContainer = document.getElementById('weaponsContainer');
+        weaponsContainer.innerHTML = '';
+        weapons.forEach(weapon => {
+          const weaponDiv = document.createElement('div');
+          weaponDiv.className = 'weapon';
+          weaponDiv.innerHTML = `
           <img src="${weapon.icon}" alt="${weapon.name}">
           <p><strong>${weapon.name}</strong></p>
           <p>${weapon.description}</p>
         `;
-        weaponsContainer.appendChild(weaponDiv);
-      });
-    }
+          weaponsContainer.appendChild(weaponDiv);
+        });
+      }
 
 
 
-    function populateAchievements() {
-      const achievementsList = document.getElementById('achievementsList');
-      achievementsList.innerHTML = '';
+      function populateAchievements() {
+        const achievementsList = document.getElementById('achievementsList');
+        achievementsList.innerHTML = '';
 
-      for (const key in Achievements) {
-        if (Achievements.hasOwnProperty(key)) {
-          const achievement = Achievements[key];
-          const achieved = achievement.reached || (achievement.damage && achievement.damage >= achievement.required);
+        for (const key in Achievements) {
+          if (Achievements.hasOwnProperty(key)) {
+            const achievement = Achievements[key];
+            const achieved = achievement.reached || (achievement.damage && achievement.damage >= achievement.required);
 
-          const achievementElement = document.createElement('div');
-          achievementElement.classList.add('achievement');
-          achievementElement.style.opacity = achieved ? '1' : '0.5';
+            const achievementElement = document.createElement('div');
+            achievementElement.classList.add('achievement');
+            achievementElement.style.opacity = achieved ? '1' : '0.5';
 
-          const icon = document.createElement('img');
-          icon.src = achievement.icon;
-          icon.alt = achievement.description;
-          achievementElement.appendChild(icon);
+            const icon = document.createElement('img');
+            icon.src = achievement.icon;
+            icon.alt = achievement.description;
+            achievementElement.appendChild(icon);
 
-          const description = document.createElement('span');
-          description.textContent = achievement.description;
-          achievementElement.appendChild(description);
+            const description = document.createElement('span');
+            description.textContent = achievement.description;
+            achievementElement.appendChild(description);
 
-          achievementsList.appendChild(achievementElement);
+            achievementsList.appendChild(achievementElement);
+          }
         }
       }
-    }
 
 
-    const Achievements = {
-      reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5' },
-      reach_wave_10: { reached: false, icon: 'achievements/angelcapitan.png', description: 'Reach Wave 10' },
-      reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
-      reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20' },
-      reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
-      destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game' },
-      // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
-      acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/acid.png', description: 'Deal 10,000 Damage with Acid Bomb' },
-      explosive_laser_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/explosive.png', description: 'Deal 10,000 Damage with Explosive Laser' },
-      no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost' },
-    };
+      const Achievements = {
+        reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5' },
+        reach_wave_10: { reached: false, icon: 'achievements/angelcapitan.png', description: 'Reach Wave 10' },
+        reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
+        reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20' },
+        reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
+        destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game' },
+        // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
+        acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/acid.png', description: 'Deal 10,000 Damage with Acid Bomb' },
+        explosive_laser_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/explosive.png', description: 'Deal 10,000 Damage with Explosive Laser' },
+        no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost' },
+      };
 
-    function updateAchievementsAtEnd() {
-      if (wave >= 5) {
-        Achievements.reach_wave_5.reached = true;
-      }
-      if (wave >= 10) {
-        Achievements.reach_wave_10.reached = true;
-      }
-      if (wave >= 15) {
-        Achievements.reach_wave_15.reached = true;
-      }
-      if (wave >= 20) {
-        Achievements.reach_wave_20.reached = true;
-      }
-      if (wave >= 25) {
-        Achievements.reach_wave_25.reached = true;
-      }
-      if (damageReport.acid >= Achievements.acid_bomb_damage.required) {
-        Achievements.acid_bomb_damage.reached = true;
-      }
-      if (damageReport.explosiveLasers >= Achievements.explosive_laser_damage.required) {
-        Achievements.explosive_laser_damage.reached = true;
-      }
-      if (asteroidsKilled >= 100) {
-        Achievements.destroy_100_asteroids.reached = true;
-      }
-      // if (asteroidsKilled >= 500) {
-      //   Achievements.destroy_500_asteroids.reached = true;
-      // }
-      if (lives === 3) {
-        Achievements.no_lives_lost.reached = true;
+      function updateAchievementsAtEnd() {
+        if (wave >= 5) {
+          Achievements.reach_wave_5.reached = true;
+        }
+        if (wave >= 10) {
+          Achievements.reach_wave_10.reached = true;
+        }
+        if (wave >= 15) {
+          Achievements.reach_wave_15.reached = true;
+        }
+        if (wave >= 20) {
+          Achievements.reach_wave_20.reached = true;
+        }
+        if (wave >= 25) {
+          Achievements.reach_wave_25.reached = true;
+        }
+        if (damageReport.acid >= Achievements.acid_bomb_damage.required) {
+          Achievements.acid_bomb_damage.reached = true;
+        }
+        if (damageReport.explosiveLasers >= Achievements.explosive_laser_damage.required) {
+          Achievements.explosive_laser_damage.reached = true;
+        }
+        if (asteroidsKilled >= 100) {
+          Achievements.destroy_100_asteroids.reached = true;
+        }
+        // if (asteroidsKilled >= 500) {
+        //   Achievements.destroy_500_asteroids.reached = true;
+        // }
+        if (lives === 3) {
+          Achievements.no_lives_lost.reached = true;
+        }
+
+        saveAchievements();
+        populateAchievements();
       }
 
-      saveAchievements();
-      populateAchievements();
-    }
-
-    window.onload = loadWeaponInfo;
+      window.onload = loadWeaponInfo;
 
   </script>
 </body>
