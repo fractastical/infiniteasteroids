@@ -3688,7 +3688,7 @@
           let distance = Math.sqrt(dx * dx + dy * dy);
           if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
             createExplosion(alien.x, alien.y, 12);
-            alien.splice(j, 1);
+            aliens.splice(j, 1);
             damageReport.deathRay += alien.hitPoints;
             increaseXP(alien.hitPoints * 20);
 
