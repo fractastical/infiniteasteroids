@@ -1677,8 +1677,8 @@
       boomerang.active = true;
       boomerang.x = canvas.width / 2;
       boomerang.y = canvas.height / 2;
-      boomerang.dx = (Math.random() * 2 - 1) * boomerang.speed;
-      boomerang.dy = (Math.random() * 2 - 1) * boomerang.speed;
+      boomerang.dx = (Math.random() * 2.2 - 1) * boomerang.speed;
+      boomerang.dy = (Math.random() * 2.2 - 1) * boomerang.speed;
     }
 
     // function drawLasers() {
@@ -2217,7 +2217,6 @@
         // 'Increase Max Bullets',
         'Decrease Laser Cooldown',
         'Increase Rotation Speed',
-        ...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']),
         ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
         ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
         ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
@@ -2225,15 +2224,39 @@
         ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
         ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
         ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']),
-        ...(activeWeaponClasses.includes('homingmissile') ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : ['Activate Nano Swarm'])
 
 
 
 
       ];
+      // console.log(Achievements.no_lives_lost);
+      // console.log(Achievements.no_lives_lost.description);
+
+      if (Achievements.destroy_100_asteroids.reached)
+        availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']));
 
       if (Achievements.kill_5_aliens.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']));
+
+      if (Achievements.no_lives_lost.reached)
+        availableUpgrades.push(...(activeWeaponClasses.includes('homingmissile') ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : ['Activate Nano Swarm']));
+
+
+      // reach_wave_10: { reached: false, icon: 'achievements/angelcapitan.png', description: 'Reach Wave 10' },
+      // // reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
+      // reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20' },
+      // reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
+      // destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game' },
+      // // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
+      // acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/acid.png', description: 'Deal 10,000 Damage with Acid Bomb' },
+      // explosive_laser_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/explosive.png', description: 'Deal 10,000 Damage with Explosive Laser' },
+      // death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray' },
+      // no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
+      // complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode. Unlock Explosive Laser.' },
+      // complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Complete Normal Mode.' },
+      // complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Complete Hard Mode' },
+      // complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Complete Hero Mode' },
+      // kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' }
 
 
       const upgrades = [];
@@ -2626,7 +2649,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.512)`, 20, 30);
+      ctx.fillText(`(v 0.514)`, 20, 30);
       ctx.fillText(`Wave: ${wave}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -2931,7 +2954,7 @@
           speed: 0.5,
           direction: Math.random() * Math.PI * 2,
           shootTimer: 0,
-          shootInterval: 100 // Adjust this value as needed
+          shootInterval: 150 // Adjust this value as needed
         };
 
         aliens.push(newAlien);
@@ -2939,10 +2962,24 @@
     }
 
     function getAliensToSpawn(wave) {
-      if (wave == 30) return 4;
-      if (wave == 25) return 3;
-      if (wave == 15) return 2;
-      if (wave == 5) return 1;
+      let booster = 0;
+      if (currentMode == GameModes.NORMAL)
+        booster++;
+      else if (currentMode == GameModes.HARD)
+        booster += 2;
+      else if (currentMode == GameModes.HERO)
+        booster += 3;
+
+
+      if (wave == 50) return 4 + booster;
+      if (wave == 45) return 4 + booster;
+      if (wave == 40) return 3 + booster;
+      if (wave == 35) return 3 + booster;
+      if (wave == 30) return 1 + booster;
+      if (wave == 25) return 2 + booster;
+      if (wave == 15) return 1 + booster;
+      if (wave == 10) return booster;
+      if (wave == 5) return booster;
       // if (wave > 0) return 4;
       return 0;
     }
@@ -3056,7 +3093,7 @@
 
     function drawAlienLasers() {
       alienLasers.forEach(laser => {
-        ctx.fillStyle = 'green';
+        ctx.fillStyle = 'purple';
         ctx.beginPath();
         ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
         ctx.fill();
@@ -4192,14 +4229,14 @@
       // reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
       reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20' },
       reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
-      destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game' },
+      destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game. Unlock Explosive Laser' },
       // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
       acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/acid.png', description: 'Deal 10,000 Damage with Acid Bomb' },
       explosive_laser_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/explosive.png', description: 'Deal 10,000 Damage with Explosive Laser' },
       death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray' },
-      no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost' },
-      complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode' },
-      complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Complete Normal Mode' },
+      no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
+      complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
+      complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Complete Normal Mode.' },
       complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Complete Hard Mode' },
       complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Complete Hero Mode' },
       kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' }
