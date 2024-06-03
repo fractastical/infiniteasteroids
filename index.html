@@ -2190,6 +2190,8 @@
     }
 
     function getRandomUpgrades(count) {
+
+      // if (    Weapons.deathRay.unlocked = true;
       const availableUpgrades = [
         'Increase Laser Level',
         // 'Increase Max Bullets',
@@ -2200,7 +2202,6 @@
         ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
         ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
         ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
-        ...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']),
         ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
         ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
         ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']),
@@ -2210,6 +2211,10 @@
 
 
       ];
+
+      if (Achievements.kill_5_aliens.reached)
+        availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']));
+
 
       const upgrades = [];
       for (let i = 0; i < count; i++) {
@@ -2601,7 +2606,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.507)`, 20, 30);
+      ctx.fillText(`(v 0.510)`, 20, 30);
       ctx.fillText(`Level: ${level}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -4028,7 +4033,7 @@
       {
         name: 'Basic Laser',
         description: 'Standard weapon. Fires straight lasers.',
-        icon: 'icons/basiclaser.svg'
+        icon: 'icons/Basiclaser.svg'
       },
       {
         name: 'Explosive Laser',
@@ -4043,17 +4048,17 @@
       {
         name: 'Bomber Drone',
         description: 'Drone that flies around you shooting randomly.',
-        icon: 'icons/bomberdrone.svg'
+        icon: 'icons/Bomberdrone.svg'
       },
       {
         name: 'Acid Bomb',
         description: 'Releases acid that deals damage over time in an area.',
-        icon: 'icons/acidbomb.svg'
+        icon: 'icons/Acidbomb.svg'
       },
       {
         name: 'Sonic Blast',
         description: 'Creates a wave that damages all enemies in its path.',
-        icon: 'icons/sonicray.svg'
+        icon: 'icons/Sonicray.svg'
       },
       {
         name: 'Death Ray',
@@ -4138,7 +4143,6 @@
           icon.src = achievement.icon;
           icon.alt = achievement.description;
           achievementElement.appendChild(icon);
-
           const description = document.createElement('span');
           description.textContent = achievement.description;
           achievementElement.appendChild(description);
@@ -4150,28 +4154,35 @@
 
 
     const Achievements = {
-      reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5' },
+      // reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5' },
       reach_wave_10: { reached: false, icon: 'achievements/angelcapitan.png', description: 'Reach Wave 10' },
-      reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
+      // reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
       reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20' },
       reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
       destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game' },
       // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
       acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/acid.png', description: 'Deal 10,000 Damage with Acid Bomb' },
       explosive_laser_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/explosive.png', description: 'Deal 10,000 Damage with Explosive Laser' },
+      death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray' },
       no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost' },
+      complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode' },
+      complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Complete Normal Mode' },
+      complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Complete Hard Mode' },
+      complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Complete Hero Mode' },
+      kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' }
+
     };
 
     function updateAchievementsAtEnd() {
-      if (wave >= 5) {
-        Achievements.reach_wave_5.reached = true;
-      }
+      // if (wave >= 5) {
+      //   Achievements.reach_wave_5.reached = true;
+      // }
       if (wave >= 10) {
         Achievements.reach_wave_10.reached = true;
       }
-      if (wave >= 15) {
-        Achievements.reach_wave_15.reached = true;
-      }
+      // if (wave >= 15) {
+      //   Achievements.reach_wave_15.reached = true;
+      // }
       if (wave >= 20) {
         Achievements.reach_wave_20.reached = true;
       }
@@ -4192,6 +4203,24 @@
       // }
       if (lives === 3) {
         Achievements.no_lives_lost.reached = true;
+      }
+      if (!Achievements.complete_easy_mode.reached && difficulty === 'easy' && wave >= 30) {
+        Achievements.complete_easy_mode.reached = true;
+      }
+      if (!Achievements.complete_normal_mode.reached && difficulty === 'normal' && wave >= 30) {
+        Achievements.complete_normal_mode.reached = true;
+      }
+      if (!Achievements.complete_hard_mode.reached && difficulty === 'hard' && wave >= 30) {
+        Achievements.complete_hard_mode.reached = true;
+      }
+      if (!Achievements.complete_hero_mode.reached && difficulty === 'hero' && wave >= 30) {
+        Achievements.complete_hero_mode.reached = true;
+      }
+      if (!Achievements.death_ray_damage.reached && damageReport.deathRay >= Achievements.death_ray_damage.required) {
+        Achievements.death_ray_damage.reached = true;
+      }
+      if (!Achievements.kill_5_aliens.reached && aliensKilled >= 5) {
+        Achievements.kill_5_aliens.reached = true;
       }
 
       saveAchievements();
