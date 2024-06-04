@@ -1572,12 +1572,12 @@
 
 
     function buyTurret() {
-      if (!turret.bought && coins >= 1000) {
-        coins -= 1000;
+      if (!turret.bought) {
+        // coins -= 1000;
         turret.bought = true;
         turret.x = ship.x;
         turret.y = ship.y;
-        updateCoinsDisplay();
+        // updateCoinsDisplay();
       }
     }
 
