@@ -2775,7 +2775,7 @@
 
 
       let numberOfAsteroids = 10 + (wave - 1) * 1.8;
-      if (GameModes.METEORSHOWEREASY) {
+      if (currentMode == GameModes.METEORSHOWEREASY) {
         numberOfAsteroids += 35;
       }
 
@@ -2806,7 +2806,8 @@
 
         let x, y;
         let spawnArea = Math.random();
-        if (!GameModes.METEORSHOWEREASY) {
+        console.log
+        if (currentMode != GameModes.METEORSHOWEREASY) {
           if (spawnArea < 0.25) {
             // Top edge
             x = Math.random() * canvas.width;
@@ -2943,7 +2944,7 @@
           asteroids[i].x += asteroids[i].dx * asteroids[i].speed;
           asteroids[i].y += asteroids[i].dy * asteroids[i].speed;
 
-          if (!GameModes.METEORSHOWEREASY) {
+          if (currentMode != GameModes.METEORSHOWEREASY) {
             // Wrap asteroids around the screen
             if (asteroids[i].x < 0) {
               asteroids[i].x = canvas.width;
@@ -4247,6 +4248,8 @@
     function populateAchievements() {
       const achievementsList = document.getElementById('achievementsList');
       achievementsList.innerHTML = '';
+
+      document.getElementById('meteorEasyButton').disabled = !Achievements.complete_normal_mode.reached;
 
       for (const key in Achievements) {
         if (Achievements.hasOwnProperty(key)) {
