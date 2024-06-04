@@ -2690,7 +2690,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.517)`, 20, 30);
+      ctx.fillText(`(v 0.601)`, 20, 30);
       ctx.fillText(`Wave: ${wave}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -2809,8 +2809,7 @@
 
       let numberOfAsteroids = 10 + (wave - 1) * 1.8;
       if (GameModes.METEORSHOWEREASY) {
-        numberOfAsteroids += 30;
-        console.log("boom");
+        numberOfAsteroids += 35;
       }
 
       const side = Math.random() < 0.5 ? 'left' : 'right';
