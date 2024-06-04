@@ -49,8 +49,12 @@ async function fetchLeaderboard() {
 
   const response = await getLeaderboard();
   console.log(response);
-  const leaderboard = await response.json();
-  displayLeaderboard(leaderboard);
+  if (response) {
+    const leaderboard = await response.json();
+
+    displayLeaderboard(leaderboard);
+
+  }
 
 }
 
@@ -106,7 +110,7 @@ function saveAchievements() {
   //POST
   // https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-game/user-data?userId=190933907&gameId=infinitewar
 
-  fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-game/user-data?userId=190933907&gameId=NachoBlaster`, {
+  fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-game/persistance?userId=190933907&gameId=NachoBlaster`, {
     method: 'POST'
   })
     .then(response => response.json())
