@@ -1294,7 +1294,6 @@
     let levelUpXPMultiplier = 1.2;
 
     function initializeGame(mode) {
-      console.log("ig");
       switch (mode) {
         case GameModes.EASY:
           asteroidDifficultySpeedMultiplier = 0.7;
@@ -1315,7 +1314,6 @@
         case GameModes.METEORSHOWEREASY:
           asteroidDifficultySpeedMultiplier = 3.3;
           levelUpXPMultiplier = 1.1;
-          console.log("m");
           break;
         // case GameModes.METEO:
         //   asteroidDifficultySpeedMultiplier = 1;
@@ -2858,7 +2856,6 @@
             y = Math.random() * canvas.height;
           }
         } else {
-          console.log("oo");
           x = side === 'left' ? 0 : canvas.width;
           y = Math.random() * canvas.height;
           dx = side === 'left' ? Math.random() * 2 : -Math.random() * 2;
@@ -3045,7 +3042,7 @@
       else if (currentMode == GameModes.HERO)
         booster += 3;
 
-
+      if (wave > 50) return (parseInt(wave / 10)) + booster;
       if (wave == 50) return 4 + booster;
       if (wave == 45) return 4 + booster;
       if (wave == 40) return 3 + booster;
@@ -3061,26 +3058,28 @@
 
 
     function updateAliens() {
-      aliens.forEach(alien => {
-        const dx = ship.x - alien.x;
-        const dy = ship.y - alien.y;
-        const angle = Math.atan2(dy, dx);
+      if (!freezeEffect.active) {
+        aliens.forEach(alien => {
+          const dx = ship.x - alien.x;
+          const dy = ship.y - alien.y;
+          const angle = Math.atan2(dy, dx);
 
-        alien.x += Math.cos(angle) * alien.speed;
-        alien.y += Math.sin(angle) * alien.speed;
+          alien.x += Math.cos(angle) * alien.speed;
+          alien.y += Math.sin(angle) * alien.speed;
 
-        alien.shootTimer++;
-        if (alien.shootTimer >= alien.shootInterval) {
-          alien.shootTimer = 0;
-          shootAlienLaser(alien);
-        }
+          alien.shootTimer++;
+          if (alien.shootTimer >= alien.shootInterval) {
+            alien.shootTimer = 0;
+            shootAlienLaser(alien);
+          }
 
-        // Wrap the alien around the screen edges
-        if (alien.x < 0) alien.x = canvas.width;
-        else if (alien.x > canvas.width) alien.x = 0;
-        if (alien.y < 0) alien.y = canvas.height;
-        else if (alien.y > canvas.height) alien.y = 0;
-      });
+          // Wrap the alien around the screen edges
+          if (alien.x < 0) alien.x = canvas.width;
+          else if (alien.x > canvas.width) alien.x = 0;
+          if (alien.y < 0) alien.y = canvas.height;
+          else if (alien.y > canvas.height) alien.y = 0;
+        });
+      }
     }
 
     function drawAliens() {
@@ -3176,28 +3175,30 @@
 
     function updateBossAlien() {
       if (!alien) return;
+      if (!freezeEffect.active) {
 
-      // Calculate direction towards the ship
-      const dx = ship.x - alien.x;
-      const dy = ship.y - alien.y;
-      const angle = Math.atan2(dy, dx);
+        // Calculate direction towards the ship
+        const dx = ship.x - alien.x;
+        const dy = ship.y - alien.y;
+        const angle = Math.atan2(dy, dx);
 
-      // Update alien's position based on the new direction
-      alien.x += Math.cos(angle) * alien.speed;
-      alien.y += Math.sin(angle) * alien.speed;
+        // Update alien's position based on the new direction
+        alien.x += Math.cos(angle) * alien.speed;
+        alien.y += Math.sin(angle) * alien.speed;
 
-      // Update alien's shooting timer
-      alien.shootTimer++;
-      if (alien.shootTimer >= alien.shootInterval) {
-        alien.shootTimer = 0;
-        shootBossAlienLaser();
+        // Update alien's shooting timer
+        alien.shootTimer++;
+        if (alien.shootTimer >= alien.shootInterval) {
+          alien.shootTimer = 0;
+          shootBossAlienLaser();
+        }
+
+        // Wrap the alien around the screen edges
+        if (alien.x < 0) alien.x = canvas.width;
+        else if (alien.x > canvas.width) alien.x = 0;
+        if (alien.y < 0) alien.y = canvas.height;
+        else if (alien.y > canvas.height) alien.y = 0;
       }
-
-      // Wrap the alien around the screen edges
-      if (alien.x < 0) alien.x = canvas.width;
-      else if (alien.x > canvas.width) alien.x = 0;
-      if (alien.y < 0) alien.y = canvas.height;
-      else if (alien.y > canvas.height) alien.y = 0;
     }
 
     function drawBossAlien() {
@@ -4237,9 +4238,9 @@
 
     function toggleWeaponInfo() {
       const weaponInfoDiv = document.getElementById('weaponInfo');
-      console.log(weaponInfoDiv);
+      // console.log(weaponInfoDiv);
       weaponInfoDiv.style.display = weaponInfoDiv.style.display === 'none' ? 'block' : 'none';
-      console.log("toggle2");
+      // console.log("toggle2");
 
       // Won't place nicely together with above
       // if (isPaused) {
