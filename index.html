@@ -494,10 +494,20 @@
     <div>
       <h2>Welcome to Nacho Blaster!</h2>
       <p>Select a Mode to Start:</p>
+      <p>Deep Space</p>
+
+
       <button id="easyButton" onclick="initializeGame(GameModes.EASY)">Easy</button>
       <button id="normalButton" onclick="initializeGame(GameModes.NORMAL)" disabled>Normal</button>
       <button id="hardButton" onclick="initializeGame(GameModes.HARD)" disabled>Hard</button>
       <button id="veryhardButton" onclick="initializeGame(GameModes.HERO)" disabled>Hero</button>
+      <p>Meteor Shower</p>
+
+
+      <button id="meteorEasyButton" onclick="initializeGame(GameModes.METEORSHOWEREASY)">Easy</button>
+      <!-- <button id="veryhardButton" onclick="initializeGame(GameModes.METEORSHOWERNORMAL)" disabled>Normal</button>
+      <button id="veryhardButton" onclick="initializeGame(GameModes.METEORSHOWERHARD)" disabled>Hard</button>
+      <button id="veryhardButton" onclick="initializeGame(GameModes.METEORSHOWERHERO)" disabled>Hero</button> -->
 
       <div id="achievementsContainer">
         <h3>Your Achievements</h3>
@@ -628,14 +638,21 @@
     const GameModes = {
       EASY: 'easy',
       NORMAL: 'normal',
-      HARD: 'hard'
+      HARD: 'hard',
+      HERO: 'heroic',
+      METEORSHOWEREASY: 'meteorshowereasy'
+
     };
 
     let currentMode = GameModes.EASY; // Start with Easy mode by default
     let modesUnlocked = {
       normal: false,
       hard: false,
-      hero: false
+      hero: false,
+      meteoreasy: false,
+      meteornormal: false,
+      meteorhard: false,
+      meteorhero: false
 
     };
 
@@ -1277,24 +1294,41 @@
     let levelUpXPMultiplier = 1.2;
 
     function initializeGame(mode) {
+      console.log("ig");
       switch (mode) {
         case GameModes.EASY:
           asteroidDifficultySpeedMultiplier = 0.7;
           levelUpXPMultiplier = 1.1;
           break;
         case GameModes.NORMAL:
-          numberOfAsteroids = 10;
-          asteroidSpeedMultiplier = 1;
+          asteroidDifficultySpeedMultiplier = 1;
           levelUpXPMultiplier = 1.2;
           break;
         case GameModes.HARD:
-          asteroidSpeedMultiplier = 1.1;
+          asteroidDifficultySpeedMultiplier = 1.1;
           levelUpXPMultiplier = 1.3;
           break;
         case GameModes.HERO:
-          asteroidSpeedMultiplier = 1.3;
-          levelUpXPMultiplier = 1.5;
+          asteroidDifficultySpeedMultiplier = 1.3;
+          levelUpXPMultiplier = 1.4;
           break;
+        case GameModes.METEORSHOWEREASY:
+          asteroidDifficultySpeedMultiplier = 3.3;
+          levelUpXPMultiplier = 1.1;
+          console.log("m");
+          break;
+        // case GameModes.METEO:
+        //   asteroidDifficultySpeedMultiplier = 1;
+        //   levelUpXPMultiplier = 1.2;
+        //   break;
+        // case GameModes.HARD:
+        //   asteroidSpeedMultiplier = 1.1;
+        //   levelUpXPMultiplier = 1.3;
+        //   break;
+        // case GameModes.HERO:
+        //   asteroidSpeedMultiplier = 1.3;
+        //   levelUpXPMultiplier = 1.5;
+        //   break;
 
       }
       currentMode = mode;
@@ -2024,6 +2058,7 @@
         modesUnlocked.normal = true;
       } else if (currentMode === GameModes.NORMAL && wave > 30) {
         modesUnlocked.hard = true;
+        modesUnlocked.meteoreasy = true;
       } else if (currentMode === GameModes.HARD && wave > 30) {
         modesUnlocked.hero = true;
       }
@@ -2771,7 +2806,15 @@
         // Add more asteroid image paths as needed
       ];
 
+
       let numberOfAsteroids = 10 + (wave - 1) * 1.8;
+      if (GameModes.METEORSHOWEREASY) {
+        numberOfAsteroids += 30;
+        console.log("boom");
+      }
+
+      const side = Math.random() < 0.5 ? 'left' : 'right';
+
 
       for (let i = 0; i < numberOfAsteroids; i++) {
         let isLargeAsteroid = Math.random() < 0.1; // 10% chance for a large asteroid
@@ -2780,7 +2823,8 @@
         let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
         let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
         let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
-
+        let dx = 1;
+        let dy = 1;
         let asteroidSize = isLargeAsteroid ? 40 : isSmallAsteroid ? 10 : 20;
         let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : isLargeAsteroid ? 0.05 : 0.1;
 
@@ -2792,25 +2836,35 @@
           asteroidSpeedMultiplier = 0.5;
         }
 
+
+
         let x, y;
         let spawnArea = Math.random();
-
-        if (spawnArea < 0.25) {
-          // Top edge
-          x = Math.random() * canvas.width;
-          y = Math.random() * (canvas.height * 0.1);
-        } else if (spawnArea < 0.5) {
-          // Right edge
-          x = canvas.width * 0.9 + Math.random() * (canvas.width * 0.1);
-          y = Math.random() * canvas.height;
-        } else if (spawnArea < 0.75) {
-          // Bottom edge
-          x = Math.random() * canvas.width;
-          y = canvas.height * 0.9 + Math.random() * (canvas.height * 0.1);
+        if (!GameModes.METEORSHOWEREASY) {
+          if (spawnArea < 0.25) {
+            // Top edge
+            x = Math.random() * canvas.width;
+            y = Math.random() * (canvas.height * 0.1);
+          } else if (spawnArea < 0.5) {
+            // Right edge
+            x = canvas.width * 0.9 + Math.random() * (canvas.width * 0.1);
+            y = Math.random() * canvas.height;
+          } else if (spawnArea < 0.75) {
+            // Bottom edge
+            x = Math.random() * canvas.width;
+            y = canvas.height * 0.9 + Math.random() * (canvas.height * 0.1);
+          } else {
+            // Left edge
+            x = Math.random() * (canvas.width * 0.1);
+            y = Math.random() * canvas.height;
+          }
         } else {
-          // Left edge
-          x = Math.random() * (canvas.width * 0.1);
+          console.log("oo");
+          x = side === 'left' ? 0 : canvas.width;
           y = Math.random() * canvas.height;
+          dx = side === 'left' ? Math.random() * 2 : -Math.random() * 2;
+          dy = (Math.random() * 2 - 1);
+
         }
 
         let hitPoints;
@@ -2839,8 +2893,8 @@
           y: y,
           size: asteroidSize,
           speed: 2 * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
-          dx: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
-          dy: (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
+          dx: dx * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
+          dy: dy * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
           hitPoints: hitPoints,
           color: color,
           isLarge: isLargeAsteroid,
@@ -2924,17 +2978,32 @@
           asteroids[i].x += asteroids[i].dx * asteroids[i].speed;
           asteroids[i].y += asteroids[i].dy * asteroids[i].speed;
 
-          // Wrap asteroids around the screen
-          if (asteroids[i].x < 0) {
-            asteroids[i].x = canvas.width;
-          } else if (asteroids[i].x > canvas.width) {
-            asteroids[i].x = 0;
+          if (!GameModes.METEORSHOWEREASY) {
+            // Wrap asteroids around the screen
+            if (asteroids[i].x < 0) {
+              asteroids[i].x = canvas.width;
+            } else if (asteroids[i].x > canvas.width) {
+              asteroids[i].x = 0;
+            }
+            if (asteroids[i].y < 0) {
+              asteroids[i].y = canvas.height;
+            } else if (asteroids[i].y > canvas.height) {
+              asteroids[i].y = 0;
+            }
+          } else {
+
+            if (
+              asteroids[i].x < 0 ||
+              asteroids[i].x > canvas.width ||
+              asteroids[i].y < 0 ||
+              asteroids[i].y > canvas.height
+            ) {
+              asteroids.splice(i, 1);
+              i--;
+            }
+
           }
-          if (asteroids[i].y < 0) {
-            asteroids[i].y = canvas.height;
-          } else if (asteroids[i].y > canvas.height) {
-            asteroids[i].y = 0;
-          }
+
         }
       }
     }

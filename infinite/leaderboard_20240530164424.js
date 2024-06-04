@@ -141,6 +141,8 @@ function loadUnlocks() {
     modesUnlocked = JSON.parse(savedUnlocks);
     document.getElementById('normalButton').disabled = !modesUnlocked.normal;
     document.getElementById('hardButton').disabled = !modesUnlocked.hard;
+    // document.getElementById('easyMeteorButton').disabled = !modesUnlocked.meteoreasy;
+
   }
 }
 
