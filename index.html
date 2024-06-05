@@ -2093,24 +2093,30 @@
     }
 
 
-    function drawDamageReport() {
+    function drawDamageReport(damageStats) {
       ctx.fillStyle = 'white';
       ctx.font = '14px Arial';
       ctx.textAlign = 'left';
-      ctx.fillText(`Damage Report:`, 20, canvas.height - 260);
-      ctx.fillText(`Lasers: ${damageReport.lasers}`, 20, canvas.height - 240);
-      ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 20, canvas.height - 220);
-      ctx.fillText(`Turret: ${damageReport.turret}`, 20, canvas.height - 200);
-      ctx.fillText(`Drones: ${damageReport.drones}`, 20, canvas.height - 180);
-      ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 20, canvas.height - 160);
-      ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 20, canvas.height - 140);
-      ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 20, canvas.height - 120);
-      ctx.fillText(`Acid: ${damageReport.acid}`, 20, canvas.height - 100);
-      ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 20, canvas.height - 80);
-      ctx.fillText(`Nano: ${damageReport.homing}`, 20, canvas.height - 60);
+      ctx.fillText(`Damage Report:`, 20, canvas.height - 340);
 
+      const weaponDPS = {};
+      const endTime = Date.now();
 
+      Object.keys(damageReport).forEach(weapon => {
+        const activeTime = (endTime - damageReportStartTimes[weapon]) / 1000; // Time in seconds
+        weaponDPS[weapon] = activeTime > 0 ? (damageReport[weapon] / activeTime).toFixed(2) : 0;
+      });
 
+      ctx.fillText(`Lasers: ${damageReport.lasers} (DPS: ${weaponDPS.lasers})`, 20, canvas.height - 320);
+      ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers} (DPS: ${weaponDPS.explosiveLasers})`, 20, canvas.height - 300);
+      ctx.fillText(`Turret: ${damageReport.turret} (DPS: ${weaponDPS.turret})`, 20, canvas.height - 280);
+      ctx.fillText(`Drones: ${damageReport.drones} (DPS: ${weaponDPS.drones})`, 20, canvas.height - 260);
+      ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast} (DPS: ${weaponDPS.sonicBlast})`, 20, canvas.height - 240);
+      ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones} (DPS: ${weaponDPS.bomberDrones})`, 20, canvas.height - 220);
+      ctx.fillText(`Death Ray: ${damageReport.deathRay} (DPS: ${weaponDPS.deathRay})`, 20, canvas.height - 200);
+      ctx.fillText(`Acid: ${damageReport.acid} (DPS: ${weaponDPS.acid})`, 20, canvas.height - 180);
+      ctx.fillText(`Boomerang: ${damageReport.boomerang} (DPS: ${weaponDPS.boomerang})`, 20, canvas.height - 160);
+      ctx.fillText(`Nano: ${damageReport.homing} (DPS: ${weaponDPS.homing})`, 20, canvas.height - 140);
     }
 
     function pauseGameForMarketplace() {
@@ -2260,6 +2266,8 @@
     }
 
     function applyUpgrade(upgrade) {
+      const now = Date.now();
+
       switch (upgrade) {
         case 'Increase Laser Level':
           ship.laserLevel++;
@@ -2275,32 +2283,30 @@
           break;
         case 'Activate Explosive Laser':
           activateWeaponClass('explosive');
+          damageReportStartTimes.explosive = now;
           break;
         case 'Increase Explosive Laser Level':
           ship.explosiveLaserLevel++;
           break;
         case 'Activate Turret':
           activateWeaponClass('turret');
+          damageReportStartTimes.turret = now;
+          break;
+        case 'Increase Turret Range':
+          turretUpgrades.range++;
+          turret.range = 200 * turretUpgrades.range;
           break;
         case 'Increase Turret Firerate':
           turretUpgrades.fireRate++;
-          turretUpgrades.range++;
-          turret.range = 200 * turretUpgrades.range;
           turret.fireInterval = 120 / turretUpgrades.fireRate;
           break;
         case 'Increase Turret Damage':
           turretUpgrades.damage++;
-          turretUpgrades.range++;
-          turret.range = 200 * turretUpgrades.range;
-
           turret.damage = turretUpgrades.damage;
-          break;
-        case 'Drone Army':
-          buyDrone();
-          buyBomberDrone();
           break;
         case 'Activate Drone':
           activateWeaponClass('drone');
+          damageReportStartTimes.drones = now;
           break;
         case 'Increase Drone Firerate':
           droneUpgrades.laserInterval++;
@@ -2310,6 +2316,7 @@
           break;
         case 'Activate Sonic Blast':
           activateWeaponClass('sonic');
+          damageReportStartTimes.sonicBlast = now;
           break;
         case 'Increase Sonic Blast Range':
           sonicBlast.range += 50;
@@ -2325,6 +2332,7 @@
           break;
         case 'Activate Bomber Drone':
           activateWeaponClass('bomberdrone');
+          damageReportStartTimes.bomberDrones = now;
           break;
         case 'Increase Bomber Drone Speed':
           bomberDroneUpgrades.speed += 0.2;
@@ -2341,6 +2349,7 @@
           break;
         case 'Activate Death Ray':
           activateWeaponClass('deathray');
+          damageReportStartTimes.deathRay = now;
           break;
         case 'Increase Death Ray Length':
           deathRayUpgrades.length++;
@@ -2356,6 +2365,7 @@
           break;
         case 'Activate Acid Bomb':
           activateWeaponClass('acid');
+          damageReportStartTimes.acid = now;
           break;
         case 'Increase Acid Bomb Duration':
           acidBombUpgrades.duration++;
@@ -2371,6 +2381,7 @@
           break;
         case 'Activate Freeze Effect':
           activateWeaponClass('freeze');
+          damageReportStartTimes.freeze = now;
           break;
         case 'Increase Freeze Duration':
           freezeEffectUpgrades.duration++;
@@ -2382,6 +2393,7 @@
           break;
         case 'Activate Boomerang':
           activateWeaponClass('boomerang');
+          damageReportStartTimes.boomerang = now;
           break;
         case 'Increase Boomerang Speed':
           boomerangUpgrades.speed++;
@@ -2393,6 +2405,7 @@
           break;
         case 'Activate Nano Swarm':
           activateWeaponClass('homingmissile');
+          damageReportStartTimes.homing = now;
           break;
         case 'Boost Nano Swarm':
           homingMissileUpgrades.damage++;
@@ -2424,7 +2437,7 @@
       // temporarily remove restrictions
       if (!activeWeaponClasses.includes(weaponClass) && activeWeaponClasses.length < 6) {
         activeWeaponClasses.push(weaponClass);
-        damageReportStartTimes[weaponClass] = Date.now();
+        // damageReportStartTimes[weaponClass] = Date.now();
 
         switch (weaponClass) {
           case 'explosive':
