@@ -3247,7 +3247,7 @@
       // ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < asteroids.length; i++) {
         ctx.strokeStyle = asteroids[i].color;
-        ctx.lineWidth = asteroids[i].hitpoints + 4; // Set the line width to the asteroid's hitpoints
+        ctx.lineWidth = asteroids[i].hitpoints * 2 + 8; // Set the line width to the asteroid's hitpoints
         ctx.beginPath();
         ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
         ctx.closePath();
@@ -4335,9 +4335,9 @@
 
     window.onload = loadWeaponInfo;
 
+    // for leaderboard and telegram API 
+    let gameId = "NachoBlaster";
   </script>
-
-
 
 
 
