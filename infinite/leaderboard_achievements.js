@@ -49,12 +49,8 @@ async function fetchLeaderboard() {
 
   const response = await getLeaderboard();
   console.log(response);
-  if (response) {
-    const leaderboard = await response.json();
-
-    displayLeaderboard(leaderboard);
-
-  }
+  const leaderboard = await response.json();
+  displayLeaderboard(leaderboard);
 
 }
 
@@ -110,7 +106,7 @@ function saveAchievements() {
   //POST
   // https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-game/user-data?userId=190933907&gameId=infinitewar
 
-  fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-game/persistance?userId=190933907&gameId=NachoBlaster`, {
+  fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-game/user-data?userId=190933907&gameId=NachoBlaster`, {
     method: 'POST'
   })
     .then(response => response.json())
@@ -145,8 +141,6 @@ function loadUnlocks() {
     modesUnlocked = JSON.parse(savedUnlocks);
     document.getElementById('normalButton').disabled = !modesUnlocked.normal;
     document.getElementById('hardButton').disabled = !modesUnlocked.hard;
-    // document.getElementById('easyMeteorButton').disabled = !modesUnlocked.meteoreasy;
-
   }
 }
 
