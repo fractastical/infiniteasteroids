@@ -412,8 +412,11 @@
 
 
 
+
+
+
   <!-- #INFINITEGAMES CSS START -->
-  <link rel="stylesheet" href="infinite/css/leaderboard_20240605135129.css">
+  <link rel="stylesheet" href="infinite/css/leaderboard_20240605140238.css">
   <!-- #INFINITEGAMES CSS END -->
 </head>
 
@@ -2006,10 +2009,15 @@
       if (currentMode === GameModes.EASY && wave > 30) {
         modesUnlocked.normal = true;
       } else if (currentMode === GameModes.NORMAL && wave > 30) {
+        score *= 1.2;
         modesUnlocked.hard = true;
         modesUnlocked.meteoreasy = true;
       } else if (currentMode === GameModes.HARD && wave > 30) {
+        score *= 1.5;
         modesUnlocked.hero = true;
+      } else if (currentMode === GameModes.HERO) {
+        score *= 1.75;
+
       }
 
 
@@ -2624,7 +2632,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.604)`, 20, 30);
+      ctx.fillText(`(v 0.605)`, 20, 30);
       ctx.fillText(`Wave: ${wave}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -4321,8 +4329,11 @@
 
 
 
+
+
+
   <!-- #INFINITEGAMES JS START -->
-  <script src="infinite/js/leaderboard_20240605135129.js"></script>
+  <script src="infinite/js/leaderboard_20240605140238.js"></script>
   <!-- #INFINITEGAMES JS END -->
 </body>
 
