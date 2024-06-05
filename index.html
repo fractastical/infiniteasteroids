@@ -673,7 +673,7 @@
 
     let damageReport = {
       lasers: 0,
-      explosiveLasers: 0,
+      explosive: 0,
       drones: 0,
       turret: 0,
       sonicBlast: 0,
@@ -780,12 +780,6 @@
 
 
 
-    // let upgrades = {
-    //   explosiveLasers: 0, // Initial level of explosive lasers
-    //   emp: 0
-    // };
-
-
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -871,7 +865,7 @@
 
     // Game loop
     function startGame() {
-      gameStartTime = new Date();
+      gameStartTime = Date.now();
 
       document.getElementById('startScreen').style.display = 'none';
       startGamingSessionApi();
@@ -1433,7 +1427,7 @@
               if (ship.explosiveLaserLevel > 0) {
                 createExplosion(laser.x, laser.y, 0);
                 let areaDamage = createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 15, ship.laserLevel); // Increase radius based on explosiveLaserLevel and damage based on laserLevel
-                damageReport.explosiveLasers += areaDamage;
+                damageReport.explosive += areaDamage;
               }
             } else {
               damageReport.turret += actualDamage;
@@ -2044,20 +2038,6 @@
       coins += bonusCoins;
       // ctx.fillText(`Bonus Coins for Next Round: ${bonusCoins}`, canvas.width / 2, canvas.height / 2 + 100);
 
-      // Display damage report in the lower left corner
-      // ctx.font = '14px Arial';
-      // ctx.textAlign = 'left';
-      // ctx.fillText(`Damage Report:`, 80, canvas.height - 260);
-      // ctx.fillText(`Lasers: ${damageReport.lasers}`, 80, canvas.height - 240);
-      // ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers}`, 80, canvas.height - 220);
-      // ctx.fillText(`Turret: ${damageReport.turret}`, 80, canvas.height - 200);
-      // ctx.fillText(`Drones: ${damageReport.drones}`, 80, canvas.height - 180);
-      // ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast}`, 80, canvas.height - 160);
-      // ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones}`, 80, canvas.height - 140);
-      // ctx.fillText(`Death Ray: ${damageReport.deathRay}`, 80, canvas.height - 120);
-      // ctx.fillText(`Acid: ${damageReport.acid}`, 80, canvas.height - 100);
-      // ctx.fillText(`Boomerang: ${damageReport.boomerang}`, 80, canvas.height - 80);
-      // ctx.fillText(`Nano: ${damageReport.homing}`, 80, canvas.height - 60);
 
       // Show the restart button
       restartButton.style.display = 'block';
@@ -2082,30 +2062,31 @@
     }
 
 
-    function drawDamageReport(damageStats) {
+    function drawDamageReport() {
       ctx.fillStyle = 'white';
       ctx.font = '14px Arial';
       ctx.textAlign = 'left';
       ctx.fillText(`Damage Report:`, 20, canvas.height - 340);
 
-      const weaponDPS = {};
+      const weaponDPM = {};
       const endTime = Date.now();
+      damageReportStartTimes.lasers = gameStartTime;
 
       Object.keys(damageReport).forEach(weapon => {
-        const activeTime = (endTime - damageReportStartTimes[weapon]) / 1000; // Time in seconds
-        weaponDPS[weapon] = activeTime > 0 ? (damageReport[weapon] / activeTime).toFixed(2) : 0;
+        const activeTime = (endTime - damageReportStartTimes[weapon]) / 60000; // Time in minutes
+        weaponDPM[weapon] = activeTime > 0 ? (damageReport[weapon] / activeTime).toFixed(2) : 0;
       });
 
-      ctx.fillText(`Lasers: ${damageReport.lasers} (DPS: ${weaponDPS.lasers})`, 20, canvas.height - 320);
-      ctx.fillText(`Explosive Lasers: ${damageReport.explosiveLasers} (DPS: ${weaponDPS.explosiveLasers})`, 20, canvas.height - 300);
-      ctx.fillText(`Turret: ${damageReport.turret} (DPS: ${weaponDPS.turret})`, 20, canvas.height - 280);
-      ctx.fillText(`Drones: ${damageReport.drones} (DPS: ${weaponDPS.drones})`, 20, canvas.height - 260);
-      ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast} (DPS: ${weaponDPS.sonicBlast})`, 20, canvas.height - 240);
-      ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones} (DPS: ${weaponDPS.bomberDrones})`, 20, canvas.height - 220);
-      ctx.fillText(`Death Ray: ${damageReport.deathRay} (DPS: ${weaponDPS.deathRay})`, 20, canvas.height - 200);
-      ctx.fillText(`Acid: ${damageReport.acid} (DPS: ${weaponDPS.acid})`, 20, canvas.height - 180);
-      ctx.fillText(`Boomerang: ${damageReport.boomerang} (DPS: ${weaponDPS.boomerang})`, 20, canvas.height - 160);
-      ctx.fillText(`Nano: ${damageReport.homing} (DPS: ${weaponDPS.homing})`, 20, canvas.height - 140);
+      ctx.fillText(`Lasers: ${damageReport.lasers} (DPM: ${weaponDPM.lasers})`, 20, canvas.height - 320);
+      ctx.fillText(`Explosive Lasers: ${damageReport.explosive} (DPM: ${weaponDPM.explosive})`, 20, canvas.height - 300);
+      ctx.fillText(`Turret: ${damageReport.turret} (DPM: ${weaponDPM.turret})`, 20, canvas.height - 280);
+      ctx.fillText(`Drones: ${damageReport.drones} (DPM: ${weaponDPM.drones})`, 20, canvas.height - 260);
+      ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast} (DPM: ${weaponDPM.sonicBlast})`, 20, canvas.height - 240);
+      ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones} (DPM: ${weaponDPM.bomberDrones})`, 20, canvas.height - 220);
+      ctx.fillText(`Death Ray: ${damageReport.deathRay} (DPM: ${weaponDPM.deathRay})`, 20, canvas.height - 200);
+      ctx.fillText(`Acid: ${damageReport.acid} (DPM: ${weaponDPM.acid})`, 20, canvas.height - 180);
+      ctx.fillText(`Boomerang: ${damageReport.boomerang} (DPM: ${weaponDPM.boomerang})`, 20, canvas.height - 160);
+      ctx.fillText(`Nano: ${damageReport.homing} (DPM: ${weaponDPM.homing})`, 20, canvas.height - 140);
     }
 
     function pauseGameForMarketplace() {
@@ -3994,7 +3975,7 @@
 
       damageReport = {
         lasers: 0,
-        explosiveLasers: 0,
+        explosive: 0,
         drones: 0,
         turret: 0,
         sonicBlast: 0,
@@ -4316,7 +4297,7 @@
       if (damageReport.acid >= Achievements.acid_bomb_damage.required) {
         Achievements.acid_bomb_damage.reached = true;
       }
-      if (damageReport.explosiveLasers >= Achievements.explosive_laser_damage.required) {
+      if (damageReport.explosive >= Achievements.explosive_laser_damage.required) {
         Achievements.explosive_laser_damage.reached = true;
       }
       if (asteroidsKilled >= 100) {
