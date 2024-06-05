@@ -2264,8 +2264,6 @@
         case 'Increase Laser Level':
           ship.laserLevel++;
           break;
-        // case 'Increase Max Bullets':
-        //   break;
         case 'Decrease Laser Cooldown':
           ship.laserCooldownLevel++;
           ship.maxBulletsLevel++;
@@ -2284,16 +2282,17 @@
         case 'Activate Turret':
           activateWeaponClass('turret');
           break;
-        case 'Increase Turret Range':
-          turretUpgrades.range++;
-          turret.range = 200 * turretUpgrades.range;
-          break;
         case 'Increase Turret Firerate':
           turretUpgrades.fireRate++;
+          turretUpgrades.range++;
+          turret.range = 200 * turretUpgrades.range;
           turret.fireInterval = 120 / turretUpgrades.fireRate;
           break;
         case 'Increase Turret Damage':
           turretUpgrades.damage++;
+          turretUpgrades.range++;
+          turret.range = 200 * turretUpgrades.range;
+
           turret.damage = turretUpgrades.damage;
           break;
         case 'Drone Army':
@@ -2406,10 +2405,27 @@
       }
     }
 
+    let damageReportStartTimes = {};
+
+    // Initialize total damage for each weapon
+    function initializeWeaponDamageTracking() {
+      const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'homingmissile'];
+      weaponClasses.forEach(weapon => {
+        totalDamage[weapon] = 0;
+        damageReportStartTimes[weapon] = null;
+      });
+    }
+
+    initializeWeaponDamageTracking();
+
+
+
     function activateWeaponClass(weaponClass) {
       // temporarily remove restrictions
       if (!activeWeaponClasses.includes(weaponClass) && activeWeaponClasses.length < 6) {
         activeWeaponClasses.push(weaponClass);
+        damageReportStartTimes[weaponClass] = Date.now();
+
         switch (weaponClass) {
           case 'explosive':
             ship.explosiveLaserLevel = 1;
