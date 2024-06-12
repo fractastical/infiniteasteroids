@@ -417,10 +417,15 @@
 
 
 
-  
-<!-- #INFINITEGAMES CSS START -->
-<link rel="stylesheet" href="infinite/css/leaderboard_20240605191113.css">
-<!-- #INFINITEGAMES CSS END -->
+
+
+
+
+
+
+  <!-- #INFINITEGAMES CSS START -->
+  <link rel="stylesheet" href="infinite/css/leaderboard_20240605202739.css">
+  <!-- #INFINITEGAMES CSS END -->
 </head>
 
 <body>
@@ -2201,7 +2206,6 @@
         ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
         ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
         ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
-        ...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']),
         ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
         ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']),
 
@@ -2209,6 +2213,9 @@
 
 
       ];
+
+      if (Achievements.complete_normal_mode.reached)
+        availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb'])),
 
       if (Achievements.destroy_100_asteroids.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']));
@@ -4150,7 +4157,7 @@
       },
       {
         name: 'Bomber Drone',
-        description: 'Drone that flies around you shooting randomly.',
+        description: 'Drone that leaves protective mines that explode with area damage when an asteroid gets nearby.',
         icon: 'icons/Bomberdrone.svg'
       },
       {
@@ -4271,7 +4278,7 @@
       death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Drone Army.' },
       no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
       complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
-      complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Complete Normal Mode.' },
+      complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Complete Normal Mode. Unlock Acid Bomb.' },
       complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Complete Hard Mode' },
       complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Complete Hero Mode' },
       kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' }
@@ -4343,10 +4350,15 @@
 
 
 
-  
-<!-- #INFINITEGAMES JS START -->
-<script src="infinite/js/leaderboard_20240605191113.js"></script>
-<!-- #INFINITEGAMES JS END -->
+
+
+
+
+
+
+  <!-- #INFINITEGAMES JS START -->
+  <script src="infinite/js/leaderboard_20240605202739.js"></script>
+  <!-- #INFINITEGAMES JS END -->
 </body>
 
 </html>
