@@ -407,6 +407,17 @@
     .weapon p {
       font-size: 14px;
     }
+
+    table {
+      width: 100%;
+      text-align: center;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 10px;
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
@@ -458,20 +469,46 @@
     <div>
       <h2>Welcome to Infinite Space War!</h2>
       <p>Select a Mode to Start:</p>
-      <p>Deep Space</p>
+      <table>
 
-      <button id="easyButton" onclick="initializeGame(GameModes.EASY)">Easy</button>
-      <button id="normalButton" onclick="initializeGame(GameModes.NORMAL)" disabled>Normal</button>
-      <button id="hardButton" onclick="initializeGame(GameModes.HARD)" disabled>Hard</button>
-      <button id="heroButton" onclick="initializeGame(GameModes.HERO)" disabled>Hero</button>
-      <p>Meteor Shower</p>
+        <tr>
+          <th>
+            <p>Deep Space</p>
+          </th>
+          <th>
+            <p>Meteor Shower</p>
+          </th>
+          <th>
+            <p>Planet</p>
+          </th>
+        </tr>
+        <tr>
+          <td>
 
-      <button id="meteorEasyButton" onclick="initializeGame(GameModes.METEORSHOWEREASY)" disabled>Easy</button>
-      <button id="meteorNormalButton" onclick="initializeGame(GameModes.METEORSHOWERNORMAL)" disabled>Normal</button>
-      <button id="meteorHardButton" onclick="initializeGame(GameModes.METEORSHOWERHARD)" disabled>Hard</button>
-      <button id="meteorHeroButton" onclick="initializeGame(GameModes.METEORSHOWERHERO)" disabled>Hero</button>
+            <button id="easyButton" onclick="initializeGame(GameModes.EASY)">Easy</button>
+            <button id="normalButton" onclick="initializeGame(GameModes.NORMAL)" disabled>Normal</button>
+            <button id="hardButton" onclick="initializeGame(GameModes.HARD)" disabled>Hard</button>
+            <button id="heroButton" onclick="initializeGame(GameModes.HERO)" disabled>Hero</button>
+          </td>
+          <td>
 
-      <p>Planet</p>
+            <button id="meteorEasyButton" onclick="initializeGame(GameModes.METEORSHOWEREASY)" disabled>Easy</button>
+            <button id="meteorNormalButton" onclick="initializeGame(GameModes.METEORSHOWERNORMAL)"
+              disabled>Normal</button>
+            <button id="meteorHardButton" onclick="initializeGame(GameModes.METEORSHOWERHARD)" disabled>Hard</button>
+            <button id="meteorHeroButton" onclick="initializeGame(GameModes.METEORSHOWERHERO)" disabled>Hero</button>
+          </td>
+          <td>
+
+
+            <button id="planetEasyButton" onclick="initializeGame(GameModes.PLANETEASY)" disabled>Easy</button>
+            <button id="planetNormalButton" onclick="initializeGame(GameModes.PLANETNORMAL)" disabled>Normal</button>
+            <button id="planetHardButton" onclick="initializeGame(GameModes.PLANETHARD)" disabled>Hard</button>
+            <button id="planetHeroButton" onclick="initializeGame(GameModes.PLANETHERO)" disabled>Hero</button>
+          </td>
+        </tr>
+
+      </table>
 
       <div id="achievementsContainer">
         <h3>Your Achievements</h3>
@@ -606,9 +643,9 @@
       NORMAL: 'normal',
       HARD: 'hard',
       HERO: 'heroic',
-      METEORSHOWEREASY: 'meteorshowereasy'
-      METEORSHOWERNORMAL: 'meteorshowernormal'
-      METEORSHOWERHARD: 'meteorshowerhard'
+      METEORSHOWEREASY: 'meteorshowereasy',
+      METEORSHOWERNORMAL: 'meteorshowernormal',
+      METEORSHOWERHARD: 'meteorshowerhard',
       METEORSHOWERHERO: 'meteorshowerhero',
       PLANETEASY: 'planeteasy',
       PLANETNORMAL: 'planetnormal',
@@ -1314,7 +1351,7 @@
           levelUpXPMultiplier = 1.3;
           meteorBooster = 14;
           break;
-        case GameModes.PLANETHERO;
+        case GameModes.PLANETHERO:
           asteroidDifficultySpeedMultiplier = 3.5;
           levelUpXPMultiplier = 1.4;
           meteorBooster = 21;
@@ -2252,7 +2289,7 @@
         availableUpgrades.push(...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']));
 
       if (Achievements.complete_normal_mode.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb'])),
+        availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']));
 
       if (Achievements.destroy_100_asteroids.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']));
