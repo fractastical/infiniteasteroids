@@ -609,8 +609,15 @@
   <audio id="thruster-sound-2" src="sounds/thruster2.mp3"></audio>
   <audio id="thruster-sound-3" src="sounds/thruster3.mp3"></audio>
 
-
   <audio id="ship-destroyed" src="sounds/ship_destroyed.mp3"></audio>
+
+  <audio id="freeze-sound" src="sounds/freeze.mp3"></audio>
+  <audio id="freeze-sound-2" src="sounds/freezew.mp3"></audio>
+  <audio id="death-ray-sound" src="sounds/ray.mp3"></audio>
+  <audio id="deploy-drone-sound" src="sounds/deploy_drone.mp3"></audio>
+  <audio id="acid-bomb-sound" src="sounds/acid_bomb.mp3"></audio>
+  <audio id="bomb-lay-sound" src="sounds/lay_bomb.mp3"></audio>
+
 
   <button id="restartButton" style="display: none;">Restart</button>
 
@@ -1620,6 +1627,29 @@
       document.getElementById('ship-destroyed')
     ];
 
+
+    const freezeSounds = [
+      document.getElementById('freeze-sound'),
+      document.getElementById('freeze-sound-2')
+
+    ];
+
+    const deathRaySounds = [
+      document.getElementById('death-ray-sound')
+    ];
+
+    const deployDroneSounds = [
+      document.getElementById('deploy-drone-sound')
+    ];
+
+    const acidBombSounds = [
+      document.getElementById('acid-bomb-sound')
+    ];
+
+    const bombLaySounds = [
+      document.getElementById('bomb-lay-sound')
+    ];
+
     // Function to play a random shot sound
     function playRandomShotSound() {
       if (!toggleSoundOff) {
@@ -1627,6 +1657,42 @@
         shotSounds[randomIndex].play();
       }
     }
+
+    function playRandomDeathRaySound() {
+      if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * deathRaySounds.length);
+        deathRaySounds[randomIndex].play();
+      }
+    }
+
+    function playRandomBombLaySound() {
+      if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * bombLaySounds.length);
+        bombLaySounds[randomIndex].play();
+      }
+    }
+
+    function playRandomAcidBombSound() {
+      if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * acidBombSounds.length);
+        acidBombSounds[randomIndex].play();
+      }
+    }
+
+    function playDeployDroneSound() {
+      if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * deployDroneSounds.length);
+        deployDroneSounds[randomIndex].play();
+      }
+    }
+
+    function playFreezeSound() {
+      if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * freezeSounds.length);
+        freezeSounds[randomIndex].play();
+      }
+    }
+
 
     // Function to play a random thruster sound
     function playRandomThrusterSound() {
@@ -1669,6 +1735,7 @@
         laserTimer: 0
       };
       drones.push(drone);
+      playDeployDroneSound();
       // updateCoinsDisplay();
       // }
     }
@@ -1686,6 +1753,8 @@
         bombTimer: 0
       };
       bomberDrones.push(bomberDrone);
+      playDeployDroneSound();
+
     }
 
 
@@ -2011,6 +2080,7 @@
             damage: bomberDroneUpgrades.bombDamage
           };
           drone.bombs.push(bomb);
+          playRandomBombLaySound();
         }
 
         for (let i = drone.bombs.length - 1; i >= 0; i--) {
@@ -3748,6 +3818,7 @@
     function activateDeathRay() {
       if (deathRay.timer === 0) {
         deathRayActive = true;
+        playRandomDeathRaySound();
         deathRay.timer = deathRay.cooldown;
       }
     }
@@ -3755,6 +3826,7 @@
     function activateFreezeEffect() {
       if (freezeEffect.timer === 0) {
         freezeEffect.active = true;
+        playFreezeSound();
         freezeEffect.remainingDuration = freezeEffect.duration;
         freezeEffect.timer = freezeEffect.cooldown;
       }
@@ -3809,7 +3881,7 @@
 
     function createAcidExplosion(x, y, radius, duration) {
       createExplosion(x, y, 0); // Create visual explosion effect
-
+      playRandomAcidBombSound();
       let acidArea = {
         x: x,
         y: y,
