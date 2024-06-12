@@ -546,7 +546,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Verson 0.707.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Verson 0.708.
   </div>
 
 
@@ -3600,6 +3600,8 @@
 
     function increaseXP(amount) {
       xp += amount;
+      document.getElementById('xpBarContainer').style.display = 'block';
+
       updateXPBar();
       if (xp >= xpToNextLevel) {
         levelUp();
@@ -4705,11 +4707,11 @@
         Achievements.death_ray_damage.reached = true;
       }
 
-      if (!Achievements.drone_damage.reached && damageReport.deathRay >= Achievements.drone_damage.required) {
+      if (!Achievements.drone_damage.reached && damageReport.drone >= Achievements.drone_damage.required) {
         Achievements.drone_damage.reached = true;
       }
 
-      if (!Achievements.laser_damage.reached && damageReport.deathRay >= Achievements.laser_damage.required) {
+      if (!Achievements.laser_damage.reached && damageReport.lasers >= Achievements.laser_damage.required) {
         Achievements.laser_damage.reached = true;
       }
 
