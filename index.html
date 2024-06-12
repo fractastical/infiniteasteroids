@@ -1769,6 +1769,9 @@
     }
 
 
+    let doubleTurret = false;
+    let tripleTurret = false;
+
     function updateTurret() {
       let nearestAsteroid = findNearestAsteroidInRange();
       if (nearestAsteroid) {
@@ -1788,6 +1791,28 @@
             color: 'blue' // Set the turret laser color to blue
           };
           turret.lasers.push(laser);
+          if (doubleTurret) {
+            let laser = {
+              x: turret.x + 3,
+              y: turret.y - 1,
+              rotation: turret.rotation,
+              size: 2,
+              color: 'blue' // Set the turret laser color to blue
+            };
+            turret.lasers.push(laser);
+
+          }
+          if (tripleTurret) {
+            let laser = {
+              x: turret.x - 3,
+              y: turret.y - 1,
+              rotation: turret.rotation,
+              size: 2,
+              color: 'blue' // Set the turret laser color to blue
+            };
+            turret.lasers.push(laser);
+
+          }
         }
       }
 
@@ -2455,6 +2480,11 @@
       if (Achievements.death_ray_damage.reached && (activeWeaponClasses.includes('drone') || activeWeaponClasses.includes('bomberdrone')))
         availableUpgrades.push('Drone Army');
 
+      if (Achievements.complete_meteor_normal_mode.reached && (activeWeaponClasses.includes('turret')))
+        availableUpgrades.push('Double Turret');
+
+      if (Achievements.complete_planet_normal_mode.reached && (activeWeaponClasses.includes('turret')))
+        availableUpgrades.push('Triple Turret');
 
 
       const upgrades = [];
@@ -2618,6 +2648,13 @@
           homingMissileUpgrades.cooldown++;
           homingMissile.cooldown = Math.max(20, 120 - 30 * homingMissileUpgrades.cooldown);
           break;
+        case 'Double Turret':
+          doubleTurret = true;
+          break;
+        case 'Triple Turret':
+          tripleTurret = true;
+          break;
+
       }
     }
 
@@ -2874,7 +2911,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.701)`, 20, 30);
+      ctx.fillText(`(v 0.703)`, 20, 30);
       ctx.fillText(`Wave: ${wave}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
