@@ -560,7 +560,7 @@
 
       <div id="achievementsContainer">
         <div id="shipType" style="position: absolute; top: 10px; left: 10px; color: white; font-size: 20px;">
-          Ship type: basic
+          Ship type: basic.
         </div>
 
 
@@ -659,6 +659,7 @@
 
   <button id="restartButton" style="display: none;">Restart</button>
 
+
   <script>
     // Get the canvas element
     const canvas = document.getElementById('gameCanvas');
@@ -756,6 +757,30 @@
     const gravityStrength = 0;
 
 
+    let ship = {
+      x: canvas.width / 2,
+      y: canvas.height - 50,
+      size: 20,
+      speed: 0,
+      acceleration: 0.15,
+      deceleration: 0.99,
+      maxSpeed: 5,
+      rotation: 0,
+      rotationSpeed: 2.5,
+      lasers: [],
+      velocityX: 0,
+      velocityY: 0,
+      laserLevel: 2,
+      accelerationLevel: 1,
+      rotationSpeedLevel: 1,
+      maxBulletsLevel: 1,
+      explosiveLaserLevel: 0,
+      laserCooldown: 30,
+      laserTimer: 0,
+      laserCooldownLevel: 1,
+
+    };
+
     let boomerang = {
       x: canvas.width / 2,
       y: canvas.height / 2,
@@ -840,30 +865,6 @@
       missile: 0,
       laser: 0,
       bomb: 0
-    };
-
-    let ship = {
-      x: canvas.width / 2,
-      y: canvas.height - 50,
-      size: 20,
-      speed: 0,
-      acceleration: 0.15,
-      deceleration: 0.99,
-      maxSpeed: 5,
-      rotation: 0,
-      rotationSpeed: 2.5,
-      lasers: [],
-      velocityX: 0,
-      velocityY: 0,
-      laserLevel: 1,
-      accelerationLevel: 1,
-      rotationSpeedLevel: 1,
-      maxBulletsLevel: 1,
-      explosiveLaserLevel: 0,
-      laserCooldown: 30,
-      laserTimer: 0,
-      laserCooldownLevel: 1,
-
     };
 
     let drone = {
@@ -2384,9 +2385,10 @@
     }
 
     function countTechnologies() {
-      let count = 5;
+      let count = 4;
 
       // These are all the achievements that have a specific weapon unlock assigned
+
       if (Achievements.reach_wave_10.reached) count++;
       if (Achievements.reach_wave_20.reached) count++;
       if (Achievements.complete_normal_mode.reached) count++;
@@ -2397,7 +2399,9 @@
       if (Achievements.complete_meteor_normal_mode.reached) count++;
       if (Achievements.complete_planet_normal_mode.reached) count++;
       if (Achievements.complete_hard_mode.reached) count++;
+      if (Achievements.complete_hero_mode.reached) count++;
       if (Achievements.drone_damage.reached) count++;
+      if (Achievements.laser_damage.reached) count++;
 
       return count;
     }
@@ -2415,10 +2419,15 @@
         'Decrease Laser Cooldown',
         'Increase Rotation Speed',
         ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
-        ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
-        ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
         ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
+        ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
+
       ];
+
+      if (Achievements.laser_damage.reached)
+        availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']));
+
+
 
       if (Achievements.reach_wave_10.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']));
@@ -2430,7 +2439,7 @@
         availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']));
 
       if (Achievements.destroy_100_asteroids.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']));
 
       if (Achievements.kill_5_aliens.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']));
@@ -2874,7 +2883,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.703)`, 20, 30);
+      ctx.fillText(`(v 0.705)`, 20, 30);
       ctx.fillText(`Wave: ${wave}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -4498,6 +4507,7 @@
       document.getElementById('hardButton').disabled = !Achievements.complete_normal_mode.reached;
       document.getElementById('heroButton').disabled = !Achievements.complete_hard_mode.reached;
 
+
       document.getElementById('meteorEasyButton').disabled = !Achievements.complete_normal_mode.reached;
       document.getElementById('meteorNormalButton').disabled = !Achievements.complete_meteor_easy_mode.reached;
       document.getElementById('meteorHardButton').disabled = !Achievements.complete_meteor_normal_mode.reached;
@@ -4507,6 +4517,9 @@
       document.getElementById('planetNormalButton').disabled = !Achievements.complete_planet_easy_mode.reached;
       document.getElementById('planetHardButton').disabled = !Achievements.complete_planet_normal_mode.reached;
       document.getElementById('planetHeroButton').disabled = !Achievements.complete_planet_hero_mode.reached;
+
+      if (Achievements.complete_hero_mode.reached)
+        lives++;
 
       for (const key in Achievements) {
         if (Achievements.hasOwnProperty(key)) {
@@ -4531,28 +4544,29 @@
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `You have unlocked ${count} of 17 technologies`;
+      technologiesCountElement.textContent = `You have unlocked ${count} of 18 technologies`;
 
     }
 
 
     const Achievements = {
       // reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5' },
-      reach_wave_10: { reached: false, icon: 'achievements/angelcapitan.png', description: 'Reach Wave 10' },
+      reach_wave_10: { reached: false, icon: 'achievements/angelcapitan.png', description: 'Reach Wave 10. Unlock Sonic Blast.' },
       // reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
       reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20. Unlock Boomerang.' },
       // reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
-      destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game. Unlock Explosive Laser' },
+      destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game. Unlock Drone.' },
       // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
       acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/acid.png', description: 'Deal 10,000 Damage with Acid Bomb' },
-      drone_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/storm_drone.png', description: 'Deal 5,000 Damage with Drone. Unlock Drone Army' },
+      laser_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/deathray2.png', description: 'Deal 2,500 Damage with Laser. Unlock Explosive Laser.' },
+      drone_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/storm_drone.png', description: 'Deal 5,000 Damage with Drone. Unlock Drone Army.' },
       explosive_laser_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/explosive.png', description: 'Deal 10,000 Damage with Explosive Laser' },
       death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Extra Choice.' },
       no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
       complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
       complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Normal Mode. Unlock Acid Bomb.' },
       complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Hard Mode. Unlock Damage Boost.' },
-      complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Hero Mode.' },
+      complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Hero Mode. Unlock Extra Life.' },
       kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
       complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Shower Easy Mode.' },
       complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Shower Normal Mode. Unlock Double Turret.' },
@@ -4641,6 +4655,10 @@
         Achievements.drone_damage.reached = true;
       }
 
+      if (!Achievements.laser_damage.reached && damageReport.deathRay >= Achievements.laser_damage.required) {
+        Achievements.laser_damage.reached = true;
+      }
+
       if (!Achievements.kill_5_aliens.reached && aliensKilled >= 5) {
         Achievements.kill_5_aliens.reached = true;
       }
@@ -4664,8 +4682,8 @@
 
 
 
-  <script src="js/ships.js"></script>
 
+  <script src="js/ships.js"></script>
 
 
 

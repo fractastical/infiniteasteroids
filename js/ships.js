@@ -1,4 +1,30 @@
 
+let basicShip = {
+    x: canvas.width / 2,
+    y: canvas.height - 50,
+    size: 20,
+    speed: 0,
+    acceleration: 0.09,
+    deceleration: 0.98,
+    maxSpeed: 3,
+    rotation: 0,
+    rotationSpeed: 2.5,
+    lasers: [],
+    velocityX: 0,
+    velocityY: 0,
+    laserLevel: 1,
+    accelerationLevel: 1,
+    rotationSpeedLevel: 1,
+    maxBulletsLevel: 1,
+    explosiveLaserLevel: 0,
+    laserCooldown: 30,
+    laserTimer: 0,
+    laserCooldownLevel: 1,
+
+};
+
+
+
 
 function drawShieldShip() {
     ctx.beginPath();
