@@ -35,6 +35,26 @@
       /* Hide by default */
     }
 
+    #volumeScreen {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 200px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 10;
+    }
+
+    #volumeScreen input[type="range"] {
+      width: 80%;
+    }
+
     #joystick-inner {
       position: absolute;
       top: 50%;
@@ -177,7 +197,7 @@
 
 
     #startScreen h2 {
-      font-size: 4em;
+      font-size: 3em;
       /* Increased heading size */
       margin-bottom: 20px;
     }
@@ -556,6 +576,13 @@
       <!-- Weapon entries will be dynamically added here -->
     </div>
     <button id="closeButton" onclick="toggleWeaponInfo()">Close</button>
+  </div>
+
+  <div id="volumeScreen" style="display: none;">
+    <h2>Volume Control</h2>
+    <input type="range" id="volumeSlider" min="1" max="10" value="5">
+    <p>Volume: <span id="volumeValue">5</span></p>
+    <button onclick="toggleVolumeScreen()">Close</button>
   </div>
 
   <div id="marketplace">
@@ -1601,122 +1628,6 @@
 
 
 
-    const meteorDestroySounds = [
-      document.getElementById('meteor-destroy-1'),
-      document.getElementById('meteor-destroy-2'),
-      document.getElementById('meteor-destroy-3')
-    ];
-
-    // Get the audio elements for shots
-    const shotSounds = [
-      document.getElementById('shot-sound-1'),
-      document.getElementById('shot-sound-2'),
-      document.getElementById('shot-sound-3')
-    ];
-
-    // Get the audio elements for thrusters
-    const thrusterSounds = [
-      document.getElementById('thruster-sound-1'),
-      document.getElementById('thruster-sound-2'),
-      document.getElementById('thruster-sound-3')
-    ];
-
-
-    // Get the audio elements for thrusters
-    const shipDestroyedSounds = [
-      document.getElementById('ship-destroyed')
-    ];
-
-
-    const freezeSounds = [
-      document.getElementById('freeze-sound'),
-      document.getElementById('freeze-sound-2')
-
-    ];
-
-    const deathRaySounds = [
-      document.getElementById('death-ray-sound')
-    ];
-
-    const deployDroneSounds = [
-      document.getElementById('deploy-drone-sound')
-    ];
-
-    const acidBombSounds = [
-      document.getElementById('acid-bomb-sound')
-    ];
-
-    const bombLaySounds = [
-      document.getElementById('bomb-lay-sound')
-    ];
-
-    // Function to play a random shot sound
-    function playRandomShotSound() {
-      if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * shotSounds.length);
-        shotSounds[randomIndex].play();
-      }
-    }
-
-    function playRandomDeathRaySound() {
-      if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * deathRaySounds.length);
-        deathRaySounds[randomIndex].play();
-      }
-    }
-
-    function playRandomBombLaySound() {
-      if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * bombLaySounds.length);
-        bombLaySounds[randomIndex].play();
-      }
-    }
-
-    function playRandomAcidBombSound() {
-      if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * acidBombSounds.length);
-        acidBombSounds[randomIndex].play();
-      }
-    }
-
-    function playDeployDroneSound() {
-      if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * deployDroneSounds.length);
-        deployDroneSounds[randomIndex].play();
-      }
-    }
-
-    function playFreezeSound() {
-      if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * freezeSounds.length);
-        freezeSounds[randomIndex].play();
-      }
-    }
-
-
-    // Function to play a random thruster sound
-    function playRandomThrusterSound() {
-      if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * thrusterSounds.length);
-        thrusterSounds[randomIndex].play();
-      }
-    }
-
-    function playRandomMeteorDestroySound() {
-      if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * meteorDestroySounds.length);
-        meteorDestroySounds[randomIndex].play();
-      }
-    }
-
-
-    function playShipDestroyedSound() {
-      if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * shipDestroyedSounds.length);
-        shipDestroyedSounds[randomIndex].play();
-      }
-    }
-
 
     // Function to buy drones
     function buyDrone() {
@@ -2654,6 +2565,10 @@
         case 'Triple Turret':
           tripleTurret = true;
           break;
+        case 'Drone Army':
+          buyDrone();
+          buyBomberDrone();
+          break;
 
       }
     }
@@ -2915,7 +2830,7 @@
       ctx.fillText(`Wave: ${wave}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
-        ctx.fillText("\'m\' to toggle music \'n\' sound 'p\' pause 'i\' info", 20, canvas.height - 30);
+        ctx.fillText("\'m\' to toggle music \'n\' sound \'v\' volume  'p\' pause 'i\' info", 20, canvas.height - 30);
 
     }
 
@@ -4042,16 +3957,21 @@
     function handleKeyDown(event) {
       keys[event.key] = true;
 
-      if (event.key === 'i') {
+      if (event.key === 'i' || event.key === 'I') {
         console.log("toggle1");
         toggleWeaponInfo();
-      } else if (event.key === 'p') {
+      } else if (event.key === 'p' || event.key === 'P') {
         if (isPaused) {
 
           gameLoop = setInterval(update, 1000 / 60); // Resume game loop
           isPaused = false;
 
-        } else {
+        } else if (event.key === 'v' || event.key === 'V') {
+
+          toggleVolumeScreen();
+
+        }
+        else {
 
           clearInterval(gameLoop);
           isPaused = true;
@@ -4673,7 +4593,7 @@
     window.onload = loadWeaponInfo;
 
     // for leaderboard and telegram API 
-    let gameId = "InfiniteSpaceWar";
+    let gameId = "NachoBlaster";
   </script>
 
 
@@ -4691,6 +4611,9 @@
   <!-- #INFINITEGAMES JS START -->
   <script src="infinite/js/leaderboard_20240612134844.js"></script>
   <!-- #INFINITEGAMES JS END -->
+
+  <script src="js/audio.js"></script>
+
 </body>
 
 </html>
