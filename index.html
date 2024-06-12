@@ -463,13 +463,13 @@
       <button id="easyButton" onclick="initializeGame(GameModes.EASY)">Easy</button>
       <button id="normalButton" onclick="initializeGame(GameModes.NORMAL)" disabled>Normal</button>
       <button id="hardButton" onclick="initializeGame(GameModes.HARD)" disabled>Hard</button>
-      <button id="veryhardButton" onclick="initializeGame(GameModes.HERO)" disabled>Hero</button>
+      <button id="heroButton" onclick="initializeGame(GameModes.HERO)" disabled>Hero</button>
       <p>Meteor Shower</p>
 
       <button id="meteorEasyButton" onclick="initializeGame(GameModes.METEORSHOWEREASY)" disabled>Easy</button>
-      <!-- <button id="veryhardButton" onclick="initializeGame(GameModes.METEORSHOWERNORMAL)" disabled>Normal</button>
-      <button id="veryhardButton" onclick="initializeGame(GameModes.METEORSHOWERHARD)" disabled>Hard</button>
-      <button id="veryhardButton" onclick="initializeGame(GameModes.METEORSHOWERHERO)" disabled>Hero</button> -->
+      <button id="meteorNormalButton" onclick="initializeGame(GameModes.METEORSHOWERNORMAL)" disabled>Normal</button>
+      <button id="meteorHardButton" onclick="initializeGame(GameModes.METEORSHOWERHARD)" disabled>Hard</button>
+      <button id="meteorHeroButton" onclick="initializeGame(GameModes.METEORSHOWERHERO)" disabled>Hero</button>
 
       <p>Planet</p>
 
@@ -599,24 +599,36 @@
       size: 1
     };
 
+    let meteorBooster = 0;
+
     const GameModes = {
       EASY: 'easy',
       NORMAL: 'normal',
       HARD: 'hard',
       HERO: 'heroic',
       METEORSHOWEREASY: 'meteorshowereasy'
-
+      METEORSHOWERNORMAL: 'meteorshowernormal'
+      METEORSHOWERHARD: 'meteorshowerhard'
+      METEORSHOWERHERO: 'meteorshowerhero',
+      PLANETEASY: 'planeteasy',
+      PLANETNORMAL: 'planetnormal',
+      PLANETHARD: 'planethard',
+      PLANETHERO: 'planethero'
     };
 
     let currentMode = GameModes.EASY; // Start with Easy mode by default
     let modesUnlocked = {
+      easy: true,
       normal: false,
       hard: false,
       hero: false,
       meteoreasy: false,
       meteornormal: false,
       meteorhard: false,
-      meteorhero: false
+      planeteasy: false,
+      planetnormal: false,
+      planethard: false,
+      planethero: false
 
     };
 
@@ -1273,18 +1285,42 @@
           asteroidDifficultySpeedMultiplier = 3.3;
           levelUpXPMultiplier = 1.1;
           break;
-        // case GameModes.METEO:
-        //   asteroidDifficultySpeedMultiplier = 1;
-        //   levelUpXPMultiplier = 1.2;
-        //   break;
-        // case GameModes.HARD:
-        //   asteroidSpeedMultiplier = 1.1;
-        //   levelUpXPMultiplier = 1.3;
-        //   break;
-        // case GameModes.HERO:
-        //   asteroidSpeedMultiplier = 1.3;
-        //   levelUpXPMultiplier = 1.5;
-        //   break;
+        case GameModes.METEORSHOWERNORMAL:
+          asteroidDifficultySpeedMultiplier = 3.3;
+          levelUpXPMultiplier = 1.2;
+          meteorBooster = 7;
+          break;
+        case GameModes.METEORSHOWERHARD:
+          asteroidDifficultySpeedMultiplier = 3.4;
+          levelUpXPMultiplier = 1.3;
+          meteorBooster = 14;
+          break;
+        case GameModes.METEORSHOWERHERO:
+          asteroidDifficultySpeedMultiplier = 3.5;
+          levelUpXPMultiplier = 1.4;
+          meteorBooster = 21;
+          break;
+        case GameModes.PLANETEASY:
+          asteroidDifficultySpeedMultiplier = 3.3;
+          levelUpXPMultiplier = 1.1;
+          break;
+        case GameModes.PLANETNORMAL:
+          asteroidDifficultySpeedMultiplier = 3.3;
+          levelUpXPMultiplier = 1.2;
+          meteorBooster = 7;
+          break;
+        case GameModes.PLANETHARD:
+          asteroidDifficultySpeedMultiplier = 3.4;
+          levelUpXPMultiplier = 1.3;
+          meteorBooster = 14;
+          break;
+        case GameModes.PLANETHERO;
+          asteroidDifficultySpeedMultiplier = 3.5;
+          levelUpXPMultiplier = 1.4;
+          meteorBooster = 21;
+          break;
+
+
 
       }
       currentMode = mode;
@@ -2206,14 +2242,14 @@
         ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
         ...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']),
         ...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']),
-        ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Speed', 'Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
+        ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
         ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
-        ...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']),
-
-
 
 
       ];
+
+      if (Achievements.reach_wave_20.reached)
+        availableUpgrades.push(...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']));
 
       if (Achievements.complete_normal_mode.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb'])),
@@ -2768,7 +2804,7 @@
 
       let numberOfAsteroids = 10 + (wave - 1) * 1.8;
       if (currentMode == GameModes.METEORSHOWEREASY) {
-        numberOfAsteroids += 35;
+        numberOfAsteroids += (35 + meteorBooster);
       }
 
       const side = Math.random() < 0.5 ? 'left' : 'right';
@@ -4241,7 +4277,19 @@
       const achievementsList = document.getElementById('achievementsList');
       achievementsList.innerHTML = '';
 
+      document.getElementById('normalButton').disabled = !Achievements.complete_easy_mode.reached;
+      document.getElementById('hardButton').disabled = !Achievements.complete_normal_mode.reached;
+      document.getElementById('heroButton').disabled = !Achievements.complete_hard_mode.reached;
+
       document.getElementById('meteorEasyButton').disabled = !Achievements.complete_normal_mode.reached;
+      document.getElementById('meteorNormalButton').disabled = !Achievements.complete_meteor_easy_mode.reached;
+      document.getElementById('meteorHardButton').disabled = !Achievements.complete_meteor_normal_mode.reached;
+      document.getElementById('meteorHeroButton').disabled = !Achievements.complete_meteor_hard_mode.reached;
+
+      document.getElementById('planetEasyButton').disabled = !Achievements.complete_meteor_normal_mode.reached;
+      document.getElementById('planetNormalButton').disabled = !Achievements.complete_planet_easy_mode.reached;
+      document.getElementById('planetHardButton').disabled = !Achievements.complete_planet_normal_mode.reached;
+      document.getElementById('planetHeroButton').disabled = !Achievements.complete_planet_hero_mode.reached;
 
       for (const key in Achievements) {
         if (Achievements.hasOwnProperty(key)) {
@@ -4270,7 +4318,7 @@
       // reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5' },
       reach_wave_10: { reached: false, icon: 'achievements/angelcapitan.png', description: 'Reach Wave 10' },
       // reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
-      reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20' },
+      reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20. Unlock Boomerang.' },
       reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
       destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game. Unlock Explosive Laser' },
       // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
@@ -4281,8 +4329,16 @@
       complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
       complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Complete Normal Mode. Unlock Acid Bomb.' },
       complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Complete Hard Mode' },
-      complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Complete Hero Mode' },
-      kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' }
+      complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Complete Hero Mode.' },
+      kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
+      complete_meteor_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Meteor Easy Mode.' },
+      complete_meteor_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Complete Meteor Normal Mode. Unlock Double Turret.' },
+      complete_meteor_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Complete Meteor Hard Mode' },
+      complete_meteor_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Complete Meteor Hero Mode' },
+      complete_planet_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Planet Easy Mode.' },
+      complete_planet_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Complete Planet Normal Mode. Unlock Triple Turret.' },
+      complete_planet_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Complete Planet Hard Mode' },
+      complete_planet_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Complete Planet Hero Mode' },
 
     };
 
@@ -4329,9 +4385,35 @@
       if (!Achievements.complete_hero_mode.reached && currentMode === GameModes.HERO && wave >= 31) {
         Achievements.complete_hero_mode.reached = true;
       }
+      if (!Achievements.complete_meteor_easy_mode.reached && currentMode === GameModes.METEORSHOWEREASY && wave >= 31) {
+        Achievements.complete_meteor_easy_mode.reached = true;
+      }
+      if (!Achievements.complete_meteor_normal_mode.reached && currentMode === GameModes.METEORSHOWERNORMAL && wave >= 31) {
+        Achievements.complete_meteor_normal_mode.reached = true;
+      }
+      if (!Achievements.complete_meteor_hard_mode.reached && currentMode === GameModes.METEORSHOWERHARD && wave >= 31) {
+        Achievements.complete_meteor_hard_mode.reached = true;
+      }
+      if (!Achievements.complete_meteor_hero_mode.reached && currentMode === GameModes.METEORSHOWERHERO && wave >= 31) {
+        Achievements.complete_meteor_hero_mode.reached = true;
+      }
+      if (!Achievements.complete_planet_easy_mode.reached && currentMode === GameModes.PLANETEASY && wave >= 31) {
+        Achievements.complete_planet_easy_mode.reached = true;
+      }
+      if (!Achievements.complete_planet_normal_mode.reached && currentMode === GameModes.PLANETNORMAL && wave >= 31) {
+        Achievements.complete_planet_normal_mode.reached = true;
+      }
+      if (!Achievements.complete_planet_hard_mode.reached && currentMode === GameModes.PLANETHARD && wave >= 31) {
+        Achievements.complete_planet_hard_mode.reached = true;
+      }
+      if (!Achievements.complete_planet_hero_mode.reached && currentMode === GameModes.PLANETHERO && wave >= 31) {
+        Achievements.complete_planet_hero_mode.reached = true;
+      }
+
       if (!Achievements.death_ray_damage.reached && damageReport.deathRay >= Achievements.death_ray_damage.required) {
         Achievements.death_ray_damage.reached = true;
       }
+
       if (!Achievements.kill_5_aliens.reached && aliensKilled >= 5) {
         Achievements.kill_5_aliens.reached = true;
       }
