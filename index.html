@@ -116,6 +116,29 @@
       /* Slightly lighter background on hover */
     }
 
+    .flashing-arrow {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border: 2px solid red;
+      border-width: 2px 2px 0 0;
+      transform: rotate(45deg);
+      display: none;
+      animation: flash 0.7s infinite;
+    }
+
+    @keyframes flash {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
     #restartButton {
       position: absolute;
       top: 70%;
@@ -276,7 +299,7 @@
       /* Use flexbox for layout */
       justify-content: center;
       /* Center align the icons */
-      /*  gap: 10px; /* Add spacing between icons */
+      /* gap: 10px; /* Add spacing between icons */
       */
     }
 
@@ -441,6 +464,9 @@
 </head>
 
 <body>
+
+  <div id="leftArrow" class="flashing-arrow" style="left: 20px; top: 50%;"></div>
+  <div id="rightArrow" class="flashing-arrow" style="right: 20px; top: 50%;"></div>
 
 
   <div id="xpBarContainer">
@@ -679,6 +705,9 @@
     let alienLaser = null;
     const alienLaserSpeed = 2.2;
     const alienLaserSize = 4;
+
+    const planet = { x: canvas.width / 2 + 200, y: canvas.height / 2 + 200, radius: 70 };
+    const gravityStrength = 0;
 
 
     let boomerang = {
@@ -942,6 +971,11 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       document.getElementById('leaderboard-container').style.display = 'none';
 
+      if (planetMode) {
+        drawPlanet();
+      }
+
+
       // don't let people play with negative lives
       if (lives < 0)
         return;
@@ -955,6 +989,7 @@
       if (isMobile()) {
         keys[' '] = true;
       }
+
 
       if (keys['ArrowUp'] || keys['w']) {
         if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
@@ -984,6 +1019,8 @@
           ship.velocityY *= 0.97;
 
         }
+
+        applyGravity(ship);
 
         if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
           if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
@@ -1171,7 +1208,13 @@
 
       if (spawnTimer <= 0) {
         wave++;
-        createAsteroids();
+        if (meteorMode) {
+
+          const side = Math.random() < 0.5 ? 'left' : 'right';
+          showArrow(side);
+
+        } else
+          createAsteroids();
         spawnAliens(wave); // Spawn aliens based on the current wave
         spawnTimer = spawnCooldown;
 
@@ -1191,6 +1234,14 @@
       if (gameOver) drawDamageReport();
 
 
+    }
+
+    function drawPlanet() {
+      ctx.beginPath();
+      ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'green';
+      ctx.fill();
+      ctx.closePath();
     }
 
     function drawEdgeOverlay() {
@@ -1299,6 +1350,8 @@
 
     let asteroidDifficultySpeedMultiplier = 1;
     let levelUpXPMultiplier = 1.2;
+    let meteorMode = false;
+    let planetMode = false;
 
     function initializeGame(mode) {
       switch (mode) {
@@ -1321,46 +1374,65 @@
         case GameModes.METEORSHOWEREASY:
           asteroidDifficultySpeedMultiplier = 3.3;
           levelUpXPMultiplier = 1.1;
+          meteorMode = true;
           break;
         case GameModes.METEORSHOWERNORMAL:
           asteroidDifficultySpeedMultiplier = 3.3;
           levelUpXPMultiplier = 1.2;
           meteorBooster = 7;
+          meteorMode = true;
           break;
         case GameModes.METEORSHOWERHARD:
           asteroidDifficultySpeedMultiplier = 3.4;
           levelUpXPMultiplier = 1.3;
           meteorBooster = 14;
+          meteorMode = true;
+
           break;
         case GameModes.METEORSHOWERHERO:
           asteroidDifficultySpeedMultiplier = 3.5;
           levelUpXPMultiplier = 1.4;
           meteorBooster = 21;
+          meteorMode = true;
+
           break;
         case GameModes.PLANETEASY:
-          asteroidDifficultySpeedMultiplier = 3.3;
+          asteroidDifficultySpeedMultiplier = 1.4;
           levelUpXPMultiplier = 1.1;
+          gravityStrength = 60;
+          meteorBooster = 7;
+          planetMode = true;
           break;
         case GameModes.PLANETNORMAL:
           asteroidDifficultySpeedMultiplier = 3.3;
           levelUpXPMultiplier = 1.2;
-          meteorBooster = 7;
+          meteorBooster = 14;
+          gravityStrength = 90;
+          planetMode = true;
+
           break;
         case GameModes.PLANETHARD:
           asteroidDifficultySpeedMultiplier = 3.4;
           levelUpXPMultiplier = 1.3;
-          meteorBooster = 14;
+          meteorBooster = 21;
+          gravityStrength = 120;
+          planetMode = true;
+
           break;
         case GameModes.PLANETHERO:
           asteroidDifficultySpeedMultiplier = 3.5;
           levelUpXPMultiplier = 1.4;
-          meteorBooster = 21;
+          meteorBooster = 28;
+          gravityStrength = 160;
+          planetMode = true;
+
           break;
 
 
 
       }
       currentMode = mode;
+
       startGame();
     }
 
@@ -1816,28 +1888,37 @@
 
     function upgradeDrone(attribute) {
       const cost = 200;
-      if (coins >= cost) {
-        coins -= cost;
-        droneUpgrades[attribute]++;
+      // if (coins >= cost) {
+      //   coins -= cost;
+      droneUpgrades[attribute]++;
 
-        // Update existing drones with new upgrade levels
-        drones.forEach(drone => {
-          switch (attribute) {
-            case 'speed':
-              drone.speed = 2 * droneUpgrades.speed;
-              break;
-            case 'laserSpeed':
-              drone.laserSpeed = 5 * droneUpgrades.laserSpeed;
-              break;
-            case 'laserInterval':
-              drone.laserInterval = 120 / droneUpgrades.laserInterval;
-              break;
-          }
-        });
-        updateCoinsDisplay();
-        updateMarketplaceDisplay();
+      // Update existing drones with new upgrade levels
+      drones.forEach(drone => {
+        switch (attribute) {
+          case 'speed':
+            drone.speed = 2 * droneUpgrades.speed;
+            break;
+          case 'laserSpeed':
+            drone.laserSpeed = 5 * droneUpgrades.laserSpeed;
+            break;
+          case 'laserInterval':
+            drone.laserInterval = 120 / droneUpgrades.laserInterval;
+            break;
+        }
+      });
+      // updateCoinsDisplay();
+      // updateMarketplaceDisplay();
 
-      }
+    }
+
+    function applyGravity(object) {
+      const dx = planet.x - object.x;
+      const dy = planet.y - object.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const force = gravityStrength / (distance * distance); // Inverse-square law
+
+      object.dx += force * dx / distance;
+      object.dy += force * dy / distance;
     }
 
     // Update all drones
@@ -2189,6 +2270,7 @@
 
     function upgrade(attribute) {
       const cost = 100;
+      console.log("updgradeing with coins");
       if (coins >= cost) {
         coins -= cost;
         switch (attribute) {
@@ -2722,7 +2804,7 @@
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
       //version
-      ctx.fillText(`(v 0.607)`, 20, 30);
+      ctx.fillText(`(v 0.701)`, 20, 30);
       ctx.fillText(`Wave: ${wave}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -2817,7 +2899,26 @@
     // Call the preloadDroneImages function before starting the game
     preloadDroneImages();
 
-    function createAsteroids() {
+    function showArrow(side) {
+      const leftArrow = document.getElementById('leftArrow');
+      const rightArrow = document.getElementById('rightArrow');
+
+      if (side === 'left') {
+        leftArrow.style.display = 'block';
+        rightArrow.style.display = 'none';
+      } else {
+        leftArrow.style.display = 'none';
+        rightArrow.style.display = 'block';
+      }
+
+      setTimeout(() => {
+        leftArrow.style.display = 'none';
+        rightArrow.style.display = 'none';
+        createAsteroids(side);
+      }, 700);
+    }
+
+    function createAsteroids(side) {
 
       const asteroidImages = [
         // 'roids/8bitroid_2657.png',
@@ -2839,12 +2940,11 @@
       ];
 
 
-      let numberOfAsteroids = 10 + (wave - 1) * 1.8;
-      if (currentMode == GameModes.METEORSHOWEREASY) {
-        numberOfAsteroids += (35 + meteorBooster);
+      let numberOfAsteroids = 10 + (wave - 1) * 1.8 + meteorBooster;
+      if (meteorMode) {
+        numberOfAsteroids += 35;
       }
 
-      const side = Math.random() < 0.5 ? 'left' : 'right';
 
 
       for (let i = 0; i < numberOfAsteroids; i++) {
@@ -2872,7 +2972,7 @@
         let x, y;
         let spawnArea = Math.random();
         console.log
-        if (currentMode != GameModes.METEORSHOWEREASY) {
+        if (!meteorMode) {
           if (spawnArea < 0.25) {
             // Top edge
             x = Math.random() * canvas.width;
@@ -3006,10 +3106,12 @@
     function updateAsteroids() {
       if (!freezeEffect.active) {
         for (let i = 0; i < asteroids.length; i++) {
+          applyGravity(asteroids[i]);
+
           asteroids[i].x += asteroids[i].dx * asteroids[i].speed;
           asteroids[i].y += asteroids[i].dy * asteroids[i].speed;
 
-          if (currentMode != GameModes.METEORSHOWEREASY) {
+          if (!meteorMode) {
             // Wrap asteroids around the screen
             if (asteroids[i].x < 0) {
               asteroids[i].x = canvas.width;
