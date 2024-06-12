@@ -501,6 +501,8 @@
       <button id="upgrade1" onclick="selectUpgrade(1)"></button>
       <button id="upgrade2" onclick="selectUpgrade(2)"></button>
       <button id="upgrade3" onclick="selectUpgrade(3)"></button>
+      <button id="upgrade4" style="display:none" onclick="selectUpgrade(4)"></button>
+
     </div>
   </div>
 
@@ -2343,6 +2345,9 @@
       }
     }
 
+
+    let fourthUpgradeUnlocked = false;
+
     function levelUp() {
       level++;
       xp = 0;  // Reset XP
@@ -2350,13 +2355,22 @@
       updateXPBar();
 
       // Generate three random upgrades
-      const upgrades = getRandomUpgrades(3);
+      let upgradesToRetrieve = 3;
+      if (fourthUpgradeUnlocked)
+        upgradesToRetrieve++;
+
+      const upgrades = getRandomUpgrades(upgradesToRetrieve);
 
       // Display the level-up modal
       const levelUpModal = document.getElementById('levelUpModal');
       document.getElementById('upgrade1').textContent = `1. ${upgrades[0]}`;
       document.getElementById('upgrade2').textContent = `2. ${upgrades[1]}`;
       document.getElementById('upgrade3').textContent = `3. ${upgrades[2]}`;
+      if (fourthUpgradeUnlocked) {
+        document.getElementById('upgrade4').style.display = `block`;
+        document.getElementById('upgrade4').textContent = `4. ${upgrades[3]}`;
+      }
+
       levelUpModal.style.display = 'block';
 
       // Store upgrades in a global variable for later use
@@ -2383,6 +2397,7 @@
       if (Achievements.complete_meteor_normal_mode.reached) count++;
       if (Achievements.complete_planet_normal_mode.reached) count++;
       if (Achievements.complete_hard_mode.reached) count++;
+      if (Achievements.drone_damage.reached) count++;
 
       return count;
     }
@@ -2390,6 +2405,8 @@
     let damageBooster = 0;
 
     function getRandomUpgrades(count) {
+
+      // fourthUpgradeUnlocked = true;
 
       // if (    Weapons.deathRay.unlocked = true;
       const availableUpgrades = [
@@ -2421,7 +2438,10 @@
       if (Achievements.no_lives_lost.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('homingmissile') ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : ['Activate Nano Swarm']));
 
-      if (Achievements.death_ray_damage.reached && (activeWeaponClasses.includes('drone') || activeWeaponClasses.includes('bomberdrone')))
+      if (!fourthUpgradeUnlocked && Achievements.death_ray_damage.reached)
+        availableUpgrades.push('Extra Upgrade Choice');
+
+      if ((activeWeaponClasses.includes('drone') || activeWeaponClasses.includes('bomberdrone')) && Achievements.drone_damage.reached)
         availableUpgrades.push('Drone Army');
 
       if (Achievements.complete_meteor_normal_mode.reached && (activeWeaponClasses.includes('turret')))
@@ -2432,6 +2452,9 @@
 
       if (Achievements.complete_hard_mode.reached)
         availableUpgrades.push('Damage Booster');
+
+      if (!fourthUpgradeUnlocked && Achievements.complete_planet_hard_mode.reached)
+        availableUpgrades.push('Extra Upgrade Choice');
 
       const upgrades = [];
       for (let i = 0; i < count; i++) {
@@ -2605,10 +2628,10 @@
           buyBomberDrone();
           break;
         case 'Damage Booster':
-          buyDrone();
-          buyBomberDrone();
+          damageBooster++;
           break;
-
+        case 'Extra Choice':
+          fourthUpgradeUnlocked = true;
       }
     }
 
@@ -4508,7 +4531,7 @@
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `You have unlocked ${count} of 16 technologies`;
+      technologiesCountElement.textContent = `You have unlocked ${count} of 17 technologies`;
 
     }
 
@@ -4522,8 +4545,9 @@
       destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game. Unlock Explosive Laser' },
       // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
       acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/acid.png', description: 'Deal 10,000 Damage with Acid Bomb' },
+      drone_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/storm_drone.png', description: 'Deal 5,000 Damage with Drone. Unlock Drone Army' },
       explosive_laser_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/explosive.png', description: 'Deal 10,000 Damage with Explosive Laser' },
-      death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Drone Army.' },
+      death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Extra Choice.' },
       no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
       complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
       complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Normal Mode. Unlock Acid Bomb.' },
@@ -4536,7 +4560,7 @@
       complete_meteor_hero_mode: { reached: false, icon: 'achievements/death_meteor.png', description: 'Shower Hero Mode' },
       complete_planet_easy_mode: { reached: false, icon: 'achievements/planet_medium.png', description: 'Planet Easy Mode.' },
       complete_planet_normal_mode: { reached: false, icon: 'achievements/storm_medium.png', description: 'Planet Normal Mode. Unlock Triple Turret.' },
-      complete_planet_hard_mode: { reached: false, icon: 'achievements/storm_drone.png', description: 'Planet Hard Mode' },
+      complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode.' },
       complete_planet_hero_mode: { reached: false, icon: 'achievements/planet_huge.png', description: 'Planet Hero Mode' },
 
     };
@@ -4611,6 +4635,10 @@
 
       if (!Achievements.death_ray_damage.reached && damageReport.deathRay >= Achievements.death_ray_damage.required) {
         Achievements.death_ray_damage.reached = true;
+      }
+
+      if (!Achievements.drone_damage.reached && damageReport.deathRay >= Achievements.drone_damage.required) {
+        Achievements.drone_damage.reached = true;
       }
 
       if (!Achievements.kill_5_aliens.reached && aliensKilled >= 5) {
