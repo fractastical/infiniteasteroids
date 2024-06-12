@@ -4,7 +4,39 @@
 <head>
   <title>Infinite Space War</title>
   <style>
-    body,
+    body {
+      /* margin: 0; */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000;
+      color: #fff;
+      /* font-family: Arial, sans-serif; */
+      flex-direction: column;
+    }
+
+    #shipType,
+    #technologiesCount {
+      position: absolute;
+      top: 10px;
+      color: white;
+      font-size: 14px;
+      z-index: 20;
+      /* Higher z-index than startScreen */
+      font-family: 'Press Start 2P', cursive;
+      /* Arcade font */
+    }
+
+    #shipType {
+      left: 10px;
+    }
+
+    #technologiesCount {
+      right: 10px;
+    }
+
+
     html {
       margin: 0;
       padding: 0;
@@ -175,13 +207,15 @@
 
     #startScreen {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      justify-content: flex-start;
       align-items: center;
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      z-index: 10;
       color: white;
       z-index: 10;
       background-color: #111;
@@ -192,8 +226,9 @@
       font-family: 'Press Start 2P', cursive;
       /* Arcade font */
       text-align: center;
-
+      overflow-y: auto;
     }
+
 
 
     #startScreen h2 {
@@ -203,13 +238,13 @@
     }
 
     #startScreen p {
-      font-size: 2.2em;
+      font-size: 1.5em;
       /* Increased paragraph size */
       margin-bottom: 20px;
     }
 
     #startScreen button {
-      font-size: 1.2em;
+      font-size: 0.9em;
       /* Increased button text size */
       padding: 10px 20px;
     }
@@ -226,6 +261,7 @@
       border: 2px solid #fff;
       border-radius: 10px;
       overflow: hidden;
+      display: none;
     }
 
     #xpBar {
@@ -390,8 +426,15 @@
 
     #achievementsContainer {
       margin-top: 20px;
-      text-align: left;
+      /* max-height: 300px; */
+      /* Adjust this height as needed */
+      overflow-y: auto;
     }
+
+    /* #achievementsContainer {
+      margin-top: 20px;
+      text-align: left;
+    } */
 
     #achievementsList {
       display: flex;
@@ -403,15 +446,23 @@
       display: flex;
       align-items: center;
       padding: 5px;
+      margin: 5px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
       background-color: #222;
       color: #0f0;
+
     }
 
+    .achievement span {
+      font-size: 12px;
+      /* Adjust the font size as needed */
+    }
+
+
     .achievement img {
-      width: 40px;
-      height: 40px;
+      width: 30px;
+      height: 30px;
       margin-right: 10px;
     }
 
@@ -494,6 +545,15 @@
   </div>
 
 
+  <div id="shipType">
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Verson 0.707.
+  </div>
+
+
+  <div id="technologiesCount">
+    1 out of 1
+  </div>
+
   <div id="levelUpModal" class="modal">
     <div class="modal-content">
       <h2>Level Up!</h2>
@@ -509,14 +569,10 @@
   <div id="activeWeaponClassesContainer" class="bottom-icons"></div>
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
-  <div id="joystick">
-    <div id="joystickHandle"></div>
-
-  </div>
   <div id="startScreen">
     <div>
       <h2>Welcome to Infinite Space War!</h2>
-      <p>Select a Mode to Start:</p>
+      <!-- <p>Select a Mode to Start:</p> -->
       <table>
 
         <tr>
@@ -559,14 +615,6 @@
       </table>
 
       <div id="achievementsContainer">
-        <div id="shipType" style="position: absolute; top: 10px; left: 10px; color: white; font-size: 20px;">
-          Ship type: basic.
-        </div>
-
-
-        <div id="technologiesCount" style="position: absolute; top: 10px; right: 10px; color: white; font-size: 20px;">
-          1 out of 1
-        </div>
 
         <h3>Your Achievements</h3>
         <div id="achievementsList"></div>
@@ -579,6 +627,11 @@
       <!-- <p>Tap with two fingers to fire.</p> -->
       <!-- <button onclick="startGame()">Start Game</button> -->
     </div>
+  </div>
+
+  <div id="joystick">
+    <div id="joystickHandle"></div>
+
   </div>
 
   <div id="weaponInfo">
@@ -1854,12 +1907,12 @@
       ctx.save();
       ctx.translate(turret.x, turret.y);
       ctx.rotate(turret.rotation * Math.PI / 180);
-      ctx.fillStyle = 'lime';
-      ctx.arc(0, 0, 10, 0, Math.PI * 2);
-      ctx.strokeStyle = 'cyan';
-      ctx.stroke();
+      ctx.fillStyle = 'cyan';
+      // ctx.arc(0, 0, 10, 0, Math.PI * 2);
+      // ctx.strokeStyle = 'cyan';
+      // ctx.stroke();
 
-      // ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size + 2, turret.size);
+      ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size + 2, turret.size);
       ctx.restore();
 
       ctx.beginPath();
@@ -2142,14 +2195,14 @@
 
     function drawLives() {
       ctx.fillStyle = 'white';
-      ctx.font = '20px Arial';
+      ctx.font = '20px Press Start 2P';
       ctx.textAlign = 'right';
-      ctx.fillText('Lives: ' + lives, canvas.width - 20, 30);
+      ctx.fillText('Lives: ' + lives, canvas.width - 180, canvas.height - 30);
     }
 
     function drawCoins() {
       ctx.fillStyle = 'white';
-      ctx.font = '20px Arial';
+      ctx.font = '20px Press Start 2P';
       ctx.textAlign = 'left';
       let coinmessage = 'Coins: ' + coins;
       if (isMobile())
@@ -2208,6 +2261,7 @@
       ctx.textAlign = 'center';
       ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
       ctx.font = '20px Arial';
+
 
 
       ctx.fillText(`Wave: ${wave}`, canvas.width / 2, canvas.height / 2 + 40);
@@ -2882,8 +2936,6 @@
       ctx.fillStyle = 'white';
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
-      //version
-      ctx.fillText(`(v 0.705)`, 20, 30);
       ctx.fillText(`Wave: ${wave}`, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
@@ -4557,14 +4609,16 @@
       // reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
       destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game. Unlock Drone.' },
       // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
+      complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
+      complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Normal Mode. Unlock Acid Bomb.' },
+
+
       acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/acid.png', description: 'Deal 10,000 Damage with Acid Bomb' },
       laser_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/deathray2.png', description: 'Deal 2,500 Damage with Laser. Unlock Explosive Laser.' },
       drone_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/storm_drone.png', description: 'Deal 5,000 Damage with Drone. Unlock Drone Army.' },
       explosive_laser_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/explosive.png', description: 'Deal 10,000 Damage with Explosive Laser' },
       death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Extra Choice.' },
       no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
-      complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
-      complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Normal Mode. Unlock Acid Bomb.' },
       complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Hard Mode. Unlock Damage Boost.' },
       complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Hero Mode. Unlock Extra Life.' },
       kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
