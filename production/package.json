@@ -1,0 +1,39 @@
+{
+  "name": "infinitespacewar",
+  "productName": "Infinite Space War",
+  "savefilename": "isw_save",
+  "devTools": true,
+  "steamapp_id": "1085033",
+  "version": "1.0.0",
+  "appBundleId": "me.multiversal.infinitespacewar",
+  "description": "A blank project for an electron application inc. notarization",
+  "main": "main.js",
+  "build": {
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "build_assets/mac/icon.png",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build_assets/mac/entitlements.plist",
+      "entitlementsInherit": "build_assets/mac/entitlements.plist"
+    },
+    "afterSign": "./scripts/notarize.js"
+  },
+  "scripts": {
+    "start": "electron .",
+    "app:dist_final": "electron-builder --config.extraMetadata.devTools=false",
+    "app:dir": "electron-builder --dir",
+    "app:dist": "electron-builder --config.extraMetadata.devTools=true"
+  },
+  "author": "James Moulang",
+  "devDependencies": {
+    "electron": "^24.1.3",
+    "electron-builder": "^23.6.0",
+    "electron-notarize": "^1.2.2",
+    "yargs": "^17.7.2"
+  },
+  "dependencies": {
+    "fs-extra": "^11.1.1",
+    "steamworks.js": "0.1.0"
+  }
+}
