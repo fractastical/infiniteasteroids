@@ -1579,6 +1579,9 @@
           if (distance < missile.target.size) {
             createExplosion(missile.target.x, missile.target.y);
             let index = asteroids.indexOf(missile.target);
+            let actualDamage = astroids[index].hitPoints;
+            damageReport.homing += actualDamage;
+            increaseXP(actualDamage * 20);
             asteroids.splice(index, 1);
             homingMissile.activeMissiles.splice(i, 1);
             continue;
@@ -3526,7 +3529,7 @@
     function drawBossAlienLaser() {
       if (!alienLaser) return;
 
-      ctx.fillStyle = 'purple';
+      ctx.fillStyle = 'red';
       ctx.beginPath();
       ctx.arc(alienLaser.x, alienLaser.y, 6, 0, Math.PI * 2);
       ctx.fill();
