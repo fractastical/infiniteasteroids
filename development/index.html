@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <style>
-    html, body, #root {
-      width:  100%;
+    html,
+    body,
+    #root {
+      width: 100%;
       height: 100%;
       margin: 0;
       overflow: hidden;
       background-color: #21252D;
-      -webkit-touch-callout:none;
-      -webkit-user-select:none;
-      -khtml-user-select:none;
-      -moz-user-select:none;
-      -ms-user-select:none;
-      user-select:none;
-      -webkit-tap-highlight-color:rgba(0,0,0,0);
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       overscroll-behavior-x: none;
     }
 
-    #loading, #smile {
+    #loading,
+    #smile {
       color: #F4F4F4;
       font-size: 64px;
       font-family: sans-serif;
@@ -28,13 +32,17 @@
       line-height: 100%;
     }
   </style>
+  <link rel="stylesheet" href="isw.css">
+  <link rel="stylesheet" href="infinite/css/leaderboard_20240613120450.css">
+
 </head>
+
 <body>
   <h1 id='loading'>Loading</h1>
   <h1 id='smile'></h1>
   <script>
     document.addEventListener('contextmenu', event => event.preventDefault());
-    
+
     let smiley = -1;
     let loading = document.getElementById('smile');
     const update = () => {
@@ -49,13 +57,13 @@
   </script>
   <script>
     // Bind functions to Inter Process Connection
-    const {ipcRenderer} = require('electron');
+    const { ipcRenderer } = require('electron');
 
     console.log('ipc binding');
 
     // -------------------------------------------------------------
     // Electron Application
-    
+
     // quit to desktop
     window.closeElectronApp = () => {
       console.log("hello world");
@@ -86,7 +94,7 @@
       console.log("Electron Saving");
       ipcRenderer.send('save', data);
     };
-    
+
 
     // load
     window.electronLoad = () => {
@@ -98,7 +106,8 @@
       }
     };
   </script>
-  <div id="root"/>
+  <div id="root" />
   <script type="module" src="./src/index.js"></script>
 </body>
+
 </html>
