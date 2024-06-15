@@ -548,7 +548,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.709.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.710.
   </div>
 
 
@@ -1431,12 +1431,12 @@
           const asteroid = asteroids[j];
           if (isColliding(wave, asteroid) && !wave.hitAsteroids.includes(asteroid.id)) {
             wave.hitAsteroids.push(asteroid.id);
-            let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitPoints);
-            asteroid.hitPoints -= actualDamage;
+            let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitpoints);
+            asteroid.hitpoints -= actualDamage;
             damageReport.sonicBlast += actualDamage;
 
-            if (asteroid.hitPoints <= 0) {
-              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints, asteroid.image);
+            if (asteroid.hitpoints <= 0) {
+              createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
               asteroids.splice(j, 1);
               j--;
             }
@@ -1581,7 +1581,7 @@
           if (distance < missile.target.size) {
             createExplosion(missile.target.x, missile.target.y);
             let index = asteroids.indexOf(missile.target);
-            let actualDamage = asteroids[index].hitPoints;
+            let actualDamage = asteroids[index].hitpoints;
             damageReport.homing += actualDamage;
             increaseXP(actualDamage * 20);
             asteroids.splice(index, 1);
@@ -1663,18 +1663,18 @@
           if (isColliding(laser, asteroid)) {
             let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
 
-            let actualDamage = Math.min(damage + damageBooster, asteroid.hitPoints); // Ensure we don't overkill the asteroid
-            asteroid.hitPoints -= actualDamage;
+            let actualDamage = Math.min(damage + damageBooster, asteroid.hitpoints); // Ensure we don't overkill the asteroid
+            asteroid.hitpoints -= actualDamage;
 
-            if (asteroid.hitPoints <= 0) {
+            if (asteroid.hitpoints <= 0) {
               if (asteroid.isLarge) {
                 createSmallerAsteroids(asteroid.x, asteroid.y, asteroid.size, asteroid.speed, 1); // Split into smaller asteroids
               }
-              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints, asteroid.image);
+              createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
               asteroids.splice(j, 1);
             } else {
               // Lighten the color slightly
-              let colorValue = Math.max(40, 30 + (asteroid.hitPoints * 3)); // Adjust color value
+              let colorValue = Math.max(40, 30 + (asteroid.hitpoints * 3)); // Adjust color value
               asteroid.color = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
             }
 
@@ -1858,12 +1858,12 @@
       for (let i = 0; i < asteroids.length; i++) {
         let asteroid = asteroids[i];
         if (isColliding(boomerang, asteroid)) {
-          let actualDamage = Math.min(boomerang.damage + damageBooster, asteroid.hitPoints);
-          asteroid.hitPoints -= actualDamage;
+          let actualDamage = Math.min(boomerang.damage + damageBooster, asteroid.hitpoints);
+          asteroid.hitpoints -= actualDamage;
           damageReport.boomerang += actualDamage;
 
-          if (asteroid.hitPoints <= 0) {
-            createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints);
+          if (asteroid.hitpoints <= 0) {
+            createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints);
             asteroids.splice(i, 1);
             score += actualDamage * 50;
             coins += actualDamage * 20;
@@ -2060,8 +2060,8 @@
           for (let j = asteroids.length - 1; j >= 0; j--) {
             let asteroid = asteroids[j];
             if (isColliding(laser, asteroid)) {
-              let actualDamage = Math.min(drone.damage + damageBooster, asteroid.hitPoints);
-              asteroid.hitPoints -= actualDamage;
+              let actualDamage = Math.min(drone.damage + damageBooster, asteroid.hitpoints);
+              asteroid.hitpoints -= actualDamage;
               damageReport.drones += actualDamage;
             }
           }
@@ -2114,12 +2114,12 @@
             let dy = bomb.y - asteroid.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
             if (distance < bomb.radius + asteroid.size) {
-              let actualDamage = Math.min(bomb.damage + damageBooster, asteroid.hitPoints);
-              asteroid.hitPoints -= actualDamage;
+              let actualDamage = Math.min(bomb.damage + damageBooster, asteroid.hitpoints);
+              asteroid.hitpoints -= actualDamage;
               damageReport.bomberDrones += actualDamage;
 
-              if (asteroid.hitPoints <= 0) {
-                createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints, asteroid.image);
+              if (asteroid.hitpoints <= 0) {
+                createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
                 asteroids.splice(j, 1);
                 score += 50;
                 increaseXP(20);
@@ -2964,7 +2964,7 @@
     let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
     let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
 
-    function createSmallerAsteroids(x, y, size, speed, hitPoints) {
+    function createSmallerAsteroids(x, y, size, speed, hitpoints) {
       const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
       const speedMultiplier = 0.6; // Decrease speed for smaller asteroids
       const newSize = size / 2; // New size for smaller asteroids
@@ -2980,7 +2980,7 @@
           speed: speed * speedMultiplier,
           dx: Math.cos(angle) * speed * speedMultiplier,
           dy: Math.sin(angle) * speed * speedMultiplier,
-          hitPoints: hitPoints,
+          hitpoints: hitpoints,
           color: 'gray'
         };
         asteroids.push(asteroid);
@@ -3134,23 +3134,23 @@
 
         }
 
-        let hitPoints;
+        let hitpoints;
         let color;
 
         if (isLargeAsteroid) {
-          hitPoints = wave; // Higher hit points for larger asteroids
+          hitpoints = wave; // Higher hit points for larger asteroids
           color = 'darkgray';
         } else if (isMegaHardenedAsteroid) {
-          hitPoints = 10 + wave;
+          hitpoints = 10 + wave;
           color = '#301934'; // Very dark purple for mega hardened asteroids
         } else if (isVeryHardenedAsteroid) {
-          hitPoints = 15;
+          hitpoints = 15;
           color = '#0A1414'; // Very dark green color for very hardened asteroids
         } else if (isHardenedAsteroid) {
-          hitPoints = Math.floor(Math.random() * 5) + 3; // Random hitpoints between 5 and 8
+          hitpoints = Math.floor(Math.random() * 5) + 3; // Random hitpoints between 5 and 8
           color = '#172727'; // Dark green color for hardened asteroids
         } else {
-          hitPoints = 1;
+          hitpoints = 1;
           color = 'gray';
         }
 
@@ -3162,7 +3162,7 @@
           speed: 2 * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
           dx: dx * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
           dy: dy * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
-          hitPoints: hitPoints,
+          hitpoints: hitpoints,
           color: color,
           isLarge: isLargeAsteroid,
           image: asteroidImage
@@ -3230,7 +3230,7 @@
           speed: clusterSpeed * speedMultiplier,
           dx: (targetCorner.x - startCorner.x) / canvas.width * clusterSpeed * speedMultiplier,
           dy: (targetCorner.y - startCorner.y) / canvas.height * clusterSpeed * speedMultiplier,
-          hitPoints: 5, // Hit points for larger asteroids
+          hitpoints: 5, // Hit points for larger asteroids
           color: 'gray'
         };
 
@@ -3585,12 +3585,12 @@
         let dy = asteroid.y - y;
         let distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < radius) {
-          let actualDamage = Math.min(damage + damageBooster, asteroid.hitPoints);
-          asteroid.hitPoints -= actualDamage;
+          let actualDamage = Math.min(damage + damageBooster, asteroid.hitpoints);
+          asteroid.hitpoints -= actualDamage;
           totalDamage += actualDamage;
 
-          if (asteroid.hitPoints <= 0) {
-            createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints, asteroid.image);
+          if (asteroid.hitpoints <= 0) {
+            createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
             asteroids.splice(i, 1);
           }
 
@@ -3970,12 +3970,12 @@
           let dy = asteroid.y - area.y;
           let distance = Math.sqrt(dx * dx + dy * dy);
           if (distance < area.radius) {
-            let actualDamage = Math.min(acidBomb.damagePerSecond + damageBooster, asteroid.hitPoints);
-            asteroid.hitPoints -= actualDamage;
+            let actualDamage = Math.min(acidBomb.damagePerSecond + damageBooster, asteroid.hitpoints);
+            asteroid.hitpoints -= actualDamage;
             damageReport.acid += actualDamage;
 
-            if (asteroid.hitPoints <= 0) {
-              createExplosion(asteroid.x, asteroid.y, asteroid.hitPoints, asteroid.image);
+            if (asteroid.hitpoints <= 0) {
+              createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
               asteroids.splice(j, 1);
             }
           }
@@ -4027,8 +4027,8 @@
           if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
             createExplosion(asteroid.x, asteroid.y, 1, asteroid.image);
             asteroids.splice(i, 1);
-            damageReport.deathRay += asteroid.hitPoints;
-            increaseXP(asteroid.hitPoints * 20);
+            damageReport.deathRay += asteroid.hitpoints;
+            increaseXP(asteroid.hitpoints * 20);
 
           }
         }
