@@ -529,11 +529,11 @@
 
 
 
-  
 
-<!-- #INFINITEGAMES CSS START -->
-<link rel="stylesheet" href="infinite/css/leaderboard_20240613120450.css">
-<!-- #INFINITEGAMES CSS END -->
+
+  <!-- #INFINITEGAMES CSS START -->
+  <link rel="stylesheet" href="infinite/css/leaderboard_20240613120450.css">
+  <!-- #INFINITEGAMES CSS END -->
 </head>
 
 <body>
@@ -548,7 +548,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Verson 0.708.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.709.
   </div>
 
 
@@ -1581,7 +1581,7 @@
           if (distance < missile.target.size) {
             createExplosion(missile.target.x, missile.target.y);
             let index = asteroids.indexOf(missile.target);
-            let actualDamage = astroids[index].hitPoints;
+            let actualDamage = asteroids[index].hitPoints;
             damageReport.homing += actualDamage;
             increaseXP(actualDamage * 20);
             asteroids.splice(index, 1);
@@ -4748,14 +4748,14 @@
 
 
 
-  
+
 
   <script src="js/audio.js"></script>
 
 
-<!-- #INFINITEGAMES JS START -->
-<script src="infinite/js/leaderboard_20240613120450.js"></script>
-<!-- #INFINITEGAMES JS END -->
+  <!-- #INFINITEGAMES JS START -->
+  <script src="infinite/js/leaderboard_20240613120450.js"></script>
+  <!-- #INFINITEGAMES JS END -->
 </body>
 
 </html>
