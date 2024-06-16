@@ -277,7 +277,7 @@
 
     #restartButton {
       position: absolute;
-      top: 80%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       padding: 20px 40px;
@@ -3709,7 +3709,7 @@
       // ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < asteroids.length; i++) {
         ctx.strokeStyle = asteroids[i].color;
-        ctx.lineWidth = asteroids[i].hitpoints * 1.4 + 2; // Set the line width to the asteroid's hitpoints
+        ctx.lineWidth = asteroids[i].hitpoints + 1; // Set the line width to the asteroid's hitpoints
         ctx.beginPath();
         ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
         ctx.closePath();
