@@ -277,7 +277,7 @@
 
     #restartButton {
       position: absolute;
-      top: 50%;
+      bottom: 10%;
       left: 50%;
       transform: translate(-50%, -50%);
       padding: 20px 40px;
@@ -333,6 +333,26 @@
       padding: 10px 20px;
     }
 
+    #results {
+      display: none;
+      position: absolute;
+      top: 25%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #111;
+      /* Dark background */
+      padding: 20px;
+      border: 3px solid #f00;
+      /* Red border */
+      color: #0f0;
+      /* Green text color */
+      width: 90%;
+      max-width: 400px;
+      box-sizing: border-box;
+      font-family: 'Press Start 2P', cursive;
+      /* Arcade font */
+      text-align: center;
+    }
 
     #xpBarContainer {
       position: absolute;
@@ -667,15 +687,6 @@
   <div class="top-right" id="login-link">
     <a href="#" id="login-toggle">Login</a>
   </div>
-  <div id="auth" class="hidden">
-    <h1>Infinite Games</h1>
-    <h2>Login</h2>
-    <form id="login-form">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-  </div>
 
   <div id="xpBarContainer">
     <div id="xpBar"></div>
@@ -683,18 +694,18 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.711.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.712.
   </div>
 
 
   <div id="technologiesCount">
     1 out of 1
   </div>
-
+  <!-- 
   <div id="result">
 
   </div>
-
+ -->
   <div id="levelUpModal" class="modal">
     <div class="modal-content">
       <h2>Level Up!</h2>
@@ -2400,6 +2411,11 @@
       console.log("this run: " + timeTaken);
       score *= modeScoreMultiplier;
 
+      saveUserScore(userId, score);
+      loadLeaderboard();
+      document.getElementById('leaderboard-container').style.display = 'block';
+
+      // now telegram only
       handleEndGameOnServer();
 
 
@@ -4975,7 +4991,7 @@
     async function saveUserScore(userId, score) {
       const userDocRef = doc(db, 'users', userId);
 
-      await updateDoc(userDocRef, { deusex_score: score });
+      await updateDoc(userDocRef, { isw_score: score });
     }
 
     window.saveUserScore = saveUserScore;
@@ -4998,7 +5014,7 @@
         const userData = doc.data();
         users.push({
           nickname: userData.nickname || 'Unnamed',
-          score: userData.deusex_score || 0
+          score: userData.isw_score || 0
         });
       });
 
@@ -5006,14 +5022,16 @@
       const topUsers = users.slice(0, 10);
 
       const leaderboard = document.createElement('div');
-      leaderboard.innerHTML = `<h2>Leaderboard</h2>`;
+      leaderboard.innerHTML = ``;
+
+      // leaderboard.innerHTML = `<h2>Leaderboard</h2>`;
       topUsers.forEach((user, index) => {
         const userDiv = document.createElement('div');
-        userDiv.innerText = `${index + 1}. ${user.nickname}: ${user.score} points`;
+        userDiv.innerText = `${index + 1}. ${user.nickname}: ${user.score}`;
         leaderboard.appendChild(userDiv);
       });
 
-      document.getElementById('result').appendChild(leaderboard);
+      document.getElementById('leaderboard-container').appendChild(leaderboard);
     }
 
   </script>
@@ -5073,6 +5091,17 @@
   <!-- #INFINITEGAMES JS START -->
   <script src="infinite/js/48_leaderboard_20240615224927.js"></script>
   <!-- #INFINITEGAMES JS END -->
+
+  <div id="auth" class="hidden">
+    <h1>Infinite Games</h1>
+    <h2>Login</h2>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
 </body>
 
 </html>
