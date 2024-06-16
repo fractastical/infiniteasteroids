@@ -277,11 +277,11 @@
 
     #restartButton {
       position: absolute;
-      top: 70%;
+      top: 80%;
       left: 50%;
       transform: translate(-50%, -50%);
       padding: 20px 40px;
-      font-size: 24px;
+      font-size: 15px;
       display: none;
       background-color: white;
       border: 2px solid black;
@@ -683,7 +683,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.710.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.711.
   </div>
 
 
@@ -851,7 +851,7 @@
   <audio id="bomb-lay-sound" src="sounds/lay_bomb.mp3"></audio>
 
 
-  <button id="restartButton" style="display: none;">Restart</button>
+  <button id="restartButton" style="display: none;">Home</button>
 
 
   <script>
@@ -1195,7 +1195,10 @@
     function startGame() {
       gameStartTime = Date.now();
 
+      document.getElementById('technologiesCount').style.display = 'none';
       document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('shipType').style.display = 'none';
+
       startGamingSessionApi();
       createAsteroids();
       invincible = true;
@@ -2582,6 +2585,8 @@
       invincibilityTimer = invincibilityDuration;
     }
 
+
+
     function countTechnologies() {
       let count = 4;
 
@@ -3704,7 +3709,7 @@
       // ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < asteroids.length; i++) {
         ctx.strokeStyle = asteroids[i].color;
-        ctx.lineWidth = asteroids[i].hitpoints * 2 + 8; // Set the line width to the asteroid's hitpoints
+        ctx.lineWidth = asteroids[i].hitpoints * 1.4 + 2; // Set the line width to the asteroid's hitpoints
         ctx.beginPath();
         ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
         ctx.closePath();
@@ -4351,6 +4356,14 @@
 
     restartButton.addEventListener('click', () => {
       restartButton.style.display = 'none';
+      startScreen.style.display = 'block';
+
+      let count = countTechnologies();
+      const technologiesCountElement = document.getElementById('technologiesCount');
+      technologiesCountElement.textContent = `You have unlocked ${count} of 18 technologies`;
+      document.getElementById('technologiesCount').style.display = 'show';
+      document.getElementById('shipType').style.display = 'show';
+
       lives = 3;
       score = 0;
       wave = 1;
@@ -4555,7 +4568,7 @@
       chanceForVeryHardenedAsteroid = 2;
 
       // Reset ship position
-      resetShip();
+      // resetShip();
 
       bomberDrones = [];
 
@@ -4568,8 +4581,8 @@
       };
 
       // Start a new game
-      createAsteroids();
-      startGame();
+      // createAsteroids();
+      // startGame();
     });
 
     document.addEventListener('keydown', function (event) {
