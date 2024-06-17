@@ -1,3 +1,4 @@
+
 let userId = "";
 
 const firebaseConfig = {
@@ -76,33 +77,55 @@ document.getElementById('login-toggle').addEventListener('click', function (even
     document.getElementById('auth').classList.toggle('hidden');
 });
 
-async function saveUserScore(userId, score) {
-    const userDocRef = doc(db, 'users', userId);
 
-    await updateDoc(userDocRef, { deusex_score: score });
+
+// Function to save user score for a specific game
+async function saveUserScore(userId, gameName, score) {
+    const userDocRef = doc(db, 'users', userId);
+    const sessionLength = calculateSessionLength(); // Implement this function as needed
+    const loginTime = new Date();
+
+    // Save the score, session length, and login time for the specific game
+    const gameData = {
+        [`games.${gameName}.scores`]: arrayUnion({
+            score: score,
+            sessionLength: sessionLength,
+            loginTime: loginTime
+        })
+    };
+
+    await updateDoc(userDocRef, gameData);
 }
 
 window.saveUserScore = saveUserScore;
 
-async function saveUserData(userId) {
+// Function to save initial user data
+async function saveUserData(userId, gameName) {
     const userData = {
-        infinitescore: 0,
-        pizza: "pizza"
+        [`games.${gameName}`]: {
+            scores: [],
+            lastLogin: new Date(),
+            pizza: "pizza" // Sample data, adjust as needed
+        }
     };
     await updateDoc(doc(db, 'users', userId), userData);
 }
 
-window.loadLeaderboard = loadLeaderboard;
+window.saveUserData = saveUserData;
 
-async function loadLeaderboard() {
+// Function to load leaderboard for a specific game
+async function loadLeaderboard(gameName) {
     const usersSnapshot = await getDocs(collection(db, 'users'));
     const users = [];
 
     usersSnapshot.forEach(doc => {
         const userData = doc.data();
+        const gameScores = userData.games?.[gameName]?.scores || [];
+        const highestScore = gameScores.reduce((max, session) => Math.max(max, session.score), 0);
+        
         users.push({
             nickname: userData.nickname || 'Unnamed',
-            score: userData.deusex_score || 0
+            score: highestScore
         });
     });
 
@@ -110,7 +133,7 @@ async function loadLeaderboard() {
     const topUsers = users.slice(0, 10);
 
     const leaderboard = document.createElement('div');
-    leaderboard.innerHTML = `<h2>Leaderboard</h2>`;
+    leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
     topUsers.forEach((user, index) => {
         const userDiv = document.createElement('div');
         userDiv.innerText = `${index + 1}. ${user.nickname}: ${user.score} points`;
@@ -118,4 +141,12 @@ async function loadLeaderboard() {
     });
 
     document.getElementById('result').appendChild(leaderboard);
+}
+
+window.loadLeaderboard = loadLeaderboard;
+
+// Function to calculate session length (to be implemented as needed)
+function calculateSessionLength() {
+    // Placeholder implementation
+    return Math.floor(Math.random() * 1000); // Replace with actual session length calculation
 }
