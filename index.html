@@ -670,8 +670,14 @@
 
 
 
+
+
+
+
+
+
   <!-- #INFINITEGAMES CSS START -->
-  <link rel="stylesheet" href="infinite/css/48_leaderboard_20240615224927.css">
+  <link rel="stylesheet" href="infinite/css/48_leaderboard_20240618013040.css">
   <!-- #INFINITEGAMES CSS END -->
 </head>
 
@@ -1734,9 +1740,9 @@
           if (distance < missile.target.size) {
             createExplosion(missile.target.x, missile.target.y);
             let index = asteroids.indexOf(missile.target);
-            let actualDamage = asteroids[index].hitpoints;
-            damageReport.homing += actualDamage;
-            increaseXP(actualDamage * 20);
+            // let actualDamage = asteroids[index].hitpoints;
+            damageReport.homing += 5;
+            increaseXP(5 * 20);
             asteroids.splice(index, 1);
             homingMissile.activeMissiles.splice(i, 1);
             continue;
@@ -4995,8 +5001,7 @@
       const userData = {
         [`games.${gameName}`]: {
           scores: [],
-          lastLogin: new Date(),
-          pizza: "pizza" // Sample data, adjust as needed
+          lastLogin: new Date()
         }
       };
       await setDoc(userDocRef, userData, { merge: true });
@@ -5161,6 +5166,15 @@
     </form>
   </div>
 
+
+
+
+
+
+  <!-- #INFINITEGAMES JS START -->
+  <script src="infinite/js/48_leaderboard_20240618013040.js"></script>
+  <script src="infinite/js/48_firebase_20240618013040.js"></script>
+  <!-- #INFINITEGAMES JS END -->
 </body>
 
 </html>
