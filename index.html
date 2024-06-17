@@ -2628,62 +2628,39 @@
     let damageBooster = 0;
 
     function getRandomUpgrades(count) {
-
-      // fourthUpgradeUnlocked = true;
-
-      // if (    Weapons.deathRay.unlocked = true;
       const availableUpgrades = [
-        'Increase Laser Level',
-        // 'Increase Max Bullets',
-        'Decrease Laser Cooldown',
+        ...(getUpgradeCount('laser') <= 10 ? ['Increase Laser Level', 'Decrease Laser Cooldown'] : []),
         'Increase Rotation Speed',
-        ...(activeWeaponClasses.includes('turret') ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : ['Activate Turret']),
-        ...(activeWeaponClasses.includes('freeze') ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : ['Activate Freeze Effect']),
-        ...(activeWeaponClasses.includes('bomberdrone') ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : ['Activate Bomber Drone']),
-
+        ...(activeWeaponClasses.includes('turret') ? (getUpgradeCount('turret') <= 10 ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : []) : ['Activate Turret']),
+        ...(activeWeaponClasses.includes('freeze') ? (getUpgradeCount('freeze') <= 10 ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : []) : ['Activate Freeze Effect']),
+        ...(activeWeaponClasses.includes('bomberdrone') ? (getUpgradeCount('bomberdrone') <= 10 ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : []) : ['Activate Bomber Drone']),
       ];
-
       if (Achievements.laser_damage.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? ['Increase Explosive Laser Level'] : ['Activate Explosive Laser']));
-
-
-
+        availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? (getUpgradeCount('explosive') <= 10 ? ['Increase Explosive Laser Level'] : []) : ['Activate Explosive Laser']));
       if (Achievements.reach_wave_10.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('sonic') ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : ['Activate Sonic Blast']));
-
+        availableUpgrades.push(...(activeWeaponClasses.includes('sonic') ? (getUpgradeCount('sonic') <= 10 ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : []) : ['Activate Sonic Blast']));
       if (Achievements.reach_wave_20.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('boomerang') ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : ['Activate Boomerang']));
-
+        availableUpgrades.push(...(activeWeaponClasses.includes('boomerang') ? (getUpgradeCount('boomerang') <= 10 ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : []) : ['Activate Boomerang']));
       if (Achievements.complete_normal_mode.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : ['Activate Acid Bomb']));
-
+        availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? (getUpgradeCount('acid') <= 10 ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : []) : ['Activate Acid Bomb']));
       if (Achievements.destroy_100_asteroids.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? ['Increase Drone Firerate'] : ['Activate Drone']));
-
+        availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? (getUpgradeCount('drone') <= 10 ? ['Increase Drone Firerate'] : []) : ['Activate Drone']));
       if (Achievements.kill_5_aliens.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : ['Activate Death Ray']));
-
+        availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? (getUpgradeCount('deathray') <= 10 ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : []) : ['Activate Death Ray']));
       if (Achievements.no_lives_lost.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('homingmissile') ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : ['Activate Nano Swarm']));
-
+        availableUpgrades.push(...(activeWeaponClasses.includes('homingmissile') ? (getUpgradeCount('homingmissile') <= 10 ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : []) : ['Activate Nano Swarm']));
       if (!fourthUpgradeUnlocked && Achievements.death_ray_damage.reached)
         availableUpgrades.push('Extra Upgrade Choice');
-
       if ((activeWeaponClasses.includes('drone') || activeWeaponClasses.includes('bomberdrone')) && Achievements.drone_damage.reached)
         availableUpgrades.push('Drone Army');
-
-      if (Achievements.complete_meteor_normal_mode.reached && (activeWeaponClasses.includes('turret')))
+      if (Achievements.complete_meteor_normal_mode.reached && activeWeaponClasses.includes('turret'))
         availableUpgrades.push('Double Turret');
-
-      if (Achievements.complete_planet_normal_mode.reached && (activeWeaponClasses.includes('turret')))
+      if (Achievements.complete_planet_normal_mode.reached && activeWeaponClasses.includes('turret'))
         availableUpgrades.push('Triple Turret');
-
       if (Achievements.complete_hard_mode.reached)
         availableUpgrades.push('Damage Booster');
-
       if (!fourthUpgradeUnlocked && Achievements.complete_planet_hard_mode.reached)
         availableUpgrades.push('Extra Upgrade Choice');
-
       const upgrades = [];
       for (let i = 0; i < count; i++) {
         if (availableUpgrades.length === 0) break; // Exit loop if no more upgrades available
@@ -2691,10 +2668,8 @@
         upgrades.push(availableUpgrades[randomIndex]);
         availableUpgrades.splice(randomIndex, 1);
       }
-
       return upgrades;
     }
-
     function applyUpgrade(upgrade) {
       const now = Date.now();
 
