@@ -87,34 +87,59 @@ function getActivityStats() {
     })
 }
 
-
+// Function to save achievements
 async function saveAchievements() {
+  const Achievements = JSON.parse(localStorage.getItem('achievements')) || {};
+  const params = new URLSearchParams(window.location.search);
+  const userId = params.get('userId');
+  if (!userId) return;
 
-  localStorage.setItem('achievements', JSON.stringify(Achievements));
+  const db = getFirestore();
+  const userDocRef = doc(db, 'users', userId);
 
-  const a = new URLSearchParams(window.location.href);
+  // Update the achievements in Firestore
+  const achievementsData = {
+    achievements: Achievements
+  };
 
-  if (!a.get('userId')) return;
-
-  // const gameRequestId = a.get('gameRequestId');
-  //POST
-  // https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-game/user-data?userId=190933907&gameId=infinitewar
-
-  await setAchievementsFromApi(Achievements);
+  await updateDoc(userDocRef, achievementsData);
+  await setAchievementsFromApi(Achievements); // Implement this function as needed
 }
 
-function saveUnlocks() {
-  localStorage.setItem('NachoBlasterModesUnlocked', JSON.stringify(modesUnlocked));
-  localStorage.setItem('NachoBlasterAchievements', JSON.stringify(Achievements));
+window.saveAchievements = saveAchievements;
 
-}
+// Function to load achievements from Firebase or localStorage
+async function loadAchievements() {
+  const params = new URLSearchParams(window.location.search);
+  const userId = params.get('userId');
+  const db = getFirestore();
+  let Achievements = {};
 
-function loadAchievements() {
-  const savedAchievements = localStorage.getItem('achievements');
-  if (savedAchievements) {
-    Object.assign(Achievements, JSON.parse(savedAchievements));
+  if (userId) {
+    const userDocRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists() && userDoc.data().achievements) {
+      Achievements = userDoc.data().achievements;
+    } else {
+      const savedAchievements = localStorage.getItem('achievements');
+      if (savedAchievements) {
+        Achievements = JSON.parse(savedAchievements);
+      }
+    }
+  } else {
+    const savedAchievements = localStorage.getItem('achievements');
+    if (savedAchievements) {
+      Achievements = JSON.parse(savedAchievements);
+    }
   }
+
+  return Achievements;
 }
+
+window.loadAchievements = loadAchievements;
+
+
 
 async function getAchievementsFromApi() {
   const a = new URLSearchParams(window.location.href);
