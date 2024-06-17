@@ -694,7 +694,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.712.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.812.
   </div>
 
 
@@ -4745,9 +4745,6 @@
       document.getElementById('planetHardButton').disabled = !Achievements.complete_planet_normal_mode.reached;
       document.getElementById('planetHeroButton').disabled = !Achievements.complete_planet_hero_mode.reached;
 
-      if (Achievements.complete_hero_mode.reached)
-        lives++;
-
       for (const key in Achievements) {
         if (Achievements.hasOwnProperty(key)) {
           const achievement = Achievements[key];
@@ -5087,10 +5084,8 @@
 
 
 
+  <script src="infinite/leaderboard.js"></script>
 
-  <!-- #INFINITEGAMES JS START -->
-  <script src="infinite/js/48_leaderboard_20240615224927.js"></script>
-  <!-- #INFINITEGAMES JS END -->
 
   <div id="auth" class="hidden">
     <h1>Infinite Games</h1>
