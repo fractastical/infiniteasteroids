@@ -2411,12 +2411,13 @@
       console.log("this run: " + timeTaken);
       score *= modeScoreMultiplier;
 
-      saveUserScore(userId, score);
-      loadLeaderboard();
+      saveUserScore(userId, gameId, score);
+      loadLeaderboard(gameId);
       document.getElementById('leaderboard-container').style.display = 'block';
 
       // now telegram only
-      handleEndGameOnServer();
+      // turn off for now
+      // handleEndGameOnServer();
 
 
       ctx.fillStyle = 'white';
@@ -4871,7 +4872,7 @@
     window.onload = loadWeaponInfo;
 
     // for leaderboard and telegram API 
-    let gameId = "NachoBlaster";
+    let gameId = "InfiniteSpaceWar";
 
   </script>
 
@@ -4898,7 +4899,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
     // Firebase configuration and initialization
@@ -4964,8 +4965,9 @@
     async function saveUserScore(userId, gameName, score) {
       const db = getFirestore();
       const userDocRef = doc(db, 'users', userId);
-      const sessionLength = calculateSessionLength(); // Implement this function as needed
       const loginTime = new Date();
+      const sessionLength = loginTime - gameStartTime;
+
 
       if (typeof score === 'undefined' || typeof sessionLength === 'undefined') {
         console.error('Invalid score or session length');
@@ -5023,14 +5025,14 @@
       const topUsers = users.slice(0, 10);
 
       const leaderboard = document.createElement('div');
-      leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
+      // leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
       topUsers.forEach((user, index) => {
         const userDiv = document.createElement('div');
         userDiv.innerText = `${index + 1}. ${user.nickname}: ${user.score} points`;
         leaderboard.appendChild(userDiv);
       });
 
-      document.getElementById('result').appendChild(leaderboard);
+      document.getElementById('leaderboard-container').appendChild(leaderboard);
     }
 
     window.loadLeaderboard = loadLeaderboard;
