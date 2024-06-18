@@ -689,7 +689,8 @@
 
 
   <div class="top-right" id="user-info" class="hidden">
-    <span id="user-nickname"></span> | Coins: <span id="user-coins"></span>
+    <span id="user-nickname"></span> <a href="#" id="logout-toggle">Logout</a>
+    <!-- <span id="user-coins"></span><input id="logoutButton" type="button" value="logout" /> -->
   </div>
   <div class="top-right" id="login-link">
     <a href="#" id="login-toggle">Login</a>
@@ -701,12 +702,12 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.834.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.855.
   </div>
 
 
   <div id="technologiesCount">
-    1 out of 1
+
   </div>
   <!-- 
   <div id="result">
@@ -1624,8 +1625,8 @@
 
     document.addEventListener('DOMContentLoaded', () => {
 
-      loadAchievements();
-      populateAchievements();
+      // loadAchievements();
+      // populateAchievements();
       if (isMobile()) {
         document.getElementById('joystick').style.display = 'block';
         document.getElementById('startScreen').style.display = 'flex';
@@ -2671,15 +2672,19 @@
 
 
     function countTechnologies() {
-      let count = 4;
+      let count = 2;
 
       // These are all the achievements that have a specific weapon unlock assigned
 
+      if (Achievements.reach_wave_2.reached) count++;
+      if (Achievements.reach_wave_5.reached) count++;
       if (Achievements.reach_wave_10.reached) count++;
       if (Achievements.reach_wave_20.reached) count++;
       if (Achievements.complete_normal_mode.reached) count++;
+      if (Achievements.acid_bomb_damage.reached) count++;
       if (Achievements.destroy_100_asteroids.reached) count++;
       if (Achievements.kill_5_aliens.reached) count++;
+      if (Achievements.kill_15_aliens.reached) count++;
       if (Achievements.no_lives_lost.reached) count++;
       if (Achievements.death_ray_damage.reached) count++;
       if (Achievements.complete_meteor_normal_mode.reached) count++;
@@ -2698,13 +2703,15 @@
       const availableUpgrades = [
         ...(getUpgradeCount('laser') <= 9 ? ['Increase Laser Level', 'Decrease Laser Cooldown'] : []),
         'Increase Rotation Speed',
-        ...(activeWeaponClasses.includes('turret') ? (getUpgradeCount('turret') <= 9 ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : []) : ['Activate Turret']),
-        ...(activeWeaponClasses.includes('freeze') ? (getUpgradeCount('freeze') <= 9 ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : []) : ['Activate Freeze Effect']),
-        ...(activeWeaponClasses.includes('bomberdrone') ? (getUpgradeCount('bomberdrone') <= 9 ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : []) : ['Activate Bomber Drone']),
-        ...(activeWeaponClasses.includes('flamethrower') ? (getUpgradeCount('flamethrower') <= 9 ? ['Increase Flamethrower Range', 'Increase Flamethrower Damage', 'Decrease Flamethrower Cooldown'] : []) : ['Activate Flamethrower']),
-        ...(activeWeaponClasses.includes('chainlightning') ? (getUpgradeCount('chainlightning') <= 9 ? ['Increase Chain Lightning Range', 'Increase Chain Lightning Damage', 'Increase Chain Lightning Bounces', 'Decrease Chain Lightning Cooldown'] : []) : ['Activate Chain Lightning']),
+        ...(activeWeaponClasses.includes('turret') ? (getUpgradeCount('turret') <= 9 ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : []) : ['Activate Turret'])
 
       ];
+
+      if (Achievements.reach_wave_2.reached)
+        availableUpgrades.push(...(activeWeaponClasses.includes('bomberdrone') ? (getUpgradeCount('bomberdrone') <= 9 ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : []) : ['Activate Bomber Drone'])
+        );
+      if (Achievements.reach_wave_5.reached)
+        availableUpgrades.push((activeWeaponClasses.includes('freeze') ? (getUpgradeCount('freeze') <= 9 ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : []) : ['Activate Freeze Effect']));
       if (Achievements.laser_damage.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? (getUpgradeCount('explosive') <= 9 ? ['Increase Explosive Laser Level'] : []) : ['Activate Explosive Laser']));
       if (Achievements.reach_wave_10.reached)
@@ -2717,11 +2724,16 @@
         availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? (getUpgradeCount('drone') <= 9 ? ['Increase Drone Firerate'] : []) : ['Activate Drone']));
       if (Achievements.kill_5_aliens.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? (getUpgradeCount('deathray') <= 9 ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : []) : ['Activate Death Ray']));
+
+      if (Achievements.kill_15_aliens.reached)
+        availableUpgrades.push(...(activeWeaponClasses.includes('chainlightning') ? (getUpgradeCount('chainlightning') <= 9 ? ['Increase Chain Lightning Range', 'Increase Chain Lightning Damage', 'Increase Chain Lightning Bounces', 'Decrease Chain Lightning Cooldown'] : []) : ['Activate Chain Lightning']));
+
       if (Achievements.no_lives_lost.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('homingmissile') ? (getUpgradeCount('homingmissile') <= 9 ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : []) : ['Activate Nano Swarm']));
 
 
-
+      if (Achievements.acid_bomb_damage.reached)
+        availableUpgrades.push(...(activeWeaponClasses.includes('flamethrower') ? (getUpgradeCount('flamethrower') <= 9 ? ['Increase Flamethrower Range', 'Increase Flamethrower Damage', 'Decrease Flamethrower Cooldown'] : []) : ['Activate Flamethrower']));
 
       if (!fourthUpgradeUnlocked && Achievements.death_ray_damage.reached)
         availableUpgrades.push('Extra Upgrade Choice');
@@ -3360,7 +3372,6 @@
 
         let x, y;
         let spawnArea = Math.random();
-        console.log
         if (!meteorMode) {
           if (spawnArea < 0.25) {
             // Top edge
@@ -3482,8 +3493,8 @@
 
         // Create the asteroid with slightly varied speed
         let asteroid = {
-          x: startCorner.x,
-          y: startCorner.y,
+          x: startCorner.x + i * 15,
+          y: startCorner.y + i * 4,
           size: 20,
           speed: clusterSpeed * speedMultiplier,
           dx: (targetCorner.x - startCorner.x) / canvas.width * clusterSpeed * speedMultiplier,
@@ -4473,7 +4484,7 @@
       keys[event.key] = true;
 
       if (event.key === 'i' || event.key === 'I') {
-        console.log("toggle1");
+        // console.log("toggle1");
         toggleWeaponInfo();
       } else if (event.key === 'p' || event.key === 'P') {
         if (isPaused) {
@@ -4615,7 +4626,7 @@
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `You have unlocked ${count} of 18 technologies`;
+      technologiesCountElement.textContent = `You have unlocked ${count} of 20 technologies`;
       document.getElementById('technologiesCount').style.display = 'show';
       document.getElementById('shipType').style.display = 'show';
 
@@ -5047,13 +5058,15 @@
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `You have unlocked ${count} of 18 technologies`;
+      technologiesCountElement.textContent = `${count} of 20 technologies unlocked`;
 
     }
 
 
     const Achievements = {
-      // reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5' },
+      reach_wave_2: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 2' },
+      reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5' },
+      // reach_wave_57: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 7' },
       reach_wave_10: { reached: false, icon: 'achievements/angelcapitan.png', description: 'Reach Wave 10. Unlock Sonic Blast.' },
       // reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
       reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20. Unlock Boomerang.' },
@@ -5063,8 +5076,7 @@
       complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
       complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Normal Mode. Unlock Acid Bomb.' },
 
-
-      acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/acid.png', description: 'Deal 10,000 Damage with Acid Bomb' },
+      acid_bomb_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/acid.png', description: 'Deal 10,000 Damage with Acid Bomb. Unlock Flamethrower.' },
       laser_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/deathray2.png', description: 'Deal 2,500 Damage with Laser. Unlock Explosive Laser.' },
       drone_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/storm_drone.png', description: 'Deal 5,000 Damage with Drone. Unlock Drone Army.' },
       explosive_laser_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/explosive.png', description: 'Deal 10,000 Damage with Explosive Laser' },
@@ -5073,6 +5085,7 @@
       complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Hard Mode. Unlock Damage Boost.' },
       complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Hero Mode. Unlock Extra Life.' },
       kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
+      kill_15_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 15 Aliens. Unlock Chain Lightning.' },
       complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Shower Easy Mode.' },
       complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Shower Normal Mode. Unlock Double Turret.' },
       complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode' },
@@ -5085,9 +5098,13 @@
     };
 
     function updateAchievementsAtEnd() {
-      // if (wave >= 5) {
-      //   Achievements.reach_wave_5.reached = true;
-      // }
+      if (wave >= 2) {
+        Achievements.reach_wave_2.reached = true;
+      }
+      if (wave >= 5) {
+        Achievements.reach_wave_5.reached = true;
+      }
+
       if (wave >= 10) {
         Achievements.reach_wave_10.reached = true;
       }
@@ -5103,6 +5120,7 @@
       if (damageReport.acid >= Achievements.acid_bomb_damage.required) {
         Achievements.acid_bomb_damage.reached = true;
       }
+
       if (damageReport.explosive >= Achievements.explosive_laser_damage.required) {
         Achievements.explosive_laser_damage.reached = true;
       }
@@ -5168,7 +5186,13 @@
         Achievements.kill_5_aliens.reached = true;
       }
 
-      saveAchievements();
+      if (!Achievements.kill_15_aliens.reached && aliensKilled >= 15) {
+        Achievements.kill_15_aliens.reached = true;
+      }
+
+      localStorage.setItem('achievements', JSON.stringify(Achievements));
+
+      // saveAchievements();
       populateAchievements();
     }
 
@@ -5239,17 +5263,21 @@
       try {
         const userDoc = await getDoc(doc(db, 'users', userId));
 
-        // const userDoc = await db.doc(`users/${userId}`).get();
-        if (userDoc.exists) {
+        if (userDoc.exists()) {
           const userData = userDoc.data();
           document.getElementById('user-nickname').textContent = userData.nickname;
-          document.getElementById('user-coins').textContent = userData.coins;
+          // document.getElementById('user-coins').textContent = userData.coins;
           document.getElementById('user-info').classList.remove('hidden');
           document.getElementById('login-link').classList.add('hidden');
           document.getElementById('auth').classList.add('hidden');
-          // document.getElementById('game-section').classList.remove('hidden');
-          // console.log("pizza");
-          // saveUserData(userId);
+          // console.log(userData);
+
+          // Load the achievements for the specific game
+          const gameAchievements = userData.games?.[gameId]?.achievements || {};
+          Object.assign(Achievements, gameAchievements);
+          // console.log(Achievements);
+          // console.log(gameAchievements);
+          populateAchievements();
 
         } else {
           console.log("No such document!");
@@ -5271,24 +5299,48 @@
       const loginTime = new Date();
       const sessionLength = timeTaken;
 
-
       if (typeof score === 'undefined' || typeof sessionLength === 'undefined') {
         console.error('Invalid score or session length');
         return;
       }
 
-      // Save the score, session length, and login time for the specific game
-      const gameData = {
-        [`games.${gameName}.scores`]: arrayUnion({
-          score: score,
-          sessionLength: sessionLength,
-          loginTime: loginTime
-        })
-      };
+      // Get the existing user document
+      const userDoc = await getDoc(userDocRef);
 
-      await updateDoc(userDocRef, gameData);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const existingAchievements = userData.games?.[gameName]?.achievements || {};
+
+        // Merge the existing achievements with the updated achievements
+        const updatedAchievements = { ...existingAchievements, ...Achievements };
+
+        // Save the score, session length, login time, and updated achievements for the specific game
+        const gameData = {
+          [`games.${gameName}.scores`]: arrayUnion({
+            score: score,
+            sessionLength: sessionLength,
+            loginTime: loginTime
+          }),
+          [`games.${gameName}.achievements`]: updatedAchievements
+        };
+
+        await updateDoc(userDocRef, gameData);
+      } else {
+        // If the user document doesn't exist, create a new one with the initial achievements
+        const gameData = {
+          [`games.${gameName}.scores`]: [
+            {
+              score: score,
+              sessionLength: sessionLength,
+              loginTime: loginTime
+            }
+          ],
+          [`games.${gameName}.achievements`]: Achievements
+        };
+
+        await setDoc(userDocRef, gameData);
+      }
     }
-
     window.saveUserScore = saveUserScore;
 
     // Function to save initial user data
@@ -5345,52 +5397,54 @@
       return Math.floor(Math.random() * 1000); // Replace with actual session length calculation
     }
 
+
     // Function to save achievements
-    async function saveAchievements() {
-      const Achievements = JSON.parse(localStorage.getItem('achievements')) || {};
-      const params = new URLSearchParams(window.location.search);
-      const userId = params.get('userId');
-      if (!userId) return;
+    // async function saveAchievements() {
+    //   const Achievements = JSON.parse(localStorage.getItem('achievements')) || {};
+    //   const params = new URLSearchParams(window.location.search);
+    //   const userId = params.get('userId');
+    //   if (!userId) return;
 
-      const db = getFirestore();
-      const userDocRef = doc(db, 'users', userId);
+    //   const db = getFirestore();
+    //   const userDocRef = doc(db, 'users', userId);
 
-      // Update the achievements in Firestore
-      const achievementsData = {
-        achievements: Achievements
-      };
+    //   // Update the achievements in Firestore
+    //   const achievementsData = {
+    //     achievements: Achievements
+    //   };
 
-      await updateDoc(userDocRef, achievementsData);
-      await setAchievementsFromApi(Achievements); // Implement this function as needed
-    }
+    //   await updateDoc(userDocRef, achievementsData);
+    //   await setAchievementsFromApi(Achievements); // Implement this function as needed
+    // }
 
-    window.saveAchievements = saveAchievements;
+    // window.saveAchievements = saveAchievements;
 
     // Function to load achievements from Firebase or localStorage
     async function loadAchievements() {
       const params = new URLSearchParams(window.location.search);
       const userId = params.get('userId');
       const db = getFirestore();
-      let Achievements = {};
+      let loadedAchievements = {};
 
       if (userId) {
         const userDocRef = doc(db, 'users', userId);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists() && userDoc.data().achievements) {
-          Achievements = userDoc.data().achievements;
+          loadedAchievements = userDoc.data().achievements;
         } else {
           const savedAchievements = localStorage.getItem('achievements');
           if (savedAchievements) {
-            Achievements = JSON.parse(savedAchievements);
+            loadedAchievements = JSON.parse(savedAchievements);
           }
         }
       } else {
         const savedAchievements = localStorage.getItem('achievements');
         if (savedAchievements) {
-          Achievements = JSON.parse(savedAchievements);
+          loadedAchievements = JSON.parse(savedAchievements);
         }
       }
+      Object.assign(Achievements, loadedAchievements);
 
       return Achievements;
     }
