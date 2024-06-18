@@ -702,7 +702,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.855.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.856.
   </div>
 
 
@@ -3471,6 +3471,7 @@
       const clusterSize = 10; // Number of asteroids in the cluster
       const clusterSpeed = 1.4 * Math.pow(1.02, wave - 1); // Base speed for the cluster
       const speedVariation = 0.02; // Speed variation percentage (1%)
+      const angleVariation = Math.PI / 8; // Angle variation (in radians)
 
       // Determine the starting corner (top-left, top-right, bottom-left, bottom-right)
       const corners = [
@@ -3491,14 +3492,21 @@
         // Calculate a random variation in speed
         const speedMultiplier = 1 + (Math.random() * 2 - 1) * speedVariation;
 
-        // Create the asteroid with slightly varied speed
+        // Calculate a random variation in angle
+        const angleOffset = (Math.random() * 2 - 1) * angleVariation;
+
+        // Calculate the direction vector based on the target corner and angle variation
+        const dx = Math.cos(Math.atan2(targetCorner.y - startCorner.y, targetCorner.x - startCorner.x) + angleOffset);
+        const dy = Math.sin(Math.atan2(targetCorner.y - startCorner.y, targetCorner.x - startCorner.x) + angleOffset);
+
+        // Create the asteroid with slightly varied speed and angle
         let asteroid = {
-          x: startCorner.x + i * 15,
+          x: startCorner.x + i * 4,
           y: startCorner.y + i * 4,
           size: 20,
           speed: clusterSpeed * speedMultiplier,
-          dx: (targetCorner.x - startCorner.x) / canvas.width * clusterSpeed * speedMultiplier,
-          dy: (targetCorner.y - startCorner.y) / canvas.height * clusterSpeed * speedMultiplier,
+          dx: dx * clusterSpeed * speedMultiplier,
+          dy: dy * clusterSpeed * speedMultiplier,
           hitpoints: 5, // Hit points for larger asteroids
           color: 'gray'
         };
@@ -3506,7 +3514,6 @@
         asteroids.push(asteroid);
       }
     }
-
     function createSlowCluster() {
       const clusterSize = 3; // Number of asteroids in the cluster
       const clusterSpeed = 0.5; // Speed of the cluster
