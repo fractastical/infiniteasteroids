@@ -701,7 +701,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.833.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.834.
   </div>
 
 
@@ -4960,9 +4960,17 @@
 
     function toggleWeaponInfo() {
       const weaponInfoDiv = document.getElementById('weaponInfo');
+
       // console.log(weaponInfoDiv);
       weaponInfoDiv.style.display = weaponInfoDiv.style.display === 'none' ? 'block' : 'none';
       // console.log("toggle2");
+      if (weaponInfoDiv.style.display === 'none') {
+        clearInterval(gameLoop);
+        gameLoop = setInterval(update, 1000 / 60);
+      } else {
+        clearInterval(gameLoop);
+
+      }
 
       // Won't place nicely together with above
       // if (isPaused) {
