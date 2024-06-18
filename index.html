@@ -1016,6 +1016,7 @@
       activeMissiles: []
     };
 
+
     let homingMissileUpgrades = {
       speed: 1,
       damage: 1,
@@ -1054,6 +1055,22 @@
 
     };
 
+
+    let chainLightning = {
+      cooldown: 300, // Cooldown time in frames
+      timer: 0, // Current cooldown timer
+      range: 200, // Range of the chain lightning
+      damage: 5, // Damage dealt per hit
+      bounces: 2, // Number of bounces
+      active: false // Flag to track if the chain lightning is active
+    };
+
+    let chainLightningUpgrades = {
+      range: 1,
+      damage: 1,
+      bounces: 1,
+      cooldown: 1
+    };
 
     let deathRay = {
       length: 1000,
@@ -2439,12 +2456,14 @@
       return localStorage.getItem('timeTaken');
     }
 
+    let timeTaken = 0;
+
     function endGame() {
       clearInterval(gameLoop);
       backgroundMusic.pause(); // Stop the background music
       gameEndTime = new Date();
 
-      const timeTaken = gameEndTime - gameStartTime; // Time in milliseconds
+      timeTaken = gameEndTime - gameStartTime; // Time in milliseconds
       saveTimeTaken(timeTaken); // Save the time taken to local storage
 
       console.log("this run: " + timeTaken);
@@ -2934,7 +2953,7 @@
     function initializeWeaponDamageTracking() {
       const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'homingmissile', 'flamethrower', 'chainlightning'];
       weaponClasses.forEach(weapon => {
-        // damageReport[weapon] = 0;
+        damageReport[weapon] = 0;
         damageReportStartTimes[weapon] = null;
       });
     }
@@ -3424,7 +3443,7 @@
           speed: 1,
           direction: Math.PI / 2,
           shootTimer: 0,
-          hitpoints: 15,
+          hitpoints: wave + 5,
           shootInterval: 120 // Adjust the shooting interval as desired
         };
       }
@@ -4792,7 +4811,7 @@
         bombDamage: 2
       };
 
-      let chainLightning = {
+      chainLightning = {
         cooldown: 300, // Cooldown time in frames
         timer: 0, // Current cooldown timer
         range: 200, // Range of the chain lightning
@@ -4801,7 +4820,7 @@
         active: false // Flag to track if the chain lightning is active
       };
 
-      let chainLightningUpgrades = {
+      chainLightningUpgrades = {
         range: 1,
         damage: 1,
         bounces: 1,
@@ -5417,8 +5436,8 @@
 
 
   <!-- #INFINITEGAMES JS START -->
-  <script src="infinite/js/48_leaderboard_20240618013040.js"></script>
-  <script src="infinite/js/48_firebase_20240618013040.js"></script>
+  <!-- <script src="infinite/js/48_leaderboard_20240618013040.js"></script> -->
+  <!-- <script src="infinite/js/48_firebase_20240618013040.js"></script> -->
   <!-- #INFINITEGAMES JS END -->
 </body>
 
