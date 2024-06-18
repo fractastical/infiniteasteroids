@@ -1122,6 +1122,20 @@
 
     };
 
+    let flamethrower = {
+      cooldown: 10, // Cooldown time in frames
+      timer: 0, // Current cooldown timer
+      range: 100, // Range of the flamethrower
+      damage: 1, // Damage dealt per frame
+      active: false // Flag to track if the flamethrower is active
+    };
+
+    let flamethrowerUpgrades = {
+      range: 1,
+      damage: 1,
+      cooldown: 1
+    };
+
 
 
 
@@ -1372,6 +1386,11 @@
         }
       }
 
+      updateAcidBombs();
+      updateAcidAreas();
+      drawAcidBombs();
+      drawAcidAreas();
+
 
       if (activeWeaponClasses.includes('freeze')) {
         if (freezeEffect.timer > 0) {
@@ -1381,12 +1400,26 @@
         }
       }
 
+
       updateFreezeEffect();
 
-      updateAcidBombs();
-      updateAcidAreas();
-      drawAcidBombs();
-      drawAcidAreas();
+      if (activeWeaponClasses.includes('flamethrower')) {
+        if (flamethrower.timer > 0) {
+          flamethrower.timer--;
+        } else if (keys[' ']) {
+          activateFlamethrower();
+        }
+      }
+      updateFlamethrower();
+
+      if (activeWeaponClasses.includes('chainlightning')) {
+        if (chainLightning.timer > 0) {
+          chainLightning.timer--;
+        } else {
+          activateChainLightning();
+        }
+      }
+
 
 
       drawShip();
@@ -2495,6 +2528,10 @@
       ctx.fillText(`Acid: ${damageReport.acid} (DPM: ${weaponDPM.acid})`, 20, canvas.height - 180);
       ctx.fillText(`Boomerang: ${damageReport.boomerang} (DPM: ${weaponDPM.boomerang})`, 20, canvas.height - 160);
       ctx.fillText(`Nano: ${damageReport.homing} (DPM: ${weaponDPM.homing})`, 20, canvas.height - 140);
+      ctx.fillText(`Flamethrower: ${damageReport.flamethrower} (DPM: ${weaponDPM.flamethrower})`, 20, canvas.height - 120);
+      ctx.fillText(`Chain Lightning: ${damageReport.chainlightning} (DPM: ${weaponDPM.chainlightning})`, 20, canvas.height - 100);
+
+
     }
 
     function pauseGameForMarketplace() {
@@ -2636,26 +2673,33 @@
 
     function getRandomUpgrades(count) {
       const availableUpgrades = [
-        ...(getUpgradeCount('laser') <= 10 ? ['Increase Laser Level', 'Decrease Laser Cooldown'] : []),
+        ...(getUpgradeCount('laser') <= 9 ? ['Increase Laser Level', 'Decrease Laser Cooldown'] : []),
         'Increase Rotation Speed',
-        ...(activeWeaponClasses.includes('turret') ? (getUpgradeCount('turret') <= 10 ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : []) : ['Activate Turret']),
-        ...(activeWeaponClasses.includes('freeze') ? (getUpgradeCount('freeze') <= 10 ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : []) : ['Activate Freeze Effect']),
-        ...(activeWeaponClasses.includes('bomberdrone') ? (getUpgradeCount('bomberdrone') <= 10 ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : []) : ['Activate Bomber Drone']),
+        ...(activeWeaponClasses.includes('turret') ? (getUpgradeCount('turret') <= 9 ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : []) : ['Activate Turret']),
+        ...(activeWeaponClasses.includes('freeze') ? (getUpgradeCount('freeze') <= 9 ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : []) : ['Activate Freeze Effect']),
+        ...(activeWeaponClasses.includes('bomberdrone') ? (getUpgradeCount('bomberdrone') <= 9 ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : []) : ['Activate Bomber Drone']),
+        ...(activeWeaponClasses.includes('flamethrower') ? (getUpgradeCount('flamethrower') <= 9 ? ['Increase Flamethrower Range', 'Increase Flamethrower Damage', 'Decrease Flamethrower Cooldown'] : []) : ['Activate Flamethrower']),
+        ...(activeWeaponClasses.includes('chainlightning') ? (getUpgradeCount('chainlightning') <= 9 ? ['Increase Chain Lightning Range', 'Increase Chain Lightning Damage', 'Increase Chain Lightning Bounces', 'Decrease Chain Lightning Cooldown'] : []) : ['Activate Chain Lightning']),
+
       ];
       if (Achievements.laser_damage.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? (getUpgradeCount('explosive') <= 10 ? ['Increase Explosive Laser Level'] : []) : ['Activate Explosive Laser']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? (getUpgradeCount('explosive') <= 9 ? ['Increase Explosive Laser Level'] : []) : ['Activate Explosive Laser']));
       if (Achievements.reach_wave_10.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('sonic') ? (getUpgradeCount('sonic') <= 10 ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : []) : ['Activate Sonic Blast']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('sonic') ? (getUpgradeCount('sonic') <= 9 ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : []) : ['Activate Sonic Blast']));
       if (Achievements.reach_wave_20.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('boomerang') ? (getUpgradeCount('boomerang') <= 10 ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : []) : ['Activate Boomerang']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('boomerang') ? (getUpgradeCount('boomerang') <= 9 ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : []) : ['Activate Boomerang']));
       if (Achievements.complete_normal_mode.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? (getUpgradeCount('acid') <= 10 ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : []) : ['Activate Acid Bomb']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? (getUpgradeCount('acid') <= 9 ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : []) : ['Activate Acid Bomb']));
       if (Achievements.destroy_100_asteroids.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? (getUpgradeCount('drone') <= 10 ? ['Increase Drone Firerate'] : []) : ['Activate Drone']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? (getUpgradeCount('drone') <= 9 ? ['Increase Drone Firerate'] : []) : ['Activate Drone']));
       if (Achievements.kill_5_aliens.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? (getUpgradeCount('deathray') <= 10 ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : []) : ['Activate Death Ray']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? (getUpgradeCount('deathray') <= 9 ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : []) : ['Activate Death Ray']));
       if (Achievements.no_lives_lost.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('homingmissile') ? (getUpgradeCount('homingmissile') <= 10 ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : []) : ['Activate Nano Swarm']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('homingmissile') ? (getUpgradeCount('homingmissile') <= 9 ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : []) : ['Activate Nano Swarm']));
+
+
+
+
       if (!fourthUpgradeUnlocked && Achievements.death_ray_damage.reached)
         availableUpgrades.push('Extra Upgrade Choice');
       if ((activeWeaponClasses.includes('drone') || activeWeaponClasses.includes('bomberdrone')) && Achievements.drone_damage.reached)
@@ -2842,6 +2886,45 @@
           break;
         case 'Extra Choice':
           fourthUpgradeUnlocked = true;
+
+        case 'Activate Flamethrower':
+          activateWeaponClass('flamethrower');
+          damageReportStartTimes.flamethrower = now;
+          break;
+        case 'Increase Flamethrower Range':
+          flamethrowerUpgrades.range++;
+          flamethrower.range = 100 * flamethrowerUpgrades.range;
+          break;
+        case 'Increase Flamethrower Damage':
+          flamethrowerUpgrades.damage++;
+          flamethrower.damage = flamethrowerUpgrades.damage;
+          break;
+        case 'Decrease Flamethrower Cooldown':
+          flamethrowerUpgrades.cooldown++;
+          flamethrower.cooldown = Math.max(1, 10 - flamethrowerUpgrades.cooldown);
+          break;
+
+        case 'Activate Chain Lightning':
+          activateWeaponClass('chainlightning');
+          damageReportStartTimes.chainlightning = now;
+          break;
+        case 'Increase Chain Lightning Range':
+          chainLightningUpgrades.range++;
+          chainLightning.range = 200 * chainLightningUpgrades.range;
+          break;
+        case 'Increase Chain Lightning Damage':
+          chainLightningUpgrades.damage++;
+          chainLightning.damage = 5 * chainLightningUpgrades.damage;
+          break;
+        case 'Increase Chain Lightning Bounces':
+          chainLightningUpgrades.bounces++;
+          chainLightning.bounces = 3 + chainLightningUpgrades.bounces;
+          break;
+        case 'Decrease Chain Lightning Cooldown':
+          chainLightningUpgrades.cooldown++;
+          chainLightning.cooldown = Math.max(60, 300 - 30 * chainLightningUpgrades.cooldown);
+          break;
+
       }
     }
 
@@ -2849,7 +2932,7 @@
 
     // Initialize total damage for each weapon
     function initializeWeaponDamageTracking() {
-      const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'homingmissile'];
+      const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'homingmissile', 'flamethrower', 'chainlightning'];
       weaponClasses.forEach(weapon => {
         // damageReport[weapon] = 0;
         damageReportStartTimes[weapon] = null;
@@ -2977,6 +3060,10 @@
           return boomerangUpgrades.speed + boomerangUpgrades.damage - 1;
         case 'homingmissile':
           return homingMissileUpgrades.speed + homingMissileUpgrades.damage + homingMissileUpgrades.cooldown - 2;
+        case 'flamethrower':
+          return flamethrowerUpgrades.range + flamethrowerUpgrades.damage + flamethrowerUpgrades.cooldown - 2;
+        case 'chainlightning':
+          return chainLightningUpgrades.range + chainLightningUpgrades.damage + chainLightningUpgrades.bounces + chainLightningUpgrades.cooldown - 3;
 
         default:
           return 0;
@@ -4011,6 +4098,55 @@
       }
     }
 
+    function activateFlamethrower() {
+      flamethrower.active = true;
+      flamethrower.timer = flamethrower.cooldown;
+    }
+
+
+    function updateFlamethrower() {
+      if (flamethrower.active) {
+        // Define the area of effect for the flamethrower
+        let flameRange = flamethrower.range;
+        let flameWidth = 20;
+
+        // Calculate the endpoint of the flamethrower
+        let endX = ship.x + flameRange * Math.sin(ship.rotation * Math.PI / 180);
+        let endY = ship.y - flameRange * Math.cos(ship.rotation * Math.PI / 180);
+
+        // Check for collisions with asteroids
+        for (let i = asteroids.length - 1; i >= 0; i--) {
+          let asteroid = asteroids[i];
+          let dx = asteroid.x - ship.x;
+          let dy = asteroid.y - ship.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < flameRange && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < flameWidth / 2) {
+            asteroid.hitpoints -= flamethrower.damage;
+            damageReport.flamethrower += flamethrower.damage;
+
+            if (asteroid.hitpoints <= 0) {
+              createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+              asteroids.splice(i, 1);
+            }
+          }
+        }
+
+        // Draw the flamethrower
+        ctx.save();
+        ctx.strokeStyle = 'orange';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(ship.x, ship.y);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+        ctx.restore();
+
+        flamethrower.active = false;
+      }
+    }
+
+
     function activateSonicBlast() {
       if (sonicBlast.timer === 0) {
         sonicBlast.waves.push({
@@ -4021,6 +4157,48 @@
         });
         sonicBlast.timer = sonicBlast.cooldown;
       }
+    }
+
+    function activateChainLightning() {
+      if (chainLightning.timer === 0) {
+        let target = findNearestAsteroid();
+        if (target) {
+          fireChainLightning(target, chainLightning.bounces);
+          chainLightning.timer = chainLightning.cooldown;
+        }
+      }
+    }
+
+    function fireChainLightning(target, bounces) {
+      if (bounces <= 0 || !target) return;
+
+      let damage = chainLightning.damage;
+      let actualDamage = Math.min(damage + damageBooster, target.hitpoints);
+      target.hitpoints -= actualDamage;
+      damageReport.chainlightning += actualDamage;
+
+      if (target.hitpoints <= 0) {
+        createExplosion(target.x, target.y, target.hitpoints, target.image);
+        let index = asteroids.indexOf(target);
+        asteroids.splice(index, 1);
+      }
+
+      drawChainLightning(ship, target);
+
+      let nextTarget = findNearestAsteroidInRange(target, chainLightning.range);
+      if (nextTarget) {
+        drawChainLightning(target, nextTarget);
+        fireChainLightning(nextTarget, bounces - 1);
+      }
+    }
+
+    function drawChainLightning(source, target) {
+      ctx.beginPath();
+      ctx.moveTo(source.x, source.y);
+      ctx.lineTo(target.x, target.y);
+      ctx.strokeStyle = 'blue';
+      ctx.lineWidth = 2;
+      ctx.stroke();
     }
 
 
@@ -4570,6 +4748,7 @@
 
       bomberDrones = [];
 
+
       // bomberDrones = [];
       bomberDroneUpgrades = {
         speed: 1,
@@ -4577,6 +4756,23 @@
         bombRadius: 50,
         bombDamage: 2
       };
+
+      let chainLightning = {
+        cooldown: 300, // Cooldown time in frames
+        timer: 0, // Current cooldown timer
+        range: 200, // Range of the chain lightning
+        damage: 5, // Damage dealt per hit
+        bounces: 2, // Number of bounces
+        active: false // Flag to track if the chain lightning is active
+      };
+
+      let chainLightningUpgrades = {
+        range: 1,
+        damage: 1,
+        bounces: 1,
+        cooldown: 1
+      };
+
 
       // Start a new game
       // createAsteroids();
@@ -4666,7 +4862,21 @@
         name: 'Turret',
         description: 'Deploys a turret that automatically shoots at enemies.',
         icon: 'icons/Autocannon.svg'
+      },
+      {
+        name: 'Flamethrower',
+        description: 'Shoots a continuous stream of fire.',
+        icon: 'icons/flamethrower.png'
+      },
+      {
+        name: 'Chain Lightning',
+        description: 'Fires a lightning bolt that bounces between asteroids.',
+        icon: 'icons/chainlightning.png'
       }
+
+
+
+
     ];
 
     function toggleWeaponInfo() {
