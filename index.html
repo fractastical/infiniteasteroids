@@ -3411,6 +3411,11 @@
         createAsteroidCluster();
       }
 
+
+      if (wave % 7 === 0) {
+        createSlowCluster();
+      }
+
       if (wave % 10 === 0 && !alien) {
         alien = {
           x: 20,
@@ -3430,7 +3435,7 @@
     function createAsteroidCluster() {
       const clusterSize = 10; // Number of asteroids in the cluster
       const clusterSpeed = 1.4 * Math.pow(1.02, wave - 1); // Base speed for the cluster
-      const speedVariation = 0.01; // Speed variation percentage (1%)
+      const speedVariation = 0.02; // Speed variation percentage (1%)
 
       // Determine the starting corner (top-left, top-right, bottom-left, bottom-right)
       const corners = [
@@ -3466,6 +3471,36 @@
         asteroids.push(asteroid);
       }
     }
+
+    function createSlowCluster() {
+      const clusterSize = 3; // Number of asteroids in the cluster
+      const clusterSpeed = 0.5; // Speed of the cluster
+      const asteroidHitpoints = 50; // Hitpoints of each asteroid in the cluster
+      const asteroidSize = 40; // Size of each asteroid in the cluster
+
+      // Determine the starting position (left or right)
+      const startX = Math.random() < 0.5 ? 0 : canvas.width;
+      const startY = canvas.height / 2;
+
+      // Determine the direction (left to right or right to left)
+      const direction = startX === 0 ? 1 : -1;
+
+      for (let i = 0; i < clusterSize; i++) {
+        let asteroid = {
+          x: startX,
+          y: startY + (i - Math.floor(clusterSize / 2)) * asteroidSize * 2,
+          size: asteroidSize,
+          speed: clusterSpeed,
+          dx: direction,
+          dy: 0,
+          hitpoints: asteroidHitpoints,
+          color: 'darkgray'
+        };
+
+        asteroids.push(asteroid);
+      }
+    }
+
 
     // Update asteroids
     function updateAsteroids() {
@@ -5182,7 +5217,7 @@
       const db = getFirestore();
       const userDocRef = doc(db, 'users', userId);
       const loginTime = new Date();
-      const sessionLength = loginTime - gameStartTime;
+      const sessionLength = timeTaken;
 
 
       if (typeof score === 'undefined' || typeof sessionLength === 'undefined') {
