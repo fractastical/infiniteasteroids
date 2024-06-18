@@ -1144,7 +1144,9 @@
       timer: 0, // Current cooldown timer
       range: 100, // Range of the flamethrower
       damage: 1, // Damage dealt per frame
-      active: false // Flag to track if the flamethrower is active
+      active: false, // Flag to track if the flamethrower is active
+      damagePerSecond: 1 // Damage dealt per second
+
     };
 
     let flamethrowerUpgrades = {
@@ -1428,6 +1430,7 @@
         }
       }
       updateFlamethrower();
+      updateAsteroidFire();
 
       if (activeWeaponClasses.includes('chainlightning')) {
         if (chainLightning.timer > 0) {
@@ -2916,6 +2919,7 @@
           break;
         case 'Increase Flamethrower Damage':
           flamethrowerUpgrades.damage++;
+          flamethrower.damagePerSecond++;
           flamethrower.damage = flamethrowerUpgrades.damage;
           break;
         case 'Decrease Flamethrower Cooldown':
@@ -4176,13 +4180,8 @@
           let distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < flameRange && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < flameWidth / 2) {
-            asteroid.hitpoints -= flamethrower.damage;
-            damageReport.flamethrower += flamethrower.damage;
-
-            if (asteroid.hitpoints <= 0) {
-              createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
-              asteroids.splice(i, 1);
-            }
+            asteroid.isOnFire = true; // Set the asteroid on fire
+            asteroid.fireTimer = 0; // Reset the fire timer
           }
         }
 
@@ -4199,6 +4198,31 @@
         flamethrower.active = false;
       }
     }
+
+    function updateAsteroidFire() {
+      for (let i = asteroids.length - 1; i >= 0; i--) {
+        let asteroid = asteroids[i];
+        if (asteroid.isOnFire) {
+          asteroid.fireTimer++;
+          if (asteroid.fireTimer >= 60) { // Damage applied every second (assuming 60 FPS)
+            asteroid.hitpoints -= flamethrower.damagePerSecond;
+            damageReport.flamethrower += flamethrower.damagePerSecond;
+            asteroid.fireTimer = 0; // Reset the fire timer
+          }
+
+          asteroid.color = 'darkred'; // Change the asteroid color to dark red
+
+          if (asteroid.hitpoints <= 0) {
+            createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+            asteroids.splice(i, 1);
+          }
+        } else {
+          asteroid.color = 'gray'; // Reset the asteroid color if not on fire
+        }
+      }
+    }
+
+
 
 
     function activateSonicBlast() {
