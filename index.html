@@ -732,7 +732,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.8601.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.861.
   </div>
 
 
@@ -2806,7 +2806,7 @@
         availableUpgrades.push(...(activeWeaponClasses.includes('bomberdrone') ? (getUpgradeCount('bomberdrone') <= 9 ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : []) : ['Activate Bomber Drone'])
         );
       if (Achievements.reach_wave_5.reached)
-        availableUpgrades.push((activeWeaponClasses.includes('freeze') ? (getUpgradeCount('freeze') <= 9 ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : []) : ['Activate Freeze Effect']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('freeze') ? (getUpgradeCount('freeze') <= 9 ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : []) : ['Activate Freeze Effect']));
       if (Achievements.laser_damage.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? (getUpgradeCount('explosive') <= 9 ? ['Increase Explosive Laser Level'] : []) : ['Activate Explosive Laser']));
       if (Achievements.reach_wave_10.reached)
@@ -2853,8 +2853,10 @@
       }
       return upgrades;
     }
+
     function applyUpgrade(upgrade) {
       const now = Date.now();
+      console.log(upgrade);
 
       switch (upgrade) {
         case 'Increase Laser Level':
@@ -3032,9 +3034,9 @@
         case 'Damage Booster':
           damageBooster++;
           break;
-        case 'Extra Choice':
+        case 'Extra Upgrade Choice':
           fourthUpgradeUnlocked = true;
-
+          break;
         case 'Activate Flamethrower':
           activateWeaponClass('flamethrower');
           damageReportStartTimes.flamethrower = now;
@@ -4795,6 +4797,7 @@
       wave = 1;
       asteroidsKilled = 0;
       aliensKilled = 0;
+      fourthUpgradeUnlocked = false;
 
       // Reset coins and XP
       coins = 0;
@@ -4802,7 +4805,6 @@
       xpToNextLevel = 300;
       xp = 0;
       updateXPBar();
-
 
       // Reset asteroids and drones
       asteroids = [];
