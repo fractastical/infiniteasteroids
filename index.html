@@ -903,7 +903,7 @@
 
     let level = 1;
     let xp = 0;
-    let xpToNextLevel = 100;
+    let xpToNextLevel = 200;
 
     let acidBomb = {
       cooldown: 300,
@@ -1556,7 +1556,7 @@
     function drawPlanet() {
       ctx.beginPath();
       ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'green';
+      ctx.fillStyle = 'red';
       ctx.fill();
       ctx.closePath();
     }
@@ -1674,21 +1674,21 @@
       switch (mode) {
         case GameModes.EASY:
           asteroidDifficultySpeedMultiplier = 0.7;
-          levelUpXPMultiplier = 1.1;
+          levelUpXPMultiplier = 1.07;
           break;
         case GameModes.NORMAL:
           asteroidDifficultySpeedMultiplier = 1;
-          levelUpXPMultiplier = 1.2;
+          levelUpXPMultiplier = 1.17;
           modeScoreMultiplier = 1.5;
           break;
         case GameModes.HARD:
           asteroidDifficultySpeedMultiplier = 1.1;
-          levelUpXPMultiplier = 1.3;
+          levelUpXPMultiplier = 1.27;
           modeScoreMultiplier = 2;
           break;
         case GameModes.HERO:
           asteroidDifficultySpeedMultiplier = 1.3;
-          levelUpXPMultiplier = 1.4;
+          levelUpXPMultiplier = 1.35;
           modeScoreMultiplier = 2.5;
           break;
         case GameModes.METEORSHOWEREASY:
@@ -4646,7 +4646,7 @@
       // Reset coins and XP
       coins = 0;
       level = 1;
-      xpToNextLevel = 100;
+      xpToNextLevel = 200;
       xp = 0;
       updateXPBar();
 
@@ -4665,7 +4665,6 @@
 
       level = 1;
       xp = 0;
-      xpToNextLevel = 100;
 
       acidBomb = {
         cooldown: 300,
