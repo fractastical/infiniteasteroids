@@ -1010,6 +1010,20 @@
       damage: 1
     };
 
+    let explosiveRocket = {
+      cooldown: 120, // Cooldown time in frames (2 seconds at 60 FPS)
+      timer: 0, // Current cooldown timer
+      speed: 3, // Speed of the rocket
+      damage: 10, // Damage dealt by the rocket
+      radius: 50, // Explosion radius
+      active: false // Flag to track if the rocket is active
+    };
+
+    let explosiveRocketUpgrades = {
+      damage: 1,
+      radius: 1,
+      cooldown: 1
+    };
     let homingMissile = {
       cooldown: 300,
       timer: 0,
@@ -1268,6 +1282,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       document.getElementById('leaderboard-container').style.display = 'none';
 
+
       if (planetMode) {
         drawPlanet();
       }
@@ -1399,6 +1414,15 @@
         updateDeathRay();
       }
 
+      if (activeWeaponClasses.includes('explosiveRocket')) {
+        if (explosiveRocket.timer > 0) {
+          explosiveRocket.timer--;
+        } else {
+          fireExplosiveRocket();
+        }
+      }
+      updateExplosiveRockets();
+
       if (activeWeaponClasses.includes('acid')) {
         if (acidBomb.timer > 0) {
           acidBomb.timer--;
@@ -1406,6 +1430,7 @@
           fireAcidBomb();
         }
       }
+
 
       updateAcidBombs();
       updateAcidAreas();
@@ -2565,6 +2590,7 @@
       ctx.fillText(`Nano: ${damageReport.homing} (DPM: ${weaponDPM.homing})`, 20, canvas.height - 140);
       ctx.fillText(`Flamethrower: ${damageReport.flamethrower} (DPM: ${weaponDPM.flamethrower})`, 20, canvas.height - 120);
       ctx.fillText(`Chain Lightning: ${damageReport.chainlightning} (DPM: ${weaponDPM.chainlightning})`, 20, canvas.height - 100);
+      ctx.fillText(`Explosive Rocket: ${damageReport.explosiveRocket} (DPM: ${weaponDPM.explosiveRocket})`, 20, canvas.height - 80);
 
 
     }
@@ -2699,7 +2725,10 @@
       if (Achievements.no_lives_lost.reached) count++;
       if (Achievements.death_ray_damage.reached) count++;
       if (Achievements.complete_meteor_normal_mode.reached) count++;
+      if (Achievements.complete_meteor_hard_mode.reached) count++;
       if (Achievements.complete_planet_normal_mode.reached) count++;
+      if (Achievements.complete_planet_hard_mode.reached) count++;
+
       if (Achievements.complete_hard_mode.reached) count++;
       if (Achievements.complete_hero_mode.reached) count++;
       if (Achievements.drone_damage.reached) count++;
@@ -2735,6 +2764,8 @@
         availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? (getUpgradeCount('drone') <= 9 ? ['Increase Drone Firerate'] : []) : ['Activate Drone']));
       if (Achievements.kill_5_aliens.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? (getUpgradeCount('deathray') <= 9 ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : []) : ['Activate Death Ray']));
+      if (Achievements.complete_planet_hard_mode.reached)
+        availableUpgrades.push(...(activeWeaponClasses.includes('explosiveRocket') ? (getUpgradeCount('explosiveRocket') <= 9 ? ['Increase Explosive Rocket Damage', 'Increase Explosive Rocket Radius', 'Decrease Explosive Rocket Cooldown'] : []) : ['Activate Explosive Rocket']));
 
       if (Achievements.kill_15_aliens.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('chainlightning') ? (getUpgradeCount('chainlightning') <= 9 ? ['Increase Chain Lightning Range', 'Increase Chain Lightning Damage', 'Increase Chain Lightning Bounces', 'Decrease Chain Lightning Cooldown'] : []) : ['Activate Chain Lightning']));
@@ -2881,6 +2912,22 @@
           acidBombUpgrades.size++;
           acidBomb.size = 20 + (20 * acidBombUpgrades.size);
           break;
+        case 'Activate Explosive Rocket':
+          activateWeaponClass('explosiveRocket');
+          damageReportStartTimes.explosiveRocket = now;
+          break;
+        case 'Increase Explosive Rocket Damage':
+          explosiveRocketUpgrades.damage++;
+          explosiveRocket.damage = 10 * explosiveRocketUpgrades.damage;
+          break;
+        case 'Increase Explosive Rocket Radius':
+          explosiveRocketUpgrades.radius++;
+          explosiveRocket.radius = 50 * explosiveRocketUpgrades.radius;
+          break;
+        case 'Decrease Explosive Rocket Cooldown':
+          explosiveRocketUpgrades.cooldown++;
+          explosiveRocket.cooldown = Math.max(30, 120 - 10 * explosiveRocketUpgrades.cooldown);
+          break;
         case 'Activate Freeze Effect':
           activateWeaponClass('freeze');
           damageReportStartTimes.freeze = now;
@@ -2979,7 +3026,7 @@
 
     // Initialize total damage for each weapon
     function initializeWeaponDamageTracking() {
-      const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'homingmissile', 'flamethrower', 'chainlightning'];
+      const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'homingmissile', 'flamethrower', 'chainlightning', 'explosiveRocket'];
       weaponClasses.forEach(weapon => {
         damageReport[weapon] = 0;
         damageReportStartTimes[weapon] = null;
@@ -3111,6 +3158,8 @@
           return flamethrowerUpgrades.range + flamethrowerUpgrades.damage + flamethrowerUpgrades.cooldown - 2;
         case 'chainlightning':
           return chainLightningUpgrades.range + chainLightningUpgrades.damage + chainLightningUpgrades.bounces + chainLightningUpgrades.cooldown - 3;
+        case 'explosiveRocket':
+          return explosiveRocketUpgrades.damage + explosiveRocketUpgrades.radius + explosiveRocketUpgrades.cooldown - 2;
 
         default:
           return 0;
@@ -4081,31 +4130,66 @@
       }
     }
 
-    function useSuperWeapon(weapon) {
-      switch (weapon) {
-        case 'missile':
-          if (superWeapons.missile > 0) {
-            superWeapons.missile--;
-            activateMissile();
-            updateMarketplaceDisplay();
-            break;
-          }
-        case 'laser':
-          if (superWeapons.laser > 0) {
-            superWeapons.laser--;
-            activateLaserBeam();
-            updateMarketplaceDisplay();
-            break;
-          }
-        case 'bomb':
-          if (superWeapons.bomb > 0) {
-            superWeapons.bomb--;
-            activateBomb();
-            updateMarketplaceDisplay();
-            break;
-          }
+    let explosiveRockets = [];
+
+    function fireExplosiveRocket() {
+      if (explosiveRocket.timer === 0) {
+        const angle = ship.rotation * Math.PI / 180;
+        const rocket = {
+          x: ship.x + Math.sin(angle) * 20,
+          y: ship.y - Math.cos(angle) * 20,
+          angle: angle,
+          speed: explosiveRocket.speed,
+          damage: explosiveRocket.damage,
+          radius: explosiveRocket.radius,
+          distance: 0 // Add distance property to track rocket's travel distance
+        };
+        explosiveRockets.push(rocket);
+        explosiveRocket.timer = explosiveRocket.cooldown;
       }
     }
+
+    function updateExplosiveRockets() {
+      for (let i = explosiveRockets.length - 1; i >= 0; i--) {
+        const rocket = explosiveRockets[i];
+        rocket.x += Math.sin(rocket.angle) * rocket.speed;
+        rocket.y -= Math.cos(rocket.angle) * rocket.speed;
+        rocket.distance += rocket.speed; // Update the rocket's travel distance
+
+        if (rocket.distance >= 200) { // Check if the rocket has traveled a certain distance
+          createExplosion(rocket.x, rocket.y, 0); // Create an explosion effect at the rocket's position
+          applyExplosiveDamage(rocket); // Apply area damage to asteroids within the explosion radius
+          explosiveRockets.splice(i, 1); // Remove the rocket from the array
+          continue;
+        }
+
+        if (rocket.x < 0 || rocket.x > canvas.width || rocket.y < 0 || rocket.y > canvas.height) {
+          explosiveRockets.splice(i, 1);
+        }
+      }
+    }
+
+    function applyExplosiveDamage(rocket) {
+      for (let j = asteroids.length - 1; j >= 0; j--) {
+        const asteroid = asteroids[j];
+        const dx = rocket.x - asteroid.x;
+        const dy = rocket.y - asteroid.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < rocket.radius) {
+          const damage = Math.min(rocket.damage, asteroid.hitpoints);
+          asteroid.hitpoints -= damage;
+          damageReport.explosiveRocket += damage;
+
+          if (asteroid.hitpoints <= 0) {
+            createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+            asteroids.splice(j, 1);
+          }
+        }
+      }
+    }
+
+
 
     // Function to update marketplace display
     function updateMarketplaceDisplay() {
@@ -4644,7 +4728,7 @@
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `You have unlocked ${count} of 20 technologies`;
+      technologiesCountElement.textContent = `You have unlocked ${count} of 21 technologies`;
       document.getElementById('technologiesCount').style.display = 'show';
       document.getElementById('shipType').style.display = 'show';
 
@@ -4979,6 +5063,11 @@
         name: 'Chain Lightning',
         description: 'Fires a lightning bolt that bounces between asteroids.',
         icon: 'icons/chainlightning.png'
+      },
+      {
+        name: 'Explosive Rocket',
+        description: 'Fires a slow-moving rocket that causes explosive AoE damage on impact.',
+        icon: 'icons/explosive-rocket.png'
       }
 
 
@@ -5105,11 +5194,11 @@
       kill_15_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 15 Aliens. Unlock Chain Lightning.' },
       complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Shower Easy Mode.' },
       complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Shower Normal Mode. Unlock Double Turret.' },
-      complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode' },
+      complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode.' },
       complete_meteor_hero_mode: { reached: false, icon: 'achievements/death_meteor.png', description: 'Shower Hero Mode' },
       complete_planet_easy_mode: { reached: false, icon: 'achievements/planet_medium.png', description: 'Planet Easy Mode.' },
       complete_planet_normal_mode: { reached: false, icon: 'achievements/storm_medium.png', description: 'Planet Normal Mode. Unlock Triple Turret.' },
-      complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode.' },
+      complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode. Unlock Explosive Rocket.' },
       complete_planet_hero_mode: { reached: false, icon: 'achievements/planet_huge.png', description: 'Planet Hero Mode' },
 
     };
