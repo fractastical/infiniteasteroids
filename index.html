@@ -716,7 +716,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.857.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.859.
   </div>
 
 
@@ -2524,9 +2524,21 @@
       console.log("this run: " + timeTaken);
       score *= modeScoreMultiplier;
 
-      saveUserScore(userId, gameId, score);
+      const topSixWeapons = Object.entries(damageReport)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 6)
+        .map(([weapon, damage]) => ({ weapon, damage }));
+
+      const gameData = {
+        score: score,
+        topWeapons: topSixWeapons
+      };
+
+      saveUserScore(userId, gameId, gameData);
+
       loadLeaderboard(gameId);
       document.getElementById('leaderboard-container').style.display = 'block';
+
 
       // now telegram only
       // turn off for now
@@ -5413,54 +5425,31 @@
     });
 
     // Function to save user score for a specific game
-    async function saveUserScore(userId, gameName, score) {
+    async function saveUserScore(userId, gameName, gameData) {
       const db = getFirestore();
       const userDocRef = doc(db, 'users', userId);
       const loginTime = new Date();
-      const sessionLength = timeTaken;
+      const sessionLength = loginTime - gameStartTime;
 
-      if (typeof score === 'undefined' || typeof sessionLength === 'undefined') {
-        console.error('Invalid score or session length');
+      if (typeof gameData === 'undefined' || typeof sessionLength === 'undefined') {
+        console.error('Invalid game data or session length');
         return;
       }
 
-      // Get the existing user document
-      const userDoc = await getDoc(userDocRef);
+      const scoreData = {
+        score: gameData.score,
+        topWeapons: gameData.topWeapons,
+        sessionLength: sessionLength,
+        loginTime: loginTime
+      };
 
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        const existingAchievements = userData.games?.[gameName]?.achievements || {};
+      const gameDataWithScores = {
+        [`games.${gameName}.scores`]: arrayUnion(scoreData)
+      };
 
-        // Merge the existing achievements with the updated achievements
-        const updatedAchievements = { ...existingAchievements, ...Achievements };
-
-        // Save the score, session length, login time, and updated achievements for the specific game
-        const gameData = {
-          [`games.${gameName}.scores`]: arrayUnion({
-            score: score,
-            sessionLength: sessionLength,
-            loginTime: loginTime
-          }),
-          [`games.${gameName}.achievements`]: updatedAchievements
-        };
-
-        await updateDoc(userDocRef, gameData);
-      } else {
-        // If the user document doesn't exist, create a new one with the initial achievements
-        const gameData = {
-          [`games.${gameName}.scores`]: [
-            {
-              score: score,
-              sessionLength: sessionLength,
-              loginTime: loginTime
-            }
-          ],
-          [`games.${gameName}.achievements`]: Achievements
-        };
-
-        await setDoc(userDocRef, gameData);
-      }
+      await updateDoc(userDocRef, gameDataWithScores);
     }
+
     window.saveUserScore = saveUserScore;
 
     // Function to save initial user data
@@ -5508,6 +5497,39 @@
 
       document.getElementById('leaderboard-container').appendChild(leaderboard);
     }
+
+    // Possible future verion
+    //     async function loadLeaderboard(gameName) {
+    //   // ...
+
+    //   usersSnapshot.forEach(doc => {
+    //     const userData = doc.data();
+    //     const gameScores = userData.games?.[gameName]?.scores || [];
+    //     const highestScore = gameScores.reduce((max, session) => Math.max(max, session.score), 0);
+    //     const topWeapons = gameScores.find(session => session.score === highestScore)?.topWeapons || [];
+
+    //     users.push({
+    //       nickname: userData.nickname || 'Unnamed',
+    //       score: highestScore,
+    //       topWeapons: topWeapons
+    //     });
+    //   });
+
+    //   // ...
+
+    //   topUsers.forEach((user, index) => {
+    //     const userDiv = document.createElement('div');
+    //     userDiv.innerText = `${index + 1}. ${user.nickname}: ${user.score} points`;
+
+    //     const weaponsDiv = document.createElement('div');
+    //     weaponsDiv.innerText = 'Top Weapons: ' + user.topWeapons.map(weapon => `${weapon.weapon} (${weapon.damage})`).join(', ');
+
+    //     leaderboard.appendChild(userDiv);
+    //     leaderboard.appendChild(weaponsDiv);
+    //   });
+
+    //   // ...
+    // }
 
     window.loadLeaderboard = loadLeaderboard;
 
