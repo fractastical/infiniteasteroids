@@ -702,7 +702,7 @@
   <div id="rightArrow" class="flashing-arrow" style="right: 20px; top: 50%;"></div>
 
 
-  <!-- <div id="loginPopup" class="modal">
+  <div id="loginPopup" class="modal">
     <div class="modal-content">
       <h2>Login</h2>
       <form id="loginForm">
@@ -711,20 +711,17 @@
         <button type="submit">Login</button>
       </form>
     </div>
-  </div> -->
+  </div>
 
-  <div class="top-right" id="userInfo">
+  <div class="top-right" id="loginContainer">
+    <a href="#" id="login-link">Login</a>
+  </div>
+
+  <div class="top-right" id="userInfo" style="display: none;">
     <span id="userNickname"></span> | <a href="#" id="logoutLink">Logout</a>
   </div>
 
 
-  <div class="top-right" id="user-info" class="hidden">
-    <span id="user-nickname"></span> <a href="#" id="logout-toggle">Logout</a>
-    <!-- <span id="user-coins"></span><input id="logoutButton" type="button" value="logout" /> -->
-  </div>
-  <div class="top-right" id="login-link">
-    <a href="#" id="login-toggle">Login</a>
-  </div>
 
   <div id="xpBarContainer">
     <div id="xpBar"></div>
@@ -1219,7 +1216,8 @@
     let gameOver = false;
     let invincible = false;
     let invincibilityTimer = 0;
-    const invincibilityDuration = 220; // 3.5 seconds (60 FPS)
+
+
     let wave = 1;
     let waveMessageTimer = 0;
     const waveMessageDuration = 180; // 3 seconds (60 FPS)
@@ -1725,12 +1723,14 @@
     let levelUpXPMultiplier = 1.2;
     let meteorMode = false;
     let planetMode = false;
+    let invincibilityDuration = 160; // 3.5 seconds (60 FPS)
 
     function initializeGame(mode) {
       switch (mode) {
         case GameModes.EASY:
           asteroidDifficultySpeedMultiplier = 0.7;
           levelUpXPMultiplier = 1.07;
+          invincibilityDuration = 220;
           break;
         case GameModes.NORMAL:
           asteroidDifficultySpeedMultiplier = 1;
@@ -2856,7 +2856,6 @@
 
     function applyUpgrade(upgrade) {
       const now = Date.now();
-      console.log(upgrade);
 
       switch (upgrade) {
         case 'Increase Laser Level':
@@ -4924,7 +4923,7 @@
         deceleration: 0.99,
         maxSpeed: 5,
         rotation: 0,
-        rotationSpeed: 2.5,
+        rotationSpeed: 2.2,
         lasers: [],
         velocityX: 0,
         velocityY: 0,
@@ -5391,9 +5390,13 @@
   </script>
   <script type="module">
 
+    // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    // import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    // import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getFirestore, doc, updateDoc, arrayUnion, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -5402,6 +5405,53 @@
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+
+
+
+
+    const loginLink = document.getElementById('login-link');
+    const loginPopup = document.getElementById('loginPopup');
+    const loginForm = document.getElementById('loginForm');
+    const userInfo = document.getElementById('userInfo');
+    const userNickname = document.getElementById('userNickname');
+    const logoutLink = document.getElementById('logoutLink');
+    const loginContainer = document.getElementById('loginContainer');
+
+    loginLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      pauseGame();
+      loginPopup.style.display = 'block';
+    });
+
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          loadUserData(user.uid);
+          loginPopup.style.display = 'none';
+          resumeGame();
+        })
+        .catch((error) => {
+          console.error('Error signing in:', error.message);
+        });
+    });
+
+    logoutLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      auth.signOut()
+        .then(() => {
+          userInfo.style.display = 'none';
+          loginLink.style.display = 'block';
+        })
+        .catch((error) => {
+          console.error('Error signing out:', error);
+        });
+    });
 
     document.getElementById('login-form').addEventListener('submit', function (event) {
       event.preventDefault();
@@ -5422,10 +5472,25 @@
         loadUserData(user.uid);
         userId = user.uid;
       } else {
-        document.getElementById('user-info').classList.add('hidden');
-        document.getElementById('login-link').classList.remove('hidden');
+        userInfo.style.display = 'none';
+        loginContainer.style.display = 'block';
+        pauseGame();
       }
     });
+
+    function pauseGame() {
+      if (!isPaused) {
+        clearInterval(gameLoop);
+        isPaused = true;
+      }
+    }
+
+    function resumeGame() {
+      if (isPaused) {
+        gameLoop = setInterval(update, 1000 / 60);
+        isPaused = false;
+      }
+    }
 
     async function loadUserData(userId) {
       try {
@@ -5433,9 +5498,13 @@
 
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          document.getElementById('user-nickname').textContent = userData.nickname;
+          // document.getElementById('user-nickname').textContent = userData.nickname;
+          userNickname.textContent = userDoc.nickname;
+          userInfo.style.display = 'block';
+          loginLink.style.display = 'none';
+
           // document.getElementById('user-coins').textContent = userData.coins;
-          document.getElementById('user-info').classList.remove('hidden');
+          // document.getElementById('user-info').classList.remove('hidden');
           document.getElementById('login-link').classList.add('hidden');
           document.getElementById('auth').classList.add('hidden');
           // console.log(userData);
@@ -5455,10 +5524,10 @@
       }
     }
 
-    document.getElementById('login-toggle').addEventListener('click', function (event) {
-      event.preventDefault();
-      document.getElementById('auth').classList.toggle('hidden');
-    });
+    // document.getElementById('login-toggle').addEventListener('click', function (event) {
+    //   event.preventDefault();
+    //   document.getElementById('auth').classList.toggle('hidden');
+    // });
 
     // Function to save user score for a specific game
     async function saveUserScore(userId, gameName, gameData) {
