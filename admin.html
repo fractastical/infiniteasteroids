@@ -17,7 +17,10 @@
         <h2>Top Weapons Used</h2>
         <ol id="topWeaponsList"></ol>
     </div>
-
+    <div id="topWeaponsHighScores">
+        <h2>Top Weapons Used (Scores above 100,000)</h2>
+        <ol id="topWeaponsHighScoresList"></ol>
+    </div>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script>
@@ -65,8 +68,34 @@
                 .sort((a, b) => b[1] - a[1])
                 .map(([weapon, count]) => ({ weapon, count }));
 
-        }        // Function to display the admin dashboard data
-        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons) {
+        }
+
+
+
+        function getTopWeaponsUsedHighScores(sessions, scoreThreshold) {
+            const weaponCounts = {};
+
+            sessions.forEach((session) => {
+                if (session.score > scoreThreshold && session.topWeapons) {
+                    session.topWeapons.forEach((weapon) => {
+                        if (weaponCounts[weapon.weapon]) {
+                            weaponCounts[weapon.weapon] += 1;
+                        } else {
+                            weaponCounts[weapon.weapon] = 1;
+                        }
+                    });
+                }
+            });
+
+            return Object.entries(weaponCounts)
+                .sort((a, b) => b[1] - a[1])
+                .map(([weapon, count]) => ({ weapon, count }));
+        }
+
+
+
+        // Function to display the admin dashboard data
+        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores) {
             document.getElementById('totalSessions').textContent = totalSessions;
             document.getElementById('totalSessionTime').textContent = formatTime(totalSessionTime);
             document.getElementById('averageSessionTime').textContent = formatTime(averageSessionTime);
@@ -76,6 +105,13 @@
                 const listItem = document.createElement('li');
                 listItem.textContent = `${weapon.weapon}: ${weapon.count} times`;
                 topWeaponsList.appendChild(listItem);
+            });
+
+            const topWeaponsHighScoresList = document.getElementById('topWeaponsHighScoresList');
+            topWeaponsHighScores.forEach((weapon) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${weapon.weapon}: ${weapon.count} times`;
+                topWeaponsHighScoresList.appendChild(listItem);
             });
         }
 
@@ -112,8 +148,9 @@
 
                 const averageSessionTime = calculateAverageSessionTime(totalSessionTime, totalSessions);
                 const topWeapons = getTopWeaponsUsed(allSessions);
+                const topWeaponsHighScores = getTopWeaponsUsedHighScores(allSessions, 100000);
 
-                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons);
+                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores);
             })
             .catch((error) => {
                 console.error('Error fetching admin data:', error);
