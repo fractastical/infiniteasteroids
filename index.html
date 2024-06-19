@@ -732,7 +732,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.8594.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.8601.
   </div>
 
 
@@ -871,7 +871,6 @@
 
   <div id="leaderboard-container" style="display:none;">
     <div id="leaderboard">
-      <h2>Leaderboard</h2>
       <ol id="leaderboard-list"></ol>
     </div>
   </div>
@@ -1434,7 +1433,7 @@
         updateDeathRay();
       }
 
-      if (activeWeaponClasses.includes('explosiveRocket')) {
+      if (activeWeaponClasses.includes('explosiverocket')) {
         if (explosiveRocket.timer > 0) {
           explosiveRocket.timer--;
         } else {
@@ -2646,7 +2645,7 @@
       ctx.fillText(`Nano: ${damageReport.homing} (DPM: ${weaponDPM.homing})`, 20, canvas.height - 140);
       ctx.fillText(`Flamethrower: ${damageReport.flamethrower} (DPM: ${weaponDPM.flamethrower})`, 20, canvas.height - 120);
       ctx.fillText(`Chain Lightning: ${damageReport.chainlightning} (DPM: ${weaponDPM.chainlightning})`, 20, canvas.height - 100);
-      ctx.fillText(`Explosive Rocket: ${damageReport.explosiveRocket} (DPM: ${weaponDPM.explosiveRocket})`, 20, canvas.height - 80);
+      ctx.fillText(`Explosive Rocket: ${damageReport.explosiverocket} (DPM: ${weaponDPM.explosiverocket})`, 20, canvas.height - 80);
 
 
     }
@@ -2821,7 +2820,7 @@
       if (Achievements.kill_5_aliens.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? (getUpgradeCount('deathray') <= 9 ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : []) : ['Activate Death Ray']));
       if (Achievements.complete_planet_hard_mode.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('explosiveRocket') ? (getUpgradeCount('explosiveRocket') <= 9 ? ['Increase Explosive Rocket Damage', 'Increase Explosive Rocket Radius', 'Decrease Explosive Rocket Cooldown'] : []) : ['Activate Explosive Rocket']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('explosiverocket') ? (getUpgradeCount('explosiverocket') <= 9 ? ['Increase Explosive Rocket Damage', 'Increase Explosive Rocket Radius', 'Decrease Explosive Rocket Cooldown'] : []) : ['Activate Explosive Rocket']));
 
       if (Achievements.kill_15_aliens.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('chainlightning') ? (getUpgradeCount('chainlightning') <= 9 ? ['Increase Chain Lightning Range', 'Increase Chain Lightning Damage', 'Increase Chain Lightning Bounces', 'Decrease Chain Lightning Cooldown'] : []) : ['Activate Chain Lightning']));
@@ -2969,7 +2968,7 @@
           acidBomb.size = 20 + (20 * acidBombUpgrades.size);
           break;
         case 'Activate Explosive Rocket':
-          activateWeaponClass('explosiveRocket');
+          activateWeaponClass('explosiverocket');
           damageReportStartTimes.explosiveRocket = now;
           break;
         case 'Increase Explosive Rocket Damage':
@@ -3082,7 +3081,7 @@
 
     // Initialize total damage for each weapon
     function initializeWeaponDamageTracking() {
-      const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'homingmissile', 'flamethrower', 'chainlightning', 'explosiveRocket'];
+      const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'homingmissile', 'flamethrower', 'chainlightning', 'explosiverocket'];
       weaponClasses.forEach(weapon => {
         damageReport[weapon] = 0;
         damageReportStartTimes[weapon] = null;
@@ -3095,7 +3094,7 @@
 
     function activateWeaponClass(weaponClass) {
       // temporarily remove restrictions
-      if (!activeWeaponClasses.includes(weaponClass) && activeWeaponClasses.length < 6) {
+      if (!activeWeaponClasses.includes(weaponClass)) {
         activeWeaponClasses.push(weaponClass);
         // damageReportStartTimes[weaponClass] = Date.now();
 
@@ -3214,7 +3213,7 @@
           return flamethrowerUpgrades.range + flamethrowerUpgrades.damage + flamethrowerUpgrades.cooldown - 2;
         case 'chainlightning':
           return chainLightningUpgrades.range + chainLightningUpgrades.damage + chainLightningUpgrades.bounces + chainLightningUpgrades.cooldown - 3;
-        case 'explosiveRocket':
+        case 'explosiverocket':
           return explosiveRocketUpgrades.damage + explosiveRocketUpgrades.radius + explosiveRocketUpgrades.cooldown - 2;
 
         default:
@@ -3585,7 +3584,7 @@
 
     function createAsteroidCluster() {
       const clusterSize = 10; // Number of asteroids in the cluster
-      const clusterSpeed = 1.4 * Math.pow(1.02, wave - 1); // Base speed for the cluster
+      let clusterSpeed = 1.4 * Math.pow(1.02, wave - 1); // Base speed for the cluster
       // half speed clusters in easy
       if (currentMode == GameModes.EASY)
         clusterSpeed *= 0.5;
@@ -5470,13 +5469,15 @@
       }
 
       const userDoc = await getDoc(userDocRef);
-
+      console.log(Achievements);
       if (userDoc.exists()) {
         const userData = userDoc.data();
         const existingAchievements = userData.games?.[gameName]?.achievements || {};
 
         // Merge the existing achievements with the updated achievements
         const updatedAchievements = { ...existingAchievements, ...Achievements };
+        console.log("updated");
+        console.log(updatedAchievements);
 
         // Save the score, session length, login time, and updated achievements for the specific game
         const fullGameData = {
@@ -5489,8 +5490,10 @@
           [`games.${gameName}.achievements`]: updatedAchievements
         };
 
-        await updateDoc(userDocRef, gameData);
+        await updateDoc(userDocRef, fullGameData);
       } else {
+        console.log("no dice");
+
         // If the user document doesn't exist, create a new one with the initial achievements
         const gameData = {
           [`games.${gameName}.scores`]: [
@@ -5546,7 +5549,7 @@
       const topUsers = users.slice(0, 10);
 
       const leaderboard = document.createElement('div');
-      // leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
+      leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
       topUsers.forEach((user, index) => {
         const userDiv = document.createElement('div');
         userDiv.innerText = `${index + 1}. ${user.nickname}: ${user.score} points`;
