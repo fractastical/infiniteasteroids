@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <h1>Admin Dashboard</h1>
+    <div id="sessionInfo">
+        <p>Total Sessions: <span id="totalSessions"></span></p>
+        <p>Total Session Time: <span id="totalSessionTime"></span></p>
+        <p>Average Session Time: <span id="averageSessionTime"></span></p>
+    </div>
+    <div id="topWeapons">
+        <h2>Top Weapons Used</h2>
+        <ol id="topWeaponsList"></ol>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script>
+        // Initialize Firebase (replace with your own config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCvgdn8c6D8RusKRr4vHAzFj1x4FNxrXVE",
+            authDomain: "infinite-games-9c69e.firebaseapp.com",
+            projectId: "infinite-games-9c69e",
+            storageBucket: "infinite-games-9c69e.appspot.com",
+            messagingSenderId: "602022483888",
+            appId: "1:602022483888:web:f967a6c1cb236ae66ba875",
+            measurementId: "G-9LE6E1BKZ7"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Function to calculate total session time in seconds
+        function calculateTotalSessionTime(sessions) {
+            return sessions.reduce((total, session) => total + session.sessionLength, 0);
+        }
+
+        // Function to calculate average session time in seconds
+        function calculateAverageSessionTime(totalSessionTime, totalSessions) {
+            return totalSessions > 0 ? totalSessionTime / totalSessions : 0;
+        }
+
+        // Function to get the top weapons used by count
+        // Function to get the top weapons used by count
+        function getTopWeaponsUsed(sessions) {
+            const weaponCounts = {};
+
+            sessions.forEach((session) => {
+                if (session.topWeapons) {
+                    session.topWeapons.forEach((weapon) => {
+                        if (weaponCounts[weapon.weapon]) {
+                            weaponCounts[weapon.weapon] += 1;
+                        } else {
+                            weaponCounts[weapon.weapon] = 1;
+                        }
+                    });
+                }
+            });
+
+            return Object.entries(weaponCounts)
+                .sort((a, b) => b[1] - a[1])
+                .map(([weapon, count]) => ({ weapon, count }));
+
+        }        // Function to display the admin dashboard data
+        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons) {
+            document.getElementById('totalSessions').textContent = totalSessions;
+            document.getElementById('totalSessionTime').textContent = formatTime(totalSessionTime);
+            document.getElementById('averageSessionTime').textContent = formatTime(averageSessionTime);
+
+            const topWeaponsList = document.getElementById('topWeaponsList');
+            topWeapons.forEach((weapon) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${weapon.weapon}: ${weapon.count} times`;
+                topWeaponsList.appendChild(listItem);
+            });
+        }
+
+        // Function to format time in seconds to a readable format (hh:mm:ss)
+        function formatTime(timeInSeconds) {
+            const hours = Math.floor(timeInSeconds / 3600);
+            const minutes = Math.floor((timeInSeconds % 3600) / 60);
+            const seconds = Math.floor(timeInSeconds % 60);
+
+            return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+        }
+
+        // Function to pad single-digit numbers with leading zero
+        function padZero(number) {
+            return number.toString().padStart(2, '0');
+        }
+
+        // Fetch data from Firestore and display admin dashboard
+        db.collection('users')
+            .get()
+            .then((querySnapshot) => {
+                let totalSessions = 0;
+                let totalSessionTime = 0;
+                const allSessions = [];
+
+                querySnapshot.forEach((doc) => {
+                    const userData = doc.data();
+                    const gameSessions = userData.games?.InfiniteSpaceWar?.scores || [];
+
+                    totalSessions += gameSessions.length;
+                    totalSessionTime += calculateTotalSessionTime(gameSessions);
+                    allSessions.push(...gameSessions);
+                });
+
+                const averageSessionTime = calculateAverageSessionTime(totalSessionTime, totalSessions);
+                const topWeapons = getTopWeaponsUsed(allSessions);
+
+                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons);
+            })
+            .catch((error) => {
+                console.error('Error fetching admin data:', error);
+            });
+
+
+    </script>
+</body>
+
+</html>
