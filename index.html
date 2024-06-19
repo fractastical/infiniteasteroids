@@ -2288,9 +2288,10 @@
       const dy = planet.y - object.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
       const force = gravityStrength / (distance * distance); // Inverse-square law
-      console.log(force);
-      if (force > 9)
+      if (force > 9) {
         force = 9;
+        console.log(force);
+      }
 
       object.dx += force * dx / distance;
       object.dy += force * dy / distance;
