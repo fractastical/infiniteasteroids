@@ -4709,33 +4709,36 @@
     });
 
     canvas.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        const touch = e.touches[0];
-        const touchX = touch.clientX;
+      if (e.target === canvas) {
+        const touchX = e.touches[0].clientX;
+        const touchY = e.touches[0].clientY;
 
         const canvasWidth = canvas.width;
-        const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
+        const canvasHeight = canvas.height;
+        const partWidth = canvasWidth / 5;
 
         if (touchX < partWidth) {
           // Hard left turn
-          ship.rotation -= (ship.rotationSpeed * 3);
+          ship.rotation -= ship.rotationSpeed * 3;
         } else if (touchX < partWidth * 2) {
           // Soft left turn
           ship.rotation -= ship.rotationSpeed;
-        } else if (touchX < partWidth * 3) {
-          // Acceleration
-          if (ship.speed < ship.maxSpeed) {
-            ship.speed += (ship.acceleration * 7);
-            ship.velocityX += ship.acceleration * Math.sin(angle);
-            ship.velocityY -= ship.acceleration * Math.cos(angle);
-
-          }
-        } else if (touchX < partWidth * 4) {
+        } else if (touchX > partWidth * 3 && touchX < partWidth * 4) {
           // Soft right turn
           ship.rotation += ship.rotationSpeed;
-        } else {
+        } else if (touchX > partWidth * 4) {
           // Hard right turn
-          ship.rotation += (ship.rotationSpeed * 3);
+          ship.rotation += ship.rotationSpeed * 3;
+        }
+
+        // Check if the touch is in the middle of the screen for acceleration
+        if (touchX > canvasWidth / 3 && touchX < (canvasWidth * 2) / 3 &&
+          touchY > canvasHeight / 3 && touchY < (canvasHeight * 2) / 3) {
+          ship.speed = Math.min(ship.speed + ship.acceleration, ship.maxSpeed);
+        }
+
+        if (e.touches.length === 2) {
+          ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: 2 });
         }
       }
     });
@@ -4749,14 +4752,16 @@
 
         // Calculate angle and distance from the center
         const angle = Math.atan2(deltaY, deltaX);
-        const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
+        const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50);
 
         // Update joystick handle position
         joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
 
-        // Update ship rotation and speed based on joystick movement
-        ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
-        ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
+        // Update ship rotation based on joystick angle
+        ship.rotation = angle * (180 / Math.PI);
+
+        // Update ship speed based on joystick distance
+        ship.speed = Math.min(distance / 20, ship.maxSpeed);
 
         e.preventDefault();
       }
@@ -4765,7 +4770,7 @@
     joystick.addEventListener('touchend', () => {
       isTouchingJoystick = false;
       ship.speed = 0;
-      joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
+      joystickHandle.style.transform = 'translate(-50%, -50%)';
     });
 
     restartButton.addEventListener('click', () => {
