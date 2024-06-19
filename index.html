@@ -359,7 +359,7 @@
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      width: 80%;
+      width: 70%;
       height: 20px;
       background-color: #333;
       border: 2px solid #fff;
@@ -991,7 +991,7 @@
       size: 20,
       speed: 0,
       acceleration: 0.15,
-      deceleration: 0.99,
+      deceleration: 0.95,
       maxSpeed: 5,
       rotation: 0,
       rotationSpeed: 2.5,
@@ -1344,8 +1344,8 @@
         else {
 
           // Apply strong deceleration if moving forward
-          ship.velocityX *= 0.97;
-          ship.velocityY *= 0.97;
+          ship.velocityX *= 0.95;
+          ship.velocityY *= 0.95;
 
         }
 
@@ -4920,7 +4920,7 @@
         size: 20,
         speed: 0,
         acceleration: 0.15,
-        deceleration: 0.99,
+        deceleration: 0.95,
         maxSpeed: 5,
         rotation: 0,
         rotationSpeed: 2.2,
@@ -5487,6 +5487,7 @@
 
     function resumeGame() {
       if (isPaused) {
+        clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
       }
@@ -5499,7 +5500,8 @@
         if (userDoc.exists()) {
           const userData = userDoc.data();
           // document.getElementById('user-nickname').textContent = userData.nickname;
-          userNickname.textContent = userDoc.nickname;
+
+          userNickname.textContent = userData.nickname;
           userInfo.style.display = 'block';
           loginLink.style.display = 'none';
 
