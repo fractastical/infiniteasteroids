@@ -732,7 +732,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.8594.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.8595.
   </div>
 
 
@@ -2287,7 +2287,7 @@
       const dx = planet.x - object.x;
       const dy = planet.y - object.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      const force = gravityStrength / (distance * distance); // Inverse-square law
+      let force = gravityStrength / (distance * distance); // Inverse-square law
       if (force > 9) {
         force = 9;
         console.log(force);
