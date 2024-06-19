@@ -732,7 +732,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.8597.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.8592.
   </div>
 
 
@@ -1788,14 +1788,14 @@
           asteroidDifficultySpeedMultiplier = 1.4;
           levelUpXPMultiplier = 1.1;
           gravityStrength = 60;
-          meteorBooster = 3;
+          meteorBooster = 7;
           modeScoreMultiplier = 1.6;
           planetMode = true;
           break;
         case GameModes.PLANETNORMAL:
           asteroidDifficultySpeedMultiplier = 1.5;
           levelUpXPMultiplier = 1.2;
-          meteorBooster = 6;
+          meteorBooster = 14;
           gravityStrength = 90;
           modeScoreMultiplier = 2.4;
           planetMode = true;
@@ -1804,7 +1804,7 @@
         case GameModes.PLANETHARD:
           asteroidDifficultySpeedMultiplier = 1.7;
           levelUpXPMultiplier = 1.3;
-          meteorBooster = 9;
+          meteorBooster = 21;
           gravityStrength = 120;
           planetMode = true;
           modeScoreMultiplier = 3.4;
@@ -1812,7 +1812,7 @@
         case GameModes.PLANETHERO:
           asteroidDifficultySpeedMultiplier = 1.9;
           levelUpXPMultiplier = 1.4;
-          meteorBooster = 12;
+          meteorBooster = 28;
           gravityStrength = 160;
           planetMode = true;
           modeScoreMultiplier = 4.2;
@@ -2287,11 +2287,8 @@
       const dx = planet.x - object.x;
       const dy = planet.y - object.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      let force = gravityStrength / (distance * distance); // Inverse-square law
-      if (force > 3) {
-        console.log(force);
-        force = 3;
-      }
+      const force = gravityStrength / (distance * distance); // Inverse-square law
+      if (force > 3);
 
       object.dx += force * dx / distance;
       object.dy += force * dy / distance;
@@ -4709,36 +4706,33 @@
     });
 
     canvas.addEventListener('touchstart', (e) => {
-      if (e.target === canvas) {
-        const touchX = e.touches[0].clientX;
-        const touchY = e.touches[0].clientY;
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const touchX = touch.clientX;
 
         const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-        const partWidth = canvasWidth / 5;
+        const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
 
         if (touchX < partWidth) {
           // Hard left turn
-          ship.rotation -= ship.rotationSpeed * 3;
+          ship.rotation -= (ship.rotationSpeed * 3);
         } else if (touchX < partWidth * 2) {
           // Soft left turn
           ship.rotation -= ship.rotationSpeed;
-        } else if (touchX > partWidth * 3 && touchX < partWidth * 4) {
+        } else if (touchX < partWidth * 3) {
+          // Acceleration
+          if (ship.speed < ship.maxSpeed) {
+            ship.speed += (ship.acceleration * 7);
+            ship.velocityX += ship.acceleration * Math.sin(angle);
+            ship.velocityY -= ship.acceleration * Math.cos(angle);
+
+          }
+        } else if (touchX < partWidth * 4) {
           // Soft right turn
           ship.rotation += ship.rotationSpeed;
-        } else if (touchX > partWidth * 4) {
+        } else {
           // Hard right turn
-          ship.rotation += ship.rotationSpeed * 3;
-        }
-
-        // Check if the touch is in the middle of the screen for acceleration
-        if (touchX > canvasWidth / 3 && touchX < (canvasWidth * 2) / 3 &&
-          touchY > canvasHeight / 3 && touchY < (canvasHeight * 2) / 3) {
-          ship.speed = Math.min(ship.speed + ship.acceleration, ship.maxSpeed);
-        }
-
-        if (e.touches.length === 2) {
-          ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: 2 });
+          ship.rotation += (ship.rotationSpeed * 3);
         }
       }
     });
@@ -4752,16 +4746,14 @@
 
         // Calculate angle and distance from the center
         const angle = Math.atan2(deltaY, deltaX);
-        const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50);
+        const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
 
         // Update joystick handle position
         joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
 
-        // Update ship rotation based on joystick angle
-        ship.rotation = angle * (180 / Math.PI);
-
-        // Update ship speed based on joystick distance
-        ship.speed = Math.min(distance / 20, ship.maxSpeed);
+        // Update ship rotation and speed based on joystick movement
+        ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
+        ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
 
         e.preventDefault();
       }
@@ -4770,7 +4762,7 @@
     joystick.addEventListener('touchend', () => {
       isTouchingJoystick = false;
       ship.speed = 0;
-      joystickHandle.style.transform = 'translate(-50%, -50%)';
+      joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
     });
 
     restartButton.addEventListener('click', () => {
@@ -5461,18 +5453,43 @@
         return;
       }
 
-      const scoreData = {
-        score: gameData.score,
-        topWeapons: gameData.topWeapons,
-        sessionLength: sessionLength,
-        loginTime: loginTime
-      };
+      const userDoc = await getDoc(userDocRef);
 
-      const gameDataWithScores = {
-        [`games.${gameName}.scores`]: arrayUnion(scoreData)
-      };
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const existingAchievements = userData.games?.[gameName]?.achievements || {};
 
-      await updateDoc(userDocRef, gameDataWithScores);
+        // Merge the existing achievements with the updated achievements
+        const updatedAchievements = { ...existingAchievements, ...Achievements };
+
+        // Save the score, session length, login time, and updated achievements for the specific game
+        const fullGameData = {
+          [`games.${gameName}.scores`]: arrayUnion({
+            score: gameData.score,
+            topWeapons: gameData.topWeapons,
+            sessionLength: sessionLength,
+            loginTime: loginTime
+          }),
+          [`games.${gameName}.achievements`]: updatedAchievements
+        };
+
+        await updateDoc(userDocRef, gameData);
+      } else {
+        // If the user document doesn't exist, create a new one with the initial achievements
+        const gameData = {
+          [`games.${gameName}.scores`]: [
+            {
+              score: score,
+              sessionLength: sessionLength,
+              loginTime: loginTime
+            }
+          ],
+          [`games.${gameName}.achievements`]: Achievements
+        };
+
+
+        await setDoc(userDocRef, gameData);
+      }
     }
 
     window.saveUserScore = saveUserScore;
