@@ -1554,9 +1554,20 @@
     }
 
     function drawPlanet() {
+      const gradient = ctx.createRadialGradient(
+        planet.x,
+        planet.y,
+        0,
+        planet.x,
+        planet.y,
+        planet.radius
+      );
+      gradient.addColorStop(0, 'rgba(255, 0, 0, 1)'); // Center color (solid red)
+      gradient.addColorStop(1, 'rgba(128, 0, 0, 1)'); // Edge color (darker red)
+
       ctx.beginPath();
       ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = gradient;
       ctx.fill();
       ctx.closePath();
     }
