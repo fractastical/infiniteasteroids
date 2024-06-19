@@ -702,6 +702,22 @@
   <div id="rightArrow" class="flashing-arrow" style="right: 20px; top: 50%;"></div>
 
 
+  <!-- <div id="loginPopup" class="modal">
+    <div class="modal-content">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </div> -->
+
+  <div class="top-right" id="userInfo">
+    <span id="userNickname"></span> | <a href="#" id="logoutLink">Logout</a>
+  </div>
+
+
   <div class="top-right" id="user-info" class="hidden">
     <span id="user-nickname"></span> <a href="#" id="logout-toggle">Logout</a>
     <!-- <span id="user-coins"></span><input id="logoutButton" type="button" value="logout" /> -->
@@ -716,7 +732,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.8592.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.8593.
   </div>
 
 
@@ -2272,6 +2288,9 @@
       const dy = planet.y - object.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
       const force = gravityStrength / (distance * distance); // Inverse-square law
+      console.log(force);
+      if (force > 9)
+        force = 9;
 
       object.dx += force * dx / distance;
       object.dy += force * dy / distance;
@@ -5647,6 +5666,7 @@
 
 
   <script src="infinite/leaderboard.js"></script>
+
 
 
   <div id="auth" class="hidden">
