@@ -2288,7 +2288,10 @@
       const dy = planet.y - object.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
       const force = gravityStrength / (distance * distance); // Inverse-square law
-      if (force > 3);
+      if (force > 0.9) {
+        console.log(force);
+        force = 0.9;
+      }
 
       object.dx += force * dx / distance;
       object.dy += force * dy / distance;
@@ -3573,7 +3576,7 @@
     function createAsteroidCluster() {
       const clusterSize = 10; // Number of asteroids in the cluster
       const clusterSpeed = 1.4 * Math.pow(1.02, wave - 1); // Base speed for the cluster
-      // half speed clusters in easy mode
+      // half speed clusters in easy
       if (currentMode == GameModes.EASY)
         clusterSpeed *= 0.5;
       const speedVariation = 0.02; // Speed variation percentage (1%)
