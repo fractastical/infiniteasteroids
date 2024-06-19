@@ -15,6 +15,7 @@ let alienLasers = [];
 function spawnAliens(wave) {
     const aliensToSpawn = getAliensToSpawn(wave);
     console.log(aliensToSpawn);
+    const cornerOffset = 50; // Adjust the offset value as needed
     const corners = [
         { x: 0, y: 0 }, // Top-left corner
         { x: canvas.width, y: 0 }, // Top-right corner
@@ -26,9 +27,13 @@ function spawnAliens(wave) {
         const cornerIndex = i % corners.length;
         const { x, y } = corners[cornerIndex];
 
+        // Adding randomness to the spawn position
+        const offsetX = Math.random() * cornerOffset - (cornerOffset / 2);
+        const offsetY = Math.random() * cornerOffset - (cornerOffset / 2);
+
         let newAlien = {
-            x: x,
-            y: y,
+            x: x + offsetX,
+            y: y + offsetY,
             size: 30,
             speed: 0.5,
             direction: Math.random() * Math.PI * 2,
