@@ -8,11 +8,20 @@ let alien = null;
 let alienLaser = null;
 const alienLaserSpeed = 2.2;
 const alienLaserSize = 4;
+let superbossAlien = null;
 
 let aliens = [];
 let alienLasers = [];
 
 function spawnAliens(wave) {
+
+
+    if (wave === 50) {
+        spawnSuperBossAlien();
+    }
+
+
+
     const aliensToSpawn = getAliensToSpawn(wave);
     console.log(aliensToSpawn);
     const cornerOffset = 50; // Adjust the offset value as needed
@@ -94,6 +103,106 @@ function updateAliens() {
         });
     }
 }
+
+function spawnSuperBossAlien() {
+    superbossAlien = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: 100,
+        speed: 0.3,
+        direction: Math.random() * Math.PI * 2,
+        shootTimer: 0,
+        spawnTimer: 0,
+        hitpoints: 10000,
+        shootInterval: 100 // Adjust this value as needed
+    };
+    aliens.push(superbossAlien);
+}
+
+
+function updateSuperBossAlien() {
+    if (!superbossAlien) return;
+    if (!freezeEffect.active) {
+        // Calculate direction towards the ship
+        const dx = ship.x - superbossAlien.x;
+        const dy = ship.y - superbossAlien.y;
+        const angle = Math.atan2(dy, dx);
+
+        // Update alien's position based on the new direction
+        superbossAlien.x += Math.cos(angle) * superbossAlien.speed;
+        superbossAlien.y += Math.sin(angle) * superbossAlien.speed;
+
+        // Update alien's shooting timer
+        superbossAlien.shootTimer++;
+        if (superbossAlien.shootTimer >= superbossAlien.shootInterval) {
+            superbossAlien.shootTimer = 0;
+            shootSuperBossAlienLaser();
+        }
+
+        // Update alien's spawn timer
+        superbossAlien.spawnTimer++;
+        if (superbossAlien.spawnTimer >= 180) { // Spawn every 3 seconds (assuming 60 FPS)
+            superbossAlien.spawnTimer = 0;
+            spawnLittleAliensAroundBoss();
+        }
+
+        // Wrap the alien around the screen edges
+        if (superbossAlien.x < 0) superbossAlien.x = canvas.width;
+        else if (superbossAlien.x > canvas.width) superbossAlien.x = 0;
+        if (superbossAlien.y < 0) superbossAlien.y = canvas.height;
+        else if (superbossAlien.y > canvas.height) superbossAlien.y = 0;
+    }
+}
+
+
+function shootSuperBossAlienLaser() {
+    if (!superbossAlien) return;
+    const spread = 5; // Number of lasers in a spread
+    const spreadAngle = Math.PI / 4; // Spread angle in radians
+    const angleToShip = Math.atan2(ship.y - superbossAlien.y, ship.x - superbossAlien.x);
+
+    for (let i = 0; i < spread; i++) {
+        const angle = angleToShip + (i - Math.floor(spread / 2)) * (spreadAngle / spread);
+
+        alienLasers.push({
+            x: superbossAlien.x,
+            y: superbossAlien.y,
+            dx: Math.cos(angle) * alienLaserSpeed,
+            dy: Math.sin(angle) * alienLaserSpeed
+        });
+    }
+}
+
+
+function drawSuperBossAlien() {
+    if (!superbossAlien) return;
+    ctx.save();
+    ctx.translate(superbossAlien.x, superbossAlien.y);
+    ctx.drawImage(bossAlienImage, -superbossAlien.size / 2, -superbossAlien.size / 2, superbossAlien.size, superbossAlien.size);
+    ctx.restore();
+}
+
+
+function spawnLittleAliensAroundBoss() {
+    const numberOfAliens = 4;
+    const radius = 100;
+
+    for (let i = 0; i < numberOfAliens; i++) {
+        const angle = (i * 2 * Math.PI) / numberOfAliens;
+        let newAlien = {
+            x: superbossAlien.x + Math.cos(angle) * radius,
+            y: superbossAlien.y + Math.sin(angle) * radius,
+            size: 30,
+            speed: 0.5,
+            direction: Math.random() * Math.PI * 2,
+            shootTimer: 0,
+            hitpoints: 10,
+            shootInterval: 150 // Adjust this value as needed
+        };
+        aliens.push(newAlien);
+    }
+}
+
 
 function drawAliens() {
     aliens.forEach(alien => {
@@ -275,5 +384,38 @@ function drawBossAlienLaser() {
     ctx.beginPath();
     ctx.arc(alienLaser.x, alienLaser.y, 6, 0, Math.PI * 2);
     ctx.fill();
+}
+
+function updateSuperBossAlienLasers() {
+    for (let i = alienLasers.length - 1; i >= 0; i--) {
+        const laser = alienLasers[i];
+        laser.x += laser.dx;
+        laser.y += laser.dy;
+
+        if (!invincible && isColliding(laser, ship)) {
+            createExplosion(ship.x, ship.y);
+            resetShip();
+            lives--;
+            playShipDestroyedSound();
+            invincible = true;
+            invincibilityTimer = invincibilityDuration;
+            if (lives === 0) gameOver = true;
+            return;
+        }
+
+        // Remove the laser if it goes off-screen
+        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
+            alienLasers.splice(i, 1);
+        }
+    }
+}
+
+function drawSuperBossAlienLasers() {
+    alienLasers.forEach(laser => {
+        ctx.fillStyle = 'red';
+        ctx.beginPath();
+        ctx.arc(laser.x, laser.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+    });
 }
 
