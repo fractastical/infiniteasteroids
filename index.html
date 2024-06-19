@@ -3573,6 +3573,9 @@
     function createAsteroidCluster() {
       const clusterSize = 10; // Number of asteroids in the cluster
       const clusterSpeed = 1.4 * Math.pow(1.02, wave - 1); // Base speed for the cluster
+      // half speed clusters in easy mode
+      if (currentMode == GameModes.EASY)
+        clusterSpeed *= 0.5;
       const speedVariation = 0.02; // Speed variation percentage (1%)
       const angleVariation = Math.PI / 8; // Angle variation (in radians)
 
