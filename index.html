@@ -44,7 +44,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.880.
+    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.882.
   </div>
 
 
@@ -844,7 +844,10 @@
       updateHomingMissiles();
       drawHomingMissiles();
 
+      console.log(turret);
+
       if (turret.bought) {
+        console.log("turret");
         updateTurret();
         updateTurretLasers();
         drawTurretLasers();
@@ -1487,6 +1490,7 @@
         turret.rotation = angle;
 
         turret.fireTimer++;
+        console.log("seeking turret");
         if (turret.fireTimer >= turret.fireInterval) {
           turret.fireTimer = 0;
           let laser = {
@@ -4347,7 +4351,7 @@
 
       acid_bomb_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/acid.png', description: 'Deal 2,500 Damage with Acid Bomb. Unlock Flamethrower.' },
       laser_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/deathray2.png', description: 'Deal 2,500 Damage with Laser. Unlock Explosive Laser.' },
-      drone_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/storm_drone.png', description: 'Deal 1,500 Damage with Drone. Unlock Drone Army.' },
+      drone_damage: { reached: false, damage: 0, required: 1500, icon: 'achievements/storm_drone.png', description: 'Deal 1,500 Damage with Drone. Unlock Drone Army.' },
       explosive_laser_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/explosive.png', description: 'Deal 5,000 Damage with Explosive Laser' },
       death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Extra Choice.' },
       no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
@@ -4554,22 +4558,23 @@
         ship.laserLevel = 5;
         ship.weaponSlots = 6;
         ship.upgradeSlots = 3;
-        turret.bought = true;
         activateWeaponClass('turret');
         damageReportStartTimes.turret = Date.now();
 
-        // turret = {
-        //   x: 0,
-        //   y: 0,
-        //   size: 10,
-        //   rotationSpeed: 2,
-        //   fireInterval: 80,
-        //   fireTimer: 0,
-        //   range: 400,
-        //   damage: 5,
-        //   color: 'cyan',
-        //   lasers: [] // Initialize the turret's lasers array
-        // };
+        turret = {
+          x: 0,
+          y: 0,
+          size: 10,
+          rotationSpeed: 2,
+          fireInterval: 80,
+          fireTimer: 0,
+          range: 400,
+          damage: 5,
+          color: 'cyan',
+          lasers: [] // Initialize the turret's lasers array
+        };
+
+        turret.bought = true;
 
         turretUpgrades = {
           range: 1,
@@ -4653,19 +4658,19 @@
         });
     });
 
-    document.getElementById('login-form').addEventListener('submit', function (event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      auth.signInWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          const user = userCredential.user;
-          loadUserData(user.uid);
-        })
-        .catch(error => {
-          console.error("Error signing in:", error.message);
-        });
-    });
+    // document.getElementById('login-form').addEventListener('submit', function (event) {
+    //   event.preventDefault();
+    //   const email = document.getElementById('email').value;
+    //   const password = document.getElementById('password').value;
+    //   auth.signInWithEmailAndPassword(email, password)
+    //     .then(userCredential => {
+    //       const user = userCredential.user;
+    //       loadUserData(user.uid);
+    //     })
+    //     .catch(error => {
+    //       console.error("Error signing in:", error.message);
+    //     });
+    // });
 
     auth.onAuthStateChanged(user => {
       if (user) {
@@ -4708,7 +4713,7 @@
           // document.getElementById('user-coins').textContent = userData.coins;
           // document.getElementById('user-info').classList.remove('hidden');
           document.getElementById('login-link').classList.add('hidden');
-          document.getElementById('auth').classList.add('hidden');
+          // document.getElementById('auth').classList.add('hidden');
           // console.log(userData);
 
           // Load the achievements for the specific game
@@ -4823,7 +4828,7 @@
       users.sort((a, b) => b.score - a.score);
       const topUsers = users.slice(0, 10);
 
-      const leaderboard = document.getElementById(('leaderboard');
+      const leaderboard = document.getElementById('leaderboard');
       leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
       topUsers.forEach((user, index) => {
         const userDiv = document.createElement('div');
