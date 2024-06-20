@@ -727,9 +727,9 @@
     <div id="xpBar"></div>
   </div>
 
-
+  <!-- version -->
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.871.
+    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.872.
   </div>
 
 
@@ -4894,7 +4894,7 @@
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `You have unlocked ${count} of 21 technologies`;
+      technologiesCountElement.textContent = `You have unlocked ${count} of 22 technologies`;
       document.getElementById('technologiesCount').style.display = 'show';
       document.getElementById('shipType').style.display = 'show';
 
@@ -5363,7 +5363,7 @@
       kill_15_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 15 Aliens. Unlock Chain Lightning.' },
       complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Shower Easy Mode.' },
       complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Shower Normal Mode. Unlock Double Turret.' },
-      complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode.' },
+      complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode. Unlock Starhawk.' },
       complete_meteor_hero_mode: { reached: false, icon: 'achievements/death_meteor.png', description: 'Shower Hero Mode' },
       complete_planet_easy_mode: { reached: false, icon: 'achievements/planet_medium.png', description: 'Planet Easy Mode.' },
       complete_planet_normal_mode: { reached: false, icon: 'achievements/storm_medium.png', description: 'Planet Normal Mode. Unlock Triple Turret.' },
@@ -5495,6 +5495,8 @@
       measurementId: "G-9LE6E1BKZ7"
     };
 
+    let starHawk = false;
+
   </script>
   <script type="module">
 
@@ -5514,6 +5516,22 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+
+    const shipSwitcher = document.getElementById('shipType');
+    shipSwitcher.addEventListener('click', (event) => {
+      if (Achievements.complete_meteor_hard_mode.reached == true) {
+        shipSwitcher.innerHTML = 'Ship type: Starhawk';
+        starHawk = true;
+        ship.laserLevel = 5;
+        activateWeaponClass('turret');
+        damageReportStartTimes.turret = Date.now();
+        turret.damage = 5;
+        turret.damageLevel = 5;
+        turretUpgrades.damage = 5;
+
+      }
+
+    });
 
 
 

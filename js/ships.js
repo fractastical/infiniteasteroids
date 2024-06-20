@@ -57,7 +57,10 @@ function drawShip() {
         ctx.rotate(ship.rotation * Math.PI / 180);
         // drawStarHawk();
         // drawVoidWarden();
-        drawBasicShip();
+        if (starHawk)
+            drawQuantumStriker();
+        else
+            drawBasicShip();
         // drawSolarPhoenix();
         // drawQuantumStriker();
         // ctx.drawImage(shipImage, -ship.size, -ship.size, ship.size * 2, ship.size * 2);
