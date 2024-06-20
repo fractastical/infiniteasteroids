@@ -729,7 +729,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.872.
+    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.873.
   </div>
 
 
@@ -5519,15 +5519,57 @@
 
     const shipSwitcher = document.getElementById('shipType');
     shipSwitcher.addEventListener('click', (event) => {
-      if (Achievements.complete_meteor_hard_mode.reached == true) {
+      if (Achievements.complete_meteor_hard_mode.reached == true && starHawk == false) {
         shipSwitcher.innerHTML = 'Ship type: Starhawk';
         starHawk = true;
+        lives = 2;
         ship.laserLevel = 5;
         activateWeaponClass('turret');
         damageReportStartTimes.turret = Date.now();
-        turret.damage = 5;
-        turret.damageLevel = 5;
-        turretUpgrades.damage = 5;
+
+        turret = {
+          x: 0,
+          y: 0,
+          size: 10,
+          rotationSpeed: 2,
+          fireInterval: 80,
+          fireTimer: 0,
+          range: 400,
+          damage: 5,
+          color: 'cyan',
+          lasers: [] // Initialize the turret's lasers array
+        };
+
+        turretUpgrades = {
+          range: 1,
+          fireRate: 2,
+          damage: 2
+        };
+
+      } else {
+
+        shipSwitcher.innerHTML = 'Ship type: basic';
+        starHawk = false;
+        lives = 3;
+        turret = {
+          x: 0,
+          y: 0,
+          size: 10,
+          rotationSpeed: 2,
+          fireInterval: 120,
+          fireTimer: 0,
+          range: 400,
+          damage: 3,
+          color: 'cyan',
+          lasers: [] // Initialize the turret's lasers array
+        };
+
+        turretUpgrades = {
+          range: 1,
+          fireRate: 1,
+          damage: 1
+        };
+
 
       }
 
