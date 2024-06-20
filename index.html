@@ -1724,7 +1724,7 @@
             damageReport.sonicBlast += actualDamage;
 
             if (asteroid.hitpoints <= 0) {
-              createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+              processAsteroidDeath(asteroid);
               asteroids.splice(j, 1);
               j--;
             }
@@ -2036,32 +2036,9 @@
               if (asteroid.isLarge) {
                 createSmallerAsteroids(asteroid.x, asteroid.y, asteroid.size, asteroid.speed, 1); // Split into smaller asteroids
               }
-              createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
               asteroids.splice(j, 1);
-              asteroidsKilled++;
-              let gemRarity;
-              if (asteroid.initialHitpoints > 30) {
-                gemRarity = 'epic';
-              } else if (asteroid.initialHitpoints > 15) {
-                gemRarity = 'rare';
-              } else if (asteroid.initialHitpoints > 4) {
-                gemRarity = 'common';
-              }
 
-              if (gemRarity && Math.random() < 0.1) {
-                console.log("gem");
-
-                droppedGems.push({
-                  x: asteroid.x,
-                  y: asteroid.y,
-                  size: 10,
-                  type: gemRarity,
-                  dx: asteroid.dx / 5, // Gem's velocity in the x-direction
-                  dy: asteroid.dy / 5  // Gem's velocity in the y-direction
-
-                });
-              }
-
+              processAsteroidDeath(asteroid);
 
 
             } else {
@@ -2098,7 +2075,35 @@
     }
 
 
+    function processAsteroidDeath(asteroid) {
 
+      createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+      asteroidsKilled++;
+      let gemRarity;
+      if (asteroid.initialHitpoints > 30) {
+        gemRarity = 'epic';
+      } else if (asteroid.initialHitpoints > 15) {
+        gemRarity = 'rare';
+      } else if (asteroid.initialHitpoints > 4) {
+        gemRarity = 'common';
+      }
+
+      if (gemRarity && Math.random() < 0.1) {
+        console.log("gem");
+
+        droppedGems.push({
+          x: asteroid.x,
+          y: asteroid.y,
+          size: 10,
+          type: gemRarity,
+          dx: asteroid.dx / 5, // Gem's velocity in the x-direction
+          dy: asteroid.dy / 5  // Gem's velocity in the y-direction
+
+        });
+      }
+
+
+    }
 
     // Function to buy drones
     function buyDrone() {
@@ -2255,7 +2260,7 @@
           damageReport.boomerang += actualDamage;
 
           if (asteroid.hitpoints <= 0) {
-            createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints);
+            processAsteroidDeath(asteroid);
             asteroids.splice(i, 1);
             score += actualDamage * 50;
             coins += actualDamage * 20;
@@ -2515,8 +2520,8 @@
               damageReport.bomberDrones += actualDamage;
 
               if (asteroid.hitpoints <= 0) {
-                createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
                 asteroids.splice(j, 1);
+                processAsteroidDeath(asteroid);
                 score += 50;
                 increaseXP(20);
               }
@@ -4122,7 +4127,7 @@
           totalDamage += actualDamage;
 
           if (asteroid.hitpoints <= 0) {
-            createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+            processAsteroidDeath(asteroid);
             asteroids.splice(i, 1);
           }
 
@@ -4348,7 +4353,7 @@
           damageReport.explosiveRocket += damage;
 
           if (asteroid.hitpoints <= 0) {
-            createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+            processAsteroidDeath(asteroid);
             asteroids.splice(j, 1);
           }
         }
@@ -4493,7 +4498,7 @@
           asteroid.color = 'darkred'; // Change the asteroid color to dark red
 
           if (asteroid.hitpoints <= 0) {
-            createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+            processAsteroidDeath(asteroid);
             asteroids.splice(i, 1);
           }
         } else {
@@ -4653,7 +4658,7 @@
             damageReport.acid += actualDamage;
 
             if (asteroid.hitpoints <= 0) {
-              createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+              processAsteroidDeath(asteroid);
               asteroids.splice(j, 1);
             }
           }
