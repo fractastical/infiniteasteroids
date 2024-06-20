@@ -5248,9 +5248,10 @@
         icon: 'icons/explosive-rocket.png'
       }
 
+    ];
 
 
-      const upgrades = [
+    const upgrades = [
       {
         name: 'Glitch Effect',
         description: 'Applies a glitch effect to nearby asteroids, causing them to malfunction and break apart.',
@@ -5288,9 +5289,6 @@
       }
     ];
 
-
-
-    ];
 
     function toggleWeaponInfo() {
       const weaponInfoDiv = document.getElementById('weaponInfo');
@@ -5563,6 +5561,36 @@
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+
+    let currentShipType = 'basic';
+
+    const shipConfigs = {
+      basic: {
+        name: 'Basic',
+        lives: 3,
+        laserLevel: 1,
+        weaponSlots: 4,
+        upgradeSlots: 3,
+        turret: {
+          fireInterval: 120,
+          range: 400,
+          damage: 3
+        }
+      },
+      starhawk: {
+        name: 'Starhawk',
+        lives: 2,
+        laserLevel: 5,
+        weaponSlots: 6,
+        upgradeSlots: 3,
+        turret: {
+          fireInterval: 80,
+          range: 400,
+          damage: 5
+        }
+      },
+    };
 
 
     const shipSwitcher = document.getElementById('shipType');
