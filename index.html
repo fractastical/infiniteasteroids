@@ -1041,6 +1041,7 @@
       damage: 1
     };
 
+
     let explosiveRocket = {
       cooldown: 120, // Cooldown time in frames (2 seconds at 60 FPS)
       timer: 0, // Current cooldown timer
@@ -2048,7 +2049,7 @@
               }
 
               if (gemRarity && Math.random() < 0.1) {
-                // console.log("gem");
+                console.log("gem");
 
                 droppedGems.push({
                   x: asteroid.x,
@@ -3162,7 +3163,7 @@
           break;
         case 'Increase Chain Lightning Range':
           chainLightningUpgrades.range++;
-          chainLightning.range = 200 * chainLightningUpgrades.range;
+          chainLightning.range = 100 * chainLightningUpgrades.range;
           break;
         case 'Increase Chain Lightning Damage':
           chainLightningUpgrades.damage++;
@@ -3170,7 +3171,7 @@
           break;
         case 'Increase Chain Lightning Bounces':
           chainLightningUpgrades.bounces++;
-          chainLightning.bounces = 3 + chainLightningUpgrades.bounces;
+          chainLightning.bounces = 1 + chainLightningUpgrades.bounces;
           break;
         case 'Decrease Chain Lightning Cooldown':
           chainLightningUpgrades.cooldown++;
@@ -4918,6 +4919,7 @@
       alien = null;
       superbossAlien = null;
       alienLasers = [];
+      droppedGems = [];
 
       // Reset turret upgrades
       turret.bought = false;
