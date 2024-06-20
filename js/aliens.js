@@ -18,12 +18,15 @@ function spawnAliens(wave) {
 
     if (wave === 50) {
         spawnSuperBossAlien();
+
     }
 
 
-
     const aliensToSpawn = getAliensToSpawn(wave);
-    console.log(aliensToSpawn);
+    // console.log(aliensToSpawn);
+    if (aliensToSpawn > 0)
+        playAlienEnteringSound();
+
     const cornerOffset = 50; // Adjust the offset value as needed
     const corners = [
         { x: 0, y: 0 }, // Top-left corner

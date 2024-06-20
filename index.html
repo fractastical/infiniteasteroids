@@ -729,7 +729,7 @@
 
 
   <div id="shipType">
-    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.863.
+    Ship type: basic.&nbsp;&nbsp; &nbsp; Version 0.871.
   </div>
 
 
@@ -888,6 +888,10 @@
 
   <audio id="ship-destroyed" src="sounds/ship_destroyed.mp3"></audio>
 
+  <audio id="alien-entering-sound" src="sounds/alien_entering.mp3"></audio>
+
+  <audio id="gem-collecting-sound" src="sounds/bird_chirp.mp3"></audio>
+
   <audio id="freeze-sound" src="sounds/freeze.mp3"></audio>
   <audio id="freeze-sound-2" src="sounds/freezew.mp3"></audio>
   <audio id="death-ray-sound" src="sounds/ray.mp3"></audio>
@@ -897,6 +901,7 @@
 
 
   <button id="restartButton" style="display: none;">Home</button>
+
 
 
   <script>
@@ -949,6 +954,17 @@
 
     let meteorBooster = 0;
     let modeScoreMultiplier = 1;
+
+    const gemImages = {
+      common: new Image(),
+      rare: new Image(),
+      epic: new Image()
+    };
+
+    gemImages.common.src = 'icons/common_gem.png';
+    gemImages.rare.src = 'icons/rare_gem.png';
+    gemImages.epic.src = 'icons/epic_gem.png';
+
 
     const GameModes = {
       EASY: 'easy',
@@ -1405,6 +1421,9 @@
         playRandomShotSound();
       }
 
+      checkGemCollection();
+      updateGems();
+      drawGems();
 
       if (activeWeaponClasses.includes('sonic')) {
         // Update sonic blast cooldown
@@ -1893,6 +1912,63 @@
       score += 300; // Adjust the score as needed
     }
 
+    let droppedGems = [];
+
+    function drawGems() {
+      for (let i = 0; i < droppedGems.length; i++) {
+        let gem = droppedGems[i];
+        ctx.drawImage(gemImages[gem.type], gem.x - gem.size / 2, gem.y - gem.size / 2, gem.size, gem.size);
+      }
+    }
+
+    function checkGemCollection() {
+      for (let i = droppedGems.length - 1; i >= 0; i--) {
+        let gem = droppedGems[i];
+        if (isColliding(ship, gem)) {
+          // Determine the XP boost based on the gem type
+          let xpBoost;
+          playGemCollectingSound();
+          switch (gem.type) {
+            case 'common':
+              xpBoost = xpToNextLevel * 0.2; // 10% of XP to next level
+              break;
+            case 'rare':
+              xpBoost = xpToNextLevel * 0.5; // 25% of XP to next level
+              break;
+            case 'epic':
+              xpBoost = xpToNextLevel * 0.95; // 50% of XP to next level
+              break;
+          }
+
+          // Increase the XP and check for level up
+          xp += xpBoost;
+          updateXPBar();
+          if (xp >= xpToNextLevel) {
+            levelUp();
+          }
+
+          // Remove the collected gem
+          droppedGems.splice(i, 1);
+        }
+      }
+    }
+
+    function updateGems() {
+      for (let i = 0; i < droppedGems.length; i++) {
+        let gem = droppedGems[i];
+        gem.x += gem.dx;
+        gem.y += gem.dy;
+
+        // Remove gems that go off-screen
+        if (gem.x < 0 || gem.x > canvas.width || gem.y < 0 || gem.y > canvas.height) {
+          droppedGems.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+
+
 
     // Function to handle laser collisions
     function checkLaserCollisions(lasers, isShip) {
@@ -1961,6 +2037,32 @@
               }
               createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
               asteroids.splice(j, 1);
+              asteroidsKilled++;
+              let gemRarity;
+              if (asteroid.initialHitpoints > 30) {
+                gemRarity = 'epic';
+              } else if (asteroid.initialHitpoints > 15) {
+                gemRarity = 'rare';
+              } else if (asteroid.initialHitpoints > 4) {
+                gemRarity = 'common';
+              }
+
+              if (gemRarity && Math.random() < 0.1) {
+                // console.log("gem");
+
+                droppedGems.push({
+                  x: asteroid.x,
+                  y: asteroid.y,
+                  size: 10,
+                  type: gemRarity,
+                  dx: asteroid.dx / 5, // Gem's velocity in the x-direction
+                  dy: asteroid.dy / 5  // Gem's velocity in the y-direction
+
+                });
+              }
+
+
+
             } else {
               // Lighten the color slightly
               let colorValue = Math.max(40, 30 + (asteroid.hitpoints * 3)); // Adjust color value
@@ -1969,7 +2071,7 @@
 
             lasers.splice(i, 1);
             score += actualDamage * 50; // Increase score based on actual damage
-            asteroidsKilled++;
+
             playRandomMeteorDestroySound();
             coins += actualDamage * 20; // Add coins based on actual damage
             increaseXP(actualDamage * 20); // Increase XP based on actual damage
@@ -3362,6 +3464,7 @@
           dx: Math.cos(angle) * speed * speedMultiplier,
           dy: Math.sin(angle) * speed * speedMultiplier,
           hitpoints: hitpoints,
+          initialHitpoints: hitpoints, // Store the initial hitpoints
           color: 'gray'
         };
         asteroids.push(asteroid);
@@ -3543,6 +3646,7 @@
           dx: dx * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
           dy: dy * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
           hitpoints: hitpoints,
+          initialHitpoints: hitpoints,
           color: color,
           isLarge: isLargeAsteroid,
           image: asteroidImage
@@ -3627,6 +3731,7 @@
           dx: dx * clusterSpeed * speedMultiplier,
           dy: dy * clusterSpeed * speedMultiplier,
           hitpoints: 5, // Hit points for larger asteroids
+          initialHitpoints: 5, // Store the initial hitpoints
           color: 'gray'
         };
 
@@ -3655,6 +3760,7 @@
           dx: direction,
           dy: 0,
           hitpoints: asteroidHitpoints,
+          initialHitpoints: asteroidHitpoints,
           color: 'darkgray'
         };
 

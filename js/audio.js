@@ -52,6 +52,14 @@ const bombLaySounds = [
     document.getElementById('bomb-lay-sound')
 ];
 
+const alienEnteringSounds = [
+    document.getElementById('alien-entering-sound')
+];
+
+const gemCollectingSounds = [
+    document.getElementById('gem-collecting-sound')
+];
+
 // Function to play a random shot sound
 function playRandomShotSound() {
     if (!toggleSoundOff) {
@@ -119,6 +127,20 @@ function playShipDestroyedSound() {
     }
 }
 
+function playGemCollectingSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * gemCollectingSounds.length);
+        gemCollectingSounds[randomIndex].play();
+    }
+}
+
+function playAlienEnteringSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * alienEnteringSounds.length);
+        alienEnteringSounds[randomIndex].play();
+    }
+}
+
 
 // Get all sound arrays together
 const allSounds = [
@@ -131,6 +153,8 @@ const allSounds = [
     ...deployDroneSounds,
     ...acidBombSounds,
     ...bombLaySounds,
+    ...alienEnteringSounds,
+    ...gemCollectingSounds,
     backgroundMusic // Include background music in the volume control
 ];
 
