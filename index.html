@@ -44,7 +44,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.882.
+    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.884.
   </div>
 
 
@@ -3849,11 +3849,12 @@
       restartButton.style.display = 'none';
       startScreen.style.display = 'block';
 
+
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
       technologiesCountElement.textContent = `You have unlocked ${count} of 22 technologies`;
-      document.getElementById('technologiesCount').style.display = 'show';
-      document.getElementById('shipType').style.display = 'show';
+      document.getElementById('technologiesCount').style.display = 'block';
+      document.getElementById('shipType').style.display = 'block';
 
       lives = 3;
       score = 0;
