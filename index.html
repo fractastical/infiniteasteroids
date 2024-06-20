@@ -74,7 +74,7 @@
   <div id="startScreen">
     <div>
       <h2>Welcome to Infinite Asteroids!</h2>
-      <!-- <p>Select a Mode to Start:</p> -->
+      <p>Unlock next level when you reach wave 30.</p>
       <table>
 
         <tr>
@@ -1132,16 +1132,16 @@
         case GameModes.PLANETHARD:
           asteroidDifficultySpeedMultiplier = 1.7;
           levelUpXPMultiplier = 1.3;
-          meteorBooster = 21;
-          gravityStrength = 120;
+          meteorBooster = 19;
+          gravityStrength = 110;
           planetMode = true;
           modeScoreMultiplier = 3.4;
           break;
         case GameModes.PLANETHERO:
           asteroidDifficultySpeedMultiplier = 1.9;
           levelUpXPMultiplier = 1.4;
-          meteorBooster = 28;
-          gravityStrength = 160;
+          meteorBooster = 25;
+          gravityStrength = 140;
           planetMode = true;
           modeScoreMultiplier = 4.2;
           break;
@@ -3707,14 +3707,12 @@
         // console.log("toggle1");
         toggleWeaponInfo();
       } else if (event.key === 'p' || event.key === 'P') {
+
         if (isPaused) {
 
+          clearInterval(gameLoop);
           gameLoop = setInterval(update, 1000 / 60); // Resume game loop
           isPaused = false;
-
-        } else if (event.key === 'v' || event.key === 'V') {
-
-          toggleVolumeScreen();
 
         }
         else {
@@ -3736,7 +3734,12 @@
         toggleMusic();
       } else if (event.key === 'n') {
         toggleSound();
+      } else if (event.key === 'v' || event.key === 'V') {
+
+        toggleVolumeScreen();
+
       }
+
     }
 
     function handleKeyUp(event) {
@@ -4324,7 +4327,7 @@
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `${count} of 20 technologies unlocked`;
+      technologiesCountElement.textContent = `${count} of 22 technologies unlocked`;
 
     }
 
@@ -4363,7 +4366,11 @@
 
     };
 
+    let afterGameAchievements = null;
+
     function updateAchievementsAtEnd() {
+
+
       if (wave >= 2) {
         Achievements.reach_wave_2.reached = true;
       }
@@ -4525,7 +4532,7 @@
       },
       starhawk: {
         name: 'Starhawk',
-        lives: 2,
+        lives: 3,
         laserLevel: 5,
         weaponSlots: 6,
         upgradeSlots: 3,
@@ -4543,26 +4550,26 @@
       if (Achievements.complete_meteor_hard_mode.reached == true && starHawk == false) {
         shipSwitcher.innerHTML = 'Ship type: Starhawk';
         starHawk = true;
-        lives = 2;
+        lives = 3;
         ship.laserLevel = 5;
         ship.weaponSlots = 6;
         ship.upgradeSlots = 3;
-
+        turret.bought = true;
         activateWeaponClass('turret');
         damageReportStartTimes.turret = Date.now();
 
-        turret = {
-          x: 0,
-          y: 0,
-          size: 10,
-          rotationSpeed: 2,
-          fireInterval: 80,
-          fireTimer: 0,
-          range: 400,
-          damage: 5,
-          color: 'cyan',
-          lasers: [] // Initialize the turret's lasers array
-        };
+        // turret = {
+        //   x: 0,
+        //   y: 0,
+        //   size: 10,
+        //   rotationSpeed: 2,
+        //   fireInterval: 80,
+        //   fireTimer: 0,
+        //   range: 400,
+        //   damage: 5,
+        //   color: 'cyan',
+        //   lasers: [] // Initialize the turret's lasers array
+        // };
 
         turretUpgrades = {
           range: 1,
@@ -4574,6 +4581,7 @@
 
         shipSwitcher.innerHTML = 'Ship type: basic';
         starHawk = false;
+
         lives = 3;
         turret = {
           x: 0,
@@ -4815,7 +4823,7 @@
       users.sort((a, b) => b.score - a.score);
       const topUsers = users.slice(0, 10);
 
-      const leaderboard = document.createElement('div');
+      const leaderboard = document.getElementById(('leaderboard');
       leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
       topUsers.forEach((user, index) => {
         const userDiv = document.createElement('div');
@@ -4973,7 +4981,7 @@
   <script src="js/aliens.js"></script>
 
 
-  <div id="auth" class="hidden">
+  <!-- <div id="auth" class="hidden">
     <h1>Infinite Games</h1>
     <h2>Login</h2>
     <form id="login-form">
@@ -4981,7 +4989,7 @@
       <input type="password" id="password" placeholder="Password" required>
       <button type="submit">Login</button>
     </form>
-  </div>
+  </div> -->
 
 
 
