@@ -21,6 +21,10 @@
         <h2>Top Weapons Used (Scores above 100,000)</h2>
         <ol id="topWeaponsHighScoresList"></ol>
     </div>
+    <div id="topWeaponsUltraHighScores">
+        <h2>Top Weapons Used (Scores above 500,000)</h2>
+        <ol id="topWeaponsUltraHighScoresList"></ol>
+    </div>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script>
@@ -37,65 +41,73 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Function to calculate total session time in seconds
+        // Function to calculate total session time in milliseconds
         function calculateTotalSessionTime(sessions) {
-            return sessions.reduce((total, session) => total + session.sessionLength, 0);
+            return sessions.reduce((total, session) => {
+                const sessionLength = parseFloat(session.sessionLength);
+                return total + (isNaN(sessionLength) || sessionLength > 18000 * 1000 ? 0 : sessionLength);
+            }, 0);
         }
 
-        // Function to calculate average session time in seconds
+        // Function to calculate average session time in milliseconds
         function calculateAverageSessionTime(totalSessionTime, totalSessions) {
             return totalSessions > 0 ? totalSessionTime / totalSessions : 0;
         }
 
-        // Function to get the top weapons used by count
-        // Function to get the top weapons used by count
+        // Function to get the top weapons used by average damage done
         function getTopWeaponsUsed(sessions) {
-            const weaponCounts = {};
+            const weaponStats = {};
 
             sessions.forEach((session) => {
                 if (session.topWeapons) {
                     session.topWeapons.forEach((weapon) => {
-                        if (weaponCounts[weapon.weapon]) {
-                            weaponCounts[weapon.weapon] += 1;
+                        if (weaponStats[weapon.weapon]) {
+                            weaponStats[weapon.weapon].totalDamage += weapon.damage;
+                            weaponStats[weapon.weapon].count += 1;
                         } else {
-                            weaponCounts[weapon.weapon] = 1;
+                            weaponStats[weapon.weapon] = { totalDamage: weapon.damage, count: 1 };
                         }
                     });
                 }
             });
 
-            return Object.entries(weaponCounts)
-                .sort((a, b) => b[1] - a[1])
-                .map(([weapon, count]) => ({ weapon, count }));
-
+            return Object.entries(weaponStats)
+                .map(([weapon, stats]) => ({
+                    weapon,
+                    averageDamage: stats.totalDamage / stats.count,
+                    count: stats.count
+                }))
+                .sort((a, b) => b.averageDamage - a.averageDamage);
         }
 
-
-
+        // Function to get the top weapons used by average damage done for high scores
         function getTopWeaponsUsedHighScores(sessions, scoreThreshold) {
-            const weaponCounts = {};
+            const weaponStats = {};
 
             sessions.forEach((session) => {
                 if (session.score > scoreThreshold && session.topWeapons) {
                     session.topWeapons.forEach((weapon) => {
-                        if (weaponCounts[weapon.weapon]) {
-                            weaponCounts[weapon.weapon] += 1;
+                        if (weaponStats[weapon.weapon]) {
+                            weaponStats[weapon.weapon].totalDamage += weapon.damage;
+                            weaponStats[weapon.weapon].count += 1;
                         } else {
-                            weaponCounts[weapon.weapon] = 1;
+                            weaponStats[weapon.weapon] = { totalDamage: weapon.damage, count: 1 };
                         }
                     });
                 }
             });
 
-            return Object.entries(weaponCounts)
-                .sort((a, b) => b[1] - a[1])
-                .map(([weapon, count]) => ({ weapon, count }));
+            return Object.entries(weaponStats)
+                .map(([weapon, stats]) => ({
+                    weapon,
+                    averageDamage: stats.totalDamage / stats.count,
+                    count: stats.count
+                }))
+                .sort((a, b) => b.averageDamage - a.averageDamage);
         }
 
-
-
         // Function to display the admin dashboard data
-        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores) {
+        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores) {
             document.getElementById('totalSessions').textContent = totalSessions;
             document.getElementById('totalSessionTime').textContent = formatTime(totalSessionTime);
             document.getElementById('averageSessionTime').textContent = formatTime(averageSessionTime);
@@ -103,20 +115,28 @@
             const topWeaponsList = document.getElementById('topWeaponsList');
             topWeapons.forEach((weapon) => {
                 const listItem = document.createElement('li');
-                listItem.textContent = `${weapon.weapon}: ${weapon.count} times`;
+                listItem.textContent = `${weapon.weapon}: ${weapon.count} times, Average Damage: ${weapon.averageDamage.toFixed(2)}`;
                 topWeaponsList.appendChild(listItem);
             });
 
             const topWeaponsHighScoresList = document.getElementById('topWeaponsHighScoresList');
             topWeaponsHighScores.forEach((weapon) => {
                 const listItem = document.createElement('li');
-                listItem.textContent = `${weapon.weapon}: ${weapon.count} times`;
+                listItem.textContent = `${weapon.weapon}: ${weapon.count} times, Average Damage: ${weapon.averageDamage.toFixed(2)}`;
                 topWeaponsHighScoresList.appendChild(listItem);
+            });
+
+            const topWeaponsUltraHighScoresList = document.getElementById('topWeaponsUltraHighScoresList');
+            topWeaponsUltraHighScores.forEach((weapon) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${weapon.weapon}: ${weapon.count} times, Average Damage: ${weapon.averageDamage.toFixed(2)}`;
+                topWeaponsUltraHighScoresList.appendChild(listItem);
             });
         }
 
-        // Function to format time in seconds to a readable format (hh:mm:ss)
-        function formatTime(timeInSeconds) {
+        // Function to format time in milliseconds to a readable format (hh:mm:ss)
+        function formatTime(timeInMilliseconds) {
+            const timeInSeconds = timeInMilliseconds / 1000;
             const hours = Math.floor(timeInSeconds / 3600);
             const minutes = Math.floor((timeInSeconds % 3600) / 60);
             const seconds = Math.floor(timeInSeconds % 60);
@@ -141,22 +161,24 @@
                     const userData = doc.data();
                     const gameSessions = userData.games?.InfiniteSpaceWar?.scores || [];
 
-                    totalSessions += gameSessions.length;
-                    totalSessionTime += calculateTotalSessionTime(gameSessions);
-                    allSessions.push(...gameSessions);
+                    // Filter out sessions longer than 5 hours (18000 seconds * 1000 milliseconds)
+                    const validSessions = gameSessions.filter(session => parseFloat(session.sessionLength) <= 18000 * 1000);
+
+                    totalSessions += validSessions.length;
+                    totalSessionTime += calculateTotalSessionTime(validSessions);
+                    allSessions.push(...validSessions);
                 });
 
                 const averageSessionTime = calculateAverageSessionTime(totalSessionTime, totalSessions);
                 const topWeapons = getTopWeaponsUsed(allSessions);
                 const topWeaponsHighScores = getTopWeaponsUsedHighScores(allSessions, 100000);
+                const topWeaponsUltraHighScores = getTopWeaponsUsedHighScores(allSessions, 500000);
 
-                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores);
+                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores);
             })
             .catch((error) => {
                 console.error('Error fetching admin data:', error);
             });
-
-
     </script>
 </body>
 
