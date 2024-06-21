@@ -44,7 +44,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.886.
+    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.887.
   </div>
 
 
@@ -1070,6 +1070,7 @@
           asteroidDifficultySpeedMultiplier = 0.7;
           levelUpXPMultiplier = 1.07;
           invincibilityDuration = 220;
+          modeScoreMultiplier = 1.1;
           break;
         case GameModes.NORMAL:
           asteroidDifficultySpeedMultiplier = 1;
@@ -1336,7 +1337,7 @@
             superbossAlien = null; // Destroy alien
             aliensKilled++;
             increaseXP(30 * 20);
-            score += 100000;
+            // score += 100000;
           }
           lasers.splice(i, 1); // Remove laser
           break;
@@ -1979,7 +1980,7 @@
       saveTimeTaken(timeTaken); // Save the time taken to local storage
 
       console.log("this run: " + timeTaken);
-      score *= modeScoreMultiplier;
+      // score *= modeScoreMultiplier;
 
       const topSixWeapons = Object.entries(damageReport)
         .sort((a, b) => b[1] - a[1])
@@ -4851,7 +4852,7 @@
           maximumFractionDigits: 0
         });
         const scoreDiv = document.createElement('div');
-        scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+        scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formatlogintedScore} points`;
         leaderboard.appendChild(scoreDiv);
       });
 
