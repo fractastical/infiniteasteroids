@@ -44,7 +44,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.884.
+    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.886.
   </div>
 
 
@@ -1124,7 +1124,7 @@
         case GameModes.PLANETNORMAL:
           asteroidDifficultySpeedMultiplier = 1.5;
           levelUpXPMultiplier = 1.2;
-          meteorBooster = 14;
+          meteorBooster = 10;
           gravityStrength = 90;
           modeScoreMultiplier = 2.4;
           planetMode = true;
@@ -1133,8 +1133,8 @@
         case GameModes.PLANETHARD:
           asteroidDifficultySpeedMultiplier = 1.7;
           levelUpXPMultiplier = 1.3;
-          meteorBooster = 19;
-          gravityStrength = 110;
+          meteorBooster = 150;
+          gravityStrength = 120;
           planetMode = true;
           modeScoreMultiplier = 3.4;
           break;
@@ -1689,7 +1689,7 @@
       const upgrades = window.levelUpgrades;
       applyUpgrade(upgrades[choice - 1]);
       document.getElementById('levelUpModal').style.display = 'none';
-
+      isPaused = false;
       // Resume the game
       gameLoop = setInterval(update, 1000 / 60); // 60 FPS
     }
@@ -2184,6 +2184,7 @@
 
       // Pause the game
       clearInterval(gameLoop);
+      isPaused = true;
 
       invincible = true;
       invincibilityTimer = invincibilityDuration;
@@ -4807,36 +4808,68 @@
 
     window.saveUserData = saveUserData;
 
-    // Function to load leaderboard for a specific game
+
     async function loadLeaderboard(gameName) {
       const db = getFirestore();
       const usersSnapshot = await getDocs(collection(db, 'users'));
-      const users = [];
+      const scores = [];
 
       usersSnapshot.forEach(doc => {
         const userData = doc.data();
         const gameScores = userData.games?.[gameName]?.scores || [];
-        const highestScore = gameScores.reduce((max, session) => Math.max(max, session.score), 0);
-
-        users.push({
-          nickname: userData.nickname || 'Unnamed',
-          score: highestScore
+        gameScores.forEach(session => {
+          scores.push({
+            nickname: userData.nickname || 'Unnamed',
+            score: session.score
+          });
         });
       });
 
-      users.sort((a, b) => b.score - a.score);
-      const topUsers = users.slice(0, 10);
+      scores.sort((a, b) => b.score - a.score);
+      const topScores = scores.slice(0, 10);
 
       const leaderboard = document.getElementById('leaderboard');
       leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
-      topUsers.forEach((user, index) => {
-        const userDiv = document.createElement('div');
-        userDiv.innerText = `${index + 1}. ${user.nickname}: ${user.score} points`;
-        leaderboard.appendChild(userDiv);
+      topScores.forEach((entry, index) => {
+        const formattedScore = entry.score.toLocaleString('en-US');
+        const scoreDiv = document.createElement('div');
+        scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+        leaderboard.appendChild(scoreDiv);
       });
 
       document.getElementById('leaderboard-container').appendChild(leaderboard);
     }
+
+    // Function to load leaderboard for a specific game
+    // async function loadLeaderboard(gameName) {
+    //   const db = getFirestore();
+    //   const usersSnapshot = await getDocs(collection(db, 'users'));
+    //   const users = [];
+
+    //   usersSnapshot.forEach(doc => {
+    //     const userData = doc.data();
+    //     const gameScores = userData.games?.[gameName]?.scores || [];
+    //     const highestScore = gameScores.reduce((max, session) => Math.max(max, session.score), 0);
+
+    //     users.push({
+    //       nickname: userData.nickname || 'Unnamed',
+    //       score: highestScore
+    //     });
+    //   });
+
+    //   users.sort((a, b) => b.score - a.score);
+    //   const topUsers = users.slice(0, 10);
+
+    //   const leaderboard = document.getElementById('leaderboard');
+    //   leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
+    //   topUsers.forEach((user, index) => {
+    //     const userDiv = document.createElement('div');
+    //     userDiv.innerText = `${index + 1}. ${user.nickname}: ${user.score} points`;
+    //     leaderboard.appendChild(userDiv);
+    //   });
+
+    //   document.getElementById('leaderboard-container').appendChild(leaderboard);
+    // }
 
     // Possible future verion
     //     async function loadLeaderboard(gameName) {
