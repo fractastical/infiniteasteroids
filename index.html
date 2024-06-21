@@ -4818,20 +4818,38 @@
         const userData = doc.data();
         const gameScores = userData.games?.[gameName]?.scores || [];
         gameScores.forEach(session => {
-          scores.push({
-            nickname: userData.nickname || 'Unnamed',
-            score: session.score
-          });
+          if (session.score && isFinite(session.score) && session.score <= 100000000) {  // Ensure the score is finite and below the limit
+            scores.push({
+              nickname: userData.nickname || 'Unnamed',
+              score: session.score
+            });
+          }
         });
       });
 
       scores.sort((a, b) => b.score - a.score);
-      const topScores = scores.slice(0, 10);
+
+      const limitedScores = [];
+      const playerCounts = {};
+
+      scores.forEach(score => {
+        if (!playerCounts[score.nickname]) {
+          playerCounts[score.nickname] = 0;
+        }
+        if (playerCounts[score.nickname] < 3) {
+          limitedScores.push(score);
+          playerCounts[score.nickname]++;
+        }
+      });
+
+      const topScores = limitedScores.slice(0, 10);
 
       const leaderboard = document.getElementById('leaderboard');
       leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
       topScores.forEach((entry, index) => {
-        const formattedScore = entry.score.toLocaleString('en-US');
+        const formattedScore = entry.score.toLocaleString('en-US', {
+          maximumFractionDigits: 0
+        });
         const scoreDiv = document.createElement('div');
         scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
         leaderboard.appendChild(scoreDiv);
