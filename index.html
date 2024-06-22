@@ -1995,6 +1995,8 @@
     let timeTaken = 0;
 
     function endGame() {
+
+
       clearInterval(gameLoop);
       backgroundMusic.pause(); // Stop the background music
       gameEndTime = new Date();
@@ -3877,6 +3879,7 @@
       restartButton.style.display = 'none';
       startScreen.style.display = 'block';
 
+      resetShip();
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
