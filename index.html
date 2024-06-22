@@ -68,6 +68,12 @@
     </div>
   </div>
 
+  <div id="rouletteContainer" style="display: none;">
+    <div id="planet"></div>
+    <div id="rouletteIcons"></div>
+    <button id="spinButton" onclick="startRoulette()">Spin</button>
+  </div>
+
   <div id="activeWeaponClassesContainer" class="bottom-icons"></div>
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
@@ -343,6 +349,14 @@
 
     };
 
+    let shipRelativeX = ship.x / canvas.width;
+    let shipRelativeY = ship.y / canvas.height;
+
+    function updateShipPositionAfterResize() {
+      ship.x = shipRelativeX * canvas.width;
+      ship.y = shipRelativeY * canvas.height;
+    }
+
     let boomerang = {
       x: canvas.width / 2,
       y: canvas.height / 2,
@@ -574,6 +588,46 @@
     // Event listeners for keyboard input
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        // Store ship's position relative to canvas size
+        shipRelativeX = ship.x / canvas.width;
+        shipRelativeY = ship.y / canvas.height;
+
+        // Adjust canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Update ship's position based on new canvas size
+        updateShipPositionAfterResize();
+      } else {
+        // Handle exit full screen if needed
+        shipRelativeX = ship.x / canvas.width;
+        shipRelativeY = ship.y / canvas.height;
+
+        // Reset canvas size (example: original width and height)
+        canvas.width = originalWidth;
+        canvas.height = originalHeight;
+
+        // Update ship's position based on new canvas size
+        updateShipPositionAfterResize();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (document.fullscreenElement) {
+        // Store ship's position relative to canvas size
+        shipRelativeX = ship.x / canvas.width;
+        shipRelativeY = ship.y / canvas.height;
+
+        // Adjust canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Update ship's position based on new canvas size
+        updateShipPositionAfterResize();
+      }
+    });
 
     let achievements = [];
 
@@ -875,7 +929,9 @@
           if (isColliding(ship, asteroids[i])) {
             createExplosion(ship.x, ship.y);
             resetShip();
-            lives--;
+            // possible multi lives lost bug here
+            if (!invincible)
+              lives--;
             playShipDestroyedSound();
             invincible = true;
             invincibilityTimer = invincibilityDuration;
@@ -1436,7 +1492,7 @@
       }
 
       if (gemRarity && Math.random() < 0.1) {
-        console.log("gem");
+        // console.log("gem");
 
         droppedGems.push({
           x: asteroid.x,
@@ -1529,8 +1585,8 @@
           turret.lasers.push(laser);
           if (doubleTurret) {
             let laser = {
-              x: turret.x + 3,
-              y: turret.y - 1,
+              x: turret.x + 4,
+              y: turret.y + 1,
               rotation: turret.rotation,
               size: 2,
               color: 'blue' // Set the turret laser color to blue
@@ -1540,7 +1596,7 @@
           }
           if (tripleTurret) {
             let laser = {
-              x: turret.x - 3,
+              x: turret.x - 4,
               y: turret.y - 1,
               rotation: turret.rotation,
               size: 2,
@@ -1714,7 +1770,10 @@
 
 
     function selectUpgrade(choice) {
+      console.log(choice);
       const upgrades = window.levelUpgrades;
+      console.log(upgrades);
+
       applyUpgrade(upgrades[choice - 1]);
       document.getElementById('levelUpModal').style.display = 'none';
       isPaused = false;
@@ -2299,9 +2358,9 @@
         availableUpgrades.push('Extra Upgrade Choice');
       if ((activeWeaponClasses.includes('drone') || activeWeaponClasses.includes('bomberdrone')) && Achievements.drone_damage.reached)
         availableUpgrades.push('Drone Army');
-      if (Achievements.complete_meteor_normal_mode.reached && activeWeaponClasses.includes('turret'))
+      if (Achievements.complete_meteor_normal_mode.reached && activeWeaponClasses.includes('turret') && !doubleTurret)
         availableUpgrades.push('Double Turret');
-      if (Achievements.complete_planet_normal_mode.reached && activeWeaponClasses.includes('turret'))
+      if (Achievements.complete_planet_normal_mode.reached && activeWeaponClasses.includes('turret') && !tripleTurret)
         availableUpgrades.push('Triple Turret');
       if (Achievements.complete_hard_mode.reached)
         availableUpgrades.push('Damage Booster');
@@ -3772,13 +3831,24 @@
       } else if (event.key === 'n') {
         toggleSound();
       } else if (event.key === 'v' || event.key === 'V') {
+        startRoulette();
+        // toggleVolumeScreen();
 
-        toggleVolumeScreen();
-
-      } else if (fourthUpgradeUnlocked && event.key === '4') {
-        applyUpgrade(3);
       }
 
+      if (document.getElementById('levelUpModal').style.display === 'block') {
+        if (event.key === '1') {
+          selectUpgrade(1);
+        } else if (event.key === '2') {
+          selectUpgrade(2);
+        } else if (event.key === '3') {
+          selectUpgrade(3);
+        } else if (fourthUpgradeUnlocked && event.key === '4') {
+          selectUpgrade(3);
+        }
+
+
+      }
 
     }
 
@@ -3888,6 +3958,8 @@
       startScreen.style.display = 'block';
 
       resetShip();
+      meteorMode = false;
+      planetMode = false;
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
@@ -4138,17 +4210,6 @@
       // startGame();
     });
 
-    document.addEventListener('keydown', function (event) {
-      if (document.getElementById('levelUpModal').style.display === 'block') {
-        if (event.key === '1') {
-          selectUpgrade(1);
-        } else if (event.key === '2') {
-          selectUpgrade(2);
-        } else if (event.key === '3') {
-          selectUpgrade(3);
-        }
-      }
-    });
 
     // Start the game
     // startGame();
@@ -5072,6 +5133,7 @@
   <script src="infinite/leaderboard.js"></script>
   <script src="js/weapons.js"></script>
   <script src="js/aliens.js"></script>
+  <script src="js/bonuswheel.js"></script>
 
 
   <!-- <div id="auth" class="hidden">
