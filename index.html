@@ -44,7 +44,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.888.
+    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.8888.
   </div>
 
 
@@ -69,10 +69,13 @@
   </div>
 
   <div id="rouletteContainer" style="display: none;">
-    <div id="planet"></div>
     <div id="rouletteIcons"></div>
+    <div id="upgradeDisplay"></div>
     <button id="spinButton" onclick="startRoulette()">Spin</button>
+
   </div>
+
+
 
   <div id="activeWeaponClassesContainer" class="bottom-icons"></div>
 
@@ -276,15 +279,6 @@
     let meteorBooster = 0;
     let modeScoreMultiplier = 1;
 
-    const gemImages = {
-      common: new Image(),
-      rare: new Image(),
-      epic: new Image()
-    };
-
-    gemImages.common.src = 'icons/common_gem.png';
-    gemImages.rare.src = 'icons/rare_gem.png';
-    gemImages.epic.src = 'icons/epic_gem.png';
 
 
     const GameModes = {
@@ -1297,80 +1291,6 @@
       score += 300; // Adjust the score as needed
     }
 
-    let droppedGems = [];
-
-    function drawGems() {
-      for (let i = 0; i < droppedGems.length; i++) {
-        let gem = droppedGems[i];
-        ctx.drawImage(gemImages[gem.type], gem.x - gem.size / 2, gem.y - gem.size / 2, gem.size, gem.size);
-      }
-    }
-
-    function checkGemCollection() {
-      for (let i = droppedGems.length - 1; i >= 0; i--) {
-        let gem = droppedGems[i];
-        if (isColliding(ship, gem)) {
-          // Determine the XP boost based on the gem type
-          let xpBoost;
-          playGemCollectingSound();
-          switch (gem.type) {
-            case 'common':
-              xpBoost = xpToNextLevel * 0.2; // 10% of XP to next level
-              break;
-            case 'rare':
-              xpBoost = xpToNextLevel * 0.5; // 25% of XP to next level
-              break;
-            case 'epic':
-              xpBoost = xpToNextLevel * 0.95; // 50% of XP to next level
-              break;
-          }
-
-          // Increase the XP and check for level up
-          xp += xpBoost;
-          updateXPBar();
-          if (xp >= xpToNextLevel) {
-            levelUp();
-          }
-
-          // Remove the collected gem
-          droppedGems.splice(i, 1);
-        }
-      }
-    }
-
-    function updateGems() {
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      const speedFactor = 0.05; // Adjust this factor to control the speed towards the center
-
-      for (let i = 0; i < droppedGems.length; i++) {
-        let gem = droppedGems[i];
-
-        // Calculate the direction towards the center
-        let directionX = centerX - gem.x;
-        let directionY = centerY - gem.y;
-
-        // Normalize the direction vector
-        let distance = Math.sqrt(directionX * directionX + directionY * directionY);
-        directionX /= distance;
-        directionY /= distance;
-
-        // Add a small amount of speed towards the center
-        gem.dx += directionX * speedFactor;
-        gem.dy += directionY * speedFactor;
-
-        // Update gem position
-        gem.x += gem.dx;
-        gem.y += gem.dy;
-
-        // Remove gems that go off-screen
-        if (gem.x < 0 || gem.x > canvas.width || gem.y < 0 || gem.y > canvas.height) {
-          droppedGems.splice(i, 1);
-          i--;
-        }
-      }
-    }
-
 
 
 
@@ -1416,11 +1336,12 @@
           createExplosion(superbossAlien.x, superbossAlien.y);
 
           if (superbossAlien.hitpoints <= 0) {
-            createExplosion(superbossAlien.x, superbossAlien.y, 15);
+            createExplosion(superbossAlien.x, superbossAlien.y, 50);
             superbossAlien = null; // Destroy alien
             aliensKilled++;
+            Achievements.alien_megaboss_killed.reached = true;
             increaseXP(30 * 20);
-            // score += 100000;
+            score += 100000;
           }
           lasers.splice(i, 1); // Remove laser
           break;
@@ -2310,6 +2231,7 @@
       if (Achievements.complete_hero_mode.reached) count++;
       if (Achievements.drone_damage.reached) count++;
       if (Achievements.laser_damage.reached) count++;
+      if (Achievements.alien_megaboss_killed.reached) count++;
 
       return count;
     }
@@ -3827,14 +3749,24 @@
         //   }
 
       } else if (event.key === 'm') {
+
         toggleMusic();
       } else if (event.key === 'n') {
-        toggleSound();
-      } else if (event.key === 'v' || event.key === 'V') {
-        startRoulette();
-        // toggleVolumeScreen();
 
+        toggleSound();
+
+      } else if (event.key === 'u' || event.key === 'U') {
+        // for testing new features
+        clearInterval(gameLoop);
+        drawPlanetx(); // Draw the planet
+        document.getElementById('rouletteContainer').style.display = 'block';
+        // startRoulette();
+
+      } else if (event.key === 'v' || event.key === 'V') {
+
+        toggleVolumeScreen();
       }
+
 
       if (document.getElementById('levelUpModal').style.display === 'block') {
         if (event.key === '1') {
@@ -3963,7 +3895,7 @@
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `You have unlocked ${count} of 22 technologies`;
+      technologiesCountElement.textContent = `You have unlocked ${count} of 23 technologies`;
       document.getElementById('technologiesCount').style.display = 'block';
       document.getElementById('shipType').style.display = 'block';
 
@@ -4466,6 +4398,7 @@
       complete_planet_normal_mode: { reached: false, icon: 'achievements/storm_medium.png', description: 'Planet Normal Mode. Unlock Triple Turret.' },
       complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode. Unlock Explosive Rocket.' },
       complete_planet_hero_mode: { reached: false, icon: 'achievements/planet_huge.png', description: 'Planet Hero Mode' },
+      alien_megaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien megaboss. Secret unlock.' },
 
     };
 
@@ -5133,7 +5066,7 @@
   <script src="infinite/leaderboard.js"></script>
   <script src="js/weapons.js"></script>
   <script src="js/aliens.js"></script>
-  <script src="js/bonuswheel.js"></script>
+  <script src="js/gems.js"></script>
 
 
   <!-- <div id="auth" class="hidden">
