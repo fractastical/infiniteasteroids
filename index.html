@@ -622,6 +622,8 @@
       invincible = true;
       ship.laserTimer = 0;
       invincibilityTimer = invincibilityDuration;
+      clearInterval(gameLoop);
+
       gameLoop = setInterval(update, 1000 / 60); // 60 FPS
       if (!toggleOff)
         backgroundMusic.play(); // Play the background music
@@ -1073,8 +1075,9 @@
           modeScoreMultiplier = 1.1;
           break;
         case GameModes.NORMAL:
-          asteroidDifficultySpeedMultiplier = 1;
+          asteroidDifficultySpeedMultiplier = 0.9;
           levelUpXPMultiplier = 1.17;
+          invincibilityDuration = 190;
           modeScoreMultiplier = 1.5;
           break;
         case GameModes.HARD:
@@ -1692,6 +1695,7 @@
       document.getElementById('levelUpModal').style.display = 'none';
       isPaused = false;
       // Resume the game
+      clearInterval(gameLoop);
       gameLoop = setInterval(update, 1000 / 60); // 60 FPS
     }
 
@@ -2091,6 +2095,9 @@
       invincible = true;
       invincibilityTimer = invincibilityDuration / 2;
       updateMarketplaceDisplay(); // Update display to reflect current levels
+      clearInterval(gameLoop);
+
+
       gameLoop = setInterval(update, 1000 / 60); // Resume game loop
       backgroundMusic.play(); // Resume the background music
 
