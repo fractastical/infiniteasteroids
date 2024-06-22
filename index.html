@@ -1278,8 +1278,27 @@
     }
 
     function updateGems() {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const speedFactor = 0.05; // Adjust this factor to control the speed towards the center
+
       for (let i = 0; i < droppedGems.length; i++) {
         let gem = droppedGems[i];
+
+        // Calculate the direction towards the center
+        let directionX = centerX - gem.x;
+        let directionY = centerY - gem.y;
+
+        // Normalize the direction vector
+        let distance = Math.sqrt(directionX * directionX + directionY * directionY);
+        directionX /= distance;
+        directionY /= distance;
+
+        // Add a small amount of speed towards the center
+        gem.dx += directionX * speedFactor;
+        gem.dy += directionY * speedFactor;
+
+        // Update gem position
         gem.x += gem.dx;
         gem.y += gem.dy;
 
