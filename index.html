@@ -737,8 +737,13 @@
       if (keys[' '] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
         if (!toggleOff)
           backgroundMusic.play(); // Resume the background music (if hasn't started)
-        ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: ship.laserLevel + 1 });
+        const laserOffset = 15; // Distance from the ship's center to the laser's starting point
+        const laserX = ship.x + laserOffset * Math.cos(ship.rotation - Math.PI / 2);
+        const laserY = ship.y + laserOffset * Math.sin(ship.rotation - Math.PI / 2);
+
+        ship.lasers.push({ x: laserX, y: laserY, rotation: ship.rotation, size: ship.laserLevel + 1 });
         ship.laserTimer = ship.laserCooldown;
+
         playRandomShotSound();
       }
 
@@ -1137,7 +1142,7 @@
         case GameModes.PLANETHARD:
           asteroidDifficultySpeedMultiplier = 1.7;
           levelUpXPMultiplier = 1.3;
-          meteorBooster = 150;
+          meteorBooster = 15;
           gravityStrength = 120;
           planetMode = true;
           modeScoreMultiplier = 3.4;
@@ -4023,7 +4028,7 @@
         deceleration: 0.96,
         maxSpeed: 5,
         rotation: 0,
-        rotationSpeed: 2.2,
+        rotationSpeed: 1.9,
         lasers: [],
         velocityX: 0,
         velocityY: 0,
