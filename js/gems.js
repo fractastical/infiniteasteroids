@@ -86,8 +86,9 @@ function createIconElement(iconClass) {
     icon.style.backgroundColor = 'white'; // Set white background for visibility
     icon.style.borderRadius = '50%'; // Make the icon round for better appearance
     icon.style.position = 'absolute';
-    icon.style.width = '40px';
-    icon.style.height = '40px';
+    icon.style.width = '30px';
+    icon.style.height = '30px';
+
     return icon;
 }
 
@@ -95,12 +96,24 @@ function positionIcons() {
     const rouletteIcons = document.getElementById('rouletteIcons');
     rouletteIcons.innerHTML = '';
 
-    icons.forEach((iconClass) => {
+    const rouletteContainer = document.getElementById('rouletteContainer');
+    const containerWidth = rouletteContainer.offsetWidth;
+    const containerHeight = rouletteContainer.offsetHeight;
+    const centerX = containerWidth / 2;
+    const centerY = containerHeight / 2;
+    const radius = Math.min(containerWidth, containerHeight) * 0.4;
+
+    icons.forEach((iconClass, index) => {
         const icon = createIconElement(iconClass);
         rouletteIcons.appendChild(icon);
-    });
 
-    updateIconPositions(0); // Initial position update
+        const angle = (index / icons.length) * (2 * Math.PI);
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+
+        icon.style.left = `${x - icon.offsetWidth / 2}px`;
+        icon.style.top = `${y - icon.offsetHeight / 2}px`;
+    });
 }
 
 function drawPlanetx() {
@@ -124,28 +137,37 @@ function drawPlanetx() {
 
 function updateIconPositions(angle) {
     const rouletteIcons = document.getElementById('rouletteIcons').children;
-    const radius = 100; // Adjusted radius for fitting on the screen
+    const rouletteContainer = document.getElementById('rouletteContainer');
+    const containerWidth = rouletteContainer.offsetWidth;
+    const containerHeight = rouletteContainer.offsetHeight;
+    const centerX = containerWidth / 2;
+    const centerY = containerHeight / 2;
+    const radius = Math.min(containerWidth, containerHeight) * 0.4;
     const angleStep = (2 * Math.PI) / icons.length;
 
     Array.from(rouletteIcons).forEach((icon, index) => {
         const currentAngle = angle + angleStep * index;
-        const x = radius * Math.cos(currentAngle) + planetx.x - icon.offsetWidth / 2;
-        const y = radius * Math.sin(currentAngle) + planetx.y - icon.offsetHeight / 2;
+        const x = centerX + radius * Math.cos(currentAngle);
+        const y = centerY + radius * Math.sin(currentAngle);
 
-        icon.style.left = `${x}px`;
-        icon.style.top = `${y}px`;
+        icon.style.left = `${x - icon.offsetWidth / 2}px`;
+        icon.style.top = `${y - icon.offsetHeight / 2}px`;
     });
 }
 
 function startRoulette() {
     const rouletteContainer = document.getElementById('rouletteContainer');
+    rouletteContainer.style.display = 'flex';
     // rouletteContainer.style.display = 'block';
     // rouletteContainer.style.position = 'absolute';
     // rouletteContainer.style.top = '200px'; // Fix the position 250px from the top
     // rouletteContainer.style.left = `${canvas.width / 2 - 200}px`; // Adjust the left position to center the icons around the planet
+    positionIcons(); // Position the icons when the roulette is started
+    updateIconPositions(0); // Set initial positions of the icons
 
     const spinButton = document.getElementById('spinButton');
     spinButton.disabled = true;
+    spinButton.style.display = 'none';
 
     let angle = 0;
     const spinDuration = 5000; // Total spin duration
@@ -175,12 +197,19 @@ function startRoulette() {
             const upgradeDisplay = document.getElementById('upgradeDisplay');
             upgradeDisplay.innerHTML = '';
             upgrades.forEach((upgrade) => {
-                const iconClass = upgradeIcons[upgrade];
-                const icon = createIconElement(iconClass);
+                const upgradeItem = document.createElement('div');
+                upgradeItem.classList.add('upgrade-item');
+
+                // const iconClass = upgradeIcons[upgrade];
+                // const icon = createIconElement(iconClass);
+                // upgradeItem.appendChild(icon);
+
                 const upgradeText = document.createElement('div');
+                upgradeText.classList.add('upgrade-text');
                 upgradeText.textContent = upgrade;
-                upgradeDisplay.appendChild(icon);
-                upgradeDisplay.appendChild(upgradeText);
+                upgradeItem.appendChild(upgradeText);
+
+                upgradeDisplay.appendChild(upgradeItem);
             });
 
             const okButton = document.createElement('button');
@@ -189,6 +218,11 @@ function startRoulette() {
                 applyUpgrades(upgrades);
                 rouletteContainer.style.display = 'none';
                 upgradeDisplay.innerHTML = '';
+                isPaused = false;
+                clearInterval(gameLoop);
+                gameLoop = setInterval(update, 1000 / 60);
+
+
             };
             upgradeDisplay.appendChild(okButton);
 
@@ -240,7 +274,11 @@ function checkGemCollection() {
                     xpBoost = xpToNextLevel * 0.5; // 25% of XP to next level
                     break;
                 case 'epic':
-                    xpBoost = xpToNextLevel * 0.95; // 50% of XP to next level
+                    // xpBoost = xpToNextLevel * 0.95; // 50% of XP to next level
+                    clearInterval(gameLoop);
+                    isPaused = true;
+                    // drawPlanetx(); // Draw the planet
+                    document.getElementById('rouletteContainer').style.display = 'block';
                     break;
             }
 

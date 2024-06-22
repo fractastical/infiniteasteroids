@@ -628,20 +628,21 @@ td {
 
 #rouletteContainer {
     position: absolute;
-    width: 200px;
-    height: 200px;
-    margin: auto;
-    top: 150px;
-    left: 150px;
-    transform: translateY(-50%);
-    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #planet {
-    width: 50px;
-    height: 50px;
-    background: url('icons/planet.png') no-repeat center center;
-    background-size: cover;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(255, 0, 0, 1) 0%, rgba(128, 0, 0, 1) 100%);
+    border-radius: 50%;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -650,20 +651,51 @@ td {
 }
 
 #rouletteIcons {
-    position: relative;
+    /* position: relative; */
     width: 100%;
     height: 100%;
 }
 
-.icon {
-    width: 40px;
-    height: 40px;
+#upgradeDisplay {
     position: absolute;
-    background-size: cover;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: left;
+    align-items: left;
+    flex-wrap: wrap;
+    max-width: 80%;
+    opacity: 0.8;
+    z-index: 100;
+}
+
+
+.upgrade-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+}
+
+.upgrade-text {
+    margin-top: 5px;
+    margin-left: 20px;
+
+    text-align: right;
+    font-size: 14px;
+    color: white;
 }
 
 #spinButton {
-    margin-top: 20px;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
