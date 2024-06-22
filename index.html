@@ -740,7 +740,7 @@
         // const laserOffset = 15; // Distance from the ship's center to the laser's starting point
         const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
         const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
-
+        // TODO: revisit at some point, looks a bit offcenter sometimes past laserlevel 10 or so.
         ship.lasers.push({ x: laserX, y: laserY, rotation: ship.rotation, size: ship.laserLevel + 1 });
         ship.laserTimer = ship.laserCooldown;
 
