@@ -1135,17 +1135,17 @@
           asteroidDifficultySpeedMultiplier = 0.9;
           levelUpXPMultiplier = 1.17;
           invincibilityDuration = 190;
-          modeScoreMultiplier = 1.5;
+          modeScoreMultiplier = 2;
           break;
         case GameModes.HARD:
           asteroidDifficultySpeedMultiplier = 1.1;
           levelUpXPMultiplier = 1.27;
-          modeScoreMultiplier = 2;
+          modeScoreMultiplier = 3;
           break;
         case GameModes.HERO:
           asteroidDifficultySpeedMultiplier = 1.3;
           levelUpXPMultiplier = 1.35;
-          modeScoreMultiplier = 2.5;
+          modeScoreMultiplier = 4;
           break;
         case GameModes.METEORSHOWEREASY:
           asteroidDifficultySpeedMultiplier = 3.3;
@@ -1156,7 +1156,7 @@
         case GameModes.METEORSHOWERNORMAL:
           asteroidDifficultySpeedMultiplier = 3.3;
           levelUpXPMultiplier = 1.2;
-          modeScoreMultiplier = 1.8;
+          modeScoreMultiplier = 2.2;
           meteorBooster = 7;
           meteorMode = true;
           break;
@@ -1164,14 +1164,14 @@
           asteroidDifficultySpeedMultiplier = 3.4;
           levelUpXPMultiplier = 1.3;
           meteorBooster = 14;
-          modeScoreMultiplier = 2.5;
+          modeScoreMultiplier = 3.2;
           meteorMode = true;
           break;
         case GameModes.METEORSHOWERHERO:
           asteroidDifficultySpeedMultiplier = 3.5;
           levelUpXPMultiplier = 1.4;
           meteorBooster = 21;
-          modeScoreMultiplier = 3.3;
+          modeScoreMultiplier = 4.2;
           meteorMode = true;
           break;
         case GameModes.PLANETEASY:
@@ -1187,7 +1187,7 @@
           levelUpXPMultiplier = 1.2;
           meteorBooster = 10;
           gravityStrength = 90;
-          modeScoreMultiplier = 2.4;
+          modeScoreMultiplier = 2.6;
           planetMode = true;
 
           break;
@@ -1992,7 +1992,7 @@
       saveTimeTaken(timeTaken); // Save the time taken to local storage
 
       console.log("this run: " + timeTaken);
-      // score *= modeScoreMultiplier;
+      score *= modeScoreMultiplier;
 
       const topSixWeapons = Object.entries(damageReport)
         .sort((a, b) => b[1] - a[1])
@@ -2074,21 +2074,13 @@
         weaponDPM[weapon] = activeTime > 0 ? (damageReport[weapon] / activeTime).toFixed(2) : 0;
       });
 
-      ctx.fillText(`Lasers: ${damageReport.lasers} (DPM: ${weaponDPM.lasers})`, 20, canvas.height - 320);
-      ctx.fillText(`Explosive Lasers: ${damageReport.explosive} (DPM: ${weaponDPM.explosive})`, 20, canvas.height - 300);
-      ctx.fillText(`Turret: ${damageReport.turret} (DPM: ${weaponDPM.turret})`, 20, canvas.height - 280);
-      ctx.fillText(`Drones: ${damageReport.drones} (DPM: ${weaponDPM.drones})`, 20, canvas.height - 260);
-      ctx.fillText(`Sonic Blast: ${damageReport.sonicBlast} (DPM: ${weaponDPM.sonicBlast})`, 20, canvas.height - 240);
-      ctx.fillText(`Bomber Drones: ${damageReport.bomberDrones} (DPM: ${weaponDPM.bomberDrones})`, 20, canvas.height - 220);
-      ctx.fillText(`Death Ray: ${damageReport.deathRay} (DPM: ${weaponDPM.deathRay})`, 20, canvas.height - 200);
-      ctx.fillText(`Acid: ${damageReport.acid} (DPM: ${weaponDPM.acid})`, 20, canvas.height - 180);
-      ctx.fillText(`Boomerang: ${damageReport.boomerang} (DPM: ${weaponDPM.boomerang})`, 20, canvas.height - 160);
-      ctx.fillText(`Nano: ${damageReport.homing} (DPM: ${weaponDPM.homing})`, 20, canvas.height - 140);
-      ctx.fillText(`Flamethrower: ${damageReport.flamethrower} (DPM: ${weaponDPM.flamethrower})`, 20, canvas.height - 120);
-      ctx.fillText(`Chain Lightning: ${damageReport.chainlightning} (DPM: ${weaponDPM.chainlightning})`, 20, canvas.height - 100);
-      ctx.fillText(`Explosive Rocket: ${damageReport.explosiverocket} (DPM: ${weaponDPM.explosiverocket})`, 20, canvas.height - 80);
-
-
+      let yOffset = canvas.height - 320;
+      Object.keys(damageReport).forEach(weapon => {
+        if (damageReport[weapon] > 0) {
+          yOffset += 20;
+          ctx.fillText(`${weapon.charAt(0).toUpperCase() + weapon.slice(1)}: ${damageReport[weapon]} (DPM: ${weaponDPM[weapon]})`, 20, yOffset);
+        }
+      });
     }
 
     function pauseGameForMarketplace() {
