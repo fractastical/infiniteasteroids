@@ -40,9 +40,9 @@ const upgradeIcons = {
     'Increase Chain Lightning Bounces': 'chainlightning',
     'Decrease Chain Lightning Cooldown': 'chainlightning',
     'Activate Chain Lightning': 'chainlightning',
-    'Boost Nano Swarm': 'homingmissile',
-    'Decrease Nano Swarm Cooldown': 'homingmissile',
-    'Activate Nano Swarm': 'homingmissile',
+    'Boost Nano Swarm': 'nanoswarm',
+    'Decrease Nano Swarm Cooldown': 'nanoswarm',
+    'Activate Nano Swarm': 'nanoswarm',
     'Increase Flamethrower Range': 'flamethrower',
     'Increase Flamethrower Damage': 'flamethrower',
     'Decrease Flamethrower Cooldown': 'flamethrower',
@@ -298,7 +298,7 @@ function checkGemCollection() {
 function updateGems() {
     const centerX = canvas.width / 2;
     const centerY = 250; // Same fixed position as planet
-    const speedFactor = 0.05; // Adjust this factor to control the speed towards the center
+    const speedFactor = 0.00005; // Adjust this factor to control the speed towards the center
 
     for (let i = 0; i < droppedGems.length; i++) {
         let gem = droppedGems[i];

@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <!-- #INFINITEGAMES CSS START -->
-  <link rel="stylesheet" href="infinite/css/48_leaderboard_20240618013040.css">
+  <!-- <link rel="stylesheet" href="infinite/css/48_leaderboard_20240618013040.css"> -->
   <!-- #INFINITEGAMES CSS END -->
 </head>
 
@@ -44,7 +44,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.889.
+    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.890.
   </div>
 
 
@@ -82,6 +82,36 @@
   <div id="activeWeaponClassesContainer" class="bottom-icons"></div>
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+  <div id="endScreen" style="display: none;">
+    <h2>Game Over</h2>
+    <div id="gameStats">
+      <p id="wave"></p>
+      <p id="score"></p>
+      <p id="asteroidsDestroyed"></p>
+      <p id="bonusCoins"></p>
+    </div>
+    <div id="damageReport">
+      <h3>Damage Report:</h3>
+      <ul id="damageReportList"></ul>
+    </div>
+    <div id="unlockedWeapons">
+      <h3>Recently Unlocked Weapons:</h3>
+      <ul id="unlockedWeaponsList"></ul>
+    </div>
+    <div id="achievements">
+      <h3>New Achievements:</h3>
+      <ul id="newAchievementsList"></ul>
+    </div>
+    <div id="leaderboard-container">
+      <div id="leaderboard">
+        <h2>Leaderboard</h2>
+        <ol id="leaderboard-list"></ol>
+      </div>
+    </div>
+    <button id="restartButton" onclick="restartGame()">Restart</button>
+  </div>
+
   <div id="startScreen">
     <div>
       <h2>Welcome to Infinite Asteroids!</h2>
@@ -192,11 +222,6 @@
     <button onclick="exitMarketplace()">Exit Marketplace</button>
   </div>
 
-  <div id="leaderboard-container" style="display:none;">
-    <div id="leaderboard">
-      <ol id="leaderboard-list"></ol>
-    </div>
-  </div>
 
   <audio id="background-music" src="sounds/music_loop.mp3" loop></audio>
 
@@ -226,7 +251,7 @@
   <audio id="bomb-lay-sound" src="sounds/lay_bomb.mp3"></audio>
 
 
-  <button id="restartButton" style="display: none;">Home</button>
+  <!-- <button id="restartButton" style="display: none;">Home</button> -->
 
 
 
@@ -384,7 +409,7 @@
       radius: 1,
       cooldown: 1
     };
-    let homingMissile = {
+    let nanoswarm = {
       cooldown: 300,
       timer: 0,
       speed: 2,
@@ -393,7 +418,7 @@
     };
 
 
-    let homingMissileUpgrades = {
+    let nanoswarmUpgrades = {
       speed: 1,
       damage: 1,
       cooldown: 1
@@ -425,7 +450,7 @@
       acid: 0,
       freeze: 0,
       boomerang: 0,
-      homing: 0,
+      nano: 0,
       explosiverocket: 0,
       flamethrower: 0,
       chainlightning: 0
@@ -667,7 +692,7 @@
       document.getElementById('startScreen').style.display = 'none';
       document.getElementById('shipType').style.display = 'none';
 
-      startGamingSessionApi();
+      // startGamingSessionApi();
       createAsteroids();
       invincible = true;
       ship.laserTimer = 0;
@@ -684,7 +709,7 @@
 
     function update() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      document.getElementById('leaderboard-container').style.display = 'none';
+      // document.getElementById('leaderboard-container').style.display = 'none';
 
 
       if (planetMode) {
@@ -890,16 +915,16 @@
       updateLasers();
       drawLasers();
 
-      if (activeWeaponClasses.includes('homingmissile')) {
-        if (homingMissile.timer > 0) {
-          homingMissile.timer--;
+      if (activeWeaponClasses.includes('nanoswarm')) {
+        if (nanoswarm.timer > 0) {
+          nanoswarm.timer--;
         } else {
-          fireHomingMissile();
+          firenanoswarm();
         }
       }
 
-      updateHomingMissiles();
-      drawHomingMissiles();
+      updatenanoswarms();
+      drawnanoswarms();
 
 
       if (turret.bought) {
@@ -989,7 +1014,7 @@
       drawEdgeOverlay();
       drawLives();
       drawScore();
-      if (gameOver) drawDamageReport();
+      // if (gameOver) drawDamageReport();
 
 
     }
@@ -1226,23 +1251,23 @@
       }
     }
 
-    function fireHomingMissile() {
-      if (homingMissile.timer === 0) {
+    function firenanoswarm() {
+      if (nanoswarm.timer === 0) {
         let missile = {
           x: ship.x,
           y: ship.y,
           target: findNearestAsteroid(),
-          speed: homingMissile.speed * homingMissileUpgrades.speed,
-          damage: homingMissile.damage * homingMissileUpgrades.damage
+          speed: nanoswarm.speed * nanoswarmUpgrades.speed,
+          damage: nanoswarm.damage * nanoswarmUpgrades.damage
         };
-        homingMissile.activeMissiles.push(missile);
-        homingMissile.timer = homingMissile.cooldown;
+        nanoswarm.activeMissiles.push(missile);
+        nanoswarm.timer = nanoswarm.cooldown;
       }
     }
 
-    function updateHomingMissiles() {
-      for (let i = homingMissile.activeMissiles.length - 1; i >= 0; i--) {
-        let missile = homingMissile.activeMissiles[i];
+    function updatenanoswarms() {
+      for (let i = nanoswarm.activeMissiles.length - 1; i >= 0; i--) {
+        let missile = nanoswarm.activeMissiles[i];
         if (missile.target) {
           let dx = missile.target.x - missile.x;
           let dy = missile.target.y - missile.y;
@@ -1252,10 +1277,10 @@
             createExplosion(missile.target.x, missile.target.y);
             let index = asteroids.indexOf(missile.target);
             // let actualDamage = asteroids[index].hitpoints;
-            damageReport.homing += 5;
+            damageReport.nano += 5;
             increaseXP(5 * 20);
             asteroids.splice(index, 1);
-            homingMissile.activeMissiles.splice(i, 1);
+            nanoswarm.activeMissiles.splice(i, 1);
             continue;
           }
 
@@ -1263,14 +1288,14 @@
           missile.x += missile.speed * Math.cos(angle);
           missile.y += missile.speed * Math.sin(angle);
         } else {
-          homingMissile.activeMissiles.splice(i, 1);
+          nanoswarm.activeMissiles.splice(i, 1);
         }
       }
     }
 
-    function drawHomingMissiles() {
-      for (let i = 0; i < homingMissile.activeMissiles.length; i++) {
-        let missile = homingMissile.activeMissiles[i];
+    function drawnanoswarms() {
+      for (let i = 0; i < nanoswarm.activeMissiles.length; i++) {
+        let missile = nanoswarm.activeMissiles[i];
         ctx.save();
         ctx.translate(missile.x, missile.y);
 
@@ -1278,7 +1303,7 @@
         let angle = Math.atan2(missile.dy, missile.dx);
         ctx.rotate(angle);
 
-        // Draw the homing missile image
+        // Draw the nano missile image
         ctx.drawImage(droneImages.nanoDrone, -5, -5, 10, 10);
         ctx.restore();
       }
@@ -1495,7 +1520,7 @@
         turret.rotation = angle;
 
         turret.fireTimer++;
-        console.log("seeking turret");
+
         if (turret.fireTimer >= turret.fireInterval) {
           turret.fireTimer = 0;
           let laser = {
@@ -1982,19 +2007,21 @@
     let timeTaken = 0;
 
     function endGame() {
-
-
+      // Stop the game loop and background music
       clearInterval(gameLoop);
       backgroundMusic.pause(); // Stop the background music
       gameEndTime = new Date();
 
+      // Calculate the time taken and save it
       timeTaken = gameEndTime - gameStartTime; // Time in milliseconds
       saveTimeTaken(timeTaken); // Save the time taken to local storage
 
       console.log("this run: " + timeTaken);
-      score *= modeScoreMultiplier;
+      score = Math.floor(score * modeScoreMultiplier); // Ensure score is a whole number
 
+      // Calculate top six weapons by damage
       const topSixWeapons = Object.entries(damageReport)
+        .filter(([weapon, damage]) => damage > 0) // Only include weapons with damage
         .sort((a, b) => b[1] - a[1])
         .slice(0, 6)
         .map(([weapon, damage]) => ({ weapon, damage }));
@@ -2006,58 +2033,110 @@
 
       saveUserScore(userId, gameId, gameData);
 
+      // Load and display the leaderboard
       loadLeaderboard(gameId);
-      document.getElementById('leaderboard-container').style.display = 'block';
 
+      // Update achievements and handle end game server logic
+      const { newlyUnlockedAchievements, newlyUnlockedWeapons } = updateAchievementsAtEnd();
 
-      // now telegram only
-      // turn off for now
-      // handleEndGameOnServer();
-
-
-      ctx.fillStyle = 'white';
-      ctx.font = '40px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
-      ctx.font = '20px Arial';
-
-
-
-      ctx.fillText(`Wave: ${wave}`, canvas.width / 2, canvas.height / 2 + 40);
-
-
-      ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 70);
-      ctx.fillText(`Asteroids Destroyed: ${asteroidsKilled}`, canvas.width / 2, canvas.height / 2 + 100);
-
-
-      // Calculate and display coins for next round
-      bonusCoins = Math.floor(score * 0.06);
-      coins += bonusCoins;
-      // ctx.fillText(`Bonus Coins for Next Round: ${bonusCoins}`, canvas.width / 2, canvas.height / 2 + 100);
-
-
-      // Show the restart button
-      restartButton.style.display = 'block';
-
-      updateAchievementsAtEnd();
-
-      // const a = new URLSearchParams(window.location.href)
-
-      // if (a && a.get('inMsgId')) {
-      //   fetch(`https://rzzuxqt0hi.execute-api.eu-central-1.amazonaws.com/Prod/api/telegram-webhook/test-score?userId=${a.get('userId')}&score=${score}&inMsgId=${a.get('inMsgId').split('#')[0]}`, {
-      //     method: 'POST'
-      //   })
-      //     .then(response => response.json())
-      //     .then(data => {
-      //       console.log('Success:', data);
-      //     })
-      //     .catch(error => {
-      //       console.error('Error:', error);
-      //     });
-      // }
-
+      // Display the end game screen
+      displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons);
     }
 
+    function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons) {
+      const endScreen = document.getElementById('endScreen');
+      const waveElement = document.getElementById('wave');
+      const scoreElement = document.getElementById('score');
+      const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
+      const bonusCoinsElement = document.getElementById('bonusCoins');
+      const damageReportList = document.getElementById('damageReportList');
+      const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
+      const achievementsList = document.getElementById('newAchievementsList');
+
+      // Set game stats
+      waveElement.textContent = `Wave: ${wave}`;
+      scoreElement.textContent = `Score: ${score}`;
+      asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
+      bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)}`;
+
+      // Clear and set damage report
+      damageReportList.innerHTML = '';
+      const weaponDPM = calculateWeaponDPM();
+      topWeapons.forEach(({ weapon, damage }) => {
+        const weaponName = damageReportMapping[weapon];
+        const weaponInfo = weapons.find(w => w.name === weaponName);
+        if (weaponInfo) {
+          const li = document.createElement('li');
+          li.style.display = 'flex';
+          li.style.alignItems = 'center';
+
+          const img = document.createElement('img');
+          img.src = weaponInfo.icon;
+          img.alt = weaponInfo.name;
+          img.style.width = '24px';
+          img.style.height = '24px';
+          img.style.marginRight = '10px';
+
+          const text = document.createElement('span');
+          text.textContent = `${weaponInfo.name}: ${damage} (DPM: ${weaponDPM[weapon]})`;
+
+          li.appendChild(img);
+          li.appendChild(text);
+          damageReportList.appendChild(li);
+        }
+      });
+
+      // Clear and set recently unlocked weapons
+      unlockedWeaponsList.innerHTML = '';
+      newlyUnlockedWeapons.forEach(weaponName => {
+        const weaponInfo = weapons.find(w => w.name === weaponName);
+        if (weaponInfo) {
+          const li = document.createElement('li');
+          li.style.display = 'flex';
+          li.style.alignItems = 'center';
+
+          const img = document.createElement('img');
+          img.src = weaponInfo.icon;
+          img.alt = weaponInfo.name;
+          img.style.width = '24px';
+          img.style.height = '24px';
+          img.style.marginRight = '10px';
+
+          const text = document.createElement('span');
+          text.textContent = weaponInfo.name;
+
+          li.appendChild(img);
+          li.appendChild(text);
+          unlockedWeaponsList.appendChild(li);
+        }
+      });
+
+      // Clear and set achievements
+      achievementsList.innerHTML = '';
+      newlyUnlockedAchievements.forEach(achievement => {
+        const li = document.createElement('li');
+        li.textContent = achievement;
+        achievementsList.appendChild(li);
+      });
+
+      console.log(newlyUnlockedAchievements);
+
+      // Show the end screen
+      endScreen.style.display = 'flex';
+    }
+
+    function calculateWeaponDPM() {
+      const weaponDPM = {};
+      const endTime = Date.now();
+      damageReportStartTimes.lasers = gameStartTime;
+
+      Object.keys(damageReport).forEach(weapon => {
+        const activeTime = (endTime - damageReportStartTimes[weapon]) / 60000; // Time in minutes
+        weaponDPM[weapon] = activeTime > 0 ? (damageReport[weapon] / activeTime).toFixed(2) : 0;
+      });
+
+      return weaponDPM;
+    }
 
     function drawDamageReport() {
       ctx.fillStyle = 'white';
@@ -2264,7 +2343,7 @@
         availableUpgrades.push(...(activeWeaponClasses.includes('chainlightning') ? (getUpgradeCount('chainlightning') <= 9 ? ['Increase Chain Lightning Range', 'Increase Chain Lightning Damage', 'Increase Chain Lightning Bounces', 'Decrease Chain Lightning Cooldown'] : []) : ['Activate Chain Lightning']));
 
       if (Achievements.no_lives_lost.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('homingmissile') ? (getUpgradeCount('homingmissile') <= 9 ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : []) : ['Activate Nano Swarm']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('nanoswarm') ? (getUpgradeCount('nanoswarm') <= 9 ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : []) : ['Activate Nano Swarm']));
 
 
       if (Achievements.acid_bomb_damage.reached)
@@ -2446,16 +2525,16 @@
           boomerang.damage = boomerangUpgrades.damage;
           break;
         case 'Activate Nano Swarm':
-          activateWeaponClass('homingmissile');
-          damageReportStartTimes.homing = now;
+          activateWeaponClass('nanoswarm');
+          damageReportStartTimes.nano = now;
           break;
         case 'Boost Nano Swarm':
-          homingMissileUpgrades.damage++;
-          homingMissileUpgrades.speed++;
+          nanoswarmUpgrades.damage++;
+          nanoswarmUpgrades.speed++;
           break;
         case 'Decrease Nano Swarm Cooldown':
-          homingMissileUpgrades.cooldown++;
-          homingMissile.cooldown = Math.max(20, 120 - 30 * homingMissileUpgrades.cooldown);
+          nanoswarmUpgrades.cooldown++;
+          nanoswarm.cooldown = Math.max(20, 120 - 30 * nanoswarmUpgrades.cooldown);
           break;
         case 'Double Turret':
           doubleTurret = true;
@@ -2519,7 +2598,7 @@
 
     // Initialize total damage for each weapon
     function initializeWeaponDamageTracking() {
-      const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'homingmissile', 'flamethrower', 'chainlightning', 'explosiverocket'];
+      const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'nanoswarm', 'flamethrower', 'chainlightning', 'explosiverocket'];
       weaponClasses.forEach(weapon => {
         damageReport[weapon] = 0;
         damageReportStartTimes[weapon] = null;
@@ -2568,9 +2647,9 @@
             deathRay.width = 50;
             deathRay.cooldown = 300;
             break;
-          case 'homingmissile':
-            homingMissile.cooldown = 120;
-            homingMissile.timer = 0;
+          case 'nanoswarm':
+            nanoswarm.cooldown = 120;
+            nanoswarm.timer = 0;
             break;
           case 'freeze':
             freezeEffect.duration = 30;
@@ -2645,8 +2724,8 @@
           return freezeEffectUpgrades.duration + freezeEffectUpgrades.cooldown - 1;
         case 'boomerang':
           return boomerangUpgrades.speed + boomerangUpgrades.damage - 1;
-        case 'homingmissile':
-          return homingMissileUpgrades.speed + homingMissileUpgrades.damage + homingMissileUpgrades.cooldown - 2;
+        case 'nanoswarm':
+          return nanoswarmUpgrades.speed + nanoswarmUpgrades.damage + nanoswarmUpgrades.cooldown - 2;
         case 'flamethrower':
           return flamethrowerUpgrades.range + flamethrowerUpgrades.damage + flamethrowerUpgrades.cooldown - 2;
         case 'chainlightning':
@@ -3881,7 +3960,7 @@
     });
 
     restartButton.addEventListener('click', () => {
-      restartButton.style.display = 'none';
+      // restartButton.style.display = 'none';
       startScreen.style.display = 'block';
 
       resetShip();
@@ -3958,7 +4037,7 @@
         damage: 1
       };
 
-      homingMissile = {
+      nanoswarm = {
         cooldown: 300,
         timer: 0,
         speed: 2,
@@ -3966,7 +4045,7 @@
         activeMissiles: []
       };
 
-      homingMissileUpgrades = {
+      nanoswarmUpgrades = {
         speed: 1,
         damage: 1,
         cooldown: 1
@@ -3996,7 +4075,7 @@
         acid: 0,
         freeze: 0,
         boomerang: 0,
-        homing: 0
+        nano: 0
 
       };
 
@@ -4092,7 +4171,7 @@
       gameOver = false;
       invincible = true;
       invincibilityTimer = invincibilityDuration;
-      document.getElementById('leaderboard-container').style.display = 'none';
+      // document.getElementById('leaderboard-container').style.display = 'none';
 
       // Reset spawn variables
       spawnTimer = spawnCooldown;
@@ -4228,6 +4307,20 @@
 
     ];
 
+
+    const damageReportMapping = {
+      lasers: 'Basic Laser',
+      explosive: 'Explosive Laser',
+      drones: 'Laser Drone',
+      turret: 'Turret',
+      sonicBlast: 'Sonic Blast',
+      bomberDrones: 'Bomber Drone',
+      deathRay: 'Death Ray',
+      acid: 'Acid Bomb',
+      freeze: 'Freeze Ray',
+      boomerang: 'Boomerang',
+      nano: 'Nano Swarm'
+    };
 
     const upgrades = [
       {
@@ -4374,7 +4467,6 @@
       // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
       complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
       complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Normal Mode. Unlock Acid Bomb.' },
-
       acid_bomb_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/acid.png', description: 'Deal 2,500 Damage with Acid Bomb. Unlock Flamethrower.' },
       laser_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/deathray2.png', description: 'Deal 2,500 Damage with Laser. Unlock Explosive Laser.' },
       drone_damage: { reached: false, damage: 0, required: 1500, icon: 'achievements/storm_drone.png', description: 'Deal 1,500 Damage with Drone. Unlock Drone Army.' },
@@ -4400,104 +4492,79 @@
     let afterGameAchievements = null;
 
     function updateAchievementsAtEnd() {
+      const newlyUnlockedAchievements = [];
 
+      const newlyUnlockedWeapons = [];
 
-      if (wave >= 2) {
-        Achievements.reach_wave_2.reached = true;
-      }
-      if (wave >= 5) {
-        Achievements.reach_wave_5.reached = true;
-      }
+      const addAchievement = (achievementKey) => {
+        if (!Achievements[achievementKey].reached) {
+          Achievements[achievementKey].reached = true;
+          newlyUnlockedAchievements.push(Achievements[achievementKey].description);
+        }
+      };
 
-      if (wave >= 10) {
-        Achievements.reach_wave_10.reached = true;
-      }
-      // if (wave >= 15) {
-      //   Achievements.reach_wave_15.reached = true;
-      // }
-      if (wave >= 20) {
-        Achievements.reach_wave_20.reached = true;
-      }
-      // if (wave >= 25) {
-      //   Achievements.reach_wave_25.reached = true;
-      // }
-      if (damageReport.acid >= Achievements.acid_bomb_damage.required) {
-        Achievements.acid_bomb_damage.reached = true;
-      }
+      if (wave >= 2) addAchievement('reach_wave_2');
+      if (wave >= 5) addAchievement('reach_wave_5');
+      if (wave >= 10) addAchievement('reach_wave_10');
+      if (wave >= 20) addAchievement('reach_wave_20');
+      if (damageReport.acid >= Achievements.acid_bomb_damage.required) addAchievement('acid_bomb_damage');
+      if (damageReport.explosive >= Achievements.explosive_laser_damage.required) addAchievement('explosive_laser_damage');
+      if (asteroidsKilled >= 100) addAchievement('destroy_100_asteroids');
+      if (lives === 3) addAchievement('no_lives_lost');
 
-      if (damageReport.explosive >= Achievements.explosive_laser_damage.required) {
-        Achievements.explosive_laser_damage.reached = true;
-      }
-      if (asteroidsKilled >= 100) {
-        Achievements.destroy_100_asteroids.reached = true;
-      }
-      // if (asteroidsKilled >= 500) {
-      //   Achievements.destroy_500_asteroids.reached = true;
-      // }
-      if (lives === 3) {
-        Achievements.no_lives_lost.reached = true;
-      }
-      if (!Achievements.complete_easy_mode.reached && currentMode === GameModes.EASY && wave >= 31) {
-        Achievements.complete_easy_mode.reached = true;
-      }
-      if (!Achievements.complete_normal_mode.reached && currentMode === GameModes.NORMAL && wave >= 31) {
-        Achievements.complete_normal_mode.reached = true;
-      }
-      if (!Achievements.complete_hard_mode.reached && currentMode === GameModes.HARD && wave >= 31) {
-        Achievements.complete_hard_mode.reached = true;
-      }
-      if (!Achievements.complete_hero_mode.reached && currentMode === GameModes.HERO && wave >= 31) {
-        Achievements.complete_hero_mode.reached = true;
-      }
-      if (!Achievements.complete_meteor_easy_mode.reached && currentMode === GameModes.METEORSHOWEREASY && wave >= 31) {
-        Achievements.complete_meteor_easy_mode.reached = true;
-      }
-      if (!Achievements.complete_meteor_normal_mode.reached && currentMode === GameModes.METEORSHOWERNORMAL && wave >= 31) {
-        Achievements.complete_meteor_normal_mode.reached = true;
-      }
-      if (!Achievements.complete_meteor_hard_mode.reached && currentMode === GameModes.METEORSHOWERHARD && wave >= 31) {
-        Achievements.complete_meteor_hard_mode.reached = true;
-      }
-      if (!Achievements.complete_meteor_hero_mode.reached && currentMode === GameModes.METEORSHOWERHERO && wave >= 31) {
-        Achievements.complete_meteor_hero_mode.reached = true;
-      }
-      if (!Achievements.complete_planet_easy_mode.reached && currentMode === GameModes.PLANETEASY && wave >= 31) {
-        Achievements.complete_planet_easy_mode.reached = true;
-      }
-      if (!Achievements.complete_planet_normal_mode.reached && currentMode === GameModes.PLANETNORMAL && wave >= 31) {
-        Achievements.complete_planet_normal_mode.reached = true;
-      }
-      if (!Achievements.complete_planet_hard_mode.reached && currentMode === GameModes.PLANETHARD && wave >= 31) {
-        Achievements.complete_planet_hard_mode.reached = true;
-      }
-      if (!Achievements.complete_planet_hero_mode.reached && currentMode === GameModes.PLANETHERO && wave >= 31) {
-        Achievements.complete_planet_hero_mode.reached = true;
-      }
+      const gameModeAchievements = [
+        { key: 'complete_easy_mode', mode: GameModes.EASY },
+        { key: 'complete_normal_mode', mode: GameModes.NORMAL },
+        { key: 'complete_hard_mode', mode: GameModes.HARD },
+        { key: 'complete_hero_mode', mode: GameModes.HERO },
+        { key: 'complete_meteor_easy_mode', mode: GameModes.METEORSHOWEREASY },
+        { key: 'complete_meteor_normal_mode', mode: GameModes.METEORSHOWERNORMAL },
+        { key: 'complete_meteor_hard_mode', mode: GameModes.METEORSHOWERHARD },
+        { key: 'complete_meteor_hero_mode', mode: GameModes.METEORSHOWERHERO },
+        { key: 'complete_planet_easy_mode', mode: GameModes.PLANETEASY },
+        { key: 'complete_planet_normal_mode', mode: GameModes.PLANETNORMAL },
+        { key: 'complete_planet_hard_mode', mode: GameModes.PLANETHARD },
+        { key: 'complete_planet_hero_mode', mode: GameModes.PLANETHERO }
+      ];
 
-      if (!Achievements.death_ray_damage.reached && damageReport.deathRay >= Achievements.death_ray_damage.required) {
-        Achievements.death_ray_damage.reached = true;
-      }
+      gameModeAchievements.forEach(({ key, mode }) => {
+        if (currentMode === mode && wave >= 31) addAchievement(key);
+      });
 
-      if (!Achievements.drone_damage.reached && damageReport.drone >= Achievements.drone_damage.required) {
-        Achievements.drone_damage.reached = true;
-      }
-
-      if (!Achievements.laser_damage.reached && damageReport.lasers >= Achievements.laser_damage.required) {
-        Achievements.laser_damage.reached = true;
-      }
-
-      if (!Achievements.kill_5_aliens.reached && aliensKilled >= 5) {
-        Achievements.kill_5_aliens.reached = true;
-      }
-
-      if (!Achievements.kill_15_aliens.reached && aliensKilled >= 15) {
-        Achievements.kill_15_aliens.reached = true;
-      }
+      if (damageReport.deathRay >= Achievements.death_ray_damage.required) addAchievement('death_ray_damage');
+      if (damageReport.drone >= Achievements.drone_damage.required) addAchievement('drone_damage');
+      if (damageReport.lasers >= Achievements.laser_damage.required) addAchievement('laser_damage');
+      if (aliensKilled >= 5) addAchievement('kill_5_aliens');
+      if (aliensKilled >= 15) addAchievement('kill_15_aliens');
 
       localStorage.setItem('achievements', JSON.stringify(Achievements));
-
-      // saveAchievements();
       populateAchievements();
+
+      // Determine newly unlocked weapons based on the achievements unlocked
+      const achievementToWeaponMap = {
+        'reach_wave_2': 'Bomber Drone',
+        'reach_wave_5': 'Freeze Effect',
+        'laser_damage': 'Explosive Laser',
+        'reach_wave_10': 'Sonic Blast',
+        'reach_wave_20': 'Boomerang',
+        'complete_normal_mode': 'Acid Bomb',
+        'destroy_100_asteroids': 'Drone',
+        'kill_5_aliens': 'Death Ray',
+        'complete_planet_hard_mode': 'Explosive Rocket',
+        'kill_15_aliens': 'Chain Lightning',
+        'no_lives_lost': 'Nano Swarm',
+        'acid_bomb_damage': 'Flamethrower'
+      };
+
+      newlyUnlockedAchievements.forEach(achievement => {
+        if (achievement in achievementToWeaponMap) {
+          newlyUnlockedWeapons.push(achievementToWeaponMap[achievement]);
+        }
+      });
+      console.log(newlyUnlockedAchievements);
+      console.log(newlyUnlockedWeapons);
+
+      return { newlyUnlockedAchievements, newlyUnlockedWeapons };
     }
 
     window.onload = loadWeaponInfo;
@@ -4869,7 +4936,7 @@
         }
       });
 
-      const topScores = limitedScores.slice(0, 10);
+      const topScores = limitedScores.slice(0, 20);
 
       const leaderboard = document.getElementById('leaderboard');
       leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
@@ -5058,7 +5125,7 @@
 
 
 
-  <script src="infinite/leaderboard.js"></script>
+  <!-- <script src="infinite/leaderboard.js"></script> -->
   <script src="js/weapons.js"></script>
   <script src="js/aliens.js"></script>
   <script src="js/gems.js"></script>
