@@ -44,7 +44,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.890.
+    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.891.
   </div>
 
 
@@ -687,6 +687,7 @@
     // Game loop
     function startGame() {
       gameStartTime = Date.now();
+      document.getElementById('endScreen').style.display = 'none';
 
       document.getElementById('technologiesCount').style.display = 'none';
       document.getElementById('startScreen').style.display = 'none';
@@ -3961,6 +3962,7 @@
 
     restartButton.addEventListener('click', () => {
       // restartButton.style.display = 'none';
+      document.getElementById('endScreen').style.display = 'none';
       startScreen.style.display = 'block';
 
       resetShip();
