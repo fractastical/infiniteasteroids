@@ -24,6 +24,55 @@ let basicShip = {
 };
 
 
+const ships = {
+    basic: {
+        name: 'Basic',
+        lives: 3,
+        laserLevel: 1,
+        weaponSlots: 1,
+        upgradeSlots: 1,
+        draw: drawBasicShip,
+        condition: () => true // Always available
+    },
+    starHawk: {
+        name: 'Starhawk',
+        lives: 3,
+        laserLevel: 5,
+        weaponSlots: 6,
+        upgradeSlots: 3,
+        draw: drawStarHawk,
+        condition: () => Achievements.reach_wave_2.reached
+    },
+    voidWarden: {
+        name: 'Void Warden',
+        lives: 4,
+        laserLevel: 4,
+        weaponSlots: 4,
+        upgradeSlots: 2,
+        draw: drawVoidWarden,
+        condition: () => Achievements.reach_wave_2.reached
+    },
+    solarPhoenix: {
+        name: 'Solar Phoenix',
+        lives: 5,
+        laserLevel: 3,
+        weaponSlots: 3,
+        upgradeSlots: 3,
+        draw: drawSolarPhoenix,
+        condition: () => Achievements.reach_wave_2.reached
+    },
+    quantumStriker: {
+        name: 'Quantum Striker',
+        lives: 2,
+        laserLevel: 6,
+        weaponSlots: 5,
+        upgradeSlots: 2,
+        draw: drawQuantumStriker,
+        condition: () => Achievements.reach_wave_2.reached,
+        shoot: shootShotgunStyle // Add custom shooting function
+    }
+};
+
 
 
 function drawShieldShip() {
@@ -43,30 +92,6 @@ function drawShieldShip() {
 }
 
 
-// Draw the ship
-function drawShip() {
-    if (!invincible || (invincibilityTimer % 20 < 10)) {
-
-        // drawBasicShip();
-        // drawStarHawk();
-        // const shipImage = new Image();
-        // shipImage.src = 'icons/nachospaceshipgold.png';
-
-        ctx.save();
-        ctx.translate(ship.x, ship.y);
-        ctx.rotate(ship.rotation * Math.PI / 180);
-        // drawStarHawk();
-        // drawVoidWarden();
-        if (starHawk)
-            drawQuantumStriker();
-        else
-            drawBasicShip();
-        // drawSolarPhoenix();
-        // drawQuantumStriker();
-        // ctx.drawImage(shipImage, -ship.size, -ship.size, ship.size * 2, ship.size * 2);
-        ctx.restore();
-    }
-}
 
 function drawBasicShip() {
     ctx.beginPath();
@@ -105,19 +130,38 @@ function drawVoidWarden() {
 }
 
 function drawSolarPhoenix() {
+    // ctx.save();
+    // ctx.translate(ship.x, ship.y);
+    // ctx.rotate(ship.rotation * Math.PI / 180);
+
+    // Main center triangle
     ctx.beginPath();
-    ctx.moveTo(0, -15);
-    ctx.lineTo(12, 10);
-    ctx.lineTo(-12, 10);
+    ctx.moveTo(0, -20); // Nose
+    ctx.lineTo(15, 20); // Right bottom
+    ctx.lineTo(-15, 20); // Left bottom
     ctx.closePath();
     ctx.strokeStyle = 'orange';
     ctx.stroke();
-    // Draw flame trail
+
+    // Left smaller triangle
     ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, 30);
-    ctx.strokeStyle = 'yellow';
+    ctx.moveTo(-15, 20); // Top
+    ctx.lineTo(-25, 30); // Right bottom
+    ctx.lineTo(-5, 30); // Left bottom
+    ctx.closePath();
+    ctx.strokeStyle = 'red';
     ctx.stroke();
+
+    // Right smaller triangle
+    ctx.beginPath();
+    ctx.moveTo(15, 20); // Top
+    ctx.lineTo(25, 30); // Right bottom
+    ctx.lineTo(5, 30); // Left bottom
+    ctx.closePath();
+    ctx.strokeStyle = 'red';
+    ctx.stroke();
+
+    ctx.restore();
 }
 
 function drawNebulaGhost() {

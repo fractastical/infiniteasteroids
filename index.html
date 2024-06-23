@@ -44,7 +44,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: basic&nbsp;&nbsp; &nbsp; v 0.891.
+    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.893.
   </div>
 
 
@@ -811,16 +811,7 @@
 
       // Handle shooting based on key state and cooldown
       if (keys[' '] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
-        if (!toggleOff)
-          backgroundMusic.play(); // Resume the background music (if hasn't started)
-        // const laserOffset = 15; // Distance from the ship's center to the laser's starting point
-        const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
-        const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
-        // TODO: revisit at some point, looks a bit offcenter sometimes past laserlevel 10 or so.
-        ship.lasers.push({ x: laserX, y: laserY, rotation: ship.rotation, size: ship.laserLevel + 1 });
-        ship.laserTimer = ship.laserCooldown;
-
-        playRandomShotSound();
+        shootLasers();
       }
 
       checkGemCollection();
@@ -1651,12 +1642,65 @@
       boomerang.dy = (Math.random() * 2.2 - 1) * boomerang.speed;
     }
 
-    // function drawLasers() {
-    //   ctx.fillStyle = 'red';
-    //   for (let i = 0; i < ship.lasers.length; i++) {
-    //     ctx.fillRect(ship.lasers[i].x - 1, ship.lasers[i].y - 1, ship.laserLevel + 3, ship.laserLevel + 3); // Drawing lasers as small squares for better collision detection
-    //   }
-    // }
+    function shootTripleLaser() {
+      const baseRotation = ship.rotation;
+      console.log("tripple");
+      // Center laser
+      const centerLaserX = ship.x + 100 * Math.sin(baseRotation * Math.PI / 180);
+      const centerLaserY = ship.y - 100 * Math.cos(baseRotation * Math.PI / 180);
+      ship.lasers.push({ x: centerLaserX, y: centerLaserY, rotation: baseRotation, size: ship.laserLevel + 1 });
+
+      // Left laser
+      const leftLaserX = ship.x + 100 * Math.sin((baseRotation - 10) * Math.PI / 180);
+      const leftLaserY = ship.y - 100 * Math.cos((baseRotation - 10) * Math.PI / 180);
+      ship.lasers.push({ x: leftLaserX, y: leftLaserY, rotation: baseRotation, size: ship.laserLevel + 1 });
+
+      // Right laser
+      const rightLaserX = ship.x + 100 * Math.sin((baseRotation + 10) * Math.PI / 180);
+      const rightLaserY = ship.y - 100 * Math.cos((baseRotation + 10) * Math.PI / 180);
+      ship.lasers.push({ x: rightLaserX, y: rightLaserY, rotation: baseRotation, size: ship.laserLevel + 1 });
+
+      // Set the laser timer
+      ship.laserTimer = ship.laserCooldown;
+    }
+
+    function shootLasers() {
+      if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
+
+      // Use the custom shoot function if it exists, otherwise use default shooting
+      if (currentShip === 'solarPhoenix') {
+        shootTripleLaser();
+
+      } else if (currentShip === 'quantumStriker' && ships.quantumStriker.shoot) {
+        ships.quantumStriker.shoot();
+      } else {
+        const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
+        const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
+        ship.lasers.push({ x: laserX, y: laserY, rotation: ship.rotation, size: ship.laserLevel + 1 });
+        ship.laserTimer = ship.laserCooldown;
+      }
+
+      playRandomShotSound();
+    }
+
+
+
+    function shootShotgunStyle() {
+      const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
+      const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
+
+      // Calculate the spread angles
+      const spreadAngle = 10; // Spread angle in degrees
+      const baseRotation = ship.rotation;
+
+      // Create three lasers with spread
+      ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation - spreadAngle, size: ship.laserLevel + 1 });
+      ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation, size: ship.laserLevel + 1 });
+      ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation + spreadAngle, size: ship.laserLevel + 1 });
+
+      // Set the laser timer to half the cooldown
+      ship.laserTimer = ship.laserCooldown * 2; // Slow down fire interval by half
+    }
 
     function drawTurret() {
       ctx.save();
@@ -4574,6 +4618,13 @@
     // for leaderboard and telegram API 
     let gameId = "InfiniteSpaceWar";
 
+
+
+
+
+
+
+
   </script>
 
   <!-- Firebase SDK -->
@@ -4595,65 +4646,70 @@
 
     let starHawk = false;
 
-  </script>
-  <script type="module">
-
-    // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    // import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    // import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-    // Firebase configuration and initialization
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-
+    const shipSwitcher = document.getElementById('shipType');
+    let currentShip = 'basic';
     let currentShipType = 'basic';
 
-    const shipConfigs = {
-      basic: {
-        name: 'Basic',
-        lives: 3,
-        laserLevel: 1,
-        weaponSlots: 4,
-        upgradeSlots: 3,
-        turret: {
-          fireInterval: 120,
-          range: 400,
-          damage: 3
-        }
-      },
-      starhawk: {
-        name: 'Starhawk',
-        lives: 3,
-        laserLevel: 5,
-        weaponSlots: 6,
-        upgradeSlots: 3,
-        turret: {
-          fireInterval: 80,
-          range: 400,
-          damage: 5
-        }
-      },
-    };
+    // Draw the ship
+    function drawShip() {
+      if (!invincible || (invincibilityTimer % 20 < 10)) {
+        ctx.save();
+        ctx.translate(ship.x, ship.y);
+        ctx.rotate(ship.rotation * Math.PI / 180);
 
+        // Draw the current ship
+        ships[currentShip].draw();
 
-    const shipSwitcher = document.getElementById('shipType');
+        ctx.restore();
+      }
+    }
+
     shipSwitcher.addEventListener('click', (event) => {
-      if (Achievements.complete_meteor_hard_mode.reached == true && starHawk == false) {
-        shipSwitcher.innerHTML = 'Ship type: Starhawk';
-        starHawk = true;
-        lives = 3;
-        ship.laserLevel = 5;
-        ship.weaponSlots = 6;
-        ship.upgradeSlots = 3;
+      console.log("switch");
+      const shipNames = Object.keys(ships);
+      let nextIndex = (shipNames.indexOf(currentShip) + 1) % shipNames.length;
+      console.log(ships[shipNames[nextIndex]]);
+
+      console.log(shipNames);
+      console.log(nextIndex);
+
+      // Find the next available ship based on the conditions
+      while (!ships[shipNames[nextIndex]].condition()) {
+        console.log(ships[shipNames[nextIndex]]);
+
+        nextIndex = (nextIndex + 1) % shipNames.length;
+      }
+      console.log(nextIndex);
+
+      currentShip = shipNames[nextIndex];
+      console.log(currentShip);
+
+      const shipData = ships[currentShip];
+      console.log(shipData);
+
+
+      shipSwitcher.innerHTML = `Ship type: ${shipData.name}`;
+
+      console.log(shipSwitcher);
+
+      // Update ship properties
+      lives = shipData.lives;
+      ship.laserLevel = shipData.laserLevel;
+      ship.weaponSlots = shipData.weaponSlots;
+      ship.upgradeSlots = shipData.upgradeSlots;
+
+
+      // Specific actions for StarHawk
+      if (currentShip === 'quantumStriker') {
+        ship.laserCooldown = 40; // double length for shotgun style ship
+
+      }
+      if (currentShip === 'solarPhoenix') {
+        ship.laserCooldown = 50; // double length for shotgun style ship
+
+      }
+
+      if (currentShip === 'starHawk') {
         activateWeaponClass('turret');
         damageReportStartTimes.turret = Date.now();
 
@@ -4677,13 +4733,7 @@
           fireRate: 2,
           damage: 2
         };
-
       } else {
-
-        shipSwitcher.innerHTML = 'Ship type: basic';
-        starHawk = false;
-
-        lives = 3;
         turret = {
           x: 0,
           y: 0,
@@ -4702,11 +4752,30 @@
           fireRate: 1,
           damage: 1
         };
-
-
       }
-
     });
+
+  </script>
+  <script type="module">
+
+    // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    // import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    // import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+    // Firebase configuration and initialization
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+
+
 
 
 
@@ -4718,6 +4787,7 @@
     const userNickname = document.getElementById('userNickname');
     const logoutLink = document.getElementById('logoutLink');
     const loginContainer = document.getElementById('loginContainer');
+
 
     loginLink.addEventListener('click', (event) => {
       event.preventDefault();
