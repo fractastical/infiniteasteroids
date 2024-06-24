@@ -101,7 +101,7 @@
     <ul id="unlockedWeaponsList"></ul>
 
     <h3>New Achievements</h3>
-    <ul id="achievementsList"></ul>
+    <ul id="newAchievementsList"></ul>
 
     <h3>Available Upgrades</h3>
     <ul id="upgradesList"></ul>
@@ -115,37 +115,6 @@
   </div>
 
 
-  <div id="endScreen" class="screen">
-    <div class="column">
-      <h2>Game Over</h2>
-      <p id="wave"></p>
-      <p id="score"></p>
-      <p id="asteroidsDestroyed"></p>
-      <p id="bonusCoins"></p>
-      <p id="currentCoins"></p>
-
-      <h3>Damage Report</h3>
-      <ul id="damageReportList"></ul>
-
-      <h3>Recently Unlocked Weapons</h3>
-      <ul id="unlockedWeaponsList"></ul>
-
-      <h3>New Achievements</h3>
-      <ul id="achievementsList"></ul>
-
-      <h3>Available Upgrades</h3>
-      <ul id="upgradesList"></ul>
-    </div>
-    <div class="column">
-      <div id="leaderboard-container" style="display:none;">
-        <div id="leaderboard">
-          <h3>Leaderboard</h3>
-          <ol id="leaderboard-list"></ol>
-        </div>
-      </div>
-    </div>
-    <button onclick="goToHomeScreen()" id="restartButton">Go to Home Screen</button>
-  </div>
 
   <div id="startScreen">
     <div>
@@ -739,12 +708,12 @@
       invincibilityTimer = invincibilityDuration;
       clearInterval(gameLoop);
 
-      const selectedUpgrades = getSelectedUpgrades(); // Implement this function to retrieve the selected upgrades
+      // const selectedUpgrades = getSelectedUpgrades(); // Implement this function to retrieve the selected upgrades
 
-      // Load the selected upgrades and their corresponding functions
-      selectedUpgrades.forEach(upgrade => {
-        addUpgrade(upgrade);
-      });
+      // // Load the selected upgrades and their corresponding functions
+      // selectedUpgrades.forEach(upgrade => {
+      //   addUpgrade(upgrade);
+      // });
 
 
       // Specific actions for StarHawk
@@ -2211,7 +2180,7 @@
       const currentCoinsElement = document.getElementById('currentCoins');
       const damageReportList = document.getElementById('damageReportList');
       const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
-      const achievementsList = document.getElementById('achievementsList');
+      const newAchievementsList = document.getElementById('newAchievementsList');
       const upgradesList = document.getElementById('upgradesList');
 
       // Set game stats
@@ -2274,11 +2243,11 @@
       });
 
       // Clear and set achievements
-      achievementsList.innerHTML = '';
+      newAchievementsList.innerHTML = '';
       newlyUnlockedAchievements.forEach(achievement => {
         const li = document.createElement('li');
         li.textContent = achievement;
-        achievementsList.appendChild(li);
+        newAchievementsList.appendChild(li);
       });
 
       // Clear and set affordable upgrades
@@ -2556,108 +2525,108 @@
         });
     }
 
-    function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
-      const endScreen = document.getElementById('endScreen');
-      const waveElement = document.getElementById('wave');
-      const scoreElement = document.getElementById('score');
-      const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
-      const bonusCoinsElement = document.getElementById('bonusCoins');
-      const damageReportList = document.getElementById('damageReportList');
-      const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
-      const achievementsList = document.getElementById('achievementsList');
-      const upgradesList = document.getElementById('upgradesList');
+    // function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
+    //   const endScreen = document.getElementById('endScreen');
+    //   const waveElement = document.getElementById('wave');
+    //   const scoreElement = document.getElementById('score');
+    //   const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
+    //   const bonusCoinsElement = document.getElementById('bonusCoins');
+    //   const damageReportList = document.getElementById('damageReportList');
+    //   const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
+    //   const achievementsList = document.getElementById('achievementsList');
+    //   const upgradesList = document.getElementById('upgradesList');
 
-      // Set game stats
-      waveElement.textContent = `Wave: ${wave} `;
-      scoreElement.textContent = `Score: ${score} `;
-      asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled} `;
-      bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)} `;
+    //   // Set game stats
+    //   waveElement.textContent = `Wave: ${wave} `;
+    //   scoreElement.textContent = `Score: ${score} `;
+    //   asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled} `;
+    //   bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)} `;
 
-      // Clear and set damage report
-      damageReportList.innerHTML = '';
-      const weaponDPM = calculateWeaponDPM();
-      topWeapons.forEach(({ weapon, damage }) => {
-        const weaponName = damageReportMapping[weapon];
-        const weaponInfo = weapons.find(w => w.name === weaponName);
-        if (weaponInfo) {
-          const li = document.createElement('li');
-          li.style.display = 'flex';
-          li.style.alignItems = 'center';
+    //   // Clear and set damage report
+    //   damageReportList.innerHTML = '';
+    //   const weaponDPM = calculateWeaponDPM();
+    //   topWeapons.forEach(({ weapon, damage }) => {
+    //     const weaponName = damageReportMapping[weapon];
+    //     const weaponInfo = weapons.find(w => w.name === weaponName);
+    //     if (weaponInfo) {
+    //       const li = document.createElement('li');
+    //       li.style.display = 'flex';
+    //       li.style.alignItems = 'center';
 
-          const img = document.createElement('img');
-          img.src = weaponInfo.icon;
-          img.alt = weaponInfo.name;
-          img.style.width = '24px';
-          img.style.height = '24px';
-          img.style.marginRight = '10px';
+    //       const img = document.createElement('img');
+    //       img.src = weaponInfo.icon;
+    //       img.alt = weaponInfo.name;
+    //       img.style.width = '24px';
+    //       img.style.height = '24px';
+    //       img.style.marginRight = '10px';
 
-          const text = document.createElement('span');
-          text.textContent = `${weaponInfo.name}: ${damage} (DPM: ${weaponDPM[weapon]})`;
+    //       const text = document.createElement('span');
+    //       text.textContent = `${weaponInfo.name}: ${damage} (DPM: ${weaponDPM[weapon]})`;
 
-          li.appendChild(img);
-          li.appendChild(text);
-          damageReportList.appendChild(li);
-        }
-      });
+    //       li.appendChild(img);
+    //       li.appendChild(text);
+    //       damageReportList.appendChild(li);
+    //     }
+    //   });
 
-      // Clear and set recently unlocked weapons
-      unlockedWeaponsList.innerHTML = '';
-      newlyUnlockedWeapons.forEach(weaponName => {
-        const weaponInfo = weapons.find(w => w.name === weaponName);
-        if (weaponInfo) {
-          const li = document.createElement('li');
-          li.style.display = 'flex';
-          li.style.alignItems = 'center';
+    //   // Clear and set recently unlocked weapons
+    //   unlockedWeaponsList.innerHTML = '';
+    //   newlyUnlockedWeapons.forEach(weaponName => {
+    //     const weaponInfo = weapons.find(w => w.name === weaponName);
+    //     if (weaponInfo) {
+    //       const li = document.createElement('li');
+    //       li.style.display = 'flex';
+    //       li.style.alignItems = 'center';
 
-          const img = document.createElement('img');
-          img.src = weaponInfo.icon;
-          img.alt = weaponInfo.name;
-          img.style.width = '24px';
-          img.style.height = '24px';
-          img.style.marginRight = '10px';
+    //       const img = document.createElement('img');
+    //       img.src = weaponInfo.icon;
+    //       img.alt = weaponInfo.name;
+    //       img.style.width = '24px';
+    //       img.style.height = '24px';
+    //       img.style.marginRight = '10px';
 
-          const text = document.createElement('span');
-          text.textContent = weaponInfo.name;
+    //       const text = document.createElement('span');
+    //       text.textContent = weaponInfo.name;
 
-          li.appendChild(img);
-          li.appendChild(text);
-          unlockedWeaponsList.appendChild(li);
-        }
-      });
+    //       li.appendChild(img);
+    //       li.appendChild(text);
+    //       unlockedWeaponsList.appendChild(li);
+    //     }
+    //   });
 
-      // Clear and set achievements
-      achievementsList.innerHTML = '';
-      newlyUnlockedAchievements.forEach(achievement => {
-        const li = document.createElement('li');
-        li.textContent = achievement;
-        achievementsList.appendChild(li);
-      });
+    //   // Clear and set achievements
+    //   achievementsList.innerHTML = '';
+    //   newlyUnlockedAchievements.forEach(achievement => {
+    //     const li = document.createElement('li');
+    //     li.textContent = achievement;
+    //     achievementsList.appendChild(li);
+    //   });
 
-      // Clear and set affordable upgrades
-      upgradesList.innerHTML = '';
-      affordableUpgrades.forEach(upgrade => {
-        const li = document.createElement('li');
-        li.style.display = 'flex';
-        li.style.alignItems = 'center';
+    //   // Clear and set affordable upgrades
+    //   upgradesList.innerHTML = '';
+    //   affordableUpgrades.forEach(upgrade => {
+    //     const li = document.createElement('li');
+    //     li.style.display = 'flex';
+    //     li.style.alignItems = 'center';
 
-        const img = document.createElement('img');
-        img.src = upgrade.icon;
-        img.alt = upgrade.name;
-        img.style.width = '24px';
-        img.style.height = '24px';
-        img.style.marginRight = '10px';
+    //     const img = document.createElement('img');
+    //     img.src = upgrade.icon;
+    //     img.alt = upgrade.name;
+    //     img.style.width = '24px';
+    //     img.style.height = '24px';
+    //     img.style.marginRight = '10px';
 
-        const text = document.createElement('span');
-        text.textContent = `${upgrade.name} - ${upgrade.price} coins(${upgrade.rarity})`;
+    //     const text = document.createElement('span');
+    //     text.textContent = `${upgrade.name} - ${upgrade.price} coins(${upgrade.rarity})`;
 
-        li.appendChild(img);
-        li.appendChild(text);
-        upgradesList.appendChild(li);
-      });
+    //     li.appendChild(img);
+    //     li.appendChild(text);
+    //     upgradesList.appendChild(li);
+    //   });
 
-      // Show the end screen
-      endScreen.style.display = 'flex';
-    }
+    //   // Show the end screen
+    //   endScreen.style.display = 'flex';
+    // }
 
     function calculateWeaponDPM() {
       const weaponDPM = {};

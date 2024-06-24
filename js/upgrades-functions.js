@@ -87,14 +87,17 @@ const asteroidSplitter = {
 const quantumTeleporter = {
     cooldown: 300,
     timer: 0,
-    range: 100,
+    range: 200,
     activate: function () {
         if (this.timer === 0) {
-            const angle = Math.random() * Math.PI * 2;
-            const distance = Math.random() * this.range;
-            ship.x += Math.cos(angle) * distance;
-            ship.y += Math.sin(angle) * distance;
-            this.timer = this.cooldown;
+            const nearestAsteroid = findNearestAsteroid();
+            if (nearestAsteroid) {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * (this.range - nearestAsteroid.size) + nearestAsteroid.size;
+                nearestAsteroid.x = ship.x + Math.cos(angle) * distance;
+                nearestAsteroid.y = ship.y + Math.sin(angle) * distance;
+                this.timer = this.cooldown;
+            }
         }
     },
     update: function () {
@@ -104,6 +107,20 @@ const quantumTeleporter = {
     }
 };
 
+function findNearestAsteroid() {
+    let nearestAsteroid = null;
+    let nearestDistance = Infinity;
+    for (let i = 0; i < asteroids.length; i++) {
+        const dx = ship.x - asteroids[i].x;
+        const dy = ship.y - asteroids[i].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < nearestDistance) {
+            nearestAsteroid = asteroids[i];
+            nearestDistance = distance;
+        }
+    }
+    return nearestAsteroid;
+}
 
 const spacePotato = {
     x: 0,
