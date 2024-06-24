@@ -457,6 +457,7 @@ canvas {
     box-sizing: border-box;
     text-align: center;
     font-family: 'Press Start 2P', cursive;
+    opacity: 0.8;
 }
 
 .modal-content button {
