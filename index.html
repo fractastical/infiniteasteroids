@@ -68,13 +68,12 @@
     </div>
   </div>
 
-  <div id="rouletteContainer" style="display: none;">
-    <div id="planet"></div>
-    <div id="rouletteIcons"></div>
 
+  <div id="rouletteContainer" style="display: none">
+    <div id="rouletteIcons"></div>
     <div id="upgradeDisplay"></div>
-    <button id="spinButton" onclick="startRoulette()">Spin</button>
   </div>
+  <button id="spinButton">Spin</button>
 
 
 
@@ -109,7 +108,7 @@
         <ol id="leaderboard-list"></ol>
       </div>
     </div>
-    <button id="restartButton" onclick="restartGame()">Restart</button>
+    <button id="restartButton">Restart</button>
   </div>
 
   <div id="startScreen">
@@ -699,6 +698,62 @@
       ship.laserTimer = 0;
       invincibilityTimer = invincibilityDuration;
       clearInterval(gameLoop);
+
+
+      // Specific actions for StarHawk
+      if (currentShip === 'quantumStriker') {
+        ship.laserCooldown = 40; // double length for shotgun style ship
+
+      }
+      if (currentShip === 'solarPhoenix') {
+        ship.laserCooldown = 50; // double length for shotgun style ship
+
+      }
+
+      if (currentShip === 'starHawk') {
+        activateWeaponClass('turret');
+        damageReportStartTimes.turret = Date.now();
+
+        turret = {
+          x: 0,
+          y: 0,
+          size: 10,
+          rotationSpeed: 2,
+          fireInterval: 80,
+          fireTimer: 0,
+          range: 400,
+          damage: 5,
+          color: 'cyan',
+          lasers: [] // Initialize the turret's lasers array
+        };
+
+        turret.bought = true;
+
+        turretUpgrades = {
+          range: 1,
+          fireRate: 2,
+          damage: 2
+        };
+      } else {
+        turret = {
+          x: 0,
+          y: 0,
+          size: 10,
+          rotationSpeed: 2,
+          fireInterval: 120,
+          fireTimer: 0,
+          range: 400,
+          damage: 3,
+          color: 'cyan',
+          lasers: [] // Initialize the turret's lasers array
+        };
+
+        turretUpgrades = {
+          range: 1,
+          fireRate: 1,
+          damage: 1
+        };
+      }
 
       gameLoop = setInterval(update, 1000 / 60); // 60 FPS
       if (!toggleOff)
@@ -1417,22 +1472,32 @@
       }
     }
 
+    let testMode = true;
 
     function processAsteroidDeath(asteroid) {
 
       createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
       asteroidsKilled++;
       let gemRarity;
+      let baseLineHitpoints = 4;
+      let baseLineRandomness = 0.1;
+
+      if (testMode) {
+        baseLineHitpoints = 0;
+        baseLineRandomness = 0.9;
+        console.log("test mode");
+
+      }
       if (asteroid.initialHitpoints > 30) {
         gemRarity = 'epic';
       } else if (asteroid.initialHitpoints > 15) {
         gemRarity = 'rare';
-      } else if (asteroid.initialHitpoints > 4) {
+      } else if (asteroid.initialHitpoints > baseLineHitpoints) {
         gemRarity = 'common';
       }
 
-      if (gemRarity && Math.random() < 0.1) {
-        // console.log("gem");
+      if (gemRarity && Math.random() < baseLineRandomness) {
+        console.log("gem");
 
         droppedGems.push({
           x: asteroid.x,
@@ -2062,7 +2127,8 @@
       saveTimeTaken(timeTaken); // Save the time taken to local storage
 
       console.log("this run: " + timeTaken);
-      score = Math.floor(score * modeScoreMultiplier); // Ensure score is a whole number
+      score = score * modeScoreMultiplier;
+      score = Math.floor(score); // Ensure score is a whole number
 
       // Calculate top six weapons by damage
       const topSixWeapons = Object.entries(damageReport)
@@ -4698,61 +4764,6 @@
       ship.weaponSlots = shipData.weaponSlots;
       ship.upgradeSlots = shipData.upgradeSlots;
 
-
-      // Specific actions for StarHawk
-      if (currentShip === 'quantumStriker') {
-        ship.laserCooldown = 40; // double length for shotgun style ship
-
-      }
-      if (currentShip === 'solarPhoenix') {
-        ship.laserCooldown = 50; // double length for shotgun style ship
-
-      }
-
-      if (currentShip === 'starHawk') {
-        activateWeaponClass('turret');
-        damageReportStartTimes.turret = Date.now();
-
-        turret = {
-          x: 0,
-          y: 0,
-          size: 10,
-          rotationSpeed: 2,
-          fireInterval: 80,
-          fireTimer: 0,
-          range: 400,
-          damage: 5,
-          color: 'cyan',
-          lasers: [] // Initialize the turret's lasers array
-        };
-
-        turret.bought = true;
-
-        turretUpgrades = {
-          range: 1,
-          fireRate: 2,
-          damage: 2
-        };
-      } else {
-        turret = {
-          x: 0,
-          y: 0,
-          size: 10,
-          rotationSpeed: 2,
-          fireInterval: 120,
-          fireTimer: 0,
-          range: 400,
-          damage: 3,
-          color: 'cyan',
-          lasers: [] // Initialize the turret's lasers array
-        };
-
-        turretUpgrades = {
-          range: 1,
-          fireRate: 1,
-          damage: 1
-        };
-      }
     });
 
   </script>

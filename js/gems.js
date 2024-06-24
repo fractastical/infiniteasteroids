@@ -269,6 +269,13 @@ function checkGemCollection() {
             switch (gem.type) {
                 case 'common':
                     xpBoost = xpToNextLevel * 0.2; // 10% of XP to next level
+                    if (testMode) {
+                        clearInterval(gameLoop);
+                        isPaused = true;
+                        // drawPlanetx(); // Draw the planet
+                        document.getElementById('rouletteContainer').style.display = 'block';
+                    }
+
                     break;
                 case 'rare':
                     xpBoost = xpToNextLevel * 0.5; // 25% of XP to next level

@@ -134,32 +134,60 @@ function drawSolarPhoenix() {
     // ctx.translate(ship.x, ship.y);
     // ctx.rotate(ship.rotation * Math.PI / 180);
 
-    // Main center triangle
+    // Main body
     ctx.beginPath();
     ctx.moveTo(0, -20); // Nose
-    ctx.lineTo(15, 20); // Right bottom
-    ctx.lineTo(-15, 20); // Left bottom
+    ctx.lineTo(15, 15); // Right wing tip
+    ctx.lineTo(-15, 15); // Left wing tip
     ctx.closePath();
     ctx.strokeStyle = 'orange';
     ctx.stroke();
+    ctx.fillStyle = 'orange';
+    ctx.fill();
 
-    // Left smaller triangle
+    // Inner body triangle
     ctx.beginPath();
-    ctx.moveTo(-15, 20); // Top
-    ctx.lineTo(-25, 30); // Right bottom
-    ctx.lineTo(-5, 30); // Left bottom
+    ctx.moveTo(0, -15);
+    ctx.lineTo(10, 10);
+    ctx.lineTo(-10, 10);
     ctx.closePath();
     ctx.strokeStyle = 'red';
     ctx.stroke();
+    ctx.fillStyle = 'red';
+    ctx.fill();
 
-    // Right smaller triangle
+    // Left flame
     ctx.beginPath();
-    ctx.moveTo(15, 20); // Top
-    ctx.lineTo(25, 30); // Right bottom
-    ctx.lineTo(5, 30); // Left bottom
+    ctx.moveTo(-7, 15);
+    ctx.lineTo(-10, 30);
+    ctx.lineTo(-4, 15);
     ctx.closePath();
-    ctx.strokeStyle = 'red';
+    ctx.strokeStyle = 'yellow';
     ctx.stroke();
+    ctx.fillStyle = 'yellow';
+    ctx.fill();
+
+    // Right flame
+    ctx.beginPath();
+    ctx.moveTo(7, 15);
+    ctx.lineTo(10, 30);
+    ctx.lineTo(4, 15);
+    ctx.closePath();
+    ctx.strokeStyle = 'yellow';
+    ctx.stroke();
+    ctx.fillStyle = 'yellow';
+    ctx.fill();
+
+    // Center flame
+    ctx.beginPath();
+    ctx.moveTo(0, 10);
+    ctx.lineTo(3, 30);
+    ctx.lineTo(-3, 30);
+    ctx.closePath();
+    ctx.strokeStyle = 'yellow';
+    ctx.stroke();
+    ctx.fillStyle = 'yellow';
+    ctx.fill();
 
     ctx.restore();
 }
