@@ -83,6 +83,35 @@
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
 
+  <div id="endScreen" class="screen">
+    <h2>Game Over</h2>
+    <p id="wave"></p>
+    <p id="score"></p>
+    <p id="asteroidsDestroyed"></p>
+    <p id="bonusCoins"></p>
+
+    <h3>Damage Report</h3>
+    <ul id="damageReportList"></ul>
+
+    <h3>Recently Unlocked Weapons</h3>
+    <ul id="unlockedWeaponsList"></ul>
+
+    <h3>New Achievements</h3>
+    <ul id="achievementsList"></ul>
+
+    <h3>Available Upgrades</h3>
+    <ul id="upgradesList"></ul>
+
+    <div id="leaderboard-container">
+      <div id="leaderboard">
+        <h2>Leaderboard</h2>
+        <ol id="leaderboard-list"></ol>
+      </div>
+    </div>
+    <button id="restartButton">Restart</button>
+  </div>
+
+
   <div id="endScreen" style="display: none;">
     <h2>Game Over</h2>
     <div id="gameStats">
@@ -103,13 +132,6 @@
       <h3>New Achievements:</h3>
       <ul id="newAchievementsList"></ul>
     </div>
-    <div id="leaderboard-container">
-      <div id="leaderboard">
-        <h2>Leaderboard</h2>
-        <ol id="leaderboard-list"></ol>
-      </div>
-    </div>
-    <button id="restartButton">Restart</button>
   </div>
 
   <div id="startScreen">
