@@ -44,7 +44,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.894.
+    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.901.
   </div>
 
 
@@ -166,6 +166,8 @@
         <h3>Your Achievements</h3>
         <div id="achievementsList"></div>
       </div>
+      <h3>Your Upgrades</h3>
+      <div id="upgradesList"></div>
 
 
       <!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
@@ -4866,6 +4868,27 @@
       });
     }
 
+    function populateUpgrades() {
+      const upgradesList = document.getElementById('upgradesList');
+      upgradesList.innerHTML = '';
+
+      upgrades.forEach(upgrade => {
+        const upgradeElement = document.createElement('div');
+        upgradeElement.classList.add('upgrade');
+        upgradeElement.style.opacity = upgrade.owned ? '1' : '0.5';
+
+        const icon = document.createElement('img');
+        icon.src = upgrade.icon;
+        icon.alt = upgrade.name;
+        upgradeElement.appendChild(icon);
+
+        const description = document.createElement('span');
+        description.textContent = upgrade.description;
+        upgradeElement.appendChild(description);
+
+        upgradesList.appendChild(upgradeElement);
+      });
+    }
 
 
     function populateAchievements() {
@@ -5239,25 +5262,18 @@
 
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          // document.getElementById('user-nickname').textContent = userData.nickname;
-
           userNickname.textContent = userData.nickname;
           userInfo.style.display = 'block';
           loginLink.style.display = 'none';
 
-          // document.getElementById('user-coins').textContent = userData.coins;
-          // document.getElementById('user-info').classList.remove('hidden');
-          document.getElementById('login-link').classList.add('hidden');
-          // document.getElementById('auth').classList.add('hidden');
-          // console.log(userData);
-
-          // Load the achievements for the specific game
           const gameAchievements = userData.games?.[gameId]?.achievements || {};
           Object.assign(Achievements, gameAchievements);
-          // console.log(Achievements);
-          // console.log(gameAchievements);
-          populateAchievements();
 
+          const gameUpgrades = userData.games?.[gameId]?.upgrades || {};
+          Object.assign(upgrades, gameUpgrades);
+
+          populateAchievements();
+          populateUpgrades();
         } else {
           console.log("No such document!");
         }
@@ -5265,6 +5281,7 @@
         console.error("Error getting user data:", error);
       }
     }
+
 
     // document.getElementById('login-toggle').addEventListener('click', function (event) {
     //   event.preventDefault();
@@ -5284,17 +5301,14 @@
       }
 
       const userDoc = await getDoc(userDocRef);
-      console.log(Achievements);
       if (userDoc.exists()) {
         const userData = userDoc.data();
         const existingAchievements = userData.games?.[gameName]?.achievements || {};
+        const existingUpgrades = userData.games?.[gameName]?.upgrades || {};
 
-        // Merge the existing achievements with the updated achievements
         const updatedAchievements = { ...existingAchievements, ...Achievements };
-        console.log("updated");
-        console.log(updatedAchievements);
+        const updatedUpgrades = { ...existingUpgrades, ...upgrades };
 
-        // Save the score, session length, login time, and updated achievements for the specific game
         const fullGameData = {
           [`games.${gameName}.scores`]: arrayUnion({
             score: gameData.score,
@@ -5302,14 +5316,12 @@
             sessionLength: sessionLength,
             loginTime: loginTime
           }),
-          [`games.${gameName}.achievements`]: updatedAchievements
+          [`games.${gameName}.achievements`]: updatedAchievements,
+          [`games.${gameName}.upgrades`]: updatedUpgrades
         };
 
         await updateDoc(userDocRef, fullGameData);
       } else {
-        console.log("no dice");
-
-        // If the user document doesn't exist, create a new one with the initial achievements
         const gameData = {
           [`games.${gameName}.scores`]: [
             {
@@ -5318,14 +5330,13 @@
               loginTime: loginTime
             }
           ],
-          [`games.${gameName}.achievements`]: Achievements
+          [`games.${gameName}.achievements`]: Achievements,
+          [`games.${gameName}.upgrades`]: upgrades
         };
-
 
         await setDoc(userDocRef, gameData);
       }
     }
-
     window.saveUserScore = saveUserScore;
 
     // Function to save initial user data
