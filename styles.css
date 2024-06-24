@@ -270,8 +270,8 @@ canvas {
 }
 
 #restartButton {
-    position: absolute;
-    bottom: 10%;
+    /* position: absolute; */
+    /* bottom: 10%; */
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px 40px;

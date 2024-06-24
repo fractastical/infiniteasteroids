@@ -184,12 +184,21 @@ function startRoulette() {
     spinSound.play();
 
     const unlockSound = new Audio('sounds/levelUp.mp3');
-
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    createGemExplosion();
 
     const interval = setInterval(() => {
         angle += totalSpins / (spinDuration / spinInterval);
         updateIconPositions(angle);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        updateDisplayGems();
+        drawDisplayGems();
+        // too much
+        // if (angle >= totalSpins / 2) {
+        //     createGemExplosion(1.5);
+        // }
+        // if (angle >= totalSpins / 2) {
+        //     createGemExplosion(1.2);
+        // }
 
         if (angle >= totalSpins) {
             clearInterval(interval);
@@ -231,7 +240,7 @@ function startRoulette() {
 
                 isPaused = false;
                 unlockSound.play();
-
+                displayGems = [];
                 clearInterval(gameLoop);
                 gameLoop = setInterval(update, 1000 / 60);
 
@@ -243,7 +252,10 @@ function startRoulette() {
     }, spinInterval);
 }
 
-function createGemExplosion() {
+let displayGems = [];
+
+function createGemExplosion(newAngle = 1) {
+
     const centerX = canvas.width / 2;
     const centerY = 250; // Same fixed position as planet
     const numGems = 50;
@@ -255,14 +267,23 @@ function createGemExplosion() {
         const gem = {
             x: centerX,
             y: centerY,
-            dx: speed * Math.cos(angle),
-            dy: speed * Math.sin(angle),
+            dx: speed * Math.cos(angle) * newAngle,
+            dy: speed * Math.sin(angle) * newAngle,
             type: gemType,
             size: Math.random() * 10 + 10
         };
-        droppedGems.push(gem);
+        displayGems.push(gem);
     }
 }
+
+
+function drawDisplayGems() {
+    for (let i = 0; i < displayGems.length; i++) {
+        let gem = displayGems[i];
+        ctx.drawImage(gemImages[gem.type], gem.x - gem.size / 2, gem.y - gem.size / 2, gem.size, gem.size);
+    }
+}
+
 
 function drawGems() {
     for (let i = 0; i < droppedGems.length; i++) {
@@ -313,6 +334,40 @@ function checkGemCollection() {
         }
     }
 }
+
+function updateDisplayGems() {
+    const centerX = canvas.width / 2;
+    const centerY = 100; // Same fixed position as planet
+    const speedFactor = 0.2; // Adjust this factor to control the speed
+
+    for (let i = 0; i < displayGems.length; i++) {
+        let gem = displayGems[i];
+
+        // Calculate the direction away from the center
+        let directionX = gem.x - centerX;
+        let directionY = gem.y - centerY;
+
+        // Normalize the direction vector
+        let distance = Math.sqrt(directionX * directionX + directionY * directionY);
+        directionX /= distance;
+        directionY /= distance;
+
+        // Add a small amount of speed away from the center
+        gem.dx += directionX * speedFactor;
+        gem.dy += directionY * speedFactor;
+
+        // Update gem position
+        gem.x += gem.dx;
+        gem.y += gem.dy;
+
+        // Remove gems that go off-screen
+        if (gem.x < 0 || gem.x > canvas.width || gem.y < 0 || gem.y > canvas.height) {
+            displayGems.splice(i, 1);
+            i--;
+        }
+    }
+}
+
 
 function updateGems() {
     const centerX = canvas.width / 2;

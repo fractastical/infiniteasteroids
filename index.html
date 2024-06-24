@@ -1535,7 +1535,7 @@
       }
 
       if (gemRarity && Math.random() < baseLineRandomness) {
-        console.log("gem");
+        // console.log("gem");
 
         droppedGems.push({
           x: asteroid.x,
@@ -1635,7 +1635,6 @@
               color: 'blue' // Set the turret laser color to blue
             };
             turret.lasers.push(laser);
-
           }
           if (tripleTurret) {
             let laser = {
@@ -1646,7 +1645,6 @@
               color: 'blue' // Set the turret laser color to blue
             };
             turret.lasers.push(laser);
-
           }
         }
       }
@@ -1654,7 +1652,6 @@
       turret.x = ship.x;
       turret.y = ship.y;
     }
-
     function updateTurretLasers() {
       for (let i = turret.lasers.length - 1; i >= 0; i--) {
         let laser = turret.lasers[i];
@@ -1808,17 +1805,20 @@
     function drawTurret() {
       ctx.save();
       ctx.translate(turret.x, turret.y);
-      ctx.rotate(turret.rotation * Math.PI / 180);
-      ctx.fillStyle = 'cyan';
-      // ctx.arc(0, 0, 10, 0, Math.PI * 2);
-      // ctx.strokeStyle = 'cyan';
-      // ctx.stroke();
+      ctx.rotate(turret.rotation); // Rotation is already in radians
 
-      ctx.fillRect(-turret.size / 2, -turret.size / 2, turret.size + 2, turret.size);
-      ctx.restore();
-
+      // Draw the turret as a mini triangle pointing towards the shooting direction
       ctx.beginPath();
+      ctx.moveTo(0, -turret.size); // Tip of the triangle
+      ctx.lineTo(turret.size / 2, turret.size); // Bottom right point
+      ctx.lineTo(-turret.size / 2, turret.size); // Bottom left point
+      ctx.closePath();
+      ctx.strokeStyle = 'cyan';
+      ctx.stroke();
+      ctx.fillStyle = 'cyan';
+      ctx.fill();
 
+      ctx.restore();
     }
 
     function findNearestAsteroid() {
@@ -2839,7 +2839,7 @@
     function getRandomUpgrades(count) {
       const availableUpgrades = [
         ...(getUpgradeCount('laser') <= 9 ? ['Increase Laser Level', 'Decrease Laser Cooldown'] : []),
-        'Increase Rotation Speed',
+        // 'Increase Rotation Speed',
         ...(activeWeaponClasses.includes('turret') ? (getUpgradeCount('turret') <= 9 ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : []) : ['Activate Turret'])
 
       ];
