@@ -160,8 +160,10 @@ const allSounds = [
 
 // Function to show/hide the volume screen
 function toggleVolumeScreen() {
+    console.log("vol");
     const volumeScreen = document.getElementById('volumeScreen');
     volumeScreen.style.display = volumeScreen.style.display === 'none' ? 'block' : 'none';
+    console.log(volumeScreen.style.display);
 }
 
 // Function to set the volume of all sounds

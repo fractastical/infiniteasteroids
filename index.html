@@ -72,8 +72,9 @@
   <div id="rouletteContainer" style="display: none">
     <div id="rouletteIcons"></div>
     <div id="upgradeDisplay"></div>
+    <button id="spinButton">Spin</button>
+
   </div>
-  <button id="spinButton">Spin</button>
 
 
 
@@ -184,7 +185,7 @@
     <button id="closeButton" onclick="toggleWeaponInfo()">Close</button>
   </div>
 
-  <div id="volumeScreen" style="display: none;">
+  <div id="volumeScreen" style="display:none;">
     <h2>Volume Control</h2>
     <input type="range" id="volumeSlider" min="1" max="10" value="5">
     <p>Volume: <span id="volumeValue">5</span></p>
@@ -2127,8 +2128,7 @@
       saveTimeTaken(timeTaken); // Save the time taken to local storage
 
       console.log("this run: " + timeTaken);
-      score = score * modeScoreMultiplier;
-      score = Math.floor(score); // Ensure score is a whole number
+      score = Math.floor(score * modeScoreMultiplier); // Ensure score is a whole number
 
       // Calculate top six weapons by damage
       const topSixWeapons = Object.entries(damageReport)
@@ -2150,11 +2150,14 @@
       // Update achievements and handle end game server logic
       const { newlyUnlockedAchievements, newlyUnlockedWeapons } = updateAchievementsAtEnd();
 
+      // Get three random affordable upgrades
+      const affordableUpgrades = getRandomAffordableUpgrades(coins);
+
       // Display the end game screen
-      displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons);
+      displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades);
     }
 
-    function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons) {
+    function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
       const endScreen = document.getElementById('endScreen');
       const waveElement = document.getElementById('wave');
       const scoreElement = document.getElementById('score');
@@ -2162,7 +2165,8 @@
       const bonusCoinsElement = document.getElementById('bonusCoins');
       const damageReportList = document.getElementById('damageReportList');
       const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
-      const achievementsList = document.getElementById('newAchievementsList');
+      const achievementsList = document.getElementById('achievementsList');
+      const upgradesList = document.getElementById('upgradesList');
 
       // Set game stats
       waveElement.textContent = `Wave: ${wave}`;
@@ -2230,7 +2234,27 @@
         achievementsList.appendChild(li);
       });
 
-      console.log(newlyUnlockedAchievements);
+      // Clear and set affordable upgrades
+      upgradesList.innerHTML = '';
+      affordableUpgrades.forEach(upgrade => {
+        const li = document.createElement('li');
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+
+        const img = document.createElement('img');
+        img.src = upgrade.icon;
+        img.alt = upgrade.name;
+        img.style.width = '24px';
+        img.style.height = '24px';
+        img.style.marginRight = '10px';
+
+        const text = document.createElement('span');
+        text.textContent = `${upgrade.name} - ${upgrade.price} coins (${upgrade.rarity})`;
+
+        li.appendChild(img);
+        li.appendChild(text);
+        upgradesList.appendChild(li);
+      });
 
       // Show the end screen
       endScreen.style.display = 'flex';
@@ -3923,14 +3947,6 @@
           isPaused = true;
 
         }
-        // } 
-
-        // else if (event.key === 'b') {
-        //   if (marketplace.style.display === 'block') {
-        //     exitMarketplace();
-        //   } else {
-        //     pauseGameForMarketplace();
-        //   }
 
       } else if (event.key === 'm') {
 
@@ -4434,43 +4450,7 @@
       nano: 'Nano Swarm'
     };
 
-    const upgrades = [
-      {
-        name: 'Glitch Effect',
-        description: 'Applies a glitch effect to nearby asteroids, causing them to malfunction and break apart.',
-        icon: 'icons/glitch-effect.png'
-      },
-      {
-        name: 'Time Dilation',
-        description: 'Slows down time for a short duration, making it easier to evade asteroids and aim at targets.',
-        icon: 'icons/time-dilation.png'
-      },
-      {
-        name: 'Space Potato',
-        description: 'Summons a giant space potato that orbits around the ship, absorbing incoming asteroids and projectiles.',
-        icon: 'icons/space-potato.png'
-      },
-      {
-        name: 'Damage Booster',
-        description: 'Temporarily boosts the damage output of all weapons.',
-        icon: 'icons/damage-booster.png'
-      },
-      {
-        name: 'Space Monkey',
-        description: 'Deploys a mischievous space monkey that distracts and confuses nearby asteroids.',
-        icon: 'icons/space-monkey.png'
-      },
-      {
-        name: 'Space Pizza',
-        description: 'Launches a delicious space pizza that attracts and satisfies nearby asteroids, making them harmless.',
-        icon: 'icons/space-pizza.png'
-      },
-      {
-        name: 'Space Pixie',
-        description: 'Summons a helpful space pixie that automatically collects power-ups and bonuses.',
-        icon: 'icons/space-pixie.png'
-      }
-    ];
+
 
 
     function toggleWeaponInfo() {
@@ -5210,6 +5190,8 @@
 
   <!-- <script src="infinite/leaderboard.js"></script> -->
   <script src="js/weapons.js"></script>
+  <script src="js/upgrades.js"></script>
+
   <script src="js/aliens.js"></script>
   <script src="js/gems.js"></script>
 
