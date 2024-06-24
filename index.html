@@ -814,8 +814,8 @@
         keys[' '] = true;
       }
 
-      const secondsUntilNextWave = Math.ceil(spawnTimer);
-      document.getElementById('waveCounter').textContent = `Next Wave: ${secondsUntilNextWave}s`;
+      // const secondsUntilNextWave = Math.ceil(spawnTimer);
+      // document.getElementById('waveCounter').textContent = `Next Wave: ${secondsUntilNextWave}s`;
 
 
       if (keys['ArrowUp'] || keys['w']) {
@@ -3369,7 +3369,9 @@
 
 
     function drawScore() {
-      document.getElementById('waveCounter').textContent = `Wave: ${wave}`;
+      const secondsUntilNextWave = Math.ceil(spawnTimer);
+
+      document.getElementById('waveCounter').textContent = `Wave: ${wave} ${secondsUntilNextWave}s`;
 
       if (!isMobile()) {
         document.getElementById('controlsInfo').textContent = "[m]usic sou[n]d [v]olume [p]ause [i]nfo";
