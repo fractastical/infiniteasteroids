@@ -281,11 +281,11 @@ function checkGemCollection() {
                     xpBoost = xpToNextLevel * 0.5; // 25% of XP to next level
                     break;
                 case 'epic':
-                    // xpBoost = xpToNextLevel * 0.95; // 50% of XP to next level
-                    clearInterval(gameLoop);
-                    isPaused = true;
-                    // drawPlanetx(); // Draw the planet
-                    document.getElementById('rouletteContainer').style.display = 'block';
+                    xpBoost = xpToNextLevel * 0.95; // 50% of XP to next level
+                    // clearInterval(gameLoop);
+                    // isPaused = true;
+                    // // drawPlanetx(); // Draw the planet
+                    // document.getElementById('rouletteContainer').style.display = 'block';
                     break;
             }
 
