@@ -112,26 +112,36 @@
   </div>
 
 
-  <div id="endScreen" style="display: none;">
-    <h2>Game Over</h2>
-    <div id="gameStats">
+  <div id="endScreen" class="screen">
+    <div class="column">
+      <h2>Game Over</h2>
       <p id="wave"></p>
       <p id="score"></p>
       <p id="asteroidsDestroyed"></p>
       <p id="bonusCoins"></p>
-    </div>
-    <div id="damageReport">
-      <h3>Damage Report:</h3>
+      <p id="currentCoins"></p>
+
+      <h3>Damage Report</h3>
       <ul id="damageReportList"></ul>
-    </div>
-    <div id="unlockedWeapons">
-      <h3>Recently Unlocked Weapons:</h3>
+
+      <h3>Recently Unlocked Weapons</h3>
       <ul id="unlockedWeaponsList"></ul>
+
+      <h3>New Achievements</h3>
+      <ul id="achievementsList"></ul>
+
+      <h3>Available Upgrades</h3>
+      <ul id="upgradesList"></ul>
     </div>
-    <div id="achievements">
-      <h3>New Achievements:</h3>
-      <ul id="newAchievementsList"></ul>
+    <div class="column">
+      <div id="leaderboard-container" style="display:none;">
+        <div id="leaderboard">
+          <h3>Leaderboard</h3>
+          <ol id="leaderboard-list"></ol>
+        </div>
+      </div>
     </div>
+    <button onclick="goToHomeScreen()" id="restartButton">Go to Home Screen</button>
   </div>
 
   <div id="startScreen">
@@ -605,6 +615,10 @@
     let gameLoop;
     let explosions = [];
     let lives = 3;
+    let testMode = true;
+
+    if (testMode)
+      lives = 1;
     let gameOver = false;
     let invincible = false;
     let invincibilityTimer = 0;
@@ -1495,7 +1509,6 @@
       }
     }
 
-    let testMode = false;
 
     function processAsteroidDeath(asteroid) {
 
@@ -2178,13 +2191,13 @@
       // Display the end game screen
       displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades);
     }
-
     function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
       const endScreen = document.getElementById('endScreen');
       const waveElement = document.getElementById('wave');
       const scoreElement = document.getElementById('score');
       const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
       const bonusCoinsElement = document.getElementById('bonusCoins');
+      const currentCoinsElement = document.getElementById('currentCoins');
       const damageReportList = document.getElementById('damageReportList');
       const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
       const achievementsList = document.getElementById('achievementsList');
@@ -2195,6 +2208,7 @@
       scoreElement.textContent = `Score: ${score}`;
       asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
       bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)}`;
+      currentCoinsElement.textContent = `Current Coins: ${coins}`;
 
       // Clear and set damage report
       damageReportList.innerHTML = '';
@@ -2273,6 +2287,358 @@
         const text = document.createElement('span');
         text.textContent = `${upgrade.name} - ${upgrade.price} coins (${upgrade.rarity})`;
 
+        const buyButton = document.createElement('button');
+        buyButton.textContent = 'Buy';
+        buyButton.onclick = () => purchaseUpgrade(upgrade);
+
+        li.appendChild(img);
+        li.appendChild(text);
+        li.appendChild(buyButton);
+        upgradesList.appendChild(li);
+      });
+
+      // Show the end screen
+      endScreen.style.display = 'flex';
+    }
+
+    function purchaseUpgrade(upgrade) {
+      if (coins >= upgrade.price) {
+        coins -= upgrade.price;
+        // Add the upgrade to the player's upgrades
+        playerUpgrades.push(upgrade);
+
+        // Update the display of current coins
+        document.getElementById('currentCoins').textContent = `Current Coins: ${coins}`;
+
+        // Optionally remove the purchased upgrade from the list or disable the buy button
+        // Here we simply remove the item from the list
+        const upgradesList = document.getElementById('upgradesList');
+        upgradesList.innerHTML = '';
+        const affordableUpgrades = getRandomAffordableUpgrades(coins);
+        affordableUpgrades.forEach(upgrade => {
+          const li = document.createElement('li');
+          li.style.display = 'flex';
+          li.style.alignItems = 'center';
+
+          const img = document.createElement('img');
+          img.src = upgrade.icon;
+          img.alt = upgrade.name;
+          img.style.width = '24px';
+          img.style.height = '24px';
+          img.style.marginRight = '10px';
+
+          const text = document.createElement('span');
+          text.textContent = `${upgrade.name} - ${upgrade.price} coins (${upgrade.rarity})`;
+
+          const buyButton = document.createElement('button');
+          buyButton.textContent = 'Buy';
+          buyButton.onclick = () => purchaseUpgrade(upgrade);
+
+          li.appendChild(img);
+          li.appendChild(text);
+          li.appendChild(buyButton);
+          upgradesList.appendChild(li);
+        });
+
+        // Save the updated coins and upgrades to the server
+        saveUserUpgrades(userId, gameId, {
+          coins: coins,
+          upgrades: playerUpgrades
+        });
+      } else {
+        alert('Not enough coins to purchase this upgrade.');
+      }
+    }
+
+    function saveUserUpgrades(userId, gameId, data) {
+      // Example function to save user upgrades and coins to the server
+      fetch(`/api/saveUserUpgrades?userId=${userId}&gameId=${gameId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('User upgrades saved successfully:', data);
+        })
+        .catch(error => {
+          console.error('Error saving user upgrades:', error);
+        });
+    }
+
+    // function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
+    //             const endScreen = document.getElementById('endScreen');
+    //             const waveElement = document.getElementById('wave');
+    //             const scoreElement = document.getElementById('score');
+    //             const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
+    //             const bonusCoinsElement = document.getElementById('bonusCoins');
+    //             const currentCoinsElement = document.getElementById('currentCoins');
+    //             const damageReportList = document.getElementById('damageReportList');
+    //             const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
+    //             const achievementsList = document.getElementById('achievementsList');
+    //             const upgradesList = document.getElementById('upgradesList');
+
+    //             // Set game stats
+    //             waveElement.textContent = `Wave: ${wave}`;
+    //             scoreElement.textContent = `Score: ${score}`;
+    //             asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
+    //             bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)} `;
+    //             currentCoinsElement.textContent = `Current Coins: ${coins} `;
+
+    //             // Clear and set damage report
+    //             damageReportList.innerHTML = '';
+    //             const weaponDPM = calculateWeaponDPM();
+    //             topWeapons.forEach(({ weapon, damage }) => {
+    //               const weaponName = damageReportMapping[weapon];
+    //               const weaponInfo = weapons.find(w => w.name === weaponName);
+    //               if (weaponInfo) {
+    //                 const li = document.createElement('li');
+    //                 li.style.display = 'flex';
+    //                 li.style.alignItems = 'center';
+
+    //                 const img = document.createElement('img');
+    //                 img.src = weaponInfo.icon;
+    //                 img.alt = weaponInfo.name;
+    //                 img.style.width = '24px';
+    //                 img.style.height = '24px';
+    //                 img.style.marginRight = '10px';
+
+    //                 const text = document.createElement('span');
+    //                 text.textContent = `${weaponInfo.name}: ${damage} (DPM: ${weaponDPM[weapon]})`;
+
+    //                 li.appendChild(img);
+    //                 li.appendChild(text);
+    //                 damageReportList.appendChild(li);
+    //               }
+    //             });
+
+    //             // Clear and set recently unlocked weapons
+    //             unlockedWeaponsList.innerHTML = '';
+    //             newlyUnlockedWeapons.forEach(weaponName => {
+    //               const weaponInfo = weapons.find(w => w.name === weaponName);
+    //               if (weaponInfo) {
+    //                 const li = document.createElement('li');
+    //                 li.style.display = 'flex';
+    //                 li.style.alignItems = 'center';
+
+    //                 const img = document.createElement('img');
+    //                 img.src = weaponInfo.icon;
+    //                 img.alt = weaponInfo.name;
+    //                 img.style.width = '24px';
+    //                 img.style.height = '24px';
+    //                 img.style.marginRight = '10px';
+
+    //                 const text = document.createElement('span');
+    //                 text.textContent = weaponInfo.name;
+
+    //                 li.appendChild(img);
+    //                 li.appendChild(text);
+    //                 unlockedWeaponsList.appendChild(li);
+    //               }
+    //             });
+
+    //             // Clear and set achievements
+    //             achievementsList.innerHTML = '';
+    //             newlyUnlockedAchievements.forEach(achievement => {
+    //               const li = document.createElement('li');
+    //               li.textContent = achievement;
+    //               achievementsList.appendChild(li);
+    //             });
+
+    //             // Clear and set affordable upgrades
+    //             upgradesList.innerHTML = '';
+    //             affordableUpgrades.forEach(upgrade => {
+    //               const li = document.createElement('li');
+    //               li.style.display = 'flex';
+    //               li.style.alignItems = 'center';
+
+    //               const img = document.createElement('img');
+    //               img.src = upgrade.icon;
+    //               img.alt = upgrade.name;
+    //               img.style.width = '24px';
+    //               img.style.height = '24px';
+    //               img.style.marginRight = '10px';
+
+    //               const text = document.createElement('span');
+    //               text.textContent = `${upgrade.name} - ${upgrade.price} coins(${upgrade.rarity})`;
+
+    //               const buyButton = document.createElement('button');
+    //               buyButton.textContent = 'Buy';
+    //               buyButton.onclick = () => purchaseUpgrade(upgrade);
+
+    //               li.appendChild(img);
+    //               li.appendChild(text);
+    //               li.appendChild(buyButton);
+    //               upgradesList.appendChild(li);
+    //             });
+
+    //             // Show the end screen
+    //             endScreen.style.display = 'flex';
+    //           }
+
+    // function purchaseUpgrade(upgrade) {
+    //             if (coins >= upgrade.price) {
+    //               coins -= upgrade.price;
+    //               // Add the upgrade to the player's upgrades
+    //               playerUpgrades.push(upgrade);
+
+    //               // Update the display of current coins
+    //               document.getElementById('currentCoins').textContent = `Current Coins: ${coins} `;
+
+    //               // Optionally remove the purchased upgrade from the list or disable the buy button
+    //               // Here we simply remove the item from the list
+    //               const upgradesList = document.getElementById('upgradesList');
+    //               upgradesList.innerHTML = '';
+    //               const affordableUpgrades = getRandomAffordableUpgrades(coins);
+    //               affordableUpgrades.forEach(upgrade => {
+    //                 const li = document.createElement('li');
+    //                 li.style.display = 'flex';
+    //                 li.style.alignItems = 'center';
+
+    //                 const img = document.createElement('img');
+    //                 img.src = upgrade.icon;
+    //                 img.alt = upgrade.name;
+    //                 img.style.width = '24px';
+    //                 img.style.height = '24px';
+    //                 img.style.marginRight = '10px';
+
+    //                 const text = document.createElement('span');
+    //                 text.textContent = `${upgrade.name} - ${upgrade.price} coins(${upgrade.rarity})`;
+
+    //                 const buyButton = document.createElement('button');
+    //                 buyButton.textContent = 'Buy';
+    //                 buyButton.onclick = () => purchaseUpgrade(upgrade);
+
+    //                 li.appendChild(img);
+    //                 li.appendChild(text);
+    //                 li.appendChild(buyButton);
+    //                 upgradesList.appendChild(li);
+    //               });
+
+    //               // Save the updated coins and upgrades to the server
+    //               saveUserUpgrades(userId, gameId, {
+    //                 coins: coins,
+    //                 upgrades: playerUpgrades
+    //               });
+    //             } else {
+    //               alert('Not enough coins to purchase this upgrade.');
+    //             }
+    //           }
+
+    function saveUserUpgrades(userId, gameId, data) {
+      // Example function to save user upgrades and coins to the server
+      fetch(`/ api / saveUserUpgrades ? userId = ${userId}& gameId=${gameId} `, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('User upgrades saved successfully:', data);
+        })
+        .catch(error => {
+          console.error('Error saving user upgrades:', error);
+        });
+    }
+
+    function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
+      const endScreen = document.getElementById('endScreen');
+      const waveElement = document.getElementById('wave');
+      const scoreElement = document.getElementById('score');
+      const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
+      const bonusCoinsElement = document.getElementById('bonusCoins');
+      const damageReportList = document.getElementById('damageReportList');
+      const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
+      const achievementsList = document.getElementById('achievementsList');
+      const upgradesList = document.getElementById('upgradesList');
+
+      // Set game stats
+      waveElement.textContent = `Wave: ${wave} `;
+      scoreElement.textContent = `Score: ${score} `;
+      asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled} `;
+      bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)} `;
+
+      // Clear and set damage report
+      damageReportList.innerHTML = '';
+      const weaponDPM = calculateWeaponDPM();
+      topWeapons.forEach(({ weapon, damage }) => {
+        const weaponName = damageReportMapping[weapon];
+        const weaponInfo = weapons.find(w => w.name === weaponName);
+        if (weaponInfo) {
+          const li = document.createElement('li');
+          li.style.display = 'flex';
+          li.style.alignItems = 'center';
+
+          const img = document.createElement('img');
+          img.src = weaponInfo.icon;
+          img.alt = weaponInfo.name;
+          img.style.width = '24px';
+          img.style.height = '24px';
+          img.style.marginRight = '10px';
+
+          const text = document.createElement('span');
+          text.textContent = `${weaponInfo.name}: ${damage} (DPM: ${weaponDPM[weapon]})`;
+
+          li.appendChild(img);
+          li.appendChild(text);
+          damageReportList.appendChild(li);
+        }
+      });
+
+      // Clear and set recently unlocked weapons
+      unlockedWeaponsList.innerHTML = '';
+      newlyUnlockedWeapons.forEach(weaponName => {
+        const weaponInfo = weapons.find(w => w.name === weaponName);
+        if (weaponInfo) {
+          const li = document.createElement('li');
+          li.style.display = 'flex';
+          li.style.alignItems = 'center';
+
+          const img = document.createElement('img');
+          img.src = weaponInfo.icon;
+          img.alt = weaponInfo.name;
+          img.style.width = '24px';
+          img.style.height = '24px';
+          img.style.marginRight = '10px';
+
+          const text = document.createElement('span');
+          text.textContent = weaponInfo.name;
+
+          li.appendChild(img);
+          li.appendChild(text);
+          unlockedWeaponsList.appendChild(li);
+        }
+      });
+
+      // Clear and set achievements
+      achievementsList.innerHTML = '';
+      newlyUnlockedAchievements.forEach(achievement => {
+        const li = document.createElement('li');
+        li.textContent = achievement;
+        achievementsList.appendChild(li);
+      });
+
+      // Clear and set affordable upgrades
+      upgradesList.innerHTML = '';
+      affordableUpgrades.forEach(upgrade => {
+        const li = document.createElement('li');
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+
+        const img = document.createElement('img');
+        img.src = upgrade.icon;
+        img.alt = upgrade.name;
+        img.style.width = '24px';
+        img.style.height = '24px';
+        img.style.marginRight = '10px';
+
+        const text = document.createElement('span');
+        text.textContent = `${upgrade.name} - ${upgrade.price} coins(${upgrade.rarity})`;
+
         li.appendChild(img);
         li.appendChild(text);
         upgradesList.appendChild(li);
@@ -2299,7 +2665,7 @@
       ctx.fillStyle = 'white';
       ctx.font = '14px Arial';
       ctx.textAlign = 'left';
-      ctx.fillText(`Damage Report:`, 20, canvas.height - 340);
+      ctx.fillText(`Damage Report: `, 20, canvas.height - 340);
 
       const weaponDPM = {};
       const endTime = Date.now();
@@ -2413,12 +2779,12 @@
 
       // Display the level-up modal
       const levelUpModal = document.getElementById('levelUpModal');
-      document.getElementById('upgrade1').textContent = `1. ${upgrades[0]}`;
-      document.getElementById('upgrade2').textContent = `2. ${upgrades[1]}`;
-      document.getElementById('upgrade3').textContent = `3. ${upgrades[2]}`;
+      document.getElementById('upgrade1').textContent = `1. ${upgrades[0]} `;
+      document.getElementById('upgrade2').textContent = `2. ${upgrades[1]} `;
+      document.getElementById('upgrade3').textContent = `3. ${upgrades[2]} `;
       if (fourthUpgradeUnlocked) {
         document.getElementById('upgrade4').style.display = `block`;
-        document.getElementById('upgrade4').textContent = `4. ${upgrades[3]}`;
+        document.getElementById('upgrade4').textContent = `4. ${upgrades[3]} `;
       }
 
       levelUpModal.style.display = 'block';
@@ -2830,7 +3196,7 @@
         iconContainer.classList.add('iconContainer');
 
         const icon = document.createElement('div');
-        icon.classList.add('weaponClassIcon', `icon-${weaponClass.toLowerCase().replace(/\s+/g, '')}`);
+        icon.classList.add('weaponClassIcon', `icon - ${weaponClass.toLowerCase().replace(/\s+/g, '')} `);
 
         // Create a span element to display the number of upgrades
         const upgradeCount = document.createElement('span');
@@ -2975,7 +3341,7 @@
           const b = imageData.data[pixelIndex + 2];
           const a = imageData.data[pixelIndex + 3];
 
-          pixelCtx.fillStyle = `rgba(${r},${g},${b},${a / 255})`;
+          pixelCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
           pixelCtx.fillRect(x, y, pixelSize, pixelSize);
         }
       }
@@ -2995,7 +3361,7 @@
       ctx.fillStyle = 'white';
       ctx.font = '20px Arial';
       ctx.textAlign = 'left';
-      ctx.fillText(`Wave: ${wave}`, canvas.width - 120, canvas.height - 30);
+      ctx.fillText(`Wave: ${wave} `, canvas.width - 120, canvas.height - 30);
 
       if (!isMobile())
         ctx.fillText("\'m\' to toggle music \'n\' sound \'v\' volume  'p\' pause 'i\' info", 20, canvas.height - 30);
@@ -4512,10 +4878,10 @@
         const weaponDiv = document.createElement('div');
         weaponDiv.className = 'weapon';
         weaponDiv.innerHTML = `
-          <img src="${weapon.icon}" alt="${weapon.name}">
+        < img src = "${weapon.icon}" alt = "${weapon.name}" >
           <p><strong>${weapon.name}</strong></p>
           <p>${weapon.description}</p>
-        `;
+      `;
         weaponsContainer.appendChild(weaponDiv);
       });
     }
@@ -4977,7 +5343,7 @@
       const db = getFirestore();
       const userDocRef = doc(db, 'users', userId);
       const userData = {
-        [`games.${gameName}`]: {
+        [`games.${gameName} `]: {
           scores: [],
           lastLogin: new Date()
         }
@@ -5024,7 +5390,7 @@
       const topScores = limitedScores.slice(0, 12);
 
       const leaderboard = document.getElementById('leaderboard');
-      leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
+      leaderboard.innerHTML = `<h2>Leaderboard</h2 > `;
       topScores.forEach((entry, index) => {
         const formattedScore = entry.score.toLocaleString('en-US', {
           maximumFractionDigits: 0
@@ -5058,10 +5424,10 @@
     //   const topUsers = users.slice(0, 10);
 
     //   const leaderboard = document.getElementById('leaderboard');
-    //   leaderboard.innerHTML = `<h2>Leaderboard for ${gameName}</h2>`;
+    //   leaderboard.innerHTML = `< h2 > Leaderboard for ${ gameName }</h2 > `;
     //   topUsers.forEach((user, index) => {
     //     const userDiv = document.createElement('div');
-    //     userDiv.innerText = `${index + 1}. ${user.nickname}: ${user.score} points`;
+    //     userDiv.innerText = `${ index + 1 }. ${ user.nickname }: ${ user.score } points`;
     //     leaderboard.appendChild(userDiv);
     //   });
 
@@ -5089,10 +5455,10 @@
 
     //   topUsers.forEach((user, index) => {
     //     const userDiv = document.createElement('div');
-    //     userDiv.innerText = `${index + 1}. ${user.nickname}: ${user.score} points`;
+    //     userDiv.innerText = `${ index + 1 }. ${ user.nickname }: ${ user.score } points`;
 
     //     const weaponsDiv = document.createElement('div');
-    //     weaponsDiv.innerText = 'Top Weapons: ' + user.topWeapons.map(weapon => `${weapon.weapon} (${weapon.damage})`).join(', ');
+    //     weaponsDiv.innerText = 'Top Weapons: ' + user.topWeapons.map(weapon => `${ weapon.weapon } (${ weapon.damage })`).join(', ');
 
     //     leaderboard.appendChild(userDiv);
     //     leaderboard.appendChild(weaponsDiv);
@@ -5212,7 +5578,7 @@
 
   <!-- <script src="infinite/leaderboard.js"></script> -->
   <script src="js/weapons.js"></script>
-  <script src="js/upgrades.js"></script>
+  <script src="js/upgrades-main.js"></script>
 
   <script src="js/aliens.js"></script>
   <script src="js/gems.js"></script>
