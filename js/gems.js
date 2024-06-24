@@ -174,6 +174,10 @@ function startRoulette() {
     spinButton.disabled = true;
     spinButton.style.display = 'none';
 
+    //doublecheck that it didn't unpause
+    clearInterval(gameLoop);
+    isPaused = true;
+
     let angle = 0;
     const spinDuration = 5000; // Total spin duration
     const spinInterval = 20; // Interval for updating the rotation
@@ -301,7 +305,7 @@ function checkGemCollection() {
             playGemCollectingSound();
             switch (gem.type) {
                 case 'common':
-                    xpBoost = xpToNextLevel * 0.2; // 10% of XP to next level
+                    xpBoost = xpToNextLevel * 0.1; // 10% of XP to next level
                     if (testMode) {
                         clearInterval(gameLoop);
                         isPaused = true;
@@ -311,14 +315,14 @@ function checkGemCollection() {
 
                     break;
                 case 'rare':
-                    xpBoost = xpToNextLevel * 0.5; // 25% of XP to next level
+                    xpBoost = xpToNextLevel * 0.6; // 25% of XP to next level
                     break;
                 case 'epic':
-                    xpBoost = xpToNextLevel * 0.95; // 50% of XP to next level
-                    // clearInterval(gameLoop);
-                    // isPaused = true;
-                    // // drawPlanetx(); // Draw the planet
-                    // document.getElementById('rouletteContainer').style.display = 'block';
+                    // xpBoost = xpToNextLevel * 0.95; // 50% of XP to next level
+                    clearInterval(gameLoop);
+                    isPaused = true;
+                    // drawPlanetx(); // Draw the planet
+                    document.getElementById('rouletteContainer').style.display = 'block';
                     break;
             }
 
