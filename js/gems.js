@@ -114,6 +114,8 @@ function positionIcons() {
         icon.style.left = `${x - icon.offsetWidth / 2}px`;
         icon.style.top = `${y - icon.offsetHeight / 2}px`;
     });
+
+    rouletteIcons.style.display = 'none';
 }
 
 function drawPlanetx() {
@@ -136,6 +138,7 @@ function drawPlanetx() {
 }
 
 function updateIconPositions(angle) {
+
     const rouletteIcons = document.getElementById('rouletteIcons').children;
     const rouletteContainer = document.getElementById('rouletteContainer');
     const containerWidth = rouletteContainer.offsetWidth;
@@ -153,6 +156,7 @@ function updateIconPositions(angle) {
         icon.style.left = `${x - icon.offsetWidth / 2}px`;
         icon.style.top = `${y - icon.offsetHeight / 2}px`;
     });
+
 }
 
 function startRoulette() {
@@ -164,6 +168,7 @@ function startRoulette() {
     // rouletteContainer.style.left = `${canvas.width / 2 - 200}px`; // Adjust the left position to center the icons around the planet
     positionIcons(); // Position the icons when the roulette is started
     updateIconPositions(0); // Set initial positions of the icons
+    rouletteIcons.style.display = 'block';
 
     const spinButton = document.getElementById('spinButton');
     spinButton.disabled = true;
@@ -175,8 +180,11 @@ function startRoulette() {
     const totalRotations = 5; // Complete at least 5 rotations
     const totalSpins = totalRotations * 2 * Math.PI; // Total radians for 5 full rotations
 
-    const spinSound = new Audio('sounds/spin.mp3');
+    const spinSound = new Audio('sounds/upgrade_loop.mp3');
     spinSound.play();
+
+    const unlockSound = new Audio('sounds/levelUp.mp3');
+
 
     const interval = setInterval(() => {
         angle += totalSpins / (spinDuration / spinInterval);
@@ -213,15 +221,19 @@ function startRoulette() {
             });
 
             const okButton = document.createElement('button');
-            okButton.textContent = 'Okay';
+            okButton.textContent = 'Activate';
             okButton.onclick = () => {
                 applyUpgrades(upgrades);
+                spinButton.disabled = false;
+                spinButton.style.display = 'block';
                 rouletteContainer.style.display = 'none';
                 upgradeDisplay.innerHTML = '';
+
                 isPaused = false;
+                unlockSound.play();
+
                 clearInterval(gameLoop);
                 gameLoop = setInterval(update, 1000 / 60);
-
 
             };
             upgradeDisplay.appendChild(okButton);
@@ -339,6 +351,7 @@ function applyUpgrades(upgrades) {
     upgrades.forEach(upgrade => {
         // Apply each upgrade logic here
         console.log(`Applying upgrade: ${upgrade}`);
+        applyUpgrade(upgrade);
         // Example: applyUpgrade(upgrade); 
     });
 }

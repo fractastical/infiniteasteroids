@@ -71,15 +71,17 @@
 
   <div id="rouletteContainer" style="display: none">
     <div id="rouletteIcons"></div>
+    <div id="planet"></div>
     <div id="upgradeDisplay"></div>
-    <button id="spinButton">Spin</button>
+    <button id="spinButton" onClick="startRoulette()">Spin</button>
 
   </div>
 
 
 
 
-  <div id="activeWeaponClassesContainer" class="bottom-icons"></div>
+  <div id="activeWeaponClassesContainer" class="bottom-icons">
+  </div>
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
 
@@ -3196,7 +3198,7 @@
         iconContainer.classList.add('iconContainer');
 
         const icon = document.createElement('div');
-        icon.classList.add('weaponClassIcon', `icon - ${weaponClass.toLowerCase().replace(/\s+/g, '')} `);
+        icon.classList.add('weaponClassIcon', `icon-${weaponClass.toLowerCase().replace(/\s+/g, '')}`);
 
         // Create a span element to display the number of upgrades
         const upgradeCount = document.createElement('span');
@@ -4626,7 +4628,7 @@
         lasers: [],
         velocityX: 0,
         velocityY: 0,
-        laserLevel: 1,
+        laserLevel: 2,
         weaponSlots: 5,
         upgradeSlots: 2,
         accelerationLevel: 1,
@@ -4930,7 +4932,12 @@
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `${count} of 22 technologies unlocked`;
+      let totalTechnologyCount = 0;
+      totalTechnologyCount += 5; //ships
+      totalTechnologyCount += 13; //weapons
+      totalTechnologyCount += 7; //boosters
+      totalTechnologyCount += 17; //upgrades
+      technologiesCountElement.textContent = `${count} of ${totalTechnologyCount}  technologies unlocked`;
 
     }
 
