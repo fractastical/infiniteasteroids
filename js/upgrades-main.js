@@ -225,6 +225,28 @@ function getRandomAffordableUpgrades(coinSupply, wave) {
     return selectedUpgrades;
 }
 
+
+const activeUpgrades = [];
+
+function addUpgrade(upgrade) {
+    activeUpgrades.push(upgrade);
+}
+
+function removeUpgrade(upgrade) {
+    const index = activeUpgrades.indexOf(upgrade);
+    if (index !== -1) {
+        activeUpgrades.splice(index, 1);
+    }
+}
+
+function updateUpgrades() {
+    activeUpgrades.forEach(upgrade => {
+        if (typeof upgrade.update === 'function') {
+            upgrade.update();
+        }
+    });
+}
+
 // // Example usage
 // const currentCoinSupply = 100;
 // const currentWave = 5;

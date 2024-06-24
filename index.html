@@ -87,7 +87,9 @@
 
   <div id="endScreen" class="screen">
     <h2>Game Over</h2>
-    <p id="wave"></p>
+    <p id="wave">
+    </p>
+    <button id="restartButton">Restart</button>
     <p id="score"></p>
     <p id="asteroidsDestroyed"></p>
     <p id="bonusCoins"></p>
@@ -110,7 +112,6 @@
         <ol id="leaderboard-list"></ol>
       </div>
     </div>
-    <button id="restartButton">Restart</button>
   </div>
 
 
@@ -738,6 +739,13 @@
       invincibilityTimer = invincibilityDuration;
       clearInterval(gameLoop);
 
+      const selectedUpgrades = getSelectedUpgrades(); // Implement this function to retrieve the selected upgrades
+
+      // Load the selected upgrades and their corresponding functions
+      selectedUpgrades.forEach(upgrade => {
+        addUpgrade(upgrade);
+      });
+
 
       // Specific actions for StarHawk
       if (currentShip === 'quantumStriker') {
@@ -801,6 +809,7 @@
     }
 
     let initialSlowDown = true;
+
 
     function update() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1517,12 +1526,12 @@
       createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
       asteroidsKilled++;
       let gemRarity;
-      let baseLineHitpoints = 4;
+      let baseLineHitpoints = 0;
       let baseLineRandomness = 0.1;
 
       if (testMode) {
         baseLineHitpoints = 0;
-        baseLineRandomness = 0.9;
+        baseLineRandomness = 0.1;
         console.log("test mode");
 
       }
@@ -4909,8 +4918,12 @@
       document.getElementById('planetHardButton').disabled = !Achievements.complete_planet_normal_mode.reached;
       document.getElementById('planetHeroButton').disabled = !Achievements.complete_planet_hero_mode.reached;
 
+      console.log(Achievements);
+      console.log("pop");
       for (const key in Achievements) {
         if (Achievements.hasOwnProperty(key)) {
+          console.log("pop" + key);
+
           const achievement = Achievements[key];
           const achieved = achievement.reached || (achievement.damage && achievement.damage >= achievement.required);
 
@@ -4979,6 +4992,7 @@
     let afterGameAchievements = null;
 
     function updateAchievementsAtEnd() {
+      console.log('ach');
       const newlyUnlockedAchievements = [];
 
       const newlyUnlockedWeapons = [];
@@ -5511,6 +5525,8 @@
 
         if (userDoc.exists() && userDoc.data().achievements) {
           loadedAchievements = userDoc.data().achievements;
+          console.log('loadach');
+
         } else {
           const savedAchievements = localStorage.getItem('achievements');
           if (savedAchievements) {
