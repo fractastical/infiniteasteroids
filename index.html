@@ -32,10 +32,9 @@
     <a href="#" id="login-link">Login</a>
   </div>
 
-  <div class="top-right" id="userInfo" style="display: none;">
+  <div class="top-right hidden" id="userInfo">
     <span id="userNickname"></span> | <a href="#" id="logoutLink">Logout</a>
   </div>
-
 
 
   <div id="xpBarContainer">
@@ -84,6 +83,15 @@
   </div>
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+  <div id="bottomContent">
+    <div id="waveCounter"></div>
+    <div id="coinsDisplay"></div>
+    <div id="livesDisplay"></div>
+    <div id="controlsInfo"></div>
+  </div>
+
+
 
   <div id="endScreen" class="screen">
     <h2>Game Over</h2>
@@ -518,7 +526,7 @@
     let turret = {
       x: 0,
       y: 0,
-      size: 10,
+      size: 4,
       rotationSpeed: 2,
       fireInterval: 120,
       fireTimer: 0,
@@ -805,6 +813,9 @@
       if (isMobile()) {
         keys[' '] = true;
       }
+
+      const secondsUntilNextWave = Math.ceil(spawnTimer);
+      document.getElementById('waveCounter').textContent = `Next Wave: ${secondsUntilNextWave}s`;
 
 
       if (keys['ArrowUp'] || keys['w']) {
@@ -1586,6 +1597,32 @@
     let doubleTurret = false;
     let tripleTurret = false;
 
+
+
+
+    function updateTurretLasers() {
+      for (let i = turret.lasers.length - 1; i >= 0; i--) {
+        let laser = turret.lasers[i];
+        laser.x += Math.cos(laser.rotation) * 2;
+        laser.y += Math.sin(laser.rotation) * 2;
+        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
+          turret.lasers.splice(i, 1);
+        }
+      }
+    }
+
+    function drawTurret() {
+      ctx.save();
+      ctx.translate(turret.x, turret.y);
+
+      // Draw the turret as a small cyan circle
+      ctx.beginPath();
+      ctx.arc(0, 0, 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'cyan';
+      ctx.fill();
+
+      ctx.restore();
+    }
     function updateTurret() {
       let nearestAsteroid = findNearestAsteroidInRange();
       if (nearestAsteroid) {
@@ -1598,33 +1635,60 @@
 
         if (turret.fireTimer >= turret.fireInterval) {
           turret.fireTimer = 0;
+
+          // Calculate the laser starting positions based on the turret's rotation
+          let laserX = turret.x + Math.cos(turret.rotation) * turret.size;
+          let laserY = turret.y + Math.sin(turret.rotation) * turret.size;
+
           let laser = {
-            x: turret.x,
-            y: turret.y,
+            x: laserX,
+            y: laserY,
             rotation: turret.rotation,
             size: 2,
-            color: 'blue' // Set the turret laser color to blue
+            color: 'cyan'
           };
           turret.lasers.push(laser);
+
           if (doubleTurret) {
-            let laser = {
-              x: turret.x + 4,
-              y: turret.y + 1,
-              rotation: turret.rotation,
+            let offset = Math.PI / 12; // 15 degrees offset
+            let laser1 = {
+              x: laserX + Math.cos(turret.rotation + offset) * turret.size,
+              y: laserY + Math.sin(turret.rotation + offset) * turret.size,
+              rotation: turret.rotation + offset,
               size: 2,
-              color: 'blue' // Set the turret laser color to blue
+              color: 'cyan'
             };
-            turret.lasers.push(laser);
+            turret.lasers.push(laser1);
+
+            let laser2 = {
+              x: laserX + Math.cos(turret.rotation - offset) * turret.size,
+              y: laserY + Math.sin(turret.rotation - offset) * turret.size,
+              rotation: turret.rotation - offset,
+              size: 2,
+              color: 'cyan'
+            };
+            turret.lasers.push(laser2);
           }
+
           if (tripleTurret) {
-            let laser = {
-              x: turret.x - 4,
-              y: turret.y - 1,
-              rotation: turret.rotation,
+            let offset = Math.PI / 8; // 22.5 degrees offset
+            let laser1 = {
+              x: laserX + Math.cos(turret.rotation + offset) * turret.size,
+              y: laserY + Math.sin(turret.rotation + offset) * turret.size,
+              rotation: turret.rotation + offset,
               size: 2,
-              color: 'blue' // Set the turret laser color to blue
+              color: 'cyan'
             };
-            turret.lasers.push(laser);
+            turret.lasers.push(laser1);
+
+            let laser2 = {
+              x: laserX + Math.cos(turret.rotation - offset) * turret.size,
+              y: laserY + Math.sin(turret.rotation - offset) * turret.size,
+              rotation: turret.rotation - offset,
+              size: 2,
+              color: 'cyan'
+            };
+            turret.lasers.push(laser2);
           }
         }
       }
@@ -1632,31 +1696,16 @@
       turret.x = ship.x;
       turret.y = ship.y;
     }
-    function updateTurretLasers() {
-      for (let i = turret.lasers.length - 1; i >= 0; i--) {
-        let laser = turret.lasers[i];
-        laser.x += Math.cos(laser.rotation) * 2;
-        laser.y += Math.sin(laser.rotation) * 2;
-        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
-          turret.lasers.splice(i, 1);
-        }
-      }
-    }
-
 
     function drawTurretLasers() {
-      // console.log(turret.lasers.length);
-
       for (let i = 0; i < turret.lasers.length; i++) {
-        // console.log('blue');
         let laser = turret.lasers[i];
-        ctx.fillStyle = turret.color;
-        // ctx.fillStyle = 'cyan';
-        // console.log(laser.x + " , " + laser.y);
-        ctx.fillRect(laser.x - laser.size * 2, laser.y - laser.size * 2, laser.size * 2, laser.size * 2);
+        ctx.fillStyle = laser.color;
+        ctx.beginPath();
+        ctx.arc(laser.x, laser.y, laser.size, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
-
 
     function updateBoomerang() {
       if (!boomerang.active) return;
@@ -1782,24 +1831,6 @@
       ship.laserTimer = ship.laserCooldown * 2; // Slow down fire interval by half
     }
 
-    function drawTurret() {
-      ctx.save();
-      ctx.translate(turret.x, turret.y);
-      ctx.rotate(turret.rotation); // Rotation is already in radians
-
-      // Draw the turret as a mini triangle pointing towards the shooting direction
-      ctx.beginPath();
-      ctx.moveTo(0, -turret.size); // Tip of the triangle
-      ctx.lineTo(turret.size / 2, turret.size); // Bottom right point
-      ctx.lineTo(-turret.size / 2, turret.size); // Bottom left point
-      ctx.closePath();
-      ctx.strokeStyle = 'cyan';
-      ctx.stroke();
-      ctx.fillStyle = 'cyan';
-      ctx.fill();
-
-      ctx.restore();
-    }
 
     function findNearestAsteroid() {
       let nearestAsteroid = null;
@@ -2084,11 +2115,9 @@
 
 
     function drawLives() {
-      ctx.fillStyle = 'white';
-      ctx.font = '20px Press Start 2P';
-      ctx.textAlign = 'right';
-      ctx.fillText('Lives: ' + lives, canvas.width - 180, canvas.height - 30);
+      document.getElementById('livesDisplay').textContent = `Lives: ${lives}`;
     }
+
 
     function drawCoins() {
       ctx.fillStyle = 'white';
@@ -2190,7 +2219,7 @@
       scoreElement.textContent = `Score: ${score}`;
       asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
       bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)}`;
-      currentCoinsElement.textContent = `Current Coins: ${coins}`;
+      // currentCoinsElement.textContent = `Current Coins: ${coins}`;
 
       // Clear and set damage report
       damageReportList.innerHTML = '';
@@ -3340,14 +3369,13 @@
 
 
     function drawScore() {
-      ctx.fillStyle = 'white';
-      ctx.font = '20px Arial';
-      ctx.textAlign = 'left';
-      ctx.fillText(`Wave: ${wave} `, canvas.width - 120, canvas.height - 30);
+      document.getElementById('waveCounter').textContent = `Wave: ${wave}`;
 
-      if (!isMobile())
-        ctx.fillText("\'m\' to toggle music \'n\' sound \'v\' volume  'p\' pause 'i\' info", 20, canvas.height - 30);
-
+      if (!isMobile()) {
+        document.getElementById('controlsInfo').textContent = "[m]usic sou[n]d [v]olume [p]ause [i]nfo";
+      } else {
+        document.getElementById('controlsInfo').textContent = '';
+      }
     }
 
 
@@ -4860,7 +4888,7 @@
         const weaponDiv = document.createElement('div');
         weaponDiv.className = 'weapon';
         weaponDiv.innerHTML = `
-        < img src = "${weapon.icon}" alt = "${weapon.name}" >
+        <img src="${weapon.icon}" alt="${weapon.name}">
           <p><strong>${weapon.name}</strong></p>
           <p>${weapon.description}</p>
       `;

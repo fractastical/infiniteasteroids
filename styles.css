@@ -11,15 +11,27 @@ body {
 }
 
 #shipType,
-#technologiesCount {
+#technologiesCount,
+#loginInfo {
     position: absolute;
     top: 10px;
     color: white;
     font-size: 14px;
     z-index: 20;
-    /* Higher z-index than startScreen */
     font-family: 'Press Start 2P', cursive;
-    /* Arcade font */
+}
+
+.top-left {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+
+#loginInfo {
+    top: 50px;
+    /* Adjust position as needed */
+    left: 10px;
 }
 
 .top-right {
@@ -790,4 +802,35 @@ td {
     border: none;
     cursor: pointer;
     z-index: 200;
+}
+
+#bottomContent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 16px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#waveCounter {
+    margin-right: 20px;
+}
+
+#coinsDisplay {
+    margin-left: 20px;
+}
+
+#livesDisplay {
+    margin-right: 20px;
+}
+
+#controlsInfo {
+    margin-left: auto;
 }
