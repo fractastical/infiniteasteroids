@@ -285,7 +285,7 @@ canvas {
     /* position: absolute; */
     /* bottom: 10%; */
     align-items: center;
-    transform: translate(-50%, -50%);
+    /* transform: translate(-50%, -50%); */
     padding: 20px 40px;
     font-size: 15px;
     background-color: white;
