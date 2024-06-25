@@ -108,6 +108,11 @@ function updateAliens() {
 }
 
 function spawnSuperBossAlien() {
+
+    const laughSound = new Audio('sounds/alien_laugh3.mp3');
+    laughSound.play();
+
+
     superbossAlien = {
         x: canvas.width / 2,
         y: canvas.height / 2,
