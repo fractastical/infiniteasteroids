@@ -1246,7 +1246,7 @@
           asteroidDifficultySpeedMultiplier = 0.7;
           levelUpXPMultiplier = 1.07;
           invincibilityDuration = 220;
-          modeScoreMultiplier = 1.1;
+          modeScoreMultiplier = 1;
           break;
         case GameModes.NORMAL:
           asteroidDifficultySpeedMultiplier = 0.9;
@@ -2885,7 +2885,8 @@
         availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? (getUpgradeCount('drone') <= 9 ? ['Increase Drone Firerate'] : []) : ['Activate Drone']));
       if (Achievements.kill_5_aliens.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? (getUpgradeCount('deathray') <= 9 ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : []) : ['Activate Death Ray']));
-      if (Achievements.complete_planet_hard_mode.reached)
+      // TEMP
+      if (Achievements.complete_hard_mode.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('explosiverocket') ? (getUpgradeCount('explosiverocket') <= 9 ? ['Increase Explosive Rocket Damage', 'Increase Explosive Rocket Radius', 'Decrease Explosive Rocket Cooldown'] : []) : ['Activate Explosive Rocket']));
 
       if (Achievements.kill_15_aliens.reached)
@@ -2906,8 +2907,8 @@
         availableUpgrades.push('Double Turret');
       if (Achievements.complete_planet_normal_mode.reached && activeWeaponClasses.includes('turret') && !tripleTurret)
         availableUpgrades.push('Triple Turret');
-      if (Achievements.complete_hard_mode.reached)
-        availableUpgrades.push('Damage Booster');
+      // if (Achievements.complete_hard_mode.reached)
+      //   availableUpgrades.push('Damage Booster');
 
       const upgrades = [];
       for (let i = 0; i < count; i++) {
@@ -5015,7 +5016,7 @@
       explosive_laser_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/explosive.png', description: 'Deal 5,000 Damage with Explosive Laser' },
       death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Extra Choice.' },
       no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
-      complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Hard Mode. Unlock Damage Boost.' },
+      complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Hard Mode. Unlock Explosive Rocket.' },
       complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Hero Mode. Unlock Extra Life.' },
       kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
       kill_15_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 15 Aliens. Unlock Chain Lightning.' },
