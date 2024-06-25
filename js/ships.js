@@ -59,7 +59,7 @@ const ships = {
         weaponSlots: 3,
         upgradeSlots: 3,
         draw: drawSolarPhoenix,
-        condition: () => Achievements.complete_planet_hard.reached
+        condition: () => Achievements.complete_planet_hard_mode.reached
     },
     quantumStriker: {
         name: 'Quantum Striker',

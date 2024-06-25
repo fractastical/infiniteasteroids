@@ -108,7 +108,7 @@
     </p>
     <p id="score"></p>
     <p id="asteroidsDestroyed"></p>
-    <p id="bonusCoins"></p>
+    <!-- <p id="bonusCoins"></p> -->
 
     <h3>Damage Report</h3>
     <ul id="damageReportList"></ul>
@@ -612,7 +612,7 @@
     let gameLoop;
     let explosions = [];
     let lives = 3;
-    let testMode = true;
+    let testMode = false;
 
     if (testMode)
       lives = 1;
@@ -723,6 +723,7 @@
       document.getElementById('endScreen').style.display = 'none';
       document.getElementById('loginContainer').style.display = 'none';
       document.getElementById('loginPopup').style.display = 'none';
+      document.getElementById('userInfo').style.display = 'none';
 
       document.getElementById('technologiesCount').style.display = 'none';
       document.getElementById('startScreen').style.display = 'none';
@@ -2184,6 +2185,7 @@
       // Stop the game loop and background music
 
       document.getElementById('loginContainer').style.display = 'block';
+      document.getElementById('userInfo').style.display = 'block';
 
       clearInterval(gameLoop);
       backgroundMusic.pause(); // Stop the background music
@@ -2228,7 +2230,7 @@
       const waveElement = document.getElementById('wave');
       const scoreElement = document.getElementById('score');
       const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
-      const bonusCoinsElement = document.getElementById('bonusCoins');
+      // const bonusCoinsElement = document.getElementById('bonusCoins');
       const currentCoinsElement = document.getElementById('currentCoins');
       const damageReportList = document.getElementById('damageReportList');
       const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
@@ -2239,7 +2241,7 @@
       waveElement.textContent = `Wave: ${wave}`;
       scoreElement.textContent = `Score: ${score}`;
       asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
-      bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)}`;
+      // bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)}`;
       // currentCoinsElement.textContent = `Current Coins: ${coins}`;
 
       // Clear and set damage report
@@ -4357,7 +4359,7 @@
 
     function handleKeyDown(event) {
       keys[event.key] = true;
-      if (document.getElementById('loginContainer').style.display == 'none') {
+      if (document.getElementById('loginPopup').style.display == 'none') {
 
         if (event.key === 'i' || event.key === 'I') {
           // console.log("toggle1");
@@ -4530,7 +4532,7 @@
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `You have unlocked ${count} of 23 technologies`;
+      technologiesCountElement.textContent = `You have unlocked ${count} of 42 technologies`;
       document.getElementById('technologiesCount').style.display = 'block';
       document.getElementById('shipType').style.display = 'block';
 
