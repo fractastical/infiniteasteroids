@@ -4,6 +4,9 @@
 <head>
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.21.1"></script> -->
 </head>
 
 <body>
@@ -25,6 +28,12 @@
         <h2>Top Weapons Used (Scores above 500,000)</h2>
         <ol id="topWeaponsUltraHighScoresList"></ol>
     </div>
+    <h2>Number of New Users per Day</h2>
+    <canvas id="newUsersChart"></canvas>
+
+    <h2>Total Time Spent per Day</h2>
+    <canvas id="timeSpentChart"></canvas>
+
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script>
@@ -149,6 +158,66 @@
             return number.toString().padStart(2, '0');
         }
 
+        // Function to fetch and display new users chart
+        function displayNewUsersChart(newUsersData) {
+            const ctx = document.getElementById('newUsersChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(newUsersData),
+                    datasets: [{
+                        label: 'New Users per Day',
+                        data: Object.values(newUsersData),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to fetch and display total time spent chart
+        function displayTimeSpentChart(timeSpentData) {
+            const ctx = document.getElementById('timeSpentChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(timeSpentData),
+                    datasets: [{
+                        label: 'Total Time Spent per Day',
+                        data: Object.values(timeSpentData),
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
         // Fetch data from Firestore and display admin dashboard
         db.collection('users')
             .get()
@@ -156,13 +225,32 @@
                 let totalSessions = 0;
                 let totalSessionTime = 0;
                 const allSessions = [];
+                const newUsersData = {};
+                const timeSpentData = {};
 
                 querySnapshot.forEach((doc) => {
                     const userData = doc.data();
+                    const creationDate = userData.creationDate ? userData.creationDate.toDate() : null;
+                    if (creationDate) {
+                        const dateString = creationDate.toISOString().split('T')[0];
+                        newUsersData[dateString] = (newUsersData[dateString] || 0) + 1;
+                    }
+
                     const gameSessions = userData.games?.InfiniteSpaceWar?.scores || [];
 
                     // Filter out sessions longer than 5 hours (18000 seconds * 1000 milliseconds)
-                    const validSessions = gameSessions.filter(session => parseFloat(session.sessionLength) <= 18000 * 1000);
+                    const validSessions = gameSessions.filter(session => {
+                        const sessionLength = parseFloat(session.sessionLength);
+                        return !isNaN(sessionLength) && sessionLength <= 18000 * 1000;
+                    });
+
+                    validSessions.forEach(session => {
+                        const sessionDate = session.date ? session.date.toDate() : null;
+                        if (sessionDate) {
+                            const sessionDateString = sessionDate.toISOString().split('T')[0];
+                            timeSpentData[sessionDateString] = (timeSpentData[sessionDateString] || 0) + parseFloat(session.sessionLength);
+                        }
+                    });
 
                     totalSessions += validSessions.length;
                     totalSessionTime += calculateTotalSessionTime(validSessions);
@@ -175,6 +263,8 @@
                 const topWeaponsUltraHighScores = getTopWeaponsUsedHighScores(allSessions, 500000);
 
                 displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores);
+                // displayNewUsersChart(newUsersData);
+                // displayTimeSpentChart(timeSpentData);
             })
             .catch((error) => {
                 console.error('Error fetching admin data:', error);
