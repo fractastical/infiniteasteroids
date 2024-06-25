@@ -56,6 +56,12 @@ const alienEnteringSounds = [
     document.getElementById('alien-entering-sound')
 ];
 
+const alienLaserSounds = [
+    document.getElementById('alien-laser-1'),
+    document.getElementById('alien-laser-2'),
+    document.getElementById('alien-laser-3')
+];
+
 const gemCollectingSounds = [
     document.getElementById('gem-collecting-sound')
 ];
@@ -138,6 +144,14 @@ function playAlienEnteringSound() {
     if (!toggleSoundOff) {
         const randomIndex = Math.floor(Math.random() * alienEnteringSounds.length);
         alienEnteringSounds[randomIndex].play();
+    }
+}
+
+
+function playAlienLaserSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * alienLaserSounds.length);
+        alienLaserSounds[randomIndex].play();
     }
 }
 

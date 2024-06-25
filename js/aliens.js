@@ -96,6 +96,7 @@ function updateAliens() {
             if (alien.shootTimer >= alien.shootInterval) {
                 alien.shootTimer = 0;
                 shootAlienLaser(alien);
+                playAlienLaserSound();
             }
 
             // Wrap the alien around the screen edges

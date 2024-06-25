@@ -25,6 +25,14 @@
         <input type="password" id="password" placeholder="Password" required>
         <button type="submit">Login</button>
       </form>
+      <form id="signup-form">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-nickname" placeholder="Nickname" required>
+        <input type="email" id="signup-email" placeholder="Email" required>
+        <input type="password" id="signup-password" placeholder="Password" required>
+        <button type="submit">Sign Up</button>
+      </form>
+
     </div>
   </div>
 
@@ -255,6 +263,10 @@
   <audio id="ship-destroyed" src="sounds/ship_destroyed.mp3"></audio>
 
   <audio id="alien-entering-sound" src="sounds/alien_entering.mp3"></audio>
+
+  <audio id="alien-laser-1" src="sounds/alien_laser1.mp3"></audio>
+  <audio id="alien-laser-2" src="sounds/alien_laser2.mp3"></audio>
+  <audio id="alien-laser-3" src="sounds/alien_laser3.mp3"></audio>
 
   <audio id="gem-collecting-sound" src="sounds/bird_chirp.mp3"></audio>
 
@@ -707,6 +719,8 @@
     function startGame() {
       gameStartTime = Date.now();
       document.getElementById('endScreen').style.display = 'none';
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('loginPopup').style.display = 'none';
 
       document.getElementById('technologiesCount').style.display = 'none';
       document.getElementById('startScreen').style.display = 'none';
@@ -4326,63 +4340,68 @@
 
     let keys = {};
     let isPaused = false;
+    let loginFormOpen = false;
 
     function handleKeyDown(event) {
       keys[event.key] = true;
+      if (document.getElementById('loginContainer').style.display == 'none') {
 
-      if (event.key === 'i' || event.key === 'I') {
-        // console.log("toggle1");
-        toggleWeaponInfo();
-      } else if (event.key === 'p' || event.key === 'P') {
+        if (event.key === 'i' || event.key === 'I') {
+          // console.log("toggle1");
+          toggleWeaponInfo();
+        } else if (event.key === 'p' || event.key === 'P') {
 
-        if (isPaused) {
+          if (isPaused) {
 
-          clearInterval(gameLoop);
-          gameLoop = setInterval(update, 1000 / 60); // Resume game loop
-          isPaused = false;
+            clearInterval(gameLoop);
+            gameLoop = setInterval(update, 1000 / 60); // Resume game loop
+            isPaused = false;
 
-        }
-        else {
+          }
+          else {
 
+            clearInterval(gameLoop);
+            isPaused = true;
+
+          }
+
+        } else if (event.key === 'm') {
+
+          toggleMusic();
+        } else if (event.key === 'n') {
+
+          toggleSound();
+
+        } else if (event.key === 'u' || event.key === 'U') {
+          // for testing new features
           clearInterval(gameLoop);
           isPaused = true;
+          // drawPlanetx(); // Draw the planet
+          document.getElementById('rouletteContainer').style.display = 'block';
+          // startRoulette();
 
-        }
+        } else if (event.key === 'v' || event.key === 'V') {
 
-      } else if (event.key === 'm') {
-
-        toggleMusic();
-      } else if (event.key === 'n') {
-
-        toggleSound();
-
-      } else if (event.key === 'u' || event.key === 'U') {
-        // for testing new features
-        clearInterval(gameLoop);
-        isPaused = true;
-        // drawPlanetx(); // Draw the planet
-        document.getElementById('rouletteContainer').style.display = 'block';
-        // startRoulette();
-
-      } else if (event.key === 'v' || event.key === 'V') {
-
-        toggleVolumeScreen();
-      }
-
-
-      if (document.getElementById('levelUpModal').style.display === 'block') {
-        if (event.key === '1') {
-          selectUpgrade(1);
-        } else if (event.key === '2') {
-          selectUpgrade(2);
-        } else if (event.key === '3') {
-          selectUpgrade(3);
-        } else if (fourthUpgradeUnlocked && event.key === '4') {
-          selectUpgrade(4);
+          toggleVolumeScreen();
         }
 
 
+        if (document.getElementById('levelUpModal').style.display === 'block') {
+          if (event.key === '1') {
+            selectUpgrade(1);
+          } else if (event.key === '2') {
+            selectUpgrade(2);
+          } else if (event.key === '3') {
+            selectUpgrade(3);
+          } else if (fourthUpgradeUnlocked && event.key === '4') {
+            selectUpgrade(4);
+          }
+
+
+        }
+
       }
+
 
     }
 
@@ -5186,9 +5205,9 @@
     // import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
     // Firebase configuration and initialization
@@ -5210,9 +5229,22 @@
     const userNickname = document.getElementById('userNickname');
     const logoutLink = document.getElementById('logoutLink');
     const loginContainer = document.getElementById('loginContainer');
+    const signupForm = document.getElementById('signup-form');
 
+
+    async function saveInitialData(userId, email, nickname) {
+      const initialData = {
+        email: email,
+        nickname: nickname,
+        coins: 100,
+        portfolio: {},
+        portfolioHistory: []
+      };
+      await setDoc(doc(db, 'users', userId), initialData);
+    }
 
     loginLink.addEventListener('click', (event) => {
+      loginFormOpen = true;
       event.preventDefault();
       pauseGame();
       loginPopup.style.display = 'block';
@@ -5228,11 +5260,32 @@
           const user = userCredential.user;
           loadUserData(user.uid);
           loginPopup.style.display = 'none';
+          loginFormOpen = false;
+
           resumeGame();
         })
         .catch((error) => {
           console.error('Error signing in:', error.message);
         });
+    });
+
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = signupForm['signup-email'].value;
+      const password = signupForm['signup-password'].value;
+      const nickname = signupForm['signup-nickname'].value;
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        userId = cred.user.uid;
+        await saveInitialData(userId, email, nickname);
+        signupForm.reset();
+        // document.getElementById('auth').classList.toggle('hidden');
+        loginPopup.style.display = 'none';
+        loginFormOpen = false;
+
+      } catch (error) {
+        console.error("Error creating user:", error.message);
+      }
     });
 
     logoutLink.addEventListener('click', (event) => {
