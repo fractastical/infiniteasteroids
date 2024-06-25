@@ -63,6 +63,9 @@ function activateBomb() {
 function activateFlamethrower() {
     flamethrower.active = true;
     flamethrower.timer = flamethrower.cooldown;
+    playFlamethrowerSound();
+
+
 }
 
 
@@ -142,6 +145,7 @@ function activateSonicBlast() {
 }
 
 function activateChainLightning() {
+
     if (chainLightning.timer === 0) {
         let target = findNearestAsteroid();
         if (target) {
@@ -149,6 +153,8 @@ function activateChainLightning() {
             chainLightning.timer = chainLightning.cooldown;
         }
     }
+    playLightningSound();
+
 }
 
 function fireChainLightning(target, bounces) {

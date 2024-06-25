@@ -40,6 +40,16 @@ const deathRaySounds = [
     document.getElementById('death-ray-sound')
 ];
 
+
+const LightningSounds = [
+    document.getElementById('lightning-sound')
+];
+
+
+const FlamethrowerSounds = [
+    document.getElementById('flamethrower')
+];
+
 const deployDroneSounds = [
     document.getElementById('deploy-drone-sound')
 ];
@@ -65,6 +75,8 @@ const alienLaserSounds = [
 const gemCollectingSounds = [
     document.getElementById('gem-collecting-sound')
 ];
+
+
 
 // Function to play a random shot sound
 function playRandomShotSound() {
@@ -155,6 +167,21 @@ function playAlienLaserSound() {
     }
 }
 
+function playFlamethrowerSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * FlamethrowerSounds.length);
+        FlamethrowerSounds[randomIndex].play();
+    }
+}
+
+
+function playLightningSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * LightningSounds.length);
+        LightningSounds[randomIndex].play();
+    }
+}
+
 
 // Get all sound arrays together
 const allSounds = [
@@ -169,10 +196,14 @@ const allSounds = [
     ...bombLaySounds,
     ...alienEnteringSounds,
     ...gemCollectingSounds,
+    ...alienLaserSounds,
+    ...LightningSounds,
+    ...FlamethrowerSounds,
     backgroundMusic // Include background music in the volume control
 ];
 
 // Function to show/hide the volume screen
+//TODO: bizarre but can't figure out why this one modal won't consistently open
 function toggleVolumeScreen() {
     console.log("vol");
     const volumeScreen = document.getElementById('volumeScreen');
