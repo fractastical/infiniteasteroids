@@ -4968,10 +4968,10 @@
       document.getElementById('planetHeroButton').disabled = !Achievements.complete_planet_hero_mode.reached;
 
       console.log(Achievements);
-      console.log("pop");
+      // console.log("pop");
       for (const key in Achievements) {
         if (Achievements.hasOwnProperty(key)) {
-          console.log("pop" + key);
+          // console.log("pop" + key);
 
           const achievement = Achievements[key];
           const achieved = achievement.reached || (achievement.damage && achievement.damage >= achievement.required);
@@ -5324,23 +5324,23 @@
       if (user) {
         loadUserData(user.uid);
         userId = user.uid;
-        if (score && score > 1000 {
+        if (score && score > 1000) {
 
 
           const gameData = {
             score: score
-          }
+          };
           saveUserScore(userId, gameId, gameData);
         }
 
 
-      }
-    } else {
-      userInfo.style.display = 'none';
-      loginContainer.style.display = 'block';
 
-      pauseGame();
-    }
+      } else {
+        userInfo.style.display = 'none';
+        loginContainer.style.display = 'block';
+
+        pauseGame();
+      }
     });
 
     function pauseGame() {
