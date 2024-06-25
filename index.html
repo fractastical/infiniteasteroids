@@ -2180,9 +2180,13 @@
 
     function endGame() {
       // Stop the game loop and background music
+
+      document.getElementById('loginContainer').style.display = 'block';
+
       clearInterval(gameLoop);
       backgroundMusic.pause(); // Stop the background music
       gameEndTime = new Date();
+      resetShip();
 
       // Calculate the time taken and save it
       timeTaken = gameEndTime - gameStartTime; // Time in milliseconds
