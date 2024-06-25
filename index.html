@@ -2838,7 +2838,6 @@
       let count = 2;
 
       // These are all the achievements that have a specific weapon unlock assigned
-
       if (Achievements.reach_wave_2.reached) count++;
       if (Achievements.reach_wave_5.reached) count++;
       if (Achievements.reach_wave_10.reached) count++;
@@ -2854,16 +2853,21 @@
       if (Achievements.complete_meteor_hard_mode.reached) count++;
       if (Achievements.complete_planet_normal_mode.reached) count++;
       if (Achievements.complete_planet_hard_mode.reached) count++;
-
       if (Achievements.complete_hard_mode.reached) count++;
       if (Achievements.complete_hero_mode.reached) count++;
       if (Achievements.drone_damage.reached) count++;
       if (Achievements.laser_damage.reached) count++;
       if (Achievements.alien_megaboss_killed.reached) count++;
 
+      // Check the conditions of each ship
+      for (const ship in ships) {
+        if (ships.hasOwnProperty(ship)) {
+          if (ships[ship].condition()) count++;
+        }
+      }
+
       return count;
     }
-
     let damageBooster = 0;
 
     function getRandomUpgrades(count) {
@@ -5028,10 +5032,10 @@
       complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Hero Mode. Unlock Extra Life.' },
       kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
       kill_15_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 15 Aliens. Unlock Chain Lightning.' },
-      complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Shower Easy Mode.' },
+      complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Shower Easy Mode. Unlock Starhawk' },
       complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Shower Normal Mode. Unlock Double Turret.' },
-      complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode. Unlock Starhawk.' },
-      complete_meteor_hero_mode: { reached: false, icon: 'achievements/death_meteor.png', description: 'Shower Hero Mode' },
+      complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode. Unlock Solar Phoenix .' },
+      complete_meteor_hero_mode: { reached: false, icon: 'achievements/death_meteor.png', description: 'Shower Hero Mode. Unlock Quantum Striker' },
       complete_planet_easy_mode: { reached: false, icon: 'achievements/planet_medium.png', description: 'Planet Easy Mode.' },
       complete_planet_normal_mode: { reached: false, icon: 'achievements/storm_medium.png', description: 'Planet Normal Mode. Unlock Triple Turret.' },
       complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode. Unlock Explosive Rocket.' },
