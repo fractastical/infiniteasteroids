@@ -5268,7 +5268,6 @@
           loadUserData(user.uid);
           loginPopup.style.display = 'none';
           loginFormOpen = false;
-
           resumeGame();
         })
         .catch((error) => {
@@ -5325,11 +5324,23 @@
       if (user) {
         loadUserData(user.uid);
         userId = user.uid;
-      } else {
-        userInfo.style.display = 'none';
-        loginContainer.style.display = 'block';
-        pauseGame();
+        if (score && score > 1000 {
+
+
+          const gameData = {
+            score: score
+          }
+          saveUserScore(userId, gameId, gameData);
+        }
+
+
       }
+    } else {
+      userInfo.style.display = 'none';
+      loginContainer.style.display = 'block';
+
+      pauseGame();
+    }
     });
 
     function pauseGame() {
