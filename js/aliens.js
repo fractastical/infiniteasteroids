@@ -3,17 +3,37 @@ alienImage.src = 'icons/little_alien_ship_green.png';
 const bossAlienImage = new Image();
 bossAlienImage.src = 'icons/alien_boss_ship_green.png';
 
+// Load swarming alien images
+const swarmingAlienImages = [];
+for (let i = 1; i <= 9; i++) {
+    const img = new Image();
+    img.src = `icons/swarm/swarming_alien_${i}.png`;
+    swarmingAlienImages.push(img);
+}
+
+const SwarmingAlienTypes = {
+    EASY: { hitpoints: 1, color: 'blue' },
+    MEDIUM: { hitpoints: 3, color: 'orange' },
+    HARD: { hitpoints: 5, color: 'red' }
+};
 
 let alien = null;
 let alienLaser = null;
 const alienLaserSpeed = 2.2;
 const alienLaserSize = 4;
 let superbossAlien = null;
+let swarmingAliens = [];
 
 let aliens = [];
 let alienLasers = [];
 
 function spawnAliens(wave) {
+
+    if (testMode) {
+        spawnSwarmingAliens(SwarmingAlienTypes.EASY, 10);
+        // spawnSwarmingAliens(SwarmingAlienTypes.MEDIUM, 2);
+        console.log("spa")
+    }
 
 
     if (wave === 50) {
@@ -425,6 +445,79 @@ function drawSuperBossAlienLasers() {
         ctx.beginPath();
         ctx.arc(laser.x, laser.y, 6, 0, Math.PI * 2);
         ctx.fill();
+    });
+}
+
+// New functions for swarming aliens
+function spawnSwarmingAliens(type, count) {
+    for (let i = 0; i < count; i++) {
+        if (swarmingAliens.length < 10) {
+            let newSwarmingAlien = {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: 20,
+                speed: 0.2,
+                direction: Math.random() * Math.PI * 2,
+                hitpoints: type.hitpoints,
+                type: type,
+                image: swarmingAlienImages[Math.floor(Math.random() * swarmingAlienImages.length)]
+            };
+            swarmingAliens.push(newSwarmingAlien);
+        }
+    }
+}
+
+function updateSwarmingAliens() {
+    if (!freezeEffect.active) {
+        swarmingAliens.forEach(alien => {
+            const dx = ship.x - alien.x;
+            const dy = ship.y - alien.y;
+            const angle = Math.atan2(dy, dx);
+
+            alien.x += Math.cos(angle) * alien.speed;
+            alien.y += Math.sin(angle) * alien.speed;
+
+            // Check for incoming projectiles
+            alienLasers.forEach(laser => {
+                const laserDx = laser.dx;
+                const laserDy = laser.dy;
+                const laserAngle = Math.atan2(laserDy, laserDx);
+                const distance = Math.hypot(alien.x - laser.x, alien.y - laser.y);
+                const angleDifference = Math.abs(laserAngle - angle);
+
+                if (distance < 100 && angleDifference < Math.PI / 6) { // If laser is close and within a certain angle range
+                    alien.x += Math.cos(laserAngle + Math.PI / 2) * alien.speed;
+                    alien.y += Math.sin(laserAngle + Math.PI / 2) * alien.speed;
+                }
+            });
+
+            // Check for collision with player
+            if (!invincible && isColliding(alien, ship)) {
+                createExplosion(ship.x, ship.y);
+                resetShip();
+                lives--;
+                playShipDestroyedSound();
+                invincible = true;
+                invincibilityTimer = invincibilityDuration;
+                if (lives === 0) gameOver = true;
+                return;
+            }
+
+            // Wrap the alien around the screen edges
+            if (alien.x < 0) alien.x = canvas.width;
+            else if (alien.x > canvas.width) alien.x = 0;
+            if (alien.y < 0) alien.y = canvas.height;
+            else if (alien.y > canvas.height) alien.y = 0;
+        });
+    }
+}
+
+function drawSwarmingAliens() {
+    swarmingAliens.forEach(alien => {
+        ctx.save();
+        ctx.translate(alien.x, alien.y);
+        ctx.drawImage(alien.image, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+        ctx.restore();
     });
 }
 
