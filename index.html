@@ -3091,11 +3091,11 @@
           break;
         case 'Increase Freeze Duration':
           freezeEffectUpgrades.duration++;
-          freezeEffect.duration = 20 + (10 * freezeEffectUpgrades.duration);
+          freezeEffect.duration = 10 + (5 * freezeEffectUpgrades.duration);
           break;
         case 'Decrease Freeze Cooldown':
           freezeEffectUpgrades.cooldown++;
-          freezeEffect.cooldown = Math.max(60, 600 - 60 * freezeEffectUpgrades.cooldown);
+          freezeEffect.cooldown = Math.max(60, 600 - 30 * freezeEffectUpgrades.cooldown);
           break;
         case 'Activate Boomerang':
           activateWeaponClass('boomerang');
