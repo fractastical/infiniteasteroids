@@ -7,7 +7,7 @@ bossAlienImage.src = 'icons/alien_boss_ship_green.png';
 const swarmingAlienImages = [];
 for (let i = 1; i <= 9; i++) {
     const img = new Image();
-    img.src = `icons/swarm/swarming_alien_${i}.png`;
+    img.src = `icons/swarm/swarming_alien_${i}_green.png`;
     swarmingAlienImages.push(img);
 }
 
@@ -30,11 +30,14 @@ let alienLasers = [];
 function spawnAliens(wave) {
 
     if (testMode) {
-        spawnSwarmingAliens(SwarmingAlienTypes.EASY, 10);
+        spawnSwarmingAliens(SwarmingAlienTypes.EASY, 70);
         // spawnSwarmingAliens(SwarmingAlienTypes.MEDIUM, 2);
-        console.log("spa")
     }
 
+
+    if (wave % 7 == 0) {
+        spawnSwarmingAliens(SwarmingAlienTypes.EASY, wave);
+    }
 
     if (wave === 50) {
         spawnSuperBossAlien();
@@ -450,20 +453,60 @@ function drawSuperBossAlienLasers() {
 
 // New functions for swarming aliens
 function spawnSwarmingAliens(type, count) {
+    const alienSize = 20;
+    const spacing = 2; // 2 pixels in between each alien
+    const totalSize = alienSize + spacing; // Total size including spacing
+
+    // Determine the number of aliens per row/column for the clump
+    const clumpWidth = Math.ceil(Math.sqrt(count));
+
+    // Choose a random edge of the map
+    const edge = Math.floor(Math.random() * 4);
+    let startX, startY;
+
+    switch (edge) {
+        case 0: // Top edge
+            startX = Math.random() * canvas.width;
+            startY = 0;
+            break;
+        case 1: // Bottom edge
+            startX = Math.random() * canvas.width;
+            startY = canvas.height;
+            break;
+        case 2: // Left edge
+            startX = 0;
+            startY = Math.random() * canvas.height;
+            break;
+        case 3: // Right edge
+            startX = canvas.width;
+            startY = Math.random() * canvas.height;
+            break;
+    }
+
     for (let i = 0; i < count; i++) {
-        if (swarmingAliens.length < 10) {
-            let newSwarmingAlien = {
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: 20,
-                speed: 0.2,
-                direction: Math.random() * Math.PI * 2,
-                hitpoints: type.hitpoints,
-                type: type,
-                image: swarmingAlienImages[Math.floor(Math.random() * swarmingAlienImages.length)]
-            };
-            swarmingAliens.push(newSwarmingAlien);
-        }
+        let row = Math.floor(i / clumpWidth);
+        let col = i % clumpWidth;
+        let offsetX = col * totalSize;
+        let offsetY = row * totalSize;
+
+        let newSwarmingAlien = {
+            x: startX + offsetX,
+            y: startY + offsetY,
+            size: alienSize,
+            speed: 0.15,
+            direction: Math.random() * Math.PI * 2,
+            hitpoints: type.hitpoints,
+            type: type,
+            image: swarmingAlienImages[Math.floor(Math.random() * swarmingAlienImages.length)]
+        };
+
+        // Ensure the alien stays within the canvas bounds
+        if (newSwarmingAlien.x >= canvas.width) newSwarmingAlien.x = canvas.width - alienSize;
+        if (newSwarmingAlien.x < 0) newSwarmingAlien.x = 0;
+        if (newSwarmingAlien.y >= canvas.height) newSwarmingAlien.y = canvas.height - alienSize;
+        if (newSwarmingAlien.y < 0) newSwarmingAlien.y = 0;
+
+        swarmingAliens.push(newSwarmingAlien);
     }
 }
 

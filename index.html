@@ -8,8 +8,9 @@
 
 
 
+
   <!-- #INFINITEGAMES CSS START -->
-  <!-- <link rel="stylesheet" href="infinite/css/48_leaderboard_20240627190634.css"> -->
+  <!-- <link rel="stylesheet" href="infinite/css/48_leaderboard_20240627201918.css"> -->
   <!-- #INFINITEGAMES CSS END -->
 </head>
 
@@ -1082,6 +1083,8 @@
       drawSuperBossAlien();
       updateAliens();
       updateAlienLasers();
+      updateSwarmingAliens();
+      drawSwarmingAliens();
       drawAliens();
       drawAlienLasers();
 
@@ -1424,6 +1427,22 @@
     function checkLaserCollisions(lasers, isShip) {
       for (let i = lasers.length - 1; i >= 0; i--) {
         let laser = lasers[i];
+
+
+        for (let j = swarmingAliens.length - 1; j >= 0; j--) {
+          const swarmingalien = swarmingAliens[j];
+          if (isColliding(laser, swarmingalien)) {
+            swarmingAliens.splice(j, 1);
+            increaseXP(40);
+            score += 40;
+            createExplosion(swarmingalien.x, swarmingalien.y, 1);
+            lasers.splice(i, 1); // Remove laser
+            break;
+          }
+
+
+        }
+
 
         for (let j = aliens.length - 1; j >= 0; j--) {
           const alien = aliens[j];
@@ -4560,6 +4579,7 @@
       drones = [];
       aliens = [];
       alien = null;
+      swarmingAliens = [];
       superbossAlien = null;
       alienLasers = [];
       droppedGems = [];
@@ -5054,7 +5074,7 @@
     let afterGameAchievements = null;
 
     function updateAchievementsAtEnd() {
-      console.log('ach');
+
       const newlyUnlockedAchievements = [];
 
       const newlyUnlockedWeapons = [];
@@ -5719,9 +5739,10 @@
 
 
 
+
   <!-- #INFINITEGAMES JS START -->
-  <!-- <script src="infinite/js/48_leaderboard_20240627190634.js"></script>
-  <script src="infinite/js/48_firebase_20240627190634.js"></script> -->
+  <!-- <script src="infinite/js/48_leaderboard_20240627201918.js"></script>
+  <script src="infinite/js/48_firebase_20240627201918.js"></script> -->
   <!-- #INFINITEGAMES JS END -->
 </body>
 
