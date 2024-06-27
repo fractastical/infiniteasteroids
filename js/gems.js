@@ -301,7 +301,7 @@ function checkGemCollection() {
         let gem = droppedGems[i];
         if (isColliding(ship, gem)) {
             // Determine the XP boost based on the gem type
-            let xpBoost;
+            let xpBoost = 0;
             playGemCollectingSound();
             switch (gem.type) {
                 case 'common':
