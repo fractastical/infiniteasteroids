@@ -2,175 +2,175 @@ const upgrades = [
     {
         name: 'Glitch Effect',
         description: 'Applies a glitch effect to nearby asteroids, causing them to malfunction and break apart.',
-        icon: 'icons/glitch-effect.png',
+        icon: 'icons/upgrades/glitch-effect.png',
         rarity: 'rare',
         price: 100
     },
     {
         name: 'Time Dilation',
         description: 'Slows down time for a short duration, making it easier to evade asteroids and aim at targets.',
-        icon: 'icons/time-dilation.png',
+        icon: 'icons/upgrades/time-dilation.png',
         rarity: 'common',
         price: 50
     },
     {
         name: 'Space Potato',
         description: 'Summons a giant space potato that orbits around the ship, absorbing incoming asteroids and projectiles.',
-        icon: 'icons/space-potato.png',
+        icon: 'icons/upgrades/space-potato.png',
         rarity: 'epic',
         price: 200
     },
     {
         name: 'Damage Booster',
         description: 'Temporarily boosts the damage output of all weapons.',
-        icon: 'icons/damage-booster.png',
+        icon: 'icons/upgrades/damage-booster.png',
         rarity: 'common',
         price: 75
     },
     {
         name: 'Space Monkey',
         description: 'Deploys a mischievous space monkey that distracts and confuses nearby asteroids.',
-        icon: 'icons/space-monkey.png',
+        icon: 'icons/upgrades/space-monkey.png',
         rarity: 'uncommon',
         price: 120
     },
     {
         name: 'Space Pizza',
         description: 'Launches a delicious space pizza that attracts and satisfies nearby asteroids, making them harmless.',
-        icon: 'icons/space-pizza.png',
+        icon: 'icons/upgrades/space-pizza.png',
         rarity: 'common',
         price: 50
     },
     {
         name: 'Space Pixie',
         description: 'Summons a helpful space pixie that automatically collects power-ups and bonuses.',
-        icon: 'icons/space-pixie.png',
+        icon: 'icons/upgrades/space-pixie.png',
         rarity: 'uncommon',
         price: 100
     },
     {
         name: 'Quantum Shield',
         description: 'Generates a shield that temporarily protects the ship from all damage.',
-        icon: 'icons/quantum-shield.png',
+        icon: 'icons/upgrades/quantum-shield.png',
         rarity: 'rare',
         price: 150
     },
     {
         name: 'Warp Drive',
         description: 'Allows the ship to make short teleportation jumps to avoid danger.',
-        icon: 'icons/warp-drive.png',
+        icon: 'icons/upgrades/warp-drive.png',
         rarity: 'epic',
         price: 250
     },
     {
         name: 'Gravity Well',
         description: 'Creates a gravity well that pulls in nearby asteroids and projectiles.',
-        icon: 'icons/gravity-well.png',
+        icon: 'icons/upgrades/gravity-well.png',
         rarity: 'rare',
         price: 175
     },
     {
         name: 'Plasma Cannon',
         description: 'Equips the ship with a powerful plasma cannon that deals heavy damage.',
-        icon: 'icons/plasma-cannon.png',
+        icon: 'icons/upgrades/plasma-cannon.png',
         rarity: 'epic',
         price: 300
     },
     {
         name: 'Nano Repair Bots',
         description: 'Deploys nano bots that slowly repair the ship over time.',
-        icon: 'icons/nano-repair-bots.png',
+        icon: 'icons/upgrades/nano-repair-bots.png',
         rarity: 'uncommon',
         price: 100
     },
     {
         name: 'EMP Blast',
         description: 'Unleashes an EMP blast that disables all enemy electronics for a short duration.',
-        icon: 'icons/emp-blast.png',
+        icon: 'icons/upgrades/emp-blast.png',
         rarity: 'rare',
         price: 150
     },
     {
         name: 'Homing Missiles',
         description: 'Equips the ship with homing missiles that track and destroy enemies.',
-        icon: 'icons/homing-missiles.png',
+        icon: 'icons/upgrades/homing-missiles.png',
         rarity: 'epic',
         price: 200
     },
     {
         name: 'Photon Beam',
         description: 'Fires a continuous photon beam that pierces through multiple targets.',
-        icon: 'icons/photon-beam.png',
+        icon: 'icons/upgrades/photon-beam.png',
         rarity: 'epic',
         price: 250
     },
     {
         name: 'Energy Surge',
         description: 'Provides a temporary surge in energy, increasing fire rate and speed.',
-        icon: 'icons/energy-surge.png',
+        icon: 'icons/upgrades/energy-surge.png',
         rarity: 'common',
         price: 75
     },
     {
         name: 'Cloaking Device',
         description: 'Renders the ship invisible to enemies for a short period.',
-        icon: 'icons/cloaking-device.png',
+        icon: 'icons/upgrades/cloaking-device.png',
         rarity: 'rare',
         price: 180
     },
     {
         name: 'Tachyon Drive',
         description: 'Increases the ship\'s speed and maneuverability significantly.',
-        icon: 'icons/tachyon-drive.png',
+        icon: 'icons/upgrades/tachyon-drive.png',
         rarity: 'epic',
         price: 300
     },
     {
         name: 'Reflective Armor',
         description: 'Adds reflective armor that bounces off projectiles.',
-        icon: 'icons/reflective-armor.png',
+        icon: 'icons/upgrades/reflective-armor.png',
         rarity: 'uncommon',
         price: 120
     },
     {
         name: 'Shield Overcharge',
         description: 'Overcharges the ship\'s shield, providing extra protection.',
-        icon: 'icons/shield-overcharge.png',
+        icon: 'icons/upgrades/shield-overcharge.png',
         rarity: 'common',
         price: 50
     },
     {
         name: 'Anti-Matter Missiles',
         description: 'Fires missiles that cause massive explosions upon impact.',
-        icon: 'icons/anti-matter-missiles.png',
+        icon: 'icons/upgrades/anti-matter-missiles.png',
         rarity: 'epic',
         price: 300
     },
     {
         name: 'Ion Cannon',
         description: 'Fires a powerful ion beam that disintegrates enemies.',
-        icon: 'icons/ion-cannon.png',
+        icon: 'icons/upgrades/ion-cannon.png',
         rarity: 'rare',
         price: 200
     },
     {
         name: 'Temporal Shield',
         description: 'Creates a shield that temporarily stops time around the ship.',
-        icon: 'icons/temporal-shield.png',
+        icon: 'icons/upgrades/temporal-shield.png',
         rarity: 'epic',
         price: 250
     },
     {
         name: 'Black Hole Generator',
         description: 'Generates a black hole that sucks in and destroys everything in its vicinity.',
-        icon: 'icons/black-hole-generator.png',
+        icon: 'icons/upgrades/black-hole-generator.png',
         rarity: 'legendary',
         price: 400
     },
     {
         name: 'Solar Flare',
         description: 'Unleashes a solar flare that burns all enemies on the screen.',
-        icon: 'icons/solar-flare.png',
+        icon: 'icons/upgrades/solar-flare.png',
         rarity: 'rare',
         price: 220
     }
