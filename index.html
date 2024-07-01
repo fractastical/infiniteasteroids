@@ -56,7 +56,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.913.
+    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.914.
   </div>
 
 
@@ -706,17 +706,26 @@
     //   }
     // });
 
-    canvas.addEventListener('touchstart', (e) => {
 
-      // lower left corner to access store
-      // if (e.touches[0].clientX < canvas.width / 5 && e.touches[0].clientY > canvas.height * 4 / 5) {
-      //   pauseGameForMarketplace();
-      // }
+    // lower left corner to access store
+    // if (e.touches[0].clientX < canvas.width / 5 && e.touches[0].clientY > canvas.height * 4 / 5) {
+    //   pauseGameForMarketplace();
+    // }
+
+    let touchAccelerating = false;
+
+    canvas.addEventListener('touchstart', handleTouch);
+    canvas.addEventListener('touchmove', handleTouch);
+    canvas.addEventListener('touchend', () => {
+      touchAccelerating = false;
+    });
+
+    function handleTouch(e) {
+      e.preventDefault(); // Prevent default touch behaviors
 
       if (e.touches.length === 1) {
         const touch = e.touches[0];
         const touchX = touch.clientX;
-
         const canvasWidth = canvas.width;
         const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
 
@@ -728,13 +737,7 @@
           ship.rotation -= ship.rotationSpeed;
         } else if (touchX < partWidth * 3) {
           // Acceleration
-          // this is bugged but don't know why
-          // if (ship.speed < ship.maxSpeed) {
-          ship.speed += (ship.acceleration * 7);
-          ship.velocityX += ship.acceleration * Math.sin(angle);
-          ship.velocityY -= ship.acceleration * Math.cos(angle);
-
-          // }
+          touchAccelerating = true;
         } else if (touchX < partWidth * 4) {
           // Soft right turn
           ship.rotation += ship.rotationSpeed;
@@ -742,15 +745,20 @@
           // Hard right turn
           ship.rotation += (ship.rotationSpeed * 3);
         }
+
+        // Check for store access (lower left corner)
+        if (touch.clientX < canvas.width / 5 && touch.clientY > canvas.height * 4 / 5) {
+          pauseGameForMarketplace();
+        }
       }
 
-
-      if (e.target === canvas && e.touches.length === 2) { // Require two fingers to fire
-        ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: 2 });
+      if (e.target === canvas && e.touches.length === 2) {
+        // Two-finger touch for firing
+        if (ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
+          shootLasers();
+        }
       }
-
-
-    });
+    }
 
     let gameStartTime;
     let gameEndTime;
@@ -877,7 +885,7 @@
       // document.getElementById('waveCounter').textContent = `Next Wave: ${secondsUntilNextWave}s`;
 
 
-      if (keys['ArrowUp'] || keys['w']) {
+      if (keys['ArrowUp'] || keys['w'] || touchAccelerating) {
         if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
         playRandomThrusterSound();
 
