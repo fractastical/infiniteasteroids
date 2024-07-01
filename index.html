@@ -9,8 +9,10 @@
 
 
 
+
+
   <!-- #INFINITEGAMES CSS START -->
-  <!-- <link rel="stylesheet" href="infinite/css/48_leaderboard_20240627201918.css"> -->
+  <!-- <link rel="stylesheet" href="infinite/css/48_leaderboard_20240628121924.css"> -->
   <!-- #INFINITEGAMES CSS END -->
 </head>
 
@@ -1502,6 +1504,7 @@
             asteroid.hitpoints -= actualDamage;
 
             if (asteroid.hitpoints <= 0) {
+              //shrapnel
               if (asteroid.isLarge) {
                 createSmallerAsteroids(asteroid.x, asteroid.y, asteroid.size, asteroid.speed, 1); // Split into smaller asteroids
               }
@@ -3451,7 +3454,7 @@
 
     function createSmallerAsteroids(x, y, size, speed, hitpoints) {
       const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
-      const speedMultiplier = 0.6; // Decrease speed for smaller asteroids
+      const speedMultiplier = 0.2; // Decrease speed for smaller asteroids
       const newSize = size / 2; // New size for smaller asteroids
 
       for (let i = 0; i < 3; i++) {
@@ -3462,9 +3465,9 @@
           x: x,
           y: y,
           size: newSize,
-          speed: speed,
-          dx: Math.cos(angle) * speed,
-          dy: Math.sin(angle) * speed,
+          speed: speed * speedMultiplier,
+          dx: Math.cos(angle) * speed * speedMultiplier,
+          dy: Math.sin(angle) * speed * speedMultiplier,
           hitpoints: hitpoints,
           initialHitpoints: hitpoints, // Store the initial hitpoints
           color: 'gray'
@@ -5740,9 +5743,11 @@
 
 
 
+
+
   <!-- #INFINITEGAMES JS START -->
-  <!-- <script src="infinite/js/48_leaderboard_20240627201918.js"></script>
-  <script src="infinite/js/48_firebase_20240627201918.js"></script> -->
+  <!-- <script src="infinite/js/48_leaderboard_20240628121924.js"></script>
+  <script src="infinite/js/48_firebase_20240628121924.js"></script> -->
   <!-- #INFINITEGAMES JS END -->
 </body>
 
