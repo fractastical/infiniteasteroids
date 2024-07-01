@@ -4559,6 +4559,22 @@
       gravityStrength = 0;
       meteorMode = false;
       planetMode = false;
+      fourthUpgradeUnlocked = false;
+      doubleTurret = false;
+      tripleTurret = false;
+
+      turret = {
+        x: 0,
+        y: 0,
+        size: 10,
+        rotationSpeed: 2,
+        fireInterval: 120,
+        fireTimer: 0,
+        range: 400,
+        damage: 3,
+        color: 'cyan',
+        lasers: [] // Initialize the turret's lasers array
+      };
 
       let count = countTechnologies();
       const technologiesCountElement = document.getElementById('technologiesCount');
