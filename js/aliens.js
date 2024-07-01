@@ -145,7 +145,8 @@ function spawnSuperBossAlien() {
         direction: Math.random() * Math.PI * 2,
         shootTimer: 0,
         spawnTimer: 0,
-        hitpoints: 10000,
+        hitpoints: 5000,
+        maxHitpoints: 5000,
         shootInterval: 100 // Adjust this value as needed
     };
     aliens.push(superbossAlien);
@@ -212,12 +213,38 @@ function drawSuperBossAlien() {
     ctx.translate(superbossAlien.x, superbossAlien.y);
     ctx.drawImage(bossAlienImage, -superbossAlien.size / 2, -superbossAlien.size / 2, superbossAlien.size, superbossAlien.size);
     ctx.restore();
+    drawBossHitpointBar();
+}
+
+function drawBossHitpointBar() {
+    if (!superbossAlien) return;
+
+    const barWidth = canvas.width * 0.8; // 80% of the canvas width
+    const barHeight = 20;
+    const barX = (canvas.width - barWidth) / 2;
+    const barY = canvas.height - barHeight - 10; // 10 pixels from the bottom
+
+    const hpRatio = superbossAlien.hitpoints / superbossAlien.maxHitpoints;
+    const filledBarWidth = barWidth * hpRatio;
+
+    // Draw the background of the hitpoint bar
+    ctx.fillStyle = 'grey';
+    ctx.fillRect(barX, barY, barWidth, barHeight);
+
+    // Draw the filled part of the hitpoint bar
+    ctx.fillStyle = 'red';
+    ctx.fillRect(barX, barY, filledBarWidth, barHeight);
+
+    // Draw the border of the hitpoint bar
+    ctx.strokeStyle = 'black';
+    ctx.strokeRect(barX, barY, barWidth, barHeight);
+
 }
 
 
 function spawnLittleAliensAroundBoss() {
     const numberOfAliens = 4;
-    const radius = 100;
+    const radius = 150;
 
     for (let i = 0; i < numberOfAliens; i++) {
         const angle = (i * 2 * Math.PI) / numberOfAliens;
@@ -228,7 +255,7 @@ function spawnLittleAliensAroundBoss() {
             speed: 0.5,
             direction: Math.random() * Math.PI * 2,
             shootTimer: 0,
-            hitpoints: 10,
+            hitpoints: 15,
             shootInterval: 150 // Adjust this value as needed
         };
         aliens.push(newAlien);
@@ -236,14 +263,14 @@ function spawnLittleAliensAroundBoss() {
 }
 
 
-function drawAliens() {
-    aliens.forEach(alien => {
-        ctx.save();
-        ctx.translate(alien.x, alien.y);
-        ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
-        ctx.restore();
-    });
-}
+// function drawAliens() {
+//     aliens.forEach(alien => {
+//         ctx.save();
+//         ctx.translate(alien.x, alien.y);
+//         ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+//         ctx.restore();
+//     });
+// }
 
 function drawAliens() {
     aliens.forEach(alien => {
