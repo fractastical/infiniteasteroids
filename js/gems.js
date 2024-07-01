@@ -299,9 +299,10 @@ function drawGems() {
 function checkGemCollection() {
     for (let i = droppedGems.length - 1; i >= 0; i--) {
         let gem = droppedGems[i];
+        let xpBoost = 0;
+
         if (isColliding(ship, gem)) {
             // Determine the XP boost based on the gem type
-            let xpBoost = 0;
             playGemCollectingSound();
             switch (gem.type) {
                 case 'common':
