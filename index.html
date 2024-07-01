@@ -56,7 +56,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.911.
+    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.912.
   </div>
 
 
@@ -713,9 +713,43 @@
       //   pauseGameForMarketplace();
       // }
 
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const touchX = touch.clientX;
+
+        const canvasWidth = canvas.width;
+        const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
+
+        if (touchX < partWidth) {
+          // Hard left turn
+          ship.rotation -= (ship.rotationSpeed * 3);
+        } else if (touchX < partWidth * 2) {
+          // Soft left turn
+          ship.rotation -= ship.rotationSpeed;
+        } else if (touchX < partWidth * 3) {
+          // Acceleration
+          // this is bugged but don't know why
+          // if (ship.speed < ship.maxSpeed) {
+          ship.speed += (ship.acceleration * 7);
+          ship.velocityX += ship.acceleration * Math.sin(angle);
+          ship.velocityY -= ship.acceleration * Math.cos(angle);
+
+          // }
+        } else if (touchX < partWidth * 4) {
+          // Soft right turn
+          ship.rotation += ship.rotationSpeed;
+        } else {
+          // Hard right turn
+          ship.rotation += (ship.rotationSpeed * 3);
+        }
+      }
+
+
       if (e.target === canvas && e.touches.length === 2) { // Require two fingers to fire
         ship.lasers.push({ x: ship.x, y: ship.y, rotation: ship.rotation, size: 2 });
       }
+
+
     });
 
     let gameStartTime;
@@ -4487,37 +4521,6 @@
       joystickStartY = e.touches[0].clientY;
     });
 
-    canvas.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        const touch = e.touches[0];
-        const touchX = touch.clientX;
-
-        const canvasWidth = canvas.width;
-        const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
-
-        if (touchX < partWidth) {
-          // Hard left turn
-          ship.rotation -= (ship.rotationSpeed * 3);
-        } else if (touchX < partWidth * 2) {
-          // Soft left turn
-          ship.rotation -= ship.rotationSpeed;
-        } else if (touchX < partWidth * 3) {
-          // Acceleration
-          if (ship.speed < ship.maxSpeed) {
-            ship.speed += (ship.acceleration * 7);
-            ship.velocityX += ship.acceleration * Math.sin(angle);
-            ship.velocityY -= ship.acceleration * Math.cos(angle);
-
-          }
-        } else if (touchX < partWidth * 4) {
-          // Soft right turn
-          ship.rotation += ship.rotationSpeed;
-        } else {
-          // Hard right turn
-          ship.rotation += (ship.rotationSpeed * 3);
-        }
-      }
-    });
 
     joystick.addEventListener('touchmove', (e) => {
       if (isTouchingJoystick) {
