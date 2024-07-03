@@ -803,6 +803,8 @@
 
       }
 
+      fourthUpgradeUnlocked = false;
+
       if (currentShip === 'starHawk') {
         activateWeaponClass('turret');
         damageReportStartTimes.turret = Date.now();
@@ -889,8 +891,12 @@
         if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
         playRandomThrusterSound();
 
-        ship.velocityX += ship.acceleration * Math.sin(angle);
-        ship.velocityY -= ship.acceleration * Math.cos(angle);
+        let accelerationAmount = ship.acceleration;
+
+        if (touchAccelerating)
+          accelerationAmount *= 5;
+        ship.velocityX += accelerationAmount * Math.sin(angle);
+        ship.velocityY -= accelerationAmount * Math.cos(angle);
 
         // Generate thruster particles
         generateThrusterParticles();
