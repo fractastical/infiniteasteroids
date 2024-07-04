@@ -56,7 +56,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.914.
+    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.916.
   </div>
 
 
@@ -179,6 +179,16 @@
             <button id="planetHardButton" onclick="initializeGame(GameModes.PLANETHARD)" disabled>Hard</button>
             <button id="planetHeroButton" onclick="initializeGame(GameModes.PLANETHERO)" disabled>Hero</button>
           </td>
+        </tr>
+        <tr>
+          <td>
+
+            <button id="endlessSlowButton" onclick="initializeGame(GameModes.ENDLESS_SLOW)">Endless </button>
+
+
+          </td>
+        </tr>
+
         </tr>
 
       </table>
@@ -354,7 +364,9 @@
       PLANETEASY: 'planeteasy',
       PLANETNORMAL: 'planetnormal',
       PLANETHARD: 'planethard',
-      PLANETHERO: 'planethero'
+      PLANETHERO: 'planethero',
+      ENDLESS_SLOW: 'endless_slow'
+
     };
 
     let currentMode = GameModes.EASY; // Start with Easy mode by default
@@ -776,6 +788,7 @@
       document.getElementById('startScreen').style.display = 'none';
       document.getElementById('shipType').style.display = 'none';
 
+
       // startGamingSessionApi();
       createAsteroids();
       invincible = true;
@@ -783,6 +796,8 @@
       resetShip();
       invincibilityTimer = invincibilityDuration;
       clearInterval(gameLoop);
+      // if (mode == GameModes.ENDLESS_SLOW)
+      //   spawnCooldown = 6;
 
       // const selectedUpgrades = getSelectedUpgrades(); // Implement this function to retrieve the selected upgrades
 
@@ -1383,6 +1398,12 @@
           gravityStrength = 140;
           planetMode = true;
           modeScoreMultiplier = 4.2;
+          break;
+        case GameModes.ENDLESS_SLOW:
+          asteroidDifficultySpeedMultiplier = 0.2; // Very slow asteroids
+          levelUpXPMultiplier = 1.1;
+          modeScoreMultiplier = 2;
+          spawnCooldown = 6;
           break;
 
 
@@ -3593,151 +3614,190 @@
 
     function createAsteroids(side) {
 
-      const asteroidImages = [
-        // 'roids/8bitroid_2657.png',
-        // 'roids/8bitroid_3590.png',
-        // 'roids/8bitroid_4692.png',
-        // 'roids/8bitroid_5715.png',
-        // 'roids/8bitroid_6560.png',
-        // 'roids/8bitroid_7406.png',
-        // 'roids/8bitroid_8170.png',
-        // 'roids/8bitroid_8775.png',
-        // 'roids/8bitroid_8824.png',
-        // 'roids/8bitroid_8892.png',
-        'roids/8bitroid_9074.png',
-        'roids/8bitroid_9292.png',
-        'roids/8bitroid_9449.png',
-        'roids/8bitroid_9460.png',
+      if (currentMode === GameModes.ENDLESS_SLOW) {
+        createEndlessSlowAsteroids();
+      } else {
+        const asteroidImages = [
+          // 'roids/8bitroid_2657.png',
+          // 'roids/8bitroid_3590.png',
+          // 'roids/8bitroid_4692.png',
+          // 'roids/8bitroid_5715.png',
+          // 'roids/8bitroid_6560.png',
+          // 'roids/8bitroid_7406.png',
+          // 'roids/8bitroid_8170.png',
+          // 'roids/8bitroid_8775.png',
+          // 'roids/8bitroid_8824.png',
+          // 'roids/8bitroid_8892.png',
+          'roids/8bitroid_9074.png',
+          'roids/8bitroid_9292.png',
+          'roids/8bitroid_9449.png',
+          'roids/8bitroid_9460.png',
 
-        // Add more asteroid image paths as needed
-      ];
+          // Add more asteroid image paths as needed
+        ];
 
 
-      let numberOfAsteroids = 10 + (wave - 1) * 1.8 + meteorBooster;
-      if (meteorMode) {
-        numberOfAsteroids += 35;
+        let numberOfAsteroids = 10 + (wave - 1) * 1.8 + meteorBooster;
+        if (meteorMode) {
+          numberOfAsteroids += 35;
+        }
+
+
+
+        for (let i = 0; i < numberOfAsteroids; i++) {
+          let isLargeAsteroid = Math.random() < 0.1; // 10% chance for a large asteroid
+          let isSmallAsteroid = Math.random() * 100 < chanceForSmallAsteroid;
+          let isVerySmallAsteroid = Math.random() * 100 < chanceForVerySmallAsteroid;
+          let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
+          let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
+          let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
+          let dx = 1;
+          let dy = 1;
+          let asteroidSize = isLargeAsteroid ? 40 : isSmallAsteroid ? 10 : 20;
+          let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : isLargeAsteroid ? 0.05 : 0.1;
+
+          const randomIndex = Math.floor(Math.random() * asteroidImages.length);
+          const asteroidImage = asteroidImages[randomIndex];
+
+          if (isVerySmallAsteroid) {
+            asteroidSize = 5;
+            asteroidSpeedMultiplier = 0.5;
+          }
+
+
+
+          let x, y;
+          let spawnArea = Math.random();
+          if (!meteorMode) {
+            if (spawnArea < 0.25) {
+              // Top edge
+              x = Math.random() * canvas.width;
+              y = Math.random() * (canvas.height * 0.1);
+            } else if (spawnArea < 0.5) {
+              // Right edge
+              x = canvas.width * 0.9 + Math.random() * (canvas.width * 0.1);
+              y = Math.random() * canvas.height;
+            } else if (spawnArea < 0.75) {
+              // Bottom edge
+              x = Math.random() * canvas.width;
+              y = canvas.height * 0.9 + Math.random() * (canvas.height * 0.1);
+            } else {
+              // Left edge
+              x = Math.random() * (canvas.width * 0.1);
+              y = Math.random() * canvas.height;
+            }
+          } else {
+            x = side === 'left' ? 0 : canvas.width;
+            y = Math.random() * canvas.height;
+            dx = side === 'left' ? Math.random() * 2 : -Math.random() * 2;
+            dy = (Math.random() * 2 - 1);
+
+          }
+
+          let hitpoints;
+          let color;
+
+          if (isLargeAsteroid) {
+            hitpoints = wave; // Higher hit points for larger asteroids
+            color = 'darkgray';
+          } else if (isMegaHardenedAsteroid) {
+            hitpoints = 10 + wave;
+            color = '#301934'; // Very dark purple for mega hardened asteroids
+          } else if (isVeryHardenedAsteroid) {
+            hitpoints = 15;
+            color = '#0A1414'; // Very dark green color for very hardened asteroids
+          } else if (isHardenedAsteroid) {
+            hitpoints = Math.floor(Math.random() * 5) + 3; // Random hitpoints between 5 and 8
+            color = '#172727'; // Dark green color for hardened asteroids
+          } else {
+            hitpoints = 1;
+            color = 'gray';
+          }
+
+          let asteroid = {
+            id: Date.now() + Math.random(), // Generate a unique ID for each asteroid
+            x: x,
+            y: y,
+            size: asteroidSize,
+            speed: 2 * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
+            dx: dx * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
+            dy: dy * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
+            hitpoints: hitpoints,
+            initialHitpoints: hitpoints,
+            color: color,
+            isLarge: isLargeAsteroid,
+            image: asteroidImage
+          };
+
+          asteroids.push(asteroid);
+        }
+
+        chanceForSmallAsteroid += 0.5;
+        chanceForVerySmallAsteroid += 0.1;
+        chanceForHardenedAsteroid += 0.5;
+        chanceForVeryHardenedAsteroid += 0.2; // Increase the chance for very hardened asteroids
+        chanceForMegaHardenedAsteroid += 0.1; // Increase the chance for mega hardened asteroids
+
+        // Trigger the asteroid cluster every few waves (e.g., every 5 waves)
+        if (wave % 3 === 0) {
+          createAsteroidCluster();
+        }
+
+
+        if (wave % 7 === 0) {
+          createSlowCluster();
+        }
+
+        if (wave % 10 === 0 && !alien) {
+          alien = {
+            x: 20,
+            y: 50,
+            size: 50,
+            speed: 1,
+            direction: Math.PI / 2,
+            shootTimer: 0,
+            hitpoints: wave + 5,
+            shootInterval: 120 // Adjust the shooting interval as desired
+          };
+        }
       }
+    }
 
+    function createEndlessSlowAsteroids() {
+      const baseAsteroidCount = 20;
+      const additionalAsteroidsPerWave = 1;
+      const baseHitpoints = 1;
+      const hitpointIncreasePerWave = 0.5;
 
+      let numberOfAsteroids = baseAsteroidCount + (wave - 1) * additionalAsteroidsPerWave;
 
       for (let i = 0; i < numberOfAsteroids; i++) {
-        let isLargeAsteroid = Math.random() < 0.1; // 10% chance for a large asteroid
-        let isSmallAsteroid = Math.random() * 100 < chanceForSmallAsteroid;
-        let isVerySmallAsteroid = Math.random() * 100 < chanceForVerySmallAsteroid;
-        let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
-        let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
-        let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
-        let dx = 1;
-        let dy = 1;
-        let asteroidSize = isLargeAsteroid ? 40 : isSmallAsteroid ? 10 : 20;
-        let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : isLargeAsteroid ? 0.05 : 0.1;
-
-        const randomIndex = Math.floor(Math.random() * asteroidImages.length);
-        const asteroidImage = asteroidImages[randomIndex];
-
-        if (isVerySmallAsteroid) {
-          asteroidSize = 5;
-          asteroidSpeedMultiplier = 0.5;
-        }
-
-
-
-        let x, y;
-        let spawnArea = Math.random();
-        if (!meteorMode) {
-          if (spawnArea < 0.25) {
-            // Top edge
-            x = Math.random() * canvas.width;
-            y = Math.random() * (canvas.height * 0.1);
-          } else if (spawnArea < 0.5) {
-            // Right edge
-            x = canvas.width * 0.9 + Math.random() * (canvas.width * 0.1);
-            y = Math.random() * canvas.height;
-          } else if (spawnArea < 0.75) {
-            // Bottom edge
-            x = Math.random() * canvas.width;
-            y = canvas.height * 0.9 + Math.random() * (canvas.height * 0.1);
-          } else {
-            // Left edge
-            x = Math.random() * (canvas.width * 0.1);
-            y = Math.random() * canvas.height;
-          }
-        } else {
-          x = side === 'left' ? 0 : canvas.width;
-          y = Math.random() * canvas.height;
-          dx = side === 'left' ? Math.random() * 2 : -Math.random() * 2;
-          dy = (Math.random() * 2 - 1);
-
-        }
-
-        let hitpoints;
-        let color;
-
-        if (isLargeAsteroid) {
-          hitpoints = wave; // Higher hit points for larger asteroids
-          color = 'darkgray';
-        } else if (isMegaHardenedAsteroid) {
-          hitpoints = 10 + wave;
-          color = '#301934'; // Very dark purple for mega hardened asteroids
-        } else if (isVeryHardenedAsteroid) {
-          hitpoints = 15;
-          color = '#0A1414'; // Very dark green color for very hardened asteroids
-        } else if (isHardenedAsteroid) {
-          hitpoints = Math.floor(Math.random() * 5) + 3; // Random hitpoints between 5 and 8
-          color = '#172727'; // Dark green color for hardened asteroids
-        } else {
-          hitpoints = 1;
-          color = 'gray';
-        }
+        let hitpoints = Math.ceil(baseHitpoints + (wave - 1) * hitpointIncreasePerWave);
 
         let asteroid = {
-          id: Date.now() + Math.random(), // Generate a unique ID for each asteroid
-          x: x,
-          y: y,
-          size: asteroidSize,
-          speed: 2 * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
-          dx: dx * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
-          dy: dy * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
+          x: 0, // Always start from the left side
+          y: Math.random() * canvas.height,
+          size: 20,
+          speed: 0.5, // Constant slow speed
+          dx: 0.5, // Only move horizontally
+          dy: 0,
           hitpoints: hitpoints,
           initialHitpoints: hitpoints,
-          color: color,
-          isLarge: isLargeAsteroid,
-          image: asteroidImage
+          color: getAsteroidColor(hitpoints)
         };
 
         asteroids.push(asteroid);
       }
-
-      chanceForSmallAsteroid += 0.5;
-      chanceForVerySmallAsteroid += 0.1;
-      chanceForHardenedAsteroid += 0.5;
-      chanceForVeryHardenedAsteroid += 0.2; // Increase the chance for very hardened asteroids
-      chanceForMegaHardenedAsteroid += 0.1; // Increase the chance for mega hardened asteroids
-
-      // Trigger the asteroid cluster every few waves (e.g., every 5 waves)
-      if (wave % 3 === 0) {
-        createAsteroidCluster();
-      }
-
-
-      if (wave % 7 === 0) {
-        createSlowCluster();
-      }
-
-      if (wave % 10 === 0 && !alien) {
-        alien = {
-          x: 20,
-          y: 50,
-          size: 50,
-          speed: 1,
-          direction: Math.PI / 2,
-          shootTimer: 0,
-          hitpoints: wave + 5,
-          shootInterval: 120 // Adjust the shooting interval as desired
-        };
-      }
-
     }
+
+    function getAsteroidColor(hitpoints) {
+      if (hitpoints <= 2) return 'gray';
+      if (hitpoints <= 5) return 'darkgray';
+      if (hitpoints <= 10) return '#172727';
+      if (hitpoints <= 20) return '#0A1414';
+      return '#301934';
+    }
+
 
 
     function createAsteroidCluster() {
@@ -3824,39 +3884,52 @@
 
     // Update asteroids
     function updateAsteroids() {
-      if (!freezeEffect.active) {
+      if (currentMode === GameModes.ENDLESS_SLOW) {
         for (let i = 0; i < asteroids.length; i++) {
-          applyGravity(asteroids[i]);
+          asteroids[i].x += asteroids[i].dx;
 
-          asteroids[i].x += asteroids[i].dx * asteroids[i].speed;
-          asteroids[i].y += asteroids[i].dy * asteroids[i].speed;
+          // Remove asteroids that have passed the right edge of the screen
+          if (asteroids[i].x > canvas.width) {
+            asteroids.splice(i, 1);
+            i--;
+          }
+        }
+      } else {
 
-          if (!meteorMode) {
-            // Wrap asteroids around the screen
-            if (asteroids[i].x < 0) {
-              asteroids[i].x = canvas.width;
-            } else if (asteroids[i].x > canvas.width) {
-              asteroids[i].x = 0;
-            }
-            if (asteroids[i].y < 0) {
-              asteroids[i].y = canvas.height;
-            } else if (asteroids[i].y > canvas.height) {
-              asteroids[i].y = 0;
-            }
-          } else {
+        if (!freezeEffect.active) {
+          for (let i = 0; i < asteroids.length; i++) {
+            applyGravity(asteroids[i]);
 
-            if (
-              asteroids[i].x < 0 ||
-              asteroids[i].x > canvas.width ||
-              asteroids[i].y < 0 ||
-              asteroids[i].y > canvas.height
-            ) {
-              asteroids.splice(i, 1);
-              i--;
+            asteroids[i].x += asteroids[i].dx * asteroids[i].speed;
+            asteroids[i].y += asteroids[i].dy * asteroids[i].speed;
+
+            if (!meteorMode) {
+              // Wrap asteroids around the screen
+              if (asteroids[i].x < 0) {
+                asteroids[i].x = canvas.width;
+              } else if (asteroids[i].x > canvas.width) {
+                asteroids[i].x = 0;
+              }
+              if (asteroids[i].y < 0) {
+                asteroids[i].y = canvas.height;
+              } else if (asteroids[i].y > canvas.height) {
+                asteroids[i].y = 0;
+              }
+            } else {
+
+              if (
+                asteroids[i].x < 0 ||
+                asteroids[i].x > canvas.width ||
+                asteroids[i].y < 0 ||
+                asteroids[i].y > canvas.height
+              ) {
+                asteroids.splice(i, 1);
+                i--;
+              }
+
             }
 
           }
-
         }
       }
     }
