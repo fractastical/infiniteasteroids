@@ -2309,7 +2309,7 @@
       saveUserScore(userId, gameId, gameData);
 
       // Load and display the leaderboard
-      loadLeaderboard(gameId);
+      loadLeaderboard(gameId, currentMode);
 
       // Update achievements and handle end game server logic
       const { newlyUnlockedAchievements, newlyUnlockedWeapons } = updateAchievementsAtEnd();
@@ -2333,7 +2333,13 @@
       const upgradesList = document.getElementById('upgradesList');
 
       // Set game stats
-      waveElement.textContent = `Wave: ${wave}`;
+      if (currentMode === GameModes.ENDLESS_SLOW) {
+        waveElement.textContent = `Waves Survived: ${wave}`;
+      } else {
+        waveElement.textContent = `Wave: ${wave}`;
+      }
+
+
       scoreElement.textContent = `Score: ${score}`;
       asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
       // bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)}`;
@@ -5274,7 +5280,8 @@
             score: gameData.score,
             topWeapons: gameData.topWeapons,
             sessionLength: sessionLength,
-            loginTime: loginTime
+            loginTime: loginTime,
+            gameMode: currentMode  // Add the game mode to the saved data
           }),
           [`games.${gameName}.achievements`]: updatedAchievements,
           [`games.${gameName}.upgrades`]: updatedUpgrades
@@ -5287,7 +5294,8 @@
             {
               score: score,
               sessionLength: sessionLength,
-              loginTime: loginTime
+              loginTime: loginTime,
+              gameMode: currentMode  // Add the game mode to the saved data
             }
           ],
           [`games.${gameName}.achievements`]: Achievements,
@@ -5297,6 +5305,7 @@
         await setDoc(userDocRef, gameData);
       }
     }
+
     window.saveUserScore = saveUserScore;
 
     // Function to save initial user data
@@ -5315,7 +5324,7 @@
     window.saveUserData = saveUserData;
 
 
-    async function loadLeaderboard(gameName) {
+    async function loadLeaderboard(gameName, gameMode) {
       const db = getFirestore();
       const usersSnapshot = await getDocs(collection(db, 'users'));
       const scores = [];
@@ -5324,10 +5333,11 @@
         const userData = doc.data();
         const gameScores = userData.games?.[gameName]?.scores || [];
         gameScores.forEach(session => {
-          if (session.score && isFinite(session.score) && session.score <= 100000000) {  // Ensure the score is finite and below the limit
+          if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === gameMode) {
             scores.push({
               nickname: userData.nickname || 'Unnamed',
-              score: session.score
+              score: session.score,
+              wave: session.wave  // Assuming we also save the wave number
             });
           }
         });
@@ -5351,19 +5361,37 @@
       const topScores = limitedScores.slice(0, 12);
 
       const leaderboard = document.getElementById('leaderboard');
-      leaderboard.innerHTML = `<h2>Leaderboard</h2 > `;
+      leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gameMode)}</h2>`;
       topScores.forEach((entry, index) => {
         const formattedScore = entry.score.toLocaleString('en-US', {
           maximumFractionDigits: 0
         });
         const scoreDiv = document.createElement('div');
-        scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+        scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points (Wave ${entry.wave})`;
         leaderboard.appendChild(scoreDiv);
       });
 
       document.getElementById('leaderboard-container').appendChild(leaderboard);
     }
 
+    function getGameModeName(mode) {
+      switch (mode) {
+        case GameModes.EASY: return "Easy";
+        case GameModes.NORMAL: return "Normal";
+        case GameModes.HARD: return "Hard";
+        case GameModes.HERO: return "Hero";
+        case GameModes.METEORSHOWEREASY: return "Meteor Shower Easy";
+        case GameModes.METEORSHOWERNORMAL: return "Meteor Shower Normal";
+        case GameModes.METEORSHOWERHARD: return "Meteor Shower Hard";
+        case GameModes.METEORSHOWERHERO: return "Meteor Shower Hero";
+        case GameModes.PLANETEASY: return "Planet Easy";
+        case GameModes.PLANETNORMAL: return "Planet Normal";
+        case GameModes.PLANETHARD: return "Planet Hard";
+        case GameModes.PLANETHERO: return "Planet Hero";
+        case GameModes.ENDLESS_SLOW: return "Endless Slow";
+        default: return "Unknown Mode";
+      }
+    }
     // Function to load leaderboard for a specific game
     // async function loadLeaderboard(gameName) {
     //   const db = getFirestore();
