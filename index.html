@@ -11,9 +11,10 @@
 
 
 
-  <!-- #INFINITEGAMES CSS START -->
-  <!-- <link rel="stylesheet" href="infinite/css/48_leaderboard_20240628121924.css"> -->
-  <!-- #INFINITEGAMES CSS END -->
+  
+<!-- #INFINITEGAMES CSS START -->
+<link rel="stylesheet" href="infinite/css/48_leaderboard_20240707163530.css">
+<!-- #INFINITEGAMES CSS END -->
 </head>
 
 <body>
@@ -187,6 +188,13 @@
 
 
           </td>
+          <td>
+
+            <button id="coopButton" onclick="initializeGame(GameModes.COOP)">Co-op </button>
+
+
+          </td>
+
         </tr>
 
         </tr>
@@ -365,7 +373,8 @@
       PLANETNORMAL: 'planetnormal',
       PLANETHARD: 'planethard',
       PLANETHERO: 'planethero',
-      ENDLESS_SLOW: 'endless_slow'
+      ENDLESS_SLOW: 'endless_slow',
+      COOP: 'coop'
 
     };
 
@@ -412,6 +421,35 @@
       laserCooldownLevel: 1,
       weaponSlots: 5,
       upgradeSlots: 2,
+      initialSlowDown: true,
+
+
+    };
+
+    let ship2 = {
+      x: canvas.width / 2,
+      y: canvas.height - 100,
+      size: 20,
+      speed: 0,
+      acceleration: 0.15,
+      deceleration: 0.96,
+      maxSpeed: 5,
+      rotation: 0,
+      rotationSpeed: 2.5,
+      lasers: [],
+      velocityX: 0,
+      velocityY: 0,
+      laserLevel: 2,
+      accelerationLevel: 1,
+      rotationSpeedLevel: 1,
+      maxBulletsLevel: 1,
+      explosiveLaserLevel: 0,
+      laserCooldown: 30,
+      laserTimer: 0,
+      laserCooldownLevel: 1,
+      weaponSlots: 5,
+      upgradeSlots: 2,
+      initialSlowDown: true,
 
 
     };
@@ -901,291 +939,332 @@
       // const secondsUntilNextWave = Math.ceil(spawnTimer);
       // document.getElementById('waveCounter').textContent = `Next Wave: ${secondsUntilNextWave}s`;
 
+      updateShip(ship, 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ');
+      if (currentMode === GameModes.COOP) {
+        updateShip(ship2, 'a', 'd', 'w', 's', 'q');
+      }
 
-      if (keys['ArrowUp'] || keys['w'] || touchAccelerating) {
+      if (planetMode) {
+        applyGravity(ship);
+        if (currentMode === GameModes.COOP) {
+          applyGravity(ship2);
+        }
+      }
+
+      if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
         if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
         playRandomThrusterSound();
 
-        let accelerationAmount = ship.acceleration;
+        // Move backwards with higher initial acceleration
+        const initialBackwardAcceleration = ship.acceleration * 1.5; // Increased initial backward acceleration
+        const backwardSpeed = ship.maxSpeed; // Increased backward speed limit
+        ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
+        ship.velocityY += initialBackwardAcceleration * Math.cos(angle);
 
-        if (touchAccelerating)
-          accelerationAmount *= 5;
-        ship.velocityX += accelerationAmount * Math.sin(angle);
-        ship.velocityY -= accelerationAmount * Math.cos(angle);
+        // Limit backward speed
+        // const currentSpeed = Math.sqrt(ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY);
+        // if (currentSpeed > backwardSpeed) {
+        //   ship.velocityX = (ship.velocityX / currentSpeed) * backwardSpeed;
+        //   ship.velocityY = (ship.velocityY / currentSpeed) * backwardSpeed;
+        // }
 
-        // Generate thruster particles
+        // Generate thruster particles for backward movement
         generateThrusterParticles();
-        initialSlowDown = true;
+      }
+    } else {
+      // Apply natural deceleration when no thrust key is pressed
+      ship.velocityX *= ship.deceleration;
+      ship.velocityY *= ship.deceleration;
+    }
 
-      } else if (keys['ArrowDown'] || keys['s']) {
 
-        if (initialSlowDown) {
-          // Apply stronger deceleration if the ship was moving at high speed
-          ship.velocityX *= 0.75;
-          ship.velocityY *= 0.75;
-          if (Math.abs(ship.velocityX) < 2 && Math.abs(ship.velocityY) < 2) {
-            initialSlowDown = false; // Disable the stronger deceleration after initial slowdown
-          }
-        }
-        else {
+    // Update ship position based on velocity
+    ship.x += ship.velocityX;
+    ship.y += ship.velocityY;
 
-          // Apply strong deceleration if moving forward
-          ship.velocityX *= 0.95;
-          ship.velocityY *= 0.95;
+    // Wrap the ship around the screen edges
+    if (ship.x < 0) ship.x = canvas.width;
+    else if (ship.x > canvas.width) ship.x = 0;
+    if (ship.y < 0) ship.y = canvas.height;
+    else if (ship.y > canvas.height) ship.y = 0;
 
-        }
+    // Handle ship rotation based on key states
+    if (keys['ArrowLeft'] || keys['a']) {
+      ship.rotation -= ship.rotationSpeed;
+    }
+    if (keys['ArrowRight'] || keys['d']) {
+      ship.rotation += ship.rotationSpeed;
+    }
 
-        applyGravity(ship);
+    // Handle shooting based on key state and cooldown
+    if (keys[' '] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
+      shootLasers();
+    }
 
-        if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
-          if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
-          playRandomThrusterSound();
+    checkGemCollection();
+    updateGems();
+    drawGems();
 
-          // Move backwards with higher initial acceleration
-          const initialBackwardAcceleration = ship.acceleration * 1.5; // Increased initial backward acceleration
-          const backwardSpeed = ship.maxSpeed; // Increased backward speed limit
-          ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
-          ship.velocityY += initialBackwardAcceleration * Math.cos(angle);
-
-          // Limit backward speed
-          // const currentSpeed = Math.sqrt(ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY);
-          // if (currentSpeed > backwardSpeed) {
-          //   ship.velocityX = (ship.velocityX / currentSpeed) * backwardSpeed;
-          //   ship.velocityY = (ship.velocityY / currentSpeed) * backwardSpeed;
-          // }
-
-          // Generate thruster particles for backward movement
-          generateThrusterParticles();
-        }
+    if (activeWeaponClasses.includes('sonic')) {
+      // Update sonic blast cooldown
+      if (sonicBlast.timer > 0) {
+        sonicBlast.timer--;
       } else {
-        // Apply natural deceleration when no thrust key is pressed
-        ship.velocityX *= ship.deceleration;
-        ship.velocityY *= ship.deceleration;
+        activateSonicBlast();
       }
+    }
 
+    // Update sonic blast waves
+    updateSonicBlast();
+    drawSonicBlast();
 
-      // Update ship position based on velocity
-      ship.x += ship.velocityX;
-      ship.y += ship.velocityY;
-
-      // Wrap the ship around the screen edges
-      if (ship.x < 0) ship.x = canvas.width;
-      else if (ship.x > canvas.width) ship.x = 0;
-      if (ship.y < 0) ship.y = canvas.height;
-      else if (ship.y > canvas.height) ship.y = 0;
-
-      // Handle ship rotation based on key states
-      if (keys['ArrowLeft'] || keys['a']) {
-        ship.rotation -= ship.rotationSpeed;
+    if (activeWeaponClasses.includes('deathray')) {
+      if (deathRay.timer > 0) {
+        deathRay.timer--;
+      } else {
+        activateDeathRay();
       }
-      if (keys['ArrowRight'] || keys['d']) {
-        ship.rotation += ship.rotationSpeed;
+    }
+
+    if (deathRayActive) {
+      updateDeathRay();
+    }
+
+    if (activeWeaponClasses.includes('explosiverocket')) {
+      if (explosiveRocket.timer > 0) {
+        explosiveRocket.timer--;
+      } else {
+        fireExplosiveRocket();
       }
+    }
+    updateExplosiveRockets();
 
-      // Handle shooting based on key state and cooldown
-      if (keys[' '] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
-        shootLasers();
+    if (activeWeaponClasses.includes('acid')) {
+      if (acidBomb.timer > 0) {
+        acidBomb.timer--;
+      } else {
+        fireAcidBomb();
       }
+    }
 
-      checkGemCollection();
-      updateGems();
-      drawGems();
 
-      if (activeWeaponClasses.includes('sonic')) {
-        // Update sonic blast cooldown
-        if (sonicBlast.timer > 0) {
-          sonicBlast.timer--;
-        } else {
-          activateSonicBlast();
+    updateAcidBombs();
+    updateAcidAreas();
+    drawAcidBombs();
+    drawAcidAreas();
+
+
+    if (activeWeaponClasses.includes('freeze')) {
+      if (freezeEffect.timer > 0) {
+        freezeEffect.timer--;
+      } else {
+        activateFreezeEffect();
+      }
+    }
+
+
+    updateFreezeEffect();
+
+    if (activeWeaponClasses.includes('flamethrower')) {
+      if (flamethrower.timer > 0) {
+        flamethrower.timer--;
+      } else if (keys[' ']) {
+        activateFlamethrower();
+      }
+    }
+    updateFlamethrower();
+    updateAsteroidFire();
+
+    if (activeWeaponClasses.includes('chainlightning')) {
+      if (chainLightning.timer > 0) {
+        chainLightning.timer--;
+      } else {
+        activateChainLightning();
+      }
+    }
+
+
+
+    drawShip();
+    drawActiveWeaponClasses();
+
+    updateBoomerang();
+    drawBoomerang();
+
+    updateLasers();
+    drawLasers();
+
+    if (activeWeaponClasses.includes('nanoswarm')) {
+      if (nanoswarm.timer > 0) {
+        nanoswarm.timer--;
+      } else {
+        firenanoswarm();
+      }
+    }
+
+    updatenanoswarms();
+    drawnanoswarms();
+
+
+    if (turret.bought) {
+      updateTurret();
+      updateTurretLasers();
+      drawTurretLasers();
+      drawTurret();
+    }
+
+    if (activeWeaponClasses.includes('bomberdrone')) {
+      updateBomberDrones();
+      drawBomberDrones();
+    }
+
+    updateDrones();
+    drawDrones();
+
+    updateAsteroids();
+    drawAsteroids();
+
+    if (!invincible) {
+      for (let i = 0; i < asteroids.length; i++) {
+        if (isColliding(ship, asteroids[i])) {
+          createExplosion(ship.x, ship.y);
+          resetShip();
+          // possible multi lives lost bug here
+          if (!invincible)
+            lives--;
+          playShipDestroyedSound();
+          invincible = true;
+          invincibilityTimer = invincibilityDuration;
+          if (lives === 0) gameOver = true;
         }
       }
+    }
 
-      // Update sonic blast waves
-      updateSonicBlast();
-      drawSonicBlast();
+    checkLaserCollisions(ship.lasers, true);
 
-      if (activeWeaponClasses.includes('deathray')) {
-        if (deathRay.timer > 0) {
-          deathRay.timer--;
-        } else {
-          activateDeathRay();
-        }
-      }
+    if (turret.bought) {
+      checkLaserCollisions(turret.lasers, false);
+    }
 
-      if (deathRayActive) {
-        updateDeathRay();
-      }
+    if (invincible) {
+      invincibilityTimer--;
+      if (invincibilityTimer <= 0) invincible = false;
+    }
 
-      if (activeWeaponClasses.includes('explosiverocket')) {
-        if (explosiveRocket.timer > 0) {
-          explosiveRocket.timer--;
-        } else {
-          fireExplosiveRocket();
-        }
-      }
-      updateExplosiveRockets();
+    updateExplosions();
+    drawExplosions();
 
-      if (activeWeaponClasses.includes('acid')) {
-        if (acidBomb.timer > 0) {
-          acidBomb.timer--;
-        } else {
-          fireAcidBomb();
-        }
-      }
+    updateBossAlien();
+    drawBossAlien();
+    updateBossAlienLaser();
+    drawBossAlienLaser();
+    updateSuperBossAlien();
+    drawSuperBossAlien();
+    updateAliens();
+    updateAlienLasers();
+    updateSwarmingAliens();
+    drawSwarmingAliens();
+    drawAliens();
+    drawAlienLasers();
 
 
-      updateAcidBombs();
-      updateAcidAreas();
-      drawAcidBombs();
-      drawAcidAreas();
+    spawnTimer -= 1 / 60; // Assuming 60 FPS
+
+    if (spawnTimer <= 0) {
+      wave++;
+      if (meteorMode) {
+
+        const side = Math.random() < 0.5 ? 'left' : 'right';
+        showArrow(side);
+
+      } else
+        createAsteroids();
+      spawnAliens(wave); // Spawn aliens based on the current wave
+      spawnTimer = spawnCooldown;
 
 
-      if (activeWeaponClasses.includes('freeze')) {
-        if (freezeEffect.timer > 0) {
-          freezeEffect.timer--;
-        } else {
-          activateFreezeEffect();
-        }
-      }
+    }
 
+    if (gameOver) endGame();
+    // if (wave > 30) updateAchievementsAtEnd();
 
-      updateFreezeEffect();
+    // Update and draw particles
+    updateParticles();
+    drawParticles();
 
-      if (activeWeaponClasses.includes('flamethrower')) {
-        if (flamethrower.timer > 0) {
-          flamethrower.timer--;
-        } else if (keys[' ']) {
-          activateFlamethrower();
-        }
-      }
-      updateFlamethrower();
-      updateAsteroidFire();
-
-      if (activeWeaponClasses.includes('chainlightning')) {
-        if (chainLightning.timer > 0) {
-          chainLightning.timer--;
-        } else {
-          activateChainLightning();
-        }
-      }
-
-
-
-      drawShip();
-      drawActiveWeaponClasses();
-
-      updateBoomerang();
-      drawBoomerang();
-
-      updateLasers();
-      drawLasers();
-
-      if (activeWeaponClasses.includes('nanoswarm')) {
-        if (nanoswarm.timer > 0) {
-          nanoswarm.timer--;
-        } else {
-          firenanoswarm();
-        }
-      }
-
-      updatenanoswarms();
-      drawnanoswarms();
-
-
-      if (turret.bought) {
-        updateTurret();
-        updateTurretLasers();
-        drawTurretLasers();
-        drawTurret();
-      }
-
-      if (activeWeaponClasses.includes('bomberdrone')) {
-        updateBomberDrones();
-        drawBomberDrones();
-      }
-
-      updateDrones();
-      drawDrones();
-
-      updateAsteroids();
-      drawAsteroids();
-
-      if (!invincible) {
-        for (let i = 0; i < asteroids.length; i++) {
-          if (isColliding(ship, asteroids[i])) {
-            createExplosion(ship.x, ship.y);
-            resetShip();
-            // possible multi lives lost bug here
-            if (!invincible)
-              lives--;
-            playShipDestroyedSound();
-            invincible = true;
-            invincibilityTimer = invincibilityDuration;
-            if (lives === 0) gameOver = true;
-          }
-        }
-      }
-
-      checkLaserCollisions(ship.lasers, true);
-
-      if (turret.bought) {
-        checkLaserCollisions(turret.lasers, false);
-      }
-
-      if (invincible) {
-        invincibilityTimer--;
-        if (invincibilityTimer <= 0) invincible = false;
-      }
-
-      updateExplosions();
-      drawExplosions();
-
-      updateBossAlien();
-      drawBossAlien();
-      updateBossAlienLaser();
-      drawBossAlienLaser();
-      updateSuperBossAlien();
-      drawSuperBossAlien();
-      updateAliens();
-      updateAlienLasers();
-      updateSwarmingAliens();
-      drawSwarmingAliens();
-      drawAliens();
-      drawAlienLasers();
-
-
-      spawnTimer -= 1 / 60; // Assuming 60 FPS
-
-      if (spawnTimer <= 0) {
-        wave++;
-        if (meteorMode) {
-
-          const side = Math.random() < 0.5 ? 'left' : 'right';
-          showArrow(side);
-
-        } else
-          createAsteroids();
-        spawnAliens(wave); // Spawn aliens based on the current wave
-        spawnTimer = spawnCooldown;
-
-
-      }
-
-      if (gameOver) endGame();
-      // if (wave > 30) updateAchievementsAtEnd();
-
-      // Update and draw particles
-      updateParticles();
-      drawParticles();
-
-      drawEdgeOverlay();
-      drawLives();
-      drawScore();
+    drawEdgeOverlay();
+    drawLives();
+    drawScore();
       // if (gameOver) drawDamageReport();
 
 
     }
 
+    function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
+      let angle = ship.rotation * Math.PI / 180;
+
+      if (keys[leftKey]) {
+        ship.rotation -= ship.rotationSpeed;
+      }
+      if (keys[rightKey]) {
+        ship.rotation += ship.rotationSpeed;
+      }
+
+      if (keys[upKey] || (ship === ship && touchAccelerating)) {
+        if (!toggleOff) backgroundMusic.play();
+        playRandomThrusterSound();
+
+        let accelerationAmount = ship.acceleration;
+
+        if (ship === ship && touchAccelerating)
+          accelerationAmount *= 5;
+        ship.velocityX += accelerationAmount * Math.sin(angle);
+        ship.velocityY -= accelerationAmount * Math.cos(angle);
+
+        generateThrusterParticles(ship);
+        ship.initialSlowDown = true;
+
+      } else if (keys[downKey]) {
+        if (ship.initialSlowDown) {
+          ship.velocityX *= 0.75;
+          ship.velocityY *= 0.75;
+          if (Math.abs(ship.velocityX) < 2 && Math.abs(ship.velocityY) < 2) {
+            ship.initialSlowDown = false;
+          }
+        }
+        else {
+          ship.velocityX *= 0.95;
+          ship.velocityY *= 0.95;
+        }
+
+        if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
+          if (!toggleOff) backgroundMusic.play();
+          playRandomThrusterSound();
+
+          const initialBackwardAcceleration = ship.acceleration * 1.5;
+          const backwardSpeed = ship.maxSpeed;
+          ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
+          ship.velocityY += initialBackwardAcceleration * Math.cos(angle);
+
+          generateThrusterParticles(ship);
+        }
+      } else {
+        ship.velocityX *= ship.deceleration;
+        ship.velocityY *= ship.deceleration;
+      }
+
+      if (keys[shootKey] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
+        shootLasers(ship);
+      }
+
+      ship.x += ship.velocityX;
+      ship.y += ship.velocityY;
+
+      if (ship.x < 0) ship.x = canvas.width;
+      else if (ship.x > canvas.width) ship.x = 0;
+      if (ship.y < 0) ship.y = canvas.height;
+      else if (ship.y > canvas.height) ship.y = 0;
+    }
     function drawPlanet() {
       const gradient = ctx.createRadialGradient(
         planet.x,
@@ -2228,7 +2307,13 @@
 
 
     function drawLives() {
-      document.getElementById('livesDisplay').textContent = `Lives: ${lives}`;
+
+      if (currentMode === GameModes.COOP) {
+        document.getElementById('livesDisplay').textContent = `P1 Lives: ${ship.lives} | P2 Lives: ${ship2.lives}`;
+      } else {
+        document.getElementById('livesDisplay').textContent = `Lives: ${lives}`;
+      }
+
     }
 
 
@@ -2339,8 +2424,15 @@
         waveElement.textContent = `Wave: ${wave}`;
       }
 
+      if (currentMode === GameModes.COOP) {
+        const totalScore = ship.score + ship2.score;
+        score = totalScore; // Set the total score for saving to leaderboard
+        scoreElement.textContent = `Total Score: ${totalScore} (P1: ${ship.score}, P2: ${ship2.score})`;
+      } else {
+        scoreElement.textContent = `Score: ${score}`;
+      }
 
-      scoreElement.textContent = `Score: ${score}`;
+
       asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
       // bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)}`;
       // currentCoinsElement.textContent = `Current Coins: ${coins}`;
@@ -4228,6 +4320,19 @@
 
     function handleKeyDown(event) {
       keys[event.key] = true;
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' ||
+        event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === ' ') {
+        event.preventDefault();
+      }
+
+      // Player 2 controls
+      if (event.key === 'a' || event.key === 'd' ||
+        event.key === 'w' || event.key === 's' || event.key === 'q') {
+        event.preventDefault();
+      }
+
+
       if (document.getElementById('loginPopup').style.display == 'none') {
 
         if (event.key === 'i' || event.key === 'I') {
@@ -5595,10 +5700,11 @@
 
 
 
-  <!-- #INFINITEGAMES JS START -->
-  <!-- <script src="infinite/js/48_leaderboard_20240628121924.js"></script>
-  <script src="infinite/js/48_firebase_20240628121924.js"></script> -->
-  <!-- #INFINITEGAMES JS END -->
+  
+<!-- #INFINITEGAMES JS START -->
+<script src="infinite/js/48_leaderboard_20240707163530.js"></script>
+<script src="infinite/js/48_firebase_20240707163530.js"></script>
+<!-- #INFINITEGAMES JS END -->
 </body>
 
 </html>
