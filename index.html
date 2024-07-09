@@ -2175,7 +2175,7 @@
             if (isColliding(laser, asteroid)) {
               let actualDamage = Math.min(drone.damage + damageBooster, asteroid.hitpoints);
               asteroid.hitpoints -= actualDamage;
-              damageReport.drones += actualDamage;
+              damageReport.drone += actualDamage;
             }
           }
         });
