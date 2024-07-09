@@ -3827,7 +3827,7 @@
             dy: dy * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
             hitpoints: hitpoints,
             initialHitpoints: hitpoints,
-            color: color,
+            color: getAsteroidColor(hitpoints),
             isLarge: isLargeAsteroid,
             image: asteroidImage
           };
@@ -4151,48 +4151,16 @@
       const baseSize = 15; // Base size for explosions
       const sizeReductionFactor = 1.5; // Size reduction per hitpoint
 
-
       const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
       const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015
-      const canvas = document.createElement('canvas');
-
-      if (asteroidImage && asteroidImage.length > 5 && false) {
-
-        const ctx = canvas.getContext('2d');
-        canvas.width = baseSize;
-        canvas.height = baseSize;
-        ctx.drawImage(asteroidImage, 0, 0, baseSize, baseSize);
-        const imageData = ctx.getImageData(0, 0, baseSize, baseSize);
-        const pixels = imageData.data;
-
-        // Create explosion particles using the extracted pixels
-        for (let i = 0; i < pixels.length; i += 4) {
-          const r = pixels[i];
-          const g = pixels[i + 1];
-          const b = pixels[i + 2];
-          const a = pixels[i + 3];
-
-          if (a > 0) {
-            const particle = {
-              x: x + (i / 4) % size - size / 2,
-              y: y + Math.floor((i / 4) / size) - size / 2,
-              color: `rgba(${r}, ${g}, ${b}, ${a})`,
-              size: Math.random() * 3 + 1,
-              speed: Math.random() * 3 + 1,
-              direction: Math.random() * Math.PI * 2
-            };
-            explosions.push(particle);
-          }
-        }
-      }
-
-
 
       let randomColor;
-      if (hitpoints > 7) {
+      if (hitpoints > 10) {
         randomColor = getRandomPurpleShade();
-      } else if (hitpoints > 1) {
+      } else if (hitpoints > 7) {
         randomColor = getRandomBlueShade();
+      } else if (hitpoints > 3) {
+        randomColor = getRandomRedShade();
       } else {
         randomColor = getRandomOrangeShade();
       }
@@ -4206,7 +4174,6 @@
         color: randomColor
       };
       explosions.push(explosion);
-      // drawPixelatedExplosion(x, y, randomSize + 10);
     }
 
     // Function to get a random shade of orange
@@ -4224,10 +4191,29 @@
       const shades = ['#800080', '#8B008B', '#9370DB', '#9400D3', '#9932CC', '#BA55D3', '#DA70D6', '#DDA0DD', '#EE82EE', '#FF00FF'];
       return shades[Math.floor(Math.random() * shades.length)];
     }
-    // Function to get a random shade of red
+
     function getRandomRedShade() {
       const shades = ['#FF0000', '#DC143C', '#B22222', '#FF6347', '#FF4500'];
       return shades[Math.floor(Math.random() * shades.length)];
+    }
+
+    // Draw the explosions on the canvas
+    function drawExplosions() {
+      for (let i = 0; i < explosions.length; i++) {
+        let explosion = explosions[i];
+        ctx.fillStyle = explosion.color;
+        ctx.globalAlpha = explosion.alpha;
+        ctx.beginPath();
+        ctx.arc(explosion.x, explosion.y, explosion.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        explosion.alpha -= explosion.alphaDecay;
+        if (explosion.alpha <= 0) {
+          explosions.splice(i, 1);
+          i--;
+        }
+      }
     }
 
     // Update explosions with random alpha decay
