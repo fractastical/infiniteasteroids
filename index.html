@@ -3866,24 +3866,58 @@
       }
     }
 
-    function createEndlessSlowAsteroids() {
+    function function createEndlessSlowAsteroids() {
       const baseAsteroidCount = 20;
       const additionalAsteroidsPerWave = 1;
       const baseHitpoints = 1;
       const hitpointIncreasePerWave = 0.5;
+      const speedVariation = 0.02; // 2% variation
+      const angleVariation = 0.02; // 2% variation in radians
 
       let numberOfAsteroids = baseAsteroidCount + (wave - 1) * additionalAsteroidsPerWave;
+      let spawnSide = Math.floor((wave - 1) / 25) % 4; // Switch spawn side every 25 waves
 
       for (let i = 0; i < numberOfAsteroids; i++) {
         let hitpoints = Math.ceil(baseHitpoints + (wave - 1) * hitpointIncreasePerWave);
 
+        // Apply variations in speed and angle
+        let baseSpeed = 0.5;
+        let speed = baseSpeed + (Math.random() * speedVariation * 2 - speedVariation);
+        let baseAngle = 0;
+        let angle = baseAngle + (Math.random() * angleVariation * 2 - angleVariation);
+
+        let dx = Math.cos(angle) * speed;
+        let dy = Math.sin(angle) * speed;
+
+        let x, y;
+        switch (spawnSide) {
+          case 0: // Left side
+            x = 0;
+            y = Math.random() * canvas.height;
+            break;
+          case 1: // Top side
+            x = Math.random() * canvas.width;
+            y = 0;
+            break;
+          case 2: // Right side
+            x = canvas.width;
+            y = Math.random() * canvas.height;
+            dx = -dx; // Reverse direction for right side
+            break;
+          case 3: // Bottom side
+            x = Math.random() * canvas.width;
+            y = canvas.height;
+            dy = -dy; // Reverse direction for bottom side
+            break;
+        }
+
         let asteroid = {
-          x: 0, // Always start from the left side
-          y: Math.random() * canvas.height,
+          x: x,
+          y: y,
           size: 20,
-          speed: 0.5, // Constant slow speed
-          dx: 0.5, // Only move horizontally
-          dy: 0,
+          speed: speed,
+          dx: dx,
+          dy: dy,
           hitpoints: hitpoints,
           initialHitpoints: hitpoints,
           color: getAsteroidColor(hitpoints)
@@ -3894,12 +3928,29 @@
     }
 
     function getAsteroidColor(hitpoints) {
-      if (hitpoints <= 2) return 'gray';
-      if (hitpoints <= 5) return 'darkgray';
-      if (hitpoints <= 10) return '#172727';
-      if (hitpoints <= 20) return '#0A1414';
-      return '#301934';
+      const colors = [
+        'gray', 'darkgray', '#172727', '#0A1414', '#301934',
+        '#4B0082', '#483D8B', '#8A2BE2', '#9370DB', '#9400D3',
+        '#7B68EE', '#6A5ACD', '#8B0000', '#B22222', '#FF4500'
+      ];
+
+      if (hitpoints <= 2) return colors[0];
+      if (hitpoints <= 5) return colors[1];
+      if (hitpoints <= 10) return colors[2];
+      if (hitpoints <= 20) return colors[3];
+      if (hitpoints <= 30) return colors[4];
+      if (hitpoints <= 40) return colors[5];
+      if (hitpoints <= 50) return colors[6];
+      if (hitpoints <= 60) return colors[7];
+      if (hitpoints <= 70) return colors[8];
+      if (hitpoints <= 80) return colors[9];
+      if (hitpoints <= 90) return colors[10];
+      if (hitpoints <= 100) return colors[11];
+      if (hitpoints <= 110) return colors[12];
+      if (hitpoints <= 120) return colors[13];
+      return colors[14];
     }
+
 
 
 
