@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Infinite Space War</title>
+  <title>Infinite Asteroids</title>
   <link href="styles.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
@@ -1723,7 +1723,7 @@
         gemRarity = 'common';
       }
 
-      if (gemRarity && Math.random() < baseLineRandomness) {
+      if (gemRarity && Math.random() < baseLineRandomness && droppedGems.length < 40) {
         // console.log("gem");
 
         droppedGems.push({
@@ -4800,95 +4800,6 @@
     //   }
     // });
 
-
-    const weapons = [
-      {
-        name: 'Basic Laser',
-        description: 'Standard weapon. Fires straight lasers.',
-        icon: 'icons/Basiclaser.svg'
-      },
-      {
-        name: 'Explosive Laser',
-        description: 'Lasers explode on impact, causing area damage.',
-        icon: 'icons/Explosivelaser.svg'
-      },
-      {
-        name: 'Laser Drone',
-        description: 'Drone that flies around you shooting randomly.',
-        icon: 'icons/laserdrone.png'
-      },
-      {
-        name: 'Bomber Drone',
-        description: 'Drone that leaves protective mines that explode with area damage when an asteroid gets nearby.',
-        icon: 'icons/Bomberdrone.svg'
-      },
-      {
-        name: 'Acid Bomb',
-        description: 'Releases acid that deals damage over time in an area.',
-        icon: 'icons/Acidbomb.svg'
-      },
-      {
-        name: 'Sonic Blast',
-        description: 'Creates a wave that damages all enemies in its path.',
-        icon: 'icons/Sonicray.svg'
-      },
-      {
-        name: 'Death Ray',
-        description: 'Fire a beam that melts and instakills everything in its path.',
-        icon: 'icons/Deathray.svg'
-      },
-      {
-        name: 'Boomerang',
-        description: 'A boomerang that bounces around the level.',
-        icon: 'icons/Boomerang.svg'
-      },
-      {
-        name: 'Freeze Ray',
-        description: 'Freezes enemies in place for a short duration.',
-        icon: 'icons/Freeze.svg'
-      },
-      {
-        name: 'Nano Swarm',
-        description: 'A swarm of nanobots that seek and destroy enemies.',
-        icon: 'icons/nanodrone.png'
-      },
-      {
-        name: 'Turret',
-        description: 'Deploys a turret that automatically shoots at enemies.',
-        icon: 'icons/Autocannon.svg'
-      },
-      {
-        name: 'Flamethrower',
-        description: 'Shoots a continuous stream of fire.',
-        icon: 'icons/flamethrower.png'
-      },
-      {
-        name: 'Chain Lightning',
-        description: 'Fires a lightning bolt that bounces between asteroids.',
-        icon: 'icons/chainlightning.png'
-      },
-      {
-        name: 'Explosive Rocket',
-        description: 'Fires a slow-moving rocket that causes explosive AoE damage on impact.',
-        icon: 'icons/explosive-rocket.png'
-      }
-
-    ];
-
-
-    const damageReportMapping = {
-      lasers: 'Basic Laser',
-      explosive: 'Explosive Laser',
-      drones: 'Laser Drone',
-      turret: 'Turret',
-      sonicBlast: 'Sonic Blast',
-      bomberDrones: 'Bomber Drone',
-      deathRay: 'Death Ray',
-      acid: 'Acid Bomb',
-      freeze: 'Freeze Ray',
-      boomerang: 'Boomerang',
-      nano: 'Nano Swarm'
-    };
 
 
 
