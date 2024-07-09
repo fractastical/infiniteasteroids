@@ -277,6 +277,16 @@ function shootMegaBossAlienLaser() {
     }
 }
 
+
+function drawBossAlien() {
+    if (!alien) return;
+    ctx.save();
+    ctx.translate(alien.x, alien.y);
+    ctx.drawImage(bossAlienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+    ctx.restore();
+    drawBossHitpointBar();
+}
+
 function drawMegaBossAlien() {
     if (!megaBossAlien) return;
     ctx.save();
@@ -285,6 +295,77 @@ function drawMegaBossAlien() {
     ctx.restore();
     drawMegaBossHitpointBar();
 }
+
+function updateBossAlien() {
+    if (!alien) return;
+    if (!freezeEffect.active) {
+        // Calculate direction towards the ship
+        const dx = ship.x - alien.x;
+        const dy = ship.y - alien.y;
+        const angle = Math.atan2(dy, dx);
+
+        // Update alien's position based on the new direction
+        alien.x += Math.cos(angle) * alien.speed;
+        alien.y += Math.sin(angle) * alien.speed;
+
+        // Update alien's shooting timer
+        alien.shootTimer++;
+        if (alien.shootTimer >= alien.shootInterval) {
+            alien.shootTimer = 0;
+            shootBossAlienLaser();
+        }
+
+        // Wrap the alien around the screen edges
+        if (alien.x < 0) alien.x = canvas.width;
+        else if (alien.x > canvas.width) alien.x = 0;
+        if (alien.y < 0) alien.y = canvas.height;
+        else if (alien.y > canvas.height) alien.y = 0;
+    }
+}
+
+function drawAliens() {
+    aliens.forEach(alien => {
+        ctx.save();
+        ctx.translate(alien.x, alien.y);
+        ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+        ctx.restore();
+    });
+}
+
+function updateMegaBossAlien() {
+    if (!megaBossAlien) return;
+    if (!freezeEffect.active) {
+        // Calculate direction towards the ship
+        const dx = ship.x - megaBossAlien.x;
+        const dy = ship.y - megaBossAlien.y;
+        const angle = Math.atan2(dy, dx);
+
+        // Update alien's position based on the new direction
+        megaBossAlien.x += Math.cos(angle) * megaBossAlien.speed;
+        megaBossAlien.y += Math.sin(angle) * megaBossAlien.speed;
+
+        // Update alien's shooting timer
+        megaBossAlien.shootTimer++;
+        if (megaBossAlien.shootTimer >= megaBossAlien.shootInterval) {
+            megaBossAlien.shootTimer = 0;
+            shootMegaBossAlienLaser();
+        }
+
+        // Update alien's spawn timer
+        megaBossAlien.spawnTimer++;
+        if (megaBossAlien.spawnTimer >= 180) { // Spawn every 3 seconds (assuming 60 FPS)
+            megaBossAlien.spawnTimer = 0;
+            spawnLittleAliensAroundBoss();
+        }
+
+        // Wrap the alien around the screen edges
+        if (megaBossAlien.x < 0) megaBossAlien.x = canvas.width;
+        else if (megaBossAlien.x > canvas.width) megaBossAlien.x = 0;
+        if (megaBossAlien.y < 0) megaBossAlien.y = canvas.height;
+        else if (megaBossAlien.y > canvas.height) megaBossAlien.y = 0;
+    }
+}
+
 
 function drawMegaBossHitpointBar() {
     if (!megaBossAlien) return;
