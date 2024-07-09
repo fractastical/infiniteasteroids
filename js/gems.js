@@ -377,7 +377,8 @@ function updateDisplayGems() {
 function updateGems() {
     const centerX = canvas.width / 2;
     const centerY = 250; // Same fixed position as planet
-    const speedFactor = 0.00005; // Adjust this factor to control the speed towards the center
+    const speedFactor = 0.005; // Increased from 0.00005 to make movement more noticeable
+    const maxSpeed = 2; // Maximum speed to prevent gems from moving too fast
 
     for (let i = 0; i < droppedGems.length; i++) {
         let gem = droppedGems[i];
@@ -388,21 +389,34 @@ function updateGems() {
 
         // Normalize the direction vector
         let distance = Math.sqrt(directionX * directionX + directionY * directionY);
-        directionX /= distance;
-        directionY /= distance;
 
-        // Add a small amount of speed towards the center
-        gem.dx += directionX * speedFactor;
-        gem.dy += directionY * speedFactor;
+        if (distance > 0) {  // Avoid division by zero
+            directionX /= distance;
+            directionY /= distance;
 
-        // Update gem position
-        gem.x += gem.dx;
-        gem.y += gem.dy;
+            // Set the velocity directly instead of adding to it
+            gem.dx = directionX * speedFactor;
+            gem.dy = directionY * speedFactor;
 
-        // Remove gems that go off-screen
-        if (gem.x < 0 || gem.x > canvas.width || gem.y < 0 || gem.y > canvas.height) {
-            droppedGems.splice(i, 1);
-            i--;
+            // Limit the speed
+            let speed = Math.sqrt(gem.dx * gem.dx + gem.dy * gem.dy);
+            if (speed > maxSpeed) {
+                gem.dx = (gem.dx / speed) * maxSpeed;
+                gem.dy = (gem.dy / speed) * maxSpeed;
+            }
+
+            // Update gem position
+            gem.x += gem.dx;
+            gem.y += gem.dy;
+
+            // console.log(`Gem moved to: (${gem.x.toFixed(2)}, ${gem.y.toFixed(2)})`);
+
+            // Remove gems that are very close to the center
+            if (distance < 5) {
+                console.log("Gem reached center, removing");
+                // // droppedGems.splice(i, 1);
+                // i--;
+            }
         }
     }
 }
