@@ -3086,7 +3086,7 @@
       if (Achievements.reach_wave_2.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('bomberdrone') ? (getUpgradeCount('bomberdrone') <= 9 ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : []) : ['Activate Bomber Drone'])
         );
-      if (Achievements.reach_wave_5.reached)
+      if (Achievements.reach_wave_5.reached && (currentMode != GameModes.ENDLESS_SLOW))
         availableUpgrades.push(...(activeWeaponClasses.includes('freeze') ? (getUpgradeCount('freeze') <= 9 ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : []) : ['Activate Freeze Effect']));
       if (Achievements.laser_damage.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? (getUpgradeCount('explosive') <= 9 ? ['Increase Explosive Laser Level'] : []) : ['Activate Explosive Laser']));
