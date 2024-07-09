@@ -37,8 +37,8 @@ function spawnAliens(wave) {
     if (wave % 7 == 0) {
         const totalAliensToSpawn = wave;
         const easyAliens = Math.floor(totalAliensToSpawn * 0.97);
-        const mediumAliens = Math.floor(totalAliensToSpawn * 0.02);
-        const hardAliens = Math.floor(totalAliensToSpawn * 0.01);
+        const mediumAliens = Math.floor(totalAliensToSpawn * 0.15);
+        const hardAliens = Math.floor(totalAliensToSpawn * 0.07);
 
         spawnSwarmingAliens(SwarmingAlienTypes.EASY, easyAliens);
         spawnSwarmingAliens(SwarmingAlienTypes.MEDIUM, mediumAliens);
