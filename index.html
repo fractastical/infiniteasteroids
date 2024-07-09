@@ -57,7 +57,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.916.
+    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.922.
   </div>
 
 
@@ -836,6 +836,7 @@
       createAsteroids();
       invincible = true;
       ship.laserTimer = 0;
+      turret.bought = false;
       resetShip();
       invincibilityTimer = invincibilityDuration;
       clearInterval(gameLoop);
@@ -906,6 +907,9 @@
           fireRate: 1,
           damage: 1
         };
+
+        turret.bought = false;
+
       }
 
       gameLoop = setInterval(update, 1000 / 60); // 60 FPS
@@ -1975,17 +1979,17 @@
       // Center laser
       const centerLaserX = ship.x + 100 * Math.sin(baseRotation * Math.PI / 180);
       const centerLaserY = ship.y - 100 * Math.cos(baseRotation * Math.PI / 180);
-      ship.lasers.push({ x: centerLaserX, y: centerLaserY, rotation: baseRotation, size: ship.laserLevel + 1 });
+      ship.lasers.push({ x: centerLaserX, y: centerLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
 
       // Left laser
       const leftLaserX = ship.x + 100 * Math.sin((baseRotation - 10) * Math.PI / 180);
       const leftLaserY = ship.y - 100 * Math.cos((baseRotation - 10) * Math.PI / 180);
-      ship.lasers.push({ x: leftLaserX, y: leftLaserY, rotation: baseRotation, size: ship.laserLevel + 1 });
+      ship.lasers.push({ x: leftLaserX, y: leftLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
 
       // Right laser
       const rightLaserX = ship.x + 100 * Math.sin((baseRotation + 10) * Math.PI / 180);
       const rightLaserY = ship.y - 100 * Math.cos((baseRotation + 10) * Math.PI / 180);
-      ship.lasers.push({ x: rightLaserX, y: rightLaserY, rotation: baseRotation, size: ship.laserLevel + 1 });
+      ship.lasers.push({ x: rightLaserX, y: rightLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
 
       // Set the laser timer
       ship.laserTimer = ship.laserCooldown;
@@ -5427,7 +5431,7 @@
           maximumFractionDigits: 0
         });
         const scoreDiv = document.createElement('div');
-        scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points (Wave ${entry.wave})`;
+        scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
         leaderboard.appendChild(scoreDiv);
       });
 
