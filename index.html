@@ -3510,7 +3510,7 @@
     function drawLasers() {
       ctx.fillStyle = 'red';
       for (let i = 0; i < ship.lasers.length; i++) {
-        ctx.fillRect(ship.lasers[i].x - 1, ship.lasers[i].y - 1, ship.laserLevel + 3, ship.laserLevel + 3); // Drawing lasers as small squares for better collision detection
+        ctx.fillRect(ship.lasers[i].x - 1, ship.lasers[i].y - 1, ship.laserLevel / 2 + 3, ship.laserLevel / 2 + 3); // Drawing lasers as small squares for better collision detection
       }
     }
 
