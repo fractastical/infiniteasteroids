@@ -174,6 +174,13 @@ function startRoulette() {
     spinButton.disabled = true;
     spinButton.style.display = 'none';
 
+    // Add keyboard control indicator
+    const keyboardHint = document.createElement('div');
+    // keyboardHint.textContent = 'Press ENTER to activate upgrades';
+    // keyboardHint.style.marginTop = '10px';
+    // document.getElementById('rouletteContainer').appendChild(keyboardHint);
+
+
     //doublecheck that it didn't unpause
     clearInterval(gameLoop);
     isPaused = true;
@@ -241,6 +248,7 @@ function startRoulette() {
                 spinButton.style.display = 'block';
                 rouletteContainer.style.display = 'none';
                 upgradeDisplay.innerHTML = '';
+                // keyboardHint.remove(); // Remove the keyboard hint
 
                 isPaused = false;
                 unlockSound.play();

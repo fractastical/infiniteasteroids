@@ -4382,6 +4382,20 @@
 
       if (document.getElementById('loginPopup').style.display == 'none') {
 
+        // if (event.key === ' ') { // Space bar
+        //   if (!isPaused && document.getElementById('spinButton').style.display !== 'none') {
+        //     startRoulette();
+        //   }
+        // } else
+
+        if (event.key === 'Enter') {
+
+          const okButton = document.querySelector('#upgradeDisplay button');
+          if (okButton && okButton.textContent === 'Activate') {
+            okButton.click();
+          }
+        }
+
         if (event.key === 'i' || event.key === 'I') {
           // console.log("toggle1");
           toggleWeaponInfo();
