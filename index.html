@@ -825,6 +825,11 @@
       document.getElementById('technologiesCount').style.display = 'none';
       document.getElementById('startScreen').style.display = 'none';
       document.getElementById('shipType').style.display = 'none';
+      droneUpgrades = {
+        speed: 1,
+        laserSpeed: 1,
+        laserInterval: 1
+      };
 
 
       // startGamingSessionApi();
@@ -1748,7 +1753,7 @@
         lasers: [],
         image: droneImages.regularDrone,
         laserSpeed: 2 * droneUpgrades.laserSpeed,
-        laserInterval: 80 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
+        laserInterval: 70 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
         laserTimer: 0
       };
       drones.push(drone);
