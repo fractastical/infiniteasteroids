@@ -12,8 +12,9 @@
 
 
 
+
   <!-- #INFINITEGAMES CSS START -->
-  <!-- <link rel="stylesheet" href="infinite/css/48_leaderboard_20240707163530.css"> -->
+  <link rel="stylesheet" href="infinite/css/48_leaderboard_20240709215443.css">
   <!-- #INFINITEGAMES CSS END -->
 </head>
 
@@ -484,7 +485,7 @@
       timer: 0, // Current cooldown timer
       speed: 3, // Speed of the rocket
       damage: 10, // Damage dealt by the rocket
-      radius: 50, // Explosion radius
+      radius: 40, // Explosion radius
       active: false // Flag to track if the rocket is active
     };
 
@@ -3266,7 +3267,7 @@
           break;
         case 'Increase Explosive Rocket Radius':
           explosiveRocketUpgrades.radius++;
-          explosiveRocket.radius = 50 * explosiveRocketUpgrades.radius;
+          explosiveRocket.radius = 20 + (20 * explosiveRocketUpgrades.radius);
           break;
         case 'Decrease Explosive Rocket Cooldown':
           explosiveRocketUpgrades.cooldown++;
@@ -5681,9 +5682,10 @@
 
 
 
+
   <!-- #INFINITEGAMES JS START -->
-  <!-- <script src="infinite/js/48_leaderboard_20240707163530.js"></script>
-  <script src="infinite/js/48_firebase_20240707163530.js"></script> -->
+  <script src="infinite/js/48_leaderboard_20240709215443.js"></script>
+  <script src="infinite/js/48_firebase_20240709215443.js"></script>
   <!-- #INFINITEGAMES JS END -->
 </body>
 
