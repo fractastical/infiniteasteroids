@@ -45,11 +45,11 @@ function spawnAliens(wave) {
         spawnSwarmingAliens(SwarmingAlienTypes.HARD, hardAliens);
     }
 
-    if (wave === 50) {
+    if (wave == 50) {
         spawnSuperBossAlien();
     }
 
-    if (wave === 75) {
+    if (wave == 75) {
         spawnMegaBossAlien();
     }
 
@@ -143,7 +143,7 @@ function spawnSuperBossAlien() {
     superbossAlien = {
         x: canvas.width / 2,
         y: canvas.height / 2,
-        size: 100,
+        size: 80,
         speed: 0.3,
         direction: Math.random() * Math.PI * 2,
         shootTimer: 0,
@@ -174,7 +174,7 @@ function updateSuperBossAlien() {
         superbossAlien.spawnTimer++;
         if (superbossAlien.spawnTimer >= 180) {
             superbossAlien.spawnTimer = 0;
-            spawnLittleAliensAroundBoss();
+            spawnLittleAliensAroundSuperBoss();
         }
 
         if (superbossAlien.x < 0) superbossAlien.x = canvas.width;
@@ -208,7 +208,7 @@ function drawSuperBossAlien() {
     ctx.translate(superbossAlien.x, superbossAlien.y);
     ctx.drawImage(bossAlienImage, -superbossAlien.size / 2, -superbossAlien.size / 2, superbossAlien.size, superbossAlien.size);
     ctx.restore();
-    drawBossHitpointBar();
+    drawSuperBossHitpointBar();
 }
 
 function spawnMegaBossAlien() {
@@ -218,7 +218,7 @@ function spawnMegaBossAlien() {
     megaBossAlien = {
         x: canvas.width / 2,
         y: canvas.height / 2,
-        size: 120,
+        size: 140,
         speed: 0.2,
         direction: Math.random() * Math.PI * 2,
         shootTimer: 0,
@@ -284,7 +284,7 @@ function drawBossAlien() {
     ctx.translate(alien.x, alien.y);
     ctx.drawImage(bossAlienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
     ctx.restore();
-    drawBossHitpointBar();
+    // drawBossHitpointBar();
 }
 
 function drawMegaBossAlien() {
@@ -355,7 +355,7 @@ function updateMegaBossAlien() {
         megaBossAlien.spawnTimer++;
         if (megaBossAlien.spawnTimer >= 180) { // Spawn every 3 seconds (assuming 60 FPS)
             megaBossAlien.spawnTimer = 0;
-            spawnLittleAliensAroundBoss();
+            spawnLittleAliensAroundMegaBoss();
         }
 
         // Wrap the alien around the screen edges
@@ -364,6 +364,28 @@ function updateMegaBossAlien() {
         if (megaBossAlien.y < 0) megaBossAlien.y = canvas.height;
         else if (megaBossAlien.y > canvas.height) megaBossAlien.y = 0;
     }
+}
+
+
+function drawSuperBossHitpointBar() {
+    if (!superbossAlien) return;
+
+    const barWidth = canvas.width * 0.8;
+    const barHeight = 20;
+    const barX = (canvas.width - barWidth) / 2;
+    const barY = canvas.height - barHeight - 10;
+
+    const hpRatio = superbossAlien.hitpoints / superbossAlien.maxHitpoints;
+    const filledBarWidth = barWidth * hpRatio;
+
+    ctx.fillStyle = 'grey';
+    ctx.fillRect(barX, barY, barWidth, barHeight);
+
+    ctx.fillStyle = 'red';
+    ctx.fillRect(barX, barY, filledBarWidth, barHeight);
+
+    ctx.strokeStyle = 'black';
+    ctx.strokeRect(barX, barY, barWidth, barHeight);
 }
 
 
@@ -388,9 +410,31 @@ function drawMegaBossHitpointBar() {
     ctx.strokeRect(barX, barY, barWidth, barHeight);
 }
 
+
+function spawnLittleAliensAroundSuperBoss() {
+    const numberOfAliens = 4;
+    const radius = 150;
+
+    for (let i = 0; i < numberOfAliens; i++) {
+        const angle = (i * 2 * Math.PI) / numberOfAliens;
+        let newAlien = {
+            x: superbossAlien.x + Math.cos(angle) * radius,
+            y: superbossAlien.y + Math.sin(angle) * radius,
+            size: 25,
+            speed: 0.5,
+            direction: Math.random() * Math.PI * 2,
+            shootTimer: 0,
+            hitpoints: 15,
+            shootInterval: 180
+        };
+        aliens.push(newAlien);
+    }
+}
+
 function spawnLittleAliensAroundMegaBoss() {
+
     const numberOfAliens = 6;
-    const radius = 200;
+    const radius = 250;
 
     for (let i = 0; i < numberOfAliens; i++) {
         const angle = (i * 2 * Math.PI) / numberOfAliens;
@@ -401,8 +445,8 @@ function spawnLittleAliensAroundMegaBoss() {
             speed: 0.5,
             direction: Math.random() * Math.PI * 2,
             shootTimer: 0,
-            hitpoints: 20,
-            shootInterval: 150
+            hitpoints: 30,
+            shootInterval: 120
         };
         aliens.push(newAlien);
     }
@@ -470,7 +514,7 @@ function shootBossAlienLaser() {
 function drawBossAlienLaser() {
     if (!alienLaser) return;
 
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = 'purple';
     ctx.beginPath();
     ctx.arc(alienLaser.x, alienLaser.y, 6, 0, Math.PI * 2);
     ctx.fill();
@@ -572,6 +616,66 @@ function updateSwarmingAliens() {
         });
     }
 }
+
+
+function spawnSwarmingAliens(type, count) {
+    const alienSize = 20;
+    const spacing = 2; // 2 pixels in between each alien
+    const totalSize = alienSize + spacing; // Total size including spacing
+
+    // Determine the number of aliens per row/column for the clump
+    const clumpWidth = Math.ceil(Math.sqrt(count));
+
+    // Choose a random edge of the map
+    const edge = Math.floor(Math.random() * 4);
+    let startX, startY;
+
+    switch (edge) {
+        case 0: // Top edge
+            startX = Math.random() * canvas.width;
+            startY = 0;
+            break;
+        case 1: // Bottom edge
+            startX = Math.random() * canvas.width;
+            startY = canvas.height;
+            break;
+        case 2: // Left edge
+            startX = 0;
+            startY = Math.random() * canvas.height;
+            break;
+        case 3: // Right edge
+            startX = canvas.width;
+            startY = Math.random() * canvas.height;
+            break;
+    }
+
+    for (let i = 0; i < count; i++) {
+        let row = Math.floor(i / clumpWidth);
+        let col = i % clumpWidth;
+        let offsetX = col * totalSize;
+        let offsetY = row * totalSize;
+
+        let newSwarmingAlien = {
+            x: startX + offsetX,
+            y: startY + offsetY,
+            size: alienSize,
+            speed: 0.15,
+            direction: Math.random() * Math.PI * 2,
+            hitpoints: type.hitpoints,
+            type: type,
+            image: swarmingAlienImages[Math.floor(Math.random() * swarmingAlienImages.length)]
+        };
+
+        // Ensure the alien stays within the canvas bounds
+        if (newSwarmingAlien.x >= canvas.width) newSwarmingAlien.x = canvas.width - alienSize;
+        if (newSwarmingAlien.x < 0) newSwarmingAlien.x = 0;
+        if (newSwarmingAlien.y >= canvas.height) newSwarmingAlien.y = canvas.height - alienSize;
+        if (newSwarmingAlien.y < 0) newSwarmingAlien.y = 0;
+
+        swarmingAliens.push(newSwarmingAlien);
+    }
+}
+
 
 function drawSwarmingAliens() {
     swarmingAliens.forEach(alien => {
