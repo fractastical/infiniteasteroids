@@ -582,19 +582,19 @@ button {
 
 
 .icon-explosive {
-    background-image: url('icons/Explosivelaser.svg');
+    background-image: url('icons/exploding_laser_22.png');
 }
 
 .icon-turret {
-    background-image: url('icons/Autocannon.svg');
+    background-image: url('icons/turret_icon_pink.png');
 }
 
 .icon-drone {
-    background-image: url('icons/Laserdrone.svg');
+    background-image: url('icons/laserdrone.png');
 }
 
 .icon-bomberdrone {
-    background-image: url('icons/Bomberdrone.svg');
+    background-image: url('icons/bomber_drone_22.png');
 }
 
 .icon-sonic {
@@ -602,33 +602,33 @@ button {
 }
 
 .icon-deathray {
-    background-image: url('icons/Deathray.svg');
+    background-image: url('icons/death_ray_22.png');
 }
 
 .icon-acid {
-    background-image: url('icons/Acidbomb.svg');
+    background-image: url('icons/acid_bomb_22.png');
 }
 
 .icon-boomerang {
-    background-image: url('icons/Boomerang.svg');
+    background-image: url('icons/yellow_boomerang_22.png');
 }
 
 
 .icon-freeze {
-    background-image: url('icons/Freeze.svg');
+    background-image: url('icons/freeze_22.png');
 }
 
 .icon-chainlightning {
-    background-image: url('icons/chainlightning.png');
+    background-image: url('icons/forked_lightning_22.png');
 
 }
 
 .icon-flamethrower {
-    background-image: url('icons/flamethrower.png');
+    background-image: url('icons/flamethrower_2_22.png');
 }
 
 .icon-explosiverocket {
-    background-image: url('icons/explosiverocket.png');
+    background-image: url('icons/exploding_rocket_22.png');
 }
 
 
