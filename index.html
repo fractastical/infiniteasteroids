@@ -58,7 +58,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.926.
+    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.927.
   </div>
 
 
@@ -797,10 +797,6 @@
           ship.rotation += (ship.rotationSpeed * 3);
         }
 
-        // Check for store access (lower left corner)
-        if (touch.clientX < canvas.width / 5 && touch.clientY > canvas.height * 4 / 5) {
-          pauseGameForMarketplace();
-        }
       }
 
       if (e.target === canvas && e.touches.length === 2) {
