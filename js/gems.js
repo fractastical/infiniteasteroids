@@ -198,6 +198,8 @@ function startRoulette() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     createGemExplosion();
 
+    let activeGemUpgrades = null;
+
     const interval = setInterval(() => {
         angle += totalSpins / (spinDuration / spinInterval);
         updateIconPositions(angle);
@@ -219,12 +221,12 @@ function startRoulette() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // Get three random upgrades
-            const upgrades = getRandomUpgrades(3);
+            activeGemUpgrades = getRandomUpgrades(3);
 
             // Display the chosen upgrades and their icons
             const upgradeDisplay = document.getElementById('upgradeDisplay');
             upgradeDisplay.innerHTML = '';
-            upgrades.forEach((upgrade) => {
+            activeGemUpgrades.forEach((upgrade) => {
                 const upgradeItem = document.createElement('div');
                 upgradeItem.classList.add('upgrade-item');
 
@@ -241,20 +243,10 @@ function startRoulette() {
             });
 
             const okButton = document.createElement('button');
-            okButton.textContent = 'Activate';
+            okButton.textContent = 'Activate [ENTER]';
             okButton.onclick = () => {
-                applyUpgrades(upgrades);
-                spinButton.disabled = false;
-                spinButton.style.display = 'block';
-                rouletteContainer.style.display = 'none';
-                upgradeDisplay.innerHTML = '';
-                // keyboardHint.remove(); // Remove the keyboard hint
 
-                isPaused = false;
-                unlockSound.play();
-                displayGems = [];
-                clearInterval(gameLoop);
-                gameLoop = setInterval(update, 1000 / 60);
+                activateGemUpgrades();
 
             };
             upgradeDisplay.appendChild(okButton);
@@ -265,6 +257,23 @@ function startRoulette() {
 }
 
 let displayGems = [];
+
+function activateGemUpgrades() {
+
+    applyUpgrades(activeGemUpgrades);
+    spinButton.disabled = false;
+    spinButton.style.display = 'block';
+    rouletteContainer.style.display = 'none';
+    upgradeDisplay.innerHTML = '';
+    // keyboardHint.remove(); // Remove the keyboard hint
+
+    isPaused = false;
+    unlockSound.play();
+    displayGems = [];
+    clearInterval(gameLoop);
+    gameLoop = setInterval(update, 1000 / 60);
+
+}
 
 function createGemExplosion(newAngle = 1) {
 
