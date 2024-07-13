@@ -1,3 +1,501 @@
+let boomerang = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    size: 10,
+    speed: 2,
+    damage: 1,
+    dx: 3,
+    dy: 3,
+    active: false
+};
+
+let boomerangUpgrades = {
+    speed: 1,
+    damage: 1
+};
+
+
+let explosiveRocket = {
+    cooldown: 120, // Cooldown time in frames (2 seconds at 60 FPS)
+    timer: 0, // Current cooldown timer
+    speed: 3, // Speed of the rocket
+    damage: 10, // Damage dealt by the rocket
+    radius: 40, // Explosion radius
+    active: false // Flag to track if the rocket is active
+};
+
+let explosiveRocketUpgrades = {
+    damage: 1,
+    radius: 1,
+    cooldown: 1
+};
+let nanoswarm = {
+    cooldown: 300,
+    timer: 0,
+    speed: 2,
+    damage: 5,
+    activeMissiles: []
+};
+
+
+let nanoswarmUpgrades = {
+    speed: 1,
+    damage: 1,
+    cooldown: 1
+};
+
+let freezeEffect = {
+    cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
+    timer: 0,
+    duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
+    active: false,
+    remainingDuration: 0
+};
+
+
+let freezeEffectUpgrades = {
+    duration: 1,
+    cooldown: 1
+};
+
+
+let damageReport = {
+    lasers: 0,
+    explosive: 0,
+    drones: 0,
+    turret: 0,
+    sonicBlast: 0,
+    bomberDrones: 0,
+    deathRay: 0,
+    acid: 0,
+    freeze: 0,
+    boomerang: 0,
+    nano: 0,
+    explosiverocket: 0,
+    flamethrower: 0,
+    chainlightning: 0
+
+};
+
+
+let chainLightning = {
+    cooldown: 300, // Cooldown time in frames
+    timer: 0, // Current cooldown timer
+    range: 200, // Range of the chain lightning
+    damage: 5, // Damage dealt per hit
+    bounces: 2, // Number of bounces
+    active: false // Flag to track if the chain lightning is active
+};
+
+let chainLightningUpgrades = {
+    range: 1,
+    damage: 1,
+    bounces: 1,
+    cooldown: 1
+};
+
+let deathRay = {
+    length: 1000,
+    width: 40,
+    cooldown: 300,
+    timer: 0
+};
+
+let deathRayActive = false;
+
+let deathRayUpgrades = {
+    length: 1,
+    width: 1,
+    cooldown: 1
+};
+
+let bomberDrones = [];
+
+let superWeapons = {
+    missile: 0,
+    laser: 0,
+    bomb: 0
+};
+
+let drone = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    size: 10,
+    speed: 0.0001,
+    direction: Math.random() * Math.PI * 2,
+    lasers: [],
+    laserSpeed: 3,
+    laserInterval: 80, // Fire lasers every 120 frames (2 second)
+    laserTimer: 0
+};
+
+let turret = {
+    x: 0,
+    y: 0,
+    size: 4,
+    rotationSpeed: 2,
+    fireInterval: 120,
+    fireTimer: 0,
+    range: 400,
+    damage: 3,
+    color: 'cyan',
+    lasers: [] // Initialize the turret's lasers array
+};
+
+let turretUpgrades = {
+    range: 1,
+    fireRate: 1,
+    damage: 1
+};
+
+let sonicBlast = {
+    cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
+    timer: 0, // Current cooldown timer
+    range: 120, // Range of the sonic blast
+    speed: 2, // Speed of the sonic blast wave
+    damage: 1, // Damage dealt by the sonic blast
+    waves: [], // Array to store the active sonic blast waves
+    rangeLevel: 1,
+    damageLevel: 1,
+    cooldownLevel: 1
+
+};
+
+let flamethrower = {
+    cooldown: 10, // Cooldown time in frames
+    timer: 0, // Current cooldown timer
+    range: 100, // Range of the flamethrower
+    damage: 1, // Damage dealt per frame
+    active: false, // Flag to track if the flamethrower is active
+    damagePerSecond: 1 // Damage dealt per second
+
+};
+
+let flamethrowerUpgrades = {
+    range: 1,
+    damage: 1,
+    cooldown: 1
+};
+
+
+function applyUpgrade(upgrade) {
+    const now = Date.now();
+
+    switch (upgrade) {
+        case 'Increase Laser Level':
+            ship.laserLevel++;
+            break;
+        case 'Decrease Laser Cooldown':
+            ship.laserCooldownLevel++;
+            ship.maxBulletsLevel++;
+            ship.laserCooldown = Math.max(5, ship.laserCooldown - 3);
+            break;
+        case 'Increase Rotation Speed':
+            ship.rotationSpeedLevel++;
+            ship.rotationSpeed = 2 * ship.rotationSpeedLevel;
+            break;
+        case 'Activate Explosive Laser':
+            activateWeaponClass('explosive');
+            damageReportStartTimes.explosive = now;
+            break;
+        case 'Increase Explosive Laser Level':
+            ship.explosiveLaserLevel++;
+            break;
+        case 'Activate Turret':
+            activateWeaponClass('turret');
+            damageReportStartTimes.turret = now;
+            break;
+        case 'Increase Turret Range':
+            turretUpgrades.range++;
+            turret.range = 200 * turretUpgrades.range;
+            break;
+        case 'Increase Turret Firerate':
+            turretUpgrades.fireRate++;
+            turret.fireInterval = 120 / turretUpgrades.fireRate;
+            break;
+        case 'Increase Turret Damage':
+            turretUpgrades.damage++;
+            turret.damage = turretUpgrades.damage;
+            break;
+        case 'Activate Drone':
+            activateWeaponClass('drone');
+            damageReportStartTimes.drones = now;
+            break;
+        case 'Increase Drone Firerate':
+            droneUpgrades.laserInterval++;
+            drones.forEach(drone => {
+                drone.laserInterval = 80 / droneUpgrades.laserInterval;
+            });
+            break;
+        case 'Activate Sonic Blast':
+            activateWeaponClass('sonic');
+            damageReportStartTimes.sonicBlast = now;
+            break;
+        case 'Increase Sonic Blast Range':
+            sonicBlast.range += 50;
+            sonicBlast.rangeLevel++;
+            break;
+        case 'Increase Sonic Blast Damage':
+            sonicBlast.damageLevel++;
+            sonicBlast.damage++;
+            break;
+        case 'Decrease Sonic Blast Cooldown':
+            sonicBlast.cooldown = Math.max(60, sonicBlast.cooldown - 30);
+            sonicBlast.cooldownLevel++;
+            break;
+        case 'Activate Bomber Drone':
+            activateWeaponClass('bomberdrone');
+            damageReportStartTimes.bomberDrones = now;
+            break;
+        case 'Increase Bomber Drone Speed':
+            bomberDroneUpgrades.speed += 0.2;
+            bomberDrones.forEach(drone => {
+                drone.speed = 0.5 * bomberDroneUpgrades.speed;
+            });
+            break;
+        case 'Increase Bomber Drone Bomb Radius':
+            bomberDroneUpgrades.bombRadius += 10;
+            bomberDroneUpgrades.bombRadiusLevel++;
+            break;
+        case 'Increase Bomber Drone Bomb Damage':
+            bomberDroneUpgrades.bombDamage++;
+            break;
+        case 'Activate Death Ray':
+            activateWeaponClass('deathray');
+            damageReportStartTimes.deathRay = now;
+            break;
+        case 'Increase Death Ray Length':
+            deathRayUpgrades.length++;
+            deathRay.length = 1000 * deathRayUpgrades.length;
+            break;
+        case 'Increase Death Ray Width':
+            deathRayUpgrades.width++;
+            deathRay.width = 30 + (10 * deathRayUpgrades.width);
+            break;
+        case 'Decrease Death Ray Cooldown':
+            deathRayUpgrades.cooldown++;
+            deathRay.cooldown = Math.max(60, 300 - 30 * deathRayUpgrades.cooldown);
+            break;
+        case 'Activate Acid Bomb':
+            activateWeaponClass('acid');
+            damageReportStartTimes.acid = now;
+            break;
+        case 'Increase Acid Bomb Duration':
+            acidBombUpgrades.duration++;
+            acidBomb.duration = 300 * acidBombUpgrades.duration;
+            break;
+        case 'Decrease Acid Bomb Cooldown':
+            acidBombUpgrades.cooldown++;
+            acidBomb.cooldown = Math.max(60, 300 - 30 * acidBombUpgrades.cooldown);
+            break;
+        case 'Increase Acid Bomb Size':
+            acidBombUpgrades.size++;
+            acidBomb.size = 20 + (20 * acidBombUpgrades.size);
+            break;
+        case 'Activate Explosive Rocket':
+            activateWeaponClass('explosiverocket');
+            damageReportStartTimes.explosiveRocket = now;
+            break;
+        case 'Increase Explosive Rocket Damage':
+            explosiveRocketUpgrades.damage++;
+            explosiveRocket.damage = 10 * explosiveRocketUpgrades.damage;
+            break;
+        case 'Increase Explosive Rocket Radius':
+            explosiveRocketUpgrades.radius++;
+            explosiveRocket.radius = 20 + (20 * explosiveRocketUpgrades.radius);
+            break;
+        case 'Decrease Explosive Rocket Cooldown':
+            explosiveRocketUpgrades.cooldown++;
+            explosiveRocket.cooldown = Math.max(30, 120 - 10 * explosiveRocketUpgrades.cooldown);
+            break;
+        case 'Activate Freeze Effect':
+            activateWeaponClass('freeze');
+            damageReportStartTimes.freeze = now;
+            break;
+        case 'Increase Freeze Duration':
+            freezeEffectUpgrades.duration++;
+            freezeEffect.duration = 10 + (5 * freezeEffectUpgrades.duration);
+            break;
+        case 'Decrease Freeze Cooldown':
+            freezeEffectUpgrades.cooldown++;
+            freezeEffect.cooldown = Math.max(60, 600 - 30 * freezeEffectUpgrades.cooldown);
+            break;
+        case 'Activate Boomerang':
+            activateWeaponClass('boomerang');
+            damageReportStartTimes.boomerang = now;
+            break;
+        case 'Increase Boomerang Speed':
+            boomerangUpgrades.speed++;
+            boomerang.speed = 2 * boomerangUpgrades.speed;
+            break;
+        case 'Increase Boomerang Damage':
+            boomerangUpgrades.damage++;
+            boomerang.damage = boomerangUpgrades.damage;
+            break;
+        case 'Activate Nano Swarm':
+            activateWeaponClass('nanoswarm');
+            damageReportStartTimes.nano = now;
+            break;
+        case 'Boost Nano Swarm':
+            nanoswarmUpgrades.damage++;
+            nanoswarmUpgrades.speed++;
+            break;
+        case 'Decrease Nano Swarm Cooldown':
+            nanoswarmUpgrades.cooldown++;
+            nanoswarm.cooldown = Math.max(20, 120 - 30 * nanoswarmUpgrades.cooldown);
+            break;
+        case 'Double Turret':
+            doubleTurret = true;
+            break;
+        case 'Triple Turret':
+            tripleTurret = true;
+            break;
+        case 'Drone Army':
+            buyDrone();
+            buyBomberDrone();
+            break;
+        case 'Damage Booster':
+            damageBooster++;
+            break;
+        case 'Extra Upgrade Choice':
+            fourthUpgradeUnlocked = true;
+            break;
+        case 'Activate Flamethrower':
+            activateWeaponClass('flamethrower');
+            damageReportStartTimes.flamethrower = now;
+            break;
+        case 'Increase Flamethrower Range':
+            flamethrowerUpgrades.range++;
+            flamethrower.range = 100 * flamethrowerUpgrades.range;
+            break;
+        case 'Increase Flamethrower Damage':
+            flamethrowerUpgrades.damage++;
+            flamethrower.damagePerSecond++;
+            flamethrower.damage = flamethrowerUpgrades.damage;
+            break;
+        case 'Decrease Flamethrower Cooldown':
+            flamethrowerUpgrades.cooldown++;
+            flamethrower.cooldown = Math.max(1, 10 - flamethrowerUpgrades.cooldown);
+            break;
+
+        case 'Activate Chain Lightning':
+            activateWeaponClass('chainlightning');
+            damageReportStartTimes.chainlightning = now;
+            break;
+        case 'Increase Chain Lightning Range':
+            chainLightningUpgrades.range++;
+            chainLightning.range = 100 * chainLightningUpgrades.range;
+            break;
+        case 'Increase Chain Lightning Damage':
+            chainLightningUpgrades.damage++;
+            chainLightning.damage = 5 * chainLightningUpgrades.damage;
+            break;
+        case 'Increase Chain Lightning Bounces':
+            chainLightningUpgrades.bounces++;
+            chainLightning.bounces = 1 + chainLightningUpgrades.bounces;
+            break;
+        case 'Decrease Chain Lightning Cooldown':
+            chainLightningUpgrades.cooldown++;
+            chainLightning.cooldown = Math.max(60, 300 - 30 * chainLightningUpgrades.cooldown);
+            break;
+
+    }
+}
+
+let damageReportStartTimes = {};
+
+// Initialize total damage for each weapon
+function initializeWeaponDamageTracking() {
+    const weaponClasses = ['explosive', 'turret', 'drone', 'sonic', 'bomberdrone', 'deathray', 'acid', 'freeze', 'boomerang', 'nanoswarm', 'flamethrower', 'chainlightning', 'explosiverocket'];
+    weaponClasses.forEach(weapon => {
+        damageReport[weapon] = 0;
+        damageReportStartTimes[weapon] = null;
+    });
+}
+
+initializeWeaponDamageTracking();
+
+
+
+function activateWeaponClass(weaponClass) {
+    // temporarily remove restrictions
+    if (!activeWeaponClasses.includes(weaponClass)) {
+        activeWeaponClasses.push(weaponClass);
+        // damageReportStartTimes[weaponClass] = Date.now();
+
+        switch (weaponClass) {
+            case 'explosive':
+                ship.explosiveLaserLevel = 1;
+                break;
+            case 'turret':
+                turret.bought = true;
+                turretUpgrades.range = 1;
+                turretUpgrades.fireRate = 1;
+                turretUpgrades.damage = 1;
+                break;
+            case 'drone':
+                buyDrone();
+                break;
+            case 'bomberdrone':
+                bomberDroneUpgrades = {
+                    speed: 1,
+                    bombRadius: 50,
+                    bombRadiusLevel: 1,
+                    bombDamage: 2
+                };
+                buyBomberDrone();
+                break;
+            case 'sonic':
+                sonicBlast.range = 200;
+                sonicBlast.damage = 1;
+                sonicBlast.cooldown = 300;
+                break;
+            case 'deathray':
+                deathRay.length = 1000;
+                deathRay.width = 50;
+                deathRay.cooldown = 300;
+                break;
+            case 'nanoswarm':
+                nanoswarm.cooldown = 120;
+                nanoswarm.timer = 0;
+                break;
+            case 'freeze':
+                freezeEffect.duration = 30;
+                freezeEffect.cooldown = 600;
+                break;
+            case 'boomerang':
+                activateBoomerang();
+                break;
+
+        }
+
+    }
+}
+// Update function to draw active weapon classes with cooldown indicators
+function drawActiveWeaponClasses() {
+    const container = document.getElementById('activeWeaponClassesContainer');
+    container.innerHTML = ''; // Clear previous content
+
+    for (const weaponClass of activeWeaponClasses) {
+        const iconContainer = document.createElement('div');
+        iconContainer.classList.add('iconContainer');
+
+        const icon = document.createElement('div');
+        icon.classList.add('weaponClassIcon', `icon-${weaponClass.toLowerCase().replace(/\s+/g, '')}`);
+
+        // Create a span element to display the number of upgrades
+        const upgradeCount = document.createElement('span');
+        upgradeCount.classList.add('upgradeCount');
+        upgradeCount.textContent = getUpgradeCount(weaponClass); // Get the number of upgrades for the weapon class
+
+        // Append the icon and upgrade count to the container
+        iconContainer.appendChild(icon);
+        iconContainer.appendChild(upgradeCount);
+        container.appendChild(iconContainer);
+    }
+}
+
+
 const weapons = [
     {
         name: 'Basic Laser',
