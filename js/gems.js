@@ -208,9 +208,9 @@ function startRoulette() {
         updateDisplayGems();
         drawDisplayGems();
         // too much
-        // if (angle >= totalSpins / 2) {
-        //     createGemExplosion(1.5);
-        // }
+        if (angle >= totalSpins / 1.2) {
+            createGemExplosion(.005);
+        }
         // if (angle >= totalSpins / 2) {
         //     createGemExplosion(1.2);
         // }
@@ -277,7 +277,7 @@ function activateGemUpgrades() {
 
 }
 
-function createGemExplosion(newAngle = 1) {
+function createGemExplosion(angleBooster = 0) {
 
     const centerX = canvas.width / 2;
     const centerY = 250; // Same fixed position as planet
@@ -285,13 +285,13 @@ function createGemExplosion(newAngle = 1) {
     const speed = 5;
 
     for (let i = 0; i < numGems; i++) {
-        const angle = Math.random() * 2 * Math.PI;
+        const angle = Math.random() * 2 * Math.PI + angleBooster;
         const gemType = ['common', 'rare', 'epic'][Math.floor(Math.random() * 3)]; // Random gem type
         const gem = {
             x: centerX,
             y: centerY,
-            dx: speed * Math.cos(angle) * newAngle,
-            dy: speed * Math.sin(angle) * newAngle,
+            dx: speed * Math.cos(angle),
+            dy: speed * Math.sin(angle),
             type: gemType,
             size: Math.random() * 10 + 10
         };
