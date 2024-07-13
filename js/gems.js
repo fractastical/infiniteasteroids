@@ -69,6 +69,9 @@ gemImages.common.src = 'icons/common_gem.png';
 gemImages.rare.src = 'icons/rare_gem.png';
 gemImages.epic.src = 'icons/epic_gem.png';
 
+let activeGemUpgrades = null;
+const unlockSound = new Audio('sounds/levelUp.mp3');
+
 // const canvas = document.getElementById('gameCanvas');
 // const ctx = canvas.getContext('2d');
 
@@ -159,6 +162,7 @@ function updateIconPositions(angle) {
 
 }
 
+
 function startRoulette() {
     const rouletteContainer = document.getElementById('rouletteContainer');
     rouletteContainer.style.display = 'flex';
@@ -194,11 +198,9 @@ function startRoulette() {
     const spinSound = new Audio('sounds/upgrade_loop.mp3');
     spinSound.play();
 
-    const unlockSound = new Audio('sounds/levelUp.mp3');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     createGemExplosion();
 
-    let activeGemUpgrades = null;
 
     const interval = setInterval(() => {
         angle += totalSpins / (spinDuration / spinInterval);

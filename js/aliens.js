@@ -150,7 +150,7 @@ function spawnSuperBossAlien() {
         spawnTimer: 0,
         hitpoints: 5000,
         maxHitpoints: 5000,
-        shootInterval: 100 // Adjust this value as needed
+        shootInterval: 220 // Adjust this value as needed
     };
     aliens.push(superbossAlien);
 }
@@ -172,7 +172,7 @@ function updateSuperBossAlien() {
         }
 
         superbossAlien.spawnTimer++;
-        if (superbossAlien.spawnTimer >= 180) {
+        if (superbossAlien.spawnTimer >= 250) {
             superbossAlien.spawnTimer = 0;
             spawnLittleAliensAroundSuperBoss();
         }
@@ -225,7 +225,7 @@ function spawnMegaBossAlien() {
         spawnTimer: 0,
         hitpoints: 10000,
         maxHitpoints: 10000,
-        shootInterval: 80 // Adjust this value as needed
+        shootInterval: 100 // Adjust this value as needed
     };
     aliens.push(megaBossAlien);
 }
