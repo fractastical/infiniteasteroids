@@ -170,6 +170,9 @@ function updateFlamethrower() {
         let endX = ship.x + flameRange * Math.sin(ship.rotation * Math.PI / 180);
         let endY = ship.y - flameRange * Math.cos(ship.rotation * Math.PI / 180);
 
+        // Generate flame particles
+        generateFlameParticles(ship.x, ship.y, endX, endY, flameWidth);
+
         // Check for collisions with asteroids
         for (let i = asteroids.length - 1; i >= 0; i--) {
             let asteroid = asteroids[i];
@@ -180,21 +183,49 @@ function updateFlamethrower() {
             if (distance < flameRange && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < flameWidth / 2) {
                 asteroid.isOnFire = true; // Set the asteroid on fire
                 asteroid.fireTimer = 0; // Reset the fire timer
+                asteroid.distanceFromCenter = distance; // Track the distance from the center of the flame
             }
         }
 
-        // Draw the flamethrower
-        ctx.save();
-        ctx.strokeStyle = 'orange';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(ship.x, ship.y);
-        ctx.lineTo(endX, endY);
-        ctx.stroke();
-        ctx.restore();
-
         flamethrower.active = false;
     }
+}
+
+function generateFlameParticles(startX, startY, endX, endY, flameWidth) {
+    const angle = Math.atan2(endY - startY, endX - startX);
+    for (let i = 0; i < 10; i++) {
+        const offsetX = (Math.random() - 0.5) * flameWidth;
+        const offsetY = (Math.random() - 0.5) * flameWidth;
+        const particle = {
+            x: startX + offsetX,
+            y: startY + offsetY,
+            size: Math.random() * 4 + 2,
+            speed: Math.random() * 2 + 1,
+            direction: angle + (Math.random() - 0.5) * 0.2,
+            life: Math.random() * 30 + 20,
+            color: 'rgba(0, 0, 255, 0.8)'
+        };
+        particles.push(particle);
+    }
+}
+
+function drawFlameParticles() {
+    particles.forEach((particle, index) => {
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Update particle position
+        particle.x += Math.cos(particle.direction) * particle.speed;
+        particle.y += Math.sin(particle.direction) * particle.speed;
+
+        // Reduce particle life
+        particle.life--;
+        if (particle.life <= 0) {
+            particles.splice(index, 1);
+        }
+    });
 }
 
 function updateAsteroidFire() {

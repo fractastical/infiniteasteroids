@@ -620,7 +620,7 @@ function updateSwarmingAliens() {
 
 function spawnSwarmingAliens(type, count) {
     const alienSize = 20;
-    const spacing = 2; // 2 pixels in between each alien
+    const spacing = 6; // 2 pixels in between each alien
     const totalSize = alienSize + spacing; // Total size including spacing
 
     // Determine the number of aliens per row/column for the clump
