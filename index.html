@@ -1023,7 +1023,10 @@
       }
 
       if (gameOver) endGame();
-      if (wave == 30) updateAchievementsAtEnd();
+      if (wave == 10 && currentMode == gameMode.EASY)
+        updateAchievementsAtEnd();
+
+      // if (wave == 30) updateAchievementsAtEnd();
 
       // Update and draw particles
       updateParticles();
@@ -3375,11 +3378,11 @@
           alien = {
             x: 20,
             y: 50,
-            size: 50,
-            speed: 1,
+            size: 60,
+            speed: 0.3,
             direction: Math.PI / 2,
             shootTimer: 0,
-            hitpoints: wave + 5,
+            hitpoints: wave,
             shootInterval: 120 // Adjust the shooting interval as desired
           };
         }
@@ -3490,10 +3493,13 @@
 
     function createAsteroidCluster() {
       const clusterSize = 10; // Number of asteroids in the cluster
-      let clusterSpeed = 1.4 * Math.pow(1.02, wave - 1); // Base speed for the cluster
+      let clusterSpeed = 1.2 * Math.pow(1.02, wave - 1); // Base speed for the cluster
       // half speed clusters in easy
       if (currentMode == GameModes.EASY)
         clusterSpeed *= 0.5;
+      if (currentMode == GameModes.NORMAL)
+        clusterSpeed *= 0.7;
+
       const speedVariation = 0.02; // Speed variation percentage (1%)
       const angleVariation = Math.PI / 8; // Angle variation (in radians)
 

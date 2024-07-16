@@ -81,7 +81,7 @@ function spawnAliens(wave) {
             direction: Math.random() * Math.PI * 2,
             shootTimer: 0,
             hitpoints: 1,
-            shootInterval: 150 // Adjust this value as needed
+            shootInterval: 220 // Adjust this value as needed
         };
 
         aliens.push(newAlien);
