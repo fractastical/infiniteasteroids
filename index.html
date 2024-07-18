@@ -2897,7 +2897,8 @@
       const angleVariation = 0.02; // 2% variation in radians
 
       let numberOfAsteroids = baseAsteroidCount + (wave - 1) * additionalAsteroidsPerWave;
-      let spawnSide = Math.floor((wave - 1) / 25) % 4; // Switch spawn side every 25 waves
+      // let spawnSide = Math.floor((wave - 1) / 25) % 4; // Switch spawn side every 25 waves
+      let spawnSide = 0;
 
       //BOSSMODE we have 
       if ((wave > 49 && wave < 56) || (wave > 74 && wave < 82)) {
