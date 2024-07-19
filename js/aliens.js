@@ -32,9 +32,9 @@ let alienLasers = [];
 function spawnAliens(wave) {
 
     if (testMode) {
-        spawnSwarmingAliens(SwarmingAlienTypes.TOP, 20);
-        spawnSwarmingAliens(SwarmingAlienTypes.BOTTOM, 20);
-        spawnHuntingAliens(10);
+        // spawnSwarmingAliens(SwarmingAlienTypes.TOP, 1);
+        // spawnSwarmingAliens(SwarmingAlienTypes.BOTTOM, 1);
+        // spawnHuntingAliens(10);
 
     }
 
@@ -42,9 +42,9 @@ function spawnAliens(wave) {
         const totalAliensToSpawn = wave;
         const topAliens = Math.floor(totalAliensToSpawn * 0.5);
         const bottomAliens = Math.floor(totalAliensToSpawn * 0.5);
-
-        spawnSwarmingAliens(SwarmingAlienTypes.TOP, topAliens);
-        spawnSwarmingAliens(SwarmingAlienTypes.BOTTOM, bottomAliens);
+        spawnHuntingAliens(wave);
+        // spawnSwarmingAliens(SwarmingAlienTypes.TOP, topAliens);
+        // spawnSwarmingAliens(SwarmingAlienTypes.BOTTOM, bottomAliens);
     }
 
 

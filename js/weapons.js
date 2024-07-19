@@ -1,12 +1,11 @@
-let boomerang = {
-    x: canvas.width / 2,
+x: canvas.width / 2,
     y: canvas.height / 2,
-    size: 10,
-    speed: 2,
-    damage: 1,
-    dx: 3,
-    dy: 3,
-    active: false
+        size: 10,
+            speed: 2,
+                damage: 1,
+                    dx: 3,
+                        dy: 3,
+                            active: false
 };
 
 let boomerangUpgrades = {
