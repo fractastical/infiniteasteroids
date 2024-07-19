@@ -460,7 +460,7 @@ function updateAlienLasers() {
 
         if (!invincible && isColliding(laser, ship)) {
             createExplosion(ship.x, ship.y);
-            resetShip();
+            resetShip(false);
             lives--;
             playShipDestroyedSound();
             invincible = true;
@@ -529,7 +529,7 @@ function updateBossAlienLaser() {
     if (!invincible && isColliding(alienLaser, ship)) {
         alienLaser = null;
         createExplosion(ship.x, ship.y);
-        resetShip();
+        resetShip(false);
         lives--;
         playShipDestroyedSound();
         invincible = true;
@@ -551,7 +551,7 @@ function updateSuperBossAlienLasers() {
 
         if (!invincible && isColliding(laser, ship)) {
             createExplosion(ship.x, ship.y);
-            resetShip();
+            resetShip(false);
             lives--;
             playShipDestroyedSound();
             invincible = true;
@@ -600,7 +600,7 @@ function updateSwarmingAliens() {
 
             if (!invincible && isColliding(alien, ship)) {
                 createExplosion(ship.x, ship.y);
-                resetShip();
+                resetShip(false);
                 lives--;
                 playShipDestroyedSound();
                 invincible = true;
