@@ -475,7 +475,7 @@ function updateAlienLasers() {
 
 function drawAlienLasers() {
     alienLasers.forEach(laser => {
-        ctx.fillStyle = 'purple';
+        ctx.fillStyle = 'pink';
         ctx.beginPath();
         ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
         ctx.fill();
@@ -512,7 +512,7 @@ function shootBossAlienLaser() {
 function drawBossAlienLaser() {
     if (!alienLaser) return;
 
-    ctx.fillStyle = 'purple';
+    ctx.fillStyle = 'pink';
     ctx.beginPath();
     ctx.arc(alienLaser.x, alienLaser.y, 6, 0, Math.PI * 2);
     ctx.fill();
