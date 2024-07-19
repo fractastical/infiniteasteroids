@@ -1,27 +1,16 @@
-function createAsteroids(side) {
+let acidAreas = [];
 
+
+function createAsteroids(side) {
     if (currentMode === GameModes.ENDLESS_SLOW) {
         createEndlessSlowAsteroids();
     } else {
         const asteroidImages = [
-            // 'roids/8bitroid_2657.png',
-            // 'roids/8bitroid_3590.png',
-            // 'roids/8bitroid_4692.png',
-            // 'roids/8bitroid_5715.png',
-            // 'roids/8bitroid_6560.png',
-            // 'roids/8bitroid_7406.png',
-            // 'roids/8bitroid_8170.png',
-            // 'roids/8bitroid_8775.png',
-            // 'roids/8bitroid_8824.png',
-            // 'roids/8bitroid_8892.png',
             'roids/8bitroid_9074.png',
             'roids/8bitroid_9292.png',
             'roids/8bitroid_9449.png',
             'roids/8bitroid_9460.png',
-
-            // Add more asteroid image paths as needed
         ];
-
 
         let numberOfAsteroids = 10 + (wave - 1) * 1.8 + meteorBooster;
         if (meteorMode) {
@@ -32,7 +21,6 @@ function createAsteroids(side) {
         else if (wave >= 53 && wave < 56)
             numberOfAsteroids *= 0.55;
 
-
         for (let i = 0; i < numberOfAsteroids; i++) {
             let isLargeAsteroid = Math.random() < 0.1; // 10% chance for a large asteroid
             let isSmallAsteroid = Math.random() * 100 < chanceForSmallAsteroid;
@@ -40,6 +28,8 @@ function createAsteroids(side) {
             let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
             let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
             let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
+            let isRareAsteroid = Math.random() < 0.05; // 5% chance for a rare asteroid
+
             let dx = 1;
             let dy = 1;
             let asteroidSize = isLargeAsteroid ? 40 : isSmallAsteroid ? 10 : 20;
@@ -52,8 +42,6 @@ function createAsteroids(side) {
                 asteroidSize = 5;
                 asteroidSpeedMultiplier = 0.5;
             }
-
-
 
             let x, y;
             let spawnArea = Math.random();
@@ -80,27 +68,47 @@ function createAsteroids(side) {
                 y = Math.random() * canvas.height;
                 dx = side === 'left' ? Math.random() * 2 : -Math.random() * 2;
                 dy = (Math.random() * 2 - 1);
-
             }
 
             let hitpoints;
             let color;
+            let type = 'normal';
 
-            if (isLargeAsteroid) {
-                hitpoints = wave; // Higher hit points for larger asteroids
-                color = 'darkgray';
-            } else if (isMegaHardenedAsteroid) {
-                hitpoints = 10 + wave;
-                color = '#301934'; // Very dark purple for mega hardened asteroids
-            } else if (isVeryHardenedAsteroid) {
-                hitpoints = 15;
-                color = '#0A1414'; // Very dark green color for very hardened asteroids
-            } else if (isHardenedAsteroid) {
-                hitpoints = Math.floor(Math.random() * 5) + 3; // Random hitpoints between 5 and 8
-                color = '#172727'; // Dark green color for hardened asteroids
+            if (isRareAsteroid) {
+                const rareTypes = ['exploding', 'freezing', 'chainLightning', 'acid'];
+                type = rareTypes[Math.floor(Math.random() * rareTypes.length)];
+                hitpoints = 5; // Fixed hitpoints for rare asteroids
+                switch (type) {
+                    case 'exploding':
+                        color = '#FF0000'; // Red
+                        break;
+                    case 'freezing':
+                        color = '#00BFFF'; // Blue
+                        break;
+                    case 'chainLightning':
+                        color = '#FFFF00'; // Yellow
+                        break;
+                    case 'acid':
+                        color = '#00FF00'; // Green
+                        break;
+                }
             } else {
-                hitpoints = 1;
-                color = 'gray';
+                if (isLargeAsteroid) {
+                    hitpoints = wave; // Higher hit points for larger asteroids
+                    color = 'darkgray';
+                } else if (isMegaHardenedAsteroid) {
+                    hitpoints = 10 + wave;
+                    color = '#301934'; // Very dark purple for mega hardened asteroids
+                } else if (isVeryHardenedAsteroid) {
+                    hitpoints = 15;
+                    color = '#0A1414'; // Very dark green color for very hardened asteroids
+                } else if (isHardenedAsteroid) {
+                    hitpoints = Math.floor(Math.random() * 5) + 3; // Random hitpoints between 5 and 8
+                    color = '#172727'; // Dark green color for hardened asteroids
+                } else {
+                    hitpoints = 1;
+                    color = 'gray';
+                }
             }
 
             let asteroid = {
@@ -113,9 +121,10 @@ function createAsteroids(side) {
                 dy: dy * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
                 hitpoints: hitpoints,
                 initialHitpoints: hitpoints,
-                color: getAsteroidColor(hitpoints),
+                color: color,
                 isLarge: isLargeAsteroid,
-                image: asteroidImage
+                image: asteroidImage,
+                type: type
             };
 
             asteroids.push(asteroid);
@@ -131,7 +140,6 @@ function createAsteroids(side) {
         if (wave % 3 === 0) {
             createAsteroidCluster();
         }
-
 
         if (wave % 7 === 0) {
             createSlowCluster();
@@ -161,10 +169,8 @@ function createEndlessSlowAsteroids() {
     const angleVariation = 0.02; // 2% variation in radians
 
     let numberOfAsteroids = baseAsteroidCount + (wave - 1) * additionalAsteroidsPerWave;
-    // let spawnSide = Math.floor((wave - 1) / 25) % 4; // Switch spawn side every 25 waves
     let spawnSide = 0;
 
-    //BOSSMODE we have 
     if ((wave > 49 && wave < 56) || (wave > 74 && wave < 82)) {
         numberOfAsteroids *= 0.55;
     }
@@ -172,7 +178,6 @@ function createEndlessSlowAsteroids() {
     for (let i = 0; i < numberOfAsteroids; i++) {
         let hitpoints = Math.ceil(baseHitpoints + (wave - 1) * hitpointIncreasePerWave);
 
-        // Apply variations in speed and angle
         let baseSpeed = 0.5;
         let speed = baseSpeed + (Math.random() * speedVariation * 2 - speedVariation);
         let baseAngle = 0;
@@ -184,10 +189,8 @@ function createEndlessSlowAsteroids() {
         let x, y;
 
         if ((wave > 49 && wave < 56) || (wave > 74 && wave < 82)) {
-
             x = 0;
             y = Math.random() * (canvas.height / 2);
-
         } else {
             switch (spawnSide) {
                 case 0: // Left side
@@ -201,7 +204,7 @@ function createEndlessSlowAsteroids() {
                 case 2: // Right side
                     x = canvas.width;
                     y = Math.random() * canvas.height;
-                    dx = -dx; // Reverse direction for right side
+                    dx = -dx; // Reverse directionfor right side
                     break;
                 case 3: // Bottom side
                     x = Math.random() * canvas.width;
@@ -210,7 +213,6 @@ function createEndlessSlowAsteroids() {
                     break;
             }
         }
-
 
         let asteroid = {
             x: x,
@@ -251,9 +253,6 @@ function getAsteroidColor(hitpoints) {
     if (hitpoints <= 120) return colors[13];
     return colors[14];
 }
-
-
-
 
 function createAsteroidCluster() {
     const clusterSize = 10; // Number of asteroids in the cluster
@@ -309,6 +308,7 @@ function createAsteroidCluster() {
         asteroids.push(asteroid);
     }
 }
+
 function createSlowCluster() {
     const clusterSize = 3; // Number of asteroids in the cluster
     const clusterSpeed = 0.5; // Speed of the cluster
@@ -339,7 +339,6 @@ function createSlowCluster() {
     }
 }
 
-
 // Update asteroids
 function updateAsteroids() {
     if (currentMode === GameModes.ENDLESS_SLOW) {
@@ -353,7 +352,6 @@ function updateAsteroids() {
             }
         }
     } else {
-
         if (!freezeEffect.active) {
             for (let i = 0; i < asteroids.length; i++) {
                 applyGravity(asteroids[i]);
@@ -374,7 +372,6 @@ function updateAsteroids() {
                         asteroids[i].y = 0;
                     }
                 } else {
-
                     if (
                         asteroids[i].x < 0 ||
                         asteroids[i].x > canvas.width ||
@@ -384,16 +381,13 @@ function updateAsteroids() {
                         asteroids.splice(i, 1);
                         i--;
                     }
-
                 }
-
             }
         }
     }
 }
 
 function drawAsteroids() {
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < asteroids.length; i++) {
         ctx.strokeStyle = asteroids[i].color;
         ctx.lineWidth = asteroids[i].hitpoints + 1; // Set the line width to the asteroid's hitpoints
@@ -404,3 +398,200 @@ function drawAsteroids() {
     }
 }
 
+function createExplosion(x, y, hitpoints = 1, asteroidImage = "") {
+    const baseSize = 15; // Base size for explosions
+    const sizeReductionFactor = 1.5; // Size reduction per hitpoint
+    const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
+    const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015
+
+    let randomColor;
+    if (hitpoints > 7) {
+        randomColor = getRandomPurpleShade();
+    } else if (hitpoints > 1) {
+        randomColor = getRandomBlueShade();
+    } else {
+        randomColor = getRandomOrangeShade();
+    }
+
+    let explosion = {
+        x: x,
+        y: y,
+        size: randomSize,
+        alpha: 1,
+        alphaDecay: randomAlphaDecay,
+        color: randomColor
+    };
+    explosions.push(explosion);
+}
+
+function getRandomOrangeShade() {
+    const shades = ['#FF4500', '#FF6347', '#FF8C00', '#FFA500', '#FF7F50'];
+    return shades[Math.floor(Math.random() * shades.length)];
+}
+
+function getRandomBlueShade() {
+    const shades = ['#1E90FF', '#00BFFF', '#87CEFA', '#4682B4', '#5F9EA0'];
+    return shades[Math.floor(Math.random() * shades.length)];
+}
+
+function getRandomPurpleShade() {
+    const shades = ['#800080', '#8B008B', '#9370DB', '#9400D3', '#9932CC', '#BA55D3', '#DA70D6', '#DDA0DD', '#EE82EE', '#FF00FF'];
+    return shades[Math.floor(Math.random() * shades.length)];
+}
+
+function handleRareAsteroidEffects(asteroid) {
+    switch (asteroid.type) {
+        case 'exploding':
+            createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints);
+            break;
+        case 'freezing':
+            applyFreezeEffect(asteroid.x, asteroid.y);
+            break;
+        case 'chainLightning':
+            fireChainLightningFromAsteroid(asteroid);
+            break;
+        case 'acid':
+            createAcidArea(asteroid.x, asteroid.y);
+            break;
+    }
+}
+
+function applyFreezeEffect(x, y) {
+    const freezeRadius = 100;
+    for (let i = 0; i < asteroids.length; i++) {
+        let dx = asteroids[i].x - x;
+        let dy = asteroids[i].y - y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < freezeRadius) {
+            asteroids[i].dx = 0;
+            asteroids[i].dy = 0;
+            setTimeout(() => {
+                asteroids[i].dx = Math.random() * 2 - 1;
+                asteroids[i].dy = Math.random() * 2 - 1;
+            }, 3000);
+        }
+    }
+}
+
+function fireChainLightningFromAsteroid(asteroid) {
+    const lightningRange = 150;
+    let target = findNearestAsteroidInRange(asteroid, lightningRange);
+    if (target) {
+        drawChainLightning(asteroid, target);
+        fireChainLightning(target, 3);
+    }
+}
+
+function createAcidArea(x, y) {
+    const acidRadius = 100;
+    const acidDuration = 300;
+    let acidArea = {
+        x: x,
+        y: y,
+        radius: acidRadius,
+        duration: acidDuration
+    };
+    acidAreas.push(acidArea);
+}
+
+function updateAcidAreas() {
+    for (let i = acidAreas.length - 1; i >= 0; i--) {
+        let area = acidAreas[i];
+        area.duration--;
+
+        for (let j = asteroids.length - 1; j >= 0; j--) {
+            let asteroid = asteroids[j];
+            let dx = asteroid.x - area.x;
+            let dy = asteroid.y - area.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < area.radius) {
+                let actualDamage = Math.min(5 + damageBooster, asteroid.hitpoints);
+                asteroid.hitpoints -= actualDamage;
+                if (asteroid.hitpoints <= 0) {
+                    handleRareAsteroidEffects(asteroid);
+                    asteroids.splice(j, 1);
+                }
+            }
+        }
+
+        if (area.duration <= 0) {
+            acidAreas.splice(i, 1);
+        }
+    }
+}
+
+function drawAcidAreas() {
+    ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+    for (let i = 0; i < acidAreas.length; i++) {
+        let area = acidAreas[i];
+        ctx.beginPath();
+        ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function updateAsteroids() {
+    if (currentMode === GameModes.ENDLESS_SLOW) {
+        for (let i = 0; i < asteroids.length; i++) {
+            asteroids[i].x += asteroids[i].dx;
+
+            // Remove asteroids that have passed the right edge of the screen
+            if (asteroids[i].x > canvas.width) {
+                asteroids.splice(i, 1);
+                i--;
+            }
+        }
+    } else {
+        if (!freezeEffect.active) {
+            for (let i = 0; i < asteroids.length; i++) {
+                applyGravity(asteroids[i]);
+
+                asteroids[i].x += asteroids[i].dx * asteroids[i].speed;
+                asteroids[i].y += asteroids[i].dy * asteroids[i].speed;
+
+                if (!meteorMode) {
+                    // Wrap asteroids around the screen
+                    if (asteroids[i].x < 0) {
+                        asteroids[i].x = canvas.width;
+                    } else if (asteroids[i].x > canvas.width) {
+                        asteroids[i].x = 0;
+                    }
+                    if (asteroids[i].y < 0) {
+                        asteroids[i].y = canvas.height;
+                    } else if (asteroids[i].y > canvas.height) {
+                        asteroids[i].y = 0;
+                    }
+                } else {
+                    if (
+                        asteroids[i].x < 0 ||
+                        asteroids[i].x > canvas.width ||
+                        asteroids[i].y < 0 ||
+                        asteroids[i].y > canvas.height
+                    ) {
+                        asteroids.splice(i, 1);
+                        i--;
+                    }
+                }
+
+                if (asteroids[i].hitpoints <= 0) {
+                    handleRareAsteroidEffects(asteroids[i]);
+                    asteroids.splice(i, 1);
+                }
+            }
+        }
+    }
+}
+
+function drawAsteroids() {
+    for (let i = 0; i < asteroids.length; i++) {
+        ctx.strokeStyle = asteroids[i].color;
+        ctx.lineWidth = asteroids[i].hitpoints + 1; // Set the line width to the asteroid's hitpoints
+        ctx.beginPath();
+        ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.stroke(); // Draw only the outline
+    }
+}
+
+
+// Initialize acid areas array
