@@ -11,10 +11,11 @@ for (let i = 1; i <= 9; i++) {
     swarmingAlienImages.push(img);
 }
 
-const SwarmingAlienTypes = {
-    EASY: { hitpoints: 1, color: 'blue' },
-    MEDIUM: { hitpoints: 3, color: 'orange' },
-    HARD: { hitpoints: 5, color: 'red' }
+const AlienTypes = {
+    TOP: { hitpoints: 1, color: 'blue', speed: 0.5, direction: 1 },  // direction 1 means downward
+    BOTTOM: { hitpoints: 1, color: 'red', speed: 0.3, direction: -1 },  // direction -1 means upward
+    HORIZONTAL: { hitpoints: 2, color: 'green', speed: 0.4, shootInterval: 250 },
+    HUNTING: { hitpoints: 1, color: 'yellow', speed: 0.15 }  // New type for the original following aliens
 };
 
 let alien = null;
@@ -31,16 +32,27 @@ let alienLasers = [];
 function spawnAliens(wave) {
 
     if (testMode) {
-        spawnSwarmingAliens(SwarmingAlienTypes.EASY, 70);
+        spawnSwarmingAliens(SwarmingAlienTypes.TOP, 20);
+        spawnSwarmingAliens(SwarmingAlienTypes.BOTTOM, 20);
+        spawnHuntingAliens(10);
+
     }
 
-    if (wave % 7 == 0) {
+    if (wave % 9 == 0) {
         const totalAliensToSpawn = wave;
         const topAliens = Math.floor(totalAliensToSpawn * 0.5);
         const bottomAliens = Math.floor(totalAliensToSpawn * 0.5);
 
         spawnSwarmingAliens(SwarmingAlienTypes.TOP, topAliens);
         spawnSwarmingAliens(SwarmingAlienTypes.BOTTOM, bottomAliens);
+    }
+
+
+    if (wave % 7 == 0) {
+
+
+        spawnHuntingAliens(wave);
+
     }
 
     if (wave == 50) {
@@ -86,6 +98,37 @@ function spawnAliens(wave) {
     }
 }
 
+function spawnHuntingAliens(count) {
+    const alienSize = 20;
+    const corners = [
+        { x: 0, y: 0 },
+        { x: canvas.width, y: 0 },
+        { x: 0, y: canvas.height },
+        { x: canvas.width, y: canvas.height }
+    ];
+    const cornerOffset = 50;
+
+    for (let i = 0; i < count; i++) {
+        const cornerIndex = i % corners.length;
+        const { x, y } = corners[cornerIndex];
+
+        const offsetX = Math.random() * cornerOffset - (cornerOffset / 2);
+        const offsetY = Math.random() * cornerOffset - (cornerOffset / 2);
+
+        let newHuntingAlien = {
+            x: x + offsetX,
+            y: y + offsetY,
+            size: alienSize,
+            speed: AlienTypes.HUNTING.speed,
+            hitpoints: AlienTypes.HUNTING.hitpoints,
+            type: AlienTypes.HUNTING,
+            image: alienImage  // Assuming you have an image for this type
+        };
+
+        aliens.push(newHuntingAlien);
+    }
+}
+
 function getAliensToSpawn(wave) {
     let booster = 0;
     if (currentMode == GameModes.NORMAL)
@@ -110,27 +153,88 @@ function getAliensToSpawn(wave) {
 
 function updateAliens() {
     if (!freezeEffect.active) {
+        let dropHorizontalSwarm = false;
+
         aliens.forEach(alien => {
-            const dx = ship.x - alien.x;
-            const dy = ship.y - alien.y;
-            const angle = Math.atan2(dy, dx);
+            switch (alien.type) {
+                case AlienTypes.HUNTING:
+                    // Hunting aliens follow the player
+                    const dx = ship.x - alien.x;
+                    const dy = ship.y - alien.y;
+                    const angle = Math.atan2(dy, dx);
 
-            alien.x += Math.cos(angle) * alien.speed;
-            alien.y += Math.sin(angle) * alien.speed;
+                    alien.x += Math.cos(angle) * alien.speed;
+                    alien.y += Math.sin(angle) * alien.speed;
 
-            alien.shootTimer++;
-            if (alien.shootTimer >= alien.shootInterval) {
-                alien.shootTimer = 0;
-                shootAlienLaser(alien);
-                playAlienLaserSound();
+                    // Wrap around screen edges
+                    if (alien.x < 0) alien.x = canvas.width;
+                    else if (alien.x > canvas.width) alien.x = 0;
+                    if (alien.y < 0) alien.y = canvas.height;
+                    else if (alien.y > canvas.height) alien.y = 0;
+                    break;
+
+                case AlienTypes.TOP:
+                case AlienTypes.BOTTOM:
+                    // Vertical movement
+                    alien.y += alien.speed * alien.direction;
+
+                    // Wrap around vertically
+                    if (alien.y > canvas.height) {
+                        alien.y = -alien.size;
+                    } else if (alien.y < -alien.size) {
+                        alien.y = canvas.height;
+                    }
+
+                    // Shooting logic
+                    alien.shootTimer++;
+                    if (alien.shootTimer >= alien.shootInterval) {
+                        alien.shootTimer = 0;
+                        shootAlienLaser(alien);
+                        alien.shootInterval = Math.random() * 4000 + 1000; // Reset shoot interval
+                    }
+                    break;
+
+                case AlienTypes.HORIZONTAL:
+                    // Horizontal movement
+                    if (frameCount % horizontalSwarmMoveInterval === 0) {
+                        alien.x += horizontalSwarmDirection * alien.speed;
+
+                        if (alien.x <= 0 || alien.x >= canvas.width - alien.size) {
+                            dropHorizontalSwarm = true;
+                        }
+                    }
+
+                    // Shooting logic
+                    alien.shootTimer++;
+                    if (alien.shootTimer >= alien.shootInterval) {
+                        alien.shootTimer = 0;
+                        shootAlienLaser(alien);
+                    }
+                    break;
             }
 
-            // Wrap the alien around the screen edges
-            if (alien.x < 0) alien.x = canvas.width;
-            else if (alien.x > canvas.width) alien.x = 0;
-            if (alien.y < 0) alien.y = canvas.height;
-            else if (alien.y > canvas.height) alien.y = 0;
+            // Collision with player (for all alien types)
+            if (!invincible && isColliding(alien, ship)) {
+                createExplosion(ship.x, ship.y);
+                resetShip(false);
+                lives--;
+                playShipDestroyedSound();
+                invincible = true;
+                invincibilityTimer = invincibilityDuration;
+                if (lives === 0) gameOver = true;
+                return;
+            }
         });
+
+        // Drop horizontal swarm if needed
+        if (dropHorizontalSwarm) {
+            horizontalSwarmDirection *= -1;
+            aliens.forEach(alien => {
+                if (alien.type === AlienTypes.HORIZONTAL) {
+                    alien.y += horizontalSwarmDropDistance;
+                }
+            });
+        }
     }
 }
 
@@ -483,16 +587,25 @@ function drawAlienLasers() {
 }
 
 function shootAlienLaser(alien) {
-    const dx = ship.x - alien.x;
-    const dy = ship.y - alien.y;
-    const angle = Math.atan2(dy, dx);
+    let laserSpeed = alienLaserSpeed;
+    let laserDirection;
 
-    alienLasers.push({
-        x: alien.x,
-        y: alien.y,
-        dx: Math.cos(angle) * alienLaserSpeed,
-        dy: Math.sin(angle) * alienLaserSpeed
-    });
+    if (alien.type === AlienTypes.TOP) {
+        laserDirection = 1; // Downward
+    } else if (alien.type === AlienTypes.BOTTOM) {
+        laserDirection = -1; // Upward
+    } else {
+        laserDirection = 1; // Downward for horizontal aliens
+    }
+
+    const laser = {
+        x: alien.x + alien.size / 2,
+        y: alien.y + (laserDirection === 1 ? alien.size : 0),
+        dx: 0,
+        dy: laserSpeed * laserDirection
+    };
+    alienLasers.push(laser);
+    playAlienLaserSound();
 }
 
 function shootBossAlienLaser() {
