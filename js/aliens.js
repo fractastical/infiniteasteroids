@@ -36,13 +36,11 @@ function spawnAliens(wave) {
 
     if (wave % 7 == 0) {
         const totalAliensToSpawn = wave;
-        const easyAliens = Math.floor(totalAliensToSpawn * 0.97);
-        const mediumAliens = Math.floor(totalAliensToSpawn * 0.15);
-        const hardAliens = Math.floor(totalAliensToSpawn * 0.07);
+        const topAliens = Math.floor(totalAliensToSpawn * 0.5);
+        const bottomAliens = Math.floor(totalAliensToSpawn * 0.5);
 
-        spawnSwarmingAliens(SwarmingAlienTypes.EASY, easyAliens);
-        spawnSwarmingAliens(SwarmingAlienTypes.MEDIUM, mediumAliens);
-        spawnSwarmingAliens(SwarmingAlienTypes.HARD, hardAliens);
+        spawnSwarmingAliens(SwarmingAlienTypes.TOP, topAliens);
+        spawnSwarmingAliens(SwarmingAlienTypes.BOTTOM, bottomAliens);
     }
 
     if (wave == 50) {
@@ -578,26 +576,26 @@ function drawSuperBossAlienLasers() {
 function updateSwarmingAliens() {
     if (!freezeEffect.active) {
         swarmingAliens.forEach(alien => {
-            const dx = ship.x - alien.x;
-            const dy = ship.y - alien.y;
-            const angle = Math.atan2(dy, dx);
+            // Move vertically
+            alien.y += alien.speed * alien.direction;
 
-            alien.x += Math.cos(angle) * alien.speed;
-            alien.y += Math.sin(angle) * alien.speed;
+            // Wrap around vertically
+            if (alien.y > canvas.height) {
+                alien.y = -alien.size;
+            } else if (alien.y < -alien.size) {
+                alien.y = canvas.height;
+            }
 
-            alienLasers.forEach(laser => {
-                const laserDx = laser.dx;
-                const laserDy = laser.dy;
-                const laserAngle = Math.atan2(laserDy, laserDx);
-                const distance = Math.hypot(alien.x - laser.x, alien.y - laser.y);
-                const angleDifference = Math.abs(laserAngle - angle);
+            // Shooting logic
+            alien.shootTimer++;
+            if (alien.shootTimer >= alien.shootInterval) {
+                alien.shootTimer = 0;
+                shootSwarmingAlienLaser(alien);
+                // Reset shoot interval
+                alien.shootInterval = Math.random() * 4000 + 1000;
+            }
 
-                if (distance < 100 && angleDifference < Math.PI / 6) {
-                    alien.x += Math.cos(laserAngle + Math.PI / 2) * alien.speed;
-                    alien.y += Math.sin(laserAngle + Math.PI / 2) * alien.speed;
-                }
-            });
-
+            // Collision with player
             if (!invincible && isColliding(alien, ship)) {
                 createExplosion(ship.x, ship.y);
                 resetShip(false);
@@ -608,69 +606,58 @@ function updateSwarmingAliens() {
                 if (lives === 0) gameOver = true;
                 return;
             }
-
-            if (alien.x < 0) alien.x = canvas.width;
-            else if (alien.x > canvas.width) alien.x = 0;
-            if (alien.y < 0) alien.y = canvas.height;
-            else if (alien.y > canvas.height) alien.y = 0;
         });
     }
 }
 
 
+function shootSwarmingAlienLaser(alien) {
+    const laser = {
+        x: alien.x + alien.size / 2,
+        y: alien.y + (alien.direction === 1 ? alien.size : 0),
+        dx: 0,
+        dy: alienLaserSpeed * alien.direction
+    };
+    alienLasers.push(laser);
+    playAlienLaserSound();
+}
+
+
 function spawnSwarmingAliens(type, count) {
     const alienSize = 20;
-    const spacing = 6; // 2 pixels in between each alien
-    const totalSize = alienSize + spacing; // Total size including spacing
-
-    // Determine the number of aliens per row/column for the clump
+    const spacing = 6;
+    const totalSize = alienSize + spacing;
     const clumpWidth = Math.ceil(Math.sqrt(count));
 
-    // Choose a random edge of the map
-    const edge = Math.floor(Math.random() * 4);
-    let startX, startY;
-
-    switch (edge) {
-        case 0: // Top edge
-            startX = Math.random() * canvas.width;
-            startY = 0;
-            break;
-        case 1: // Bottom edge
-            startX = Math.random() * canvas.width;
-            startY = canvas.height;
-            break;
-        case 2: // Left edge
-            startX = 0;
-            startY = Math.random() * canvas.height;
-            break;
-        case 3: // Right edge
-            startX = canvas.width;
-            startY = Math.random() * canvas.height;
-            break;
+    let startY;
+    if (type === SwarmingAlienTypes.TOP) {
+        startY = 0;
+    } else {
+        startY = canvas.height - alienSize;
     }
 
     for (let i = 0; i < count; i++) {
         let row = Math.floor(i / clumpWidth);
         let col = i % clumpWidth;
         let offsetX = col * totalSize;
-        let offsetY = row * totalSize;
+        let offsetY = row * totalSize * type.direction;
 
         let newSwarmingAlien = {
-            x: startX + offsetX,
+            x: offsetX,
             y: startY + offsetY,
             size: alienSize,
-            speed: 0.15,
-            direction: Math.random() * Math.PI * 2,
+            speed: type.speed,
+            direction: type.direction,
             hitpoints: type.hitpoints,
             type: type,
-            image: swarmingAlienImages[Math.floor(Math.random() * swarmingAlienImages.length)]
+            image: swarmingAlienImages[Math.floor(Math.random() * swarmingAlienImages.length)],
+            shootTimer: 0,
+            shootInterval: Math.random() * 4000 + 1000  // Random interval between 1000 and 5000
         };
 
         // Ensure the alien stays within the canvas bounds
         if (newSwarmingAlien.x >= canvas.width) newSwarmingAlien.x = canvas.width - alienSize;
         if (newSwarmingAlien.x < 0) newSwarmingAlien.x = 0;
-        if (newSwarmingAlien.y >= canvas.height) newSwarmingAlien.y = canvas.height - alienSize;
-        if (newSwarmingAlien.y < 0) newSwarmingAlien.y = 0;
 
         swarmingAliens.push(newSwarmingAlien);
     }
