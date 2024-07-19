@@ -111,12 +111,6 @@ let deathRayUpgrades = {
 
 let bomberDrones = [];
 
-let superWeapons = {
-    missile: 0,
-    laser: 0,
-    bomb: 0
-};
-
 let drone = {
     x: canvas.width / 2,
     y: canvas.height / 2,
@@ -924,6 +918,14 @@ function drawAcidAreas() {
         ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
         ctx.fill();
     }
+
+    for (let i = 0; i < acidAreas.length; i++) {
+        let area = acidAreas[i];
+        ctx.beginPath();
+        ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
 }
 
 
