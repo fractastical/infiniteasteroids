@@ -2877,9 +2877,11 @@
     }
 
     // Reset ship position
-    function resetShip() {
-      ship.x = canvas.width / 2;
-      ship.y = canvas.height / 2; //TODO: somehow not working?
+    function resetShip(center = true) {
+      if (center) {
+        ship.x = canvas.width / 2;
+        ship.y = canvas.height / 2; //TODO: somehow not working?
+      }
       ship.velocityX = 0;
       ship.velocityY = 0;
       ship.speed = 0;

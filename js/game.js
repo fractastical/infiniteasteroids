@@ -324,8 +324,7 @@ function update() {
         for (let i = 0; i < asteroids.length; i++) {
             if (isColliding(ship, asteroids[i])) {
                 createExplosion(ship.x, ship.y);
-                resetShip();
-                // possible multi lives lost bug here
+                resetShip(false);
                 if (!invincible)
                     lives--;
                 playShipDestroyedSound();
