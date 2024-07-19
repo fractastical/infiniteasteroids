@@ -58,7 +58,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.9271.
+    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.9311.
   </div>
 
 
@@ -1074,586 +1074,43 @@
 
     }
 
-    // Function to buy drones
-    function buyDrone() {
-      // if (coins >= droneCost) {
-      //   coins -= droneCost;
-      let drone = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        size: 10,
-        damage: 1,
-        speed: 0.5 * droneUpgrades.speed,
-        direction: Math.random() * Math.PI * 2,
-        lasers: [],
-        image: droneImages.regularDrone,
-        laserSpeed: 2 * droneUpgrades.laserSpeed,
-        laserInterval: 70 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
-        laserTimer: 0
-      };
-      drones.push(drone);
-      playDeployDroneSound();
-      // updateCoinsDisplay();
-      // }
-    }
-
-    function buyBomberDrone() {
-      let bomberDrone = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        size: 12,
-        speed: 0.5 * bomberDroneUpgrades.speed,
-        direction: Math.random() * Math.PI * 2,
-        image: droneImages.bomberDrone,
-        bombs: [],
-        bombInterval: 120,
-        bombTimer: 0
-      };
-      bomberDrones.push(bomberDrone);
-      playDeployDroneSound();
-
-    }
-
-
-    function buyTurret() {
-      if (!turret.bought) {
-        // coins -= 1000;
-        turret.bought = true;
-        turret.x = ship.x;
-        turret.y = ship.y;
-        // updateCoinsDisplay();
-      }
-    }
-
-
-    let doubleTurret = false;
-    let tripleTurret = false;
-
-
-
-
-    function updateTurretLasers() {
-      for (let i = turret.lasers.length - 1; i >= 0; i--) {
-        let laser = turret.lasers[i];
-        laser.x += Math.cos(laser.rotation) * 2;
-        laser.y += Math.sin(laser.rotation) * 2;
-        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
-          turret.lasers.splice(i, 1);
-        }
-      }
-    }
-
-    function drawTurret() {
-      ctx.save();
-      ctx.translate(turret.x, turret.y);
-
-      // Draw the turret as a small cyan circle
-      ctx.beginPath();
-      ctx.arc(0, 0, 3, 0, Math.PI * 2);
-      ctx.fillStyle = 'cyan';
-      ctx.fill();
-
-      ctx.restore();
-    }
-    function updateTurret() {
-      let nearestAsteroid = findNearestAsteroidInRange();
-      if (nearestAsteroid) {
-        let dx = nearestAsteroid.x - turret.x;
-        let dy = nearestAsteroid.y - turret.y;
-        let angle = Math.atan2(dy, dx);
-        turret.rotation = angle;
-
-        turret.fireTimer++;
-
-        if (turret.fireTimer >= turret.fireInterval) {
-          turret.fireTimer = 0;
-
-          // Calculate the laser starting positions based on the turret's rotation
-          let laserX = turret.x + Math.cos(turret.rotation) * turret.size;
-          let laserY = turret.y + Math.sin(turret.rotation) * turret.size;
-
-          let laser = {
-            x: laserX,
-            y: laserY,
-            rotation: turret.rotation,
-            size: 2,
-            color: 'cyan'
-          };
-          turret.lasers.push(laser);
-
-          if (doubleTurret) {
-            let offset = Math.PI / 12; // 15 degrees offset
-            let laser1 = {
-              x: laserX + Math.cos(turret.rotation + offset) * turret.size,
-              y: laserY + Math.sin(turret.rotation + offset) * turret.size,
-              rotation: turret.rotation + offset,
-              size: 2,
-              color: 'cyan'
-            };
-            turret.lasers.push(laser1);
-
-            let laser2 = {
-              x: laserX + Math.cos(turret.rotation - offset) * turret.size,
-              y: laserY + Math.sin(turret.rotation - offset) * turret.size,
-              rotation: turret.rotation - offset,
-              size: 2,
-              color: 'cyan'
-            };
-            turret.lasers.push(laser2);
-          }
-
-          if (tripleTurret) {
-            let offset = Math.PI / 8; // 22.5 degrees offset
-            let laser1 = {
-              x: laserX + Math.cos(turret.rotation + offset) * turret.size,
-              y: laserY + Math.sin(turret.rotation + offset) * turret.size,
-              rotation: turret.rotation + offset,
-              size: 2,
-              color: 'cyan'
-            };
-            turret.lasers.push(laser1);
-
-            let laser2 = {
-              x: laserX + Math.cos(turret.rotation - offset) * turret.size,
-              y: laserY + Math.sin(turret.rotation - offset) * turret.size,
-              rotation: turret.rotation - offset,
-              size: 2,
-              color: 'cyan'
-            };
-            turret.lasers.push(laser2);
-          }
-        }
-      }
-
-      turret.x = ship.x;
-      turret.y = ship.y;
-    }
-
-    function drawTurretLasers() {
-      for (let i = 0; i < turret.lasers.length; i++) {
-        let laser = turret.lasers[i];
-        ctx.fillStyle = laser.color;
-        ctx.beginPath();
-        ctx.arc(laser.x, laser.y, laser.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    function updateBoomerang() {
-      if (!boomerang.active) return;
-
-      boomerang.x += boomerang.dx * boomerang.speed;
-      boomerang.y += boomerang.dy * boomerang.speed;
-
-      // Calculate the rotation angle based on the boomerang's velocity
-      boomerang.angle = Math.atan2(boomerang.dy, boomerang.dx);
-
-      // Bounce off the edges of the screen
-      if (boomerang.x < 0 || boomerang.x > canvas.width) {
-        boomerang.dx = -boomerang.dx;
-      }
-      if (boomerang.y < 0 || boomerang.y > canvas.height) {
-        boomerang.dy = -boomerang.dy;
-      }
-
-      // Check collision with asteroids
-      for (let i = 0; i < asteroids.length; i++) {
-        let asteroid = asteroids[i];
-        if (isColliding(boomerang, asteroid)) {
-          let actualDamage = Math.min(boomerang.damage + damageBooster, asteroid.hitpoints);
-          asteroid.hitpoints -= actualDamage;
-          damageReport.boomerang += actualDamage;
-
-          if (asteroid.hitpoints <= 0) {
-            processAsteroidDeath(asteroid);
-            asteroids.splice(i, 1);
-            score += actualDamage * 50;
-            coins += actualDamage * 20;
-            increaseXP(actualDamage * 20);
-          }
-        }
-      }
-    }
-
-    const boomerangImage = new Image();
-    boomerangImage.src = 'icons/Boomeranggold.png';
-
-    function drawBoomerang() {
-      if (!boomerang.active) return;
-
-      // ctx.fillStyle = 'orange';
-      // ctx.beginPath();
-      // ctx.arc(boomerang.x, boomerang.y, boomerang.size, 0, Math.PI * 2);
-      // ctx.closePath();
-      // ctx.fill();
-
-      ctx.save();
-      ctx.translate(boomerang.x, boomerang.y);
-      ctx.rotate(boomerang.angle);
-      ctx.drawImage(boomerangImage, -boomerang.size / 2, -boomerang.size / 2, boomerang.size * 3, boomerang.size * 3);
-      ctx.restore();
-
-    }
-
-    function activateBoomerang() {
-      boomerang.active = true;
-      boomerang.x = canvas.width / 2;
-      boomerang.y = canvas.height / 2;
-      boomerang.dx = (Math.random() * 2.2 - 1) * boomerang.speed;
-      boomerang.dy = (Math.random() * 2.2 - 1) * boomerang.speed;
-    }
-
-    function shootTripleLaser() {
-      const baseRotation = ship.rotation;
-      console.log("tripple");
-      // Center laser
-      const centerLaserX = ship.x + 100 * Math.sin(baseRotation * Math.PI / 180);
-      const centerLaserY = ship.y - 100 * Math.cos(baseRotation * Math.PI / 180);
-      ship.lasers.push({ x: centerLaserX, y: centerLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
-
-      // Left laser
-      const leftLaserX = ship.x + 100 * Math.sin((baseRotation - 10) * Math.PI / 180);
-      const leftLaserY = ship.y - 100 * Math.cos((baseRotation - 10) * Math.PI / 180);
-      ship.lasers.push({ x: leftLaserX, y: leftLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
-
-      // Right laser
-      const rightLaserX = ship.x + 100 * Math.sin((baseRotation + 10) * Math.PI / 180);
-      const rightLaserY = ship.y - 100 * Math.cos((baseRotation + 10) * Math.PI / 180);
-      ship.lasers.push({ x: rightLaserX, y: rightLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
-
-      // Set the laser timer
-      ship.laserTimer = ship.laserCooldown;
-    }
-
-    function shootLasers() {
-      if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
-
-      // Use the custom shoot function if it exists, otherwise use default shooting
-      if (currentShip === 'solarPhoenix') {
-        shootTripleLaser();
-
-      } else if (currentShip === 'quantumStriker' && ships.quantumStriker.shoot) {
-        ships.quantumStriker.shoot();
-      } else {
-        const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
-        const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
-        ship.lasers.push({ x: laserX, y: laserY, rotation: ship.rotation, size: ship.laserLevel + 1 });
-        ship.laserTimer = ship.laserCooldown;
-      }
-
-      playRandomShotSound();
-    }
-
-
-
-    function shootShotgunStyle() {
-      const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
-      const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
-
-      // Calculate the spread angles
-      const spreadAngle = 10; // Spread angle in degrees
-      const baseRotation = ship.rotation;
-
-      // Create three lasers with spread
-      ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation - spreadAngle, size: ship.laserLevel + 1 });
-      ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation, size: ship.laserLevel + 1 });
-      ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation + spreadAngle, size: ship.laserLevel + 1 });
-
-      // Set the laser timer to half the cooldown
-      ship.laserTimer = ship.laserCooldown * 2; // Slow down fire interval by half
-    }
-
-
-    function findNearestAsteroid() {
-      let nearestAsteroid = null;
-      let nearestDistance = Infinity;
-      for (let i = 0; i < asteroids.length; i++) {
-        let dx = ship.x - asteroids[i].x;
-        let dy = ship.y - asteroids[i].y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < nearestDistance) {
-          nearestAsteroid = asteroids[i];
-          nearestDistance = distance;
-        }
-      }
-      return nearestAsteroid;
-    }
-
-
-    function findNearestAsteroidInRange() {
-      let nearestAsteroid = null;
-      let nearestDistance = Infinity;
-      for (let i = 0; i < asteroids.length; i++) {
-        let dx = turret.x - asteroids[i].x;
-        let dy = turret.y - asteroids[i].y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < nearestDistance && distance <= turret.range) {
-          nearestAsteroid = asteroids[i];
-          nearestDistance = distance;
-        }
-      }
-      return nearestAsteroid;
-    }
-
-
-    function drawSonicBlast() {
-      ctx.strokeStyle = 'blue';
-      ctx.lineWidth = 1;
-      for (let i = 0; i < sonicBlast.waves.length; i++) {
-        const wave = sonicBlast.waves[i];
-        ctx.beginPath();
-        ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-    }
-
-
-    function selectUpgrade(choice) {
-      console.log(choice);
-      const upgrades = window.levelUpgrades;
-      console.log(upgrades);
-
-      applyUpgrade(upgrades[choice - 1]);
-      document.getElementById('levelUpModal').style.display = 'none';
-      isPaused = false;
-      // Resume the game
-      clearInterval(gameLoop);
-      gameLoop = setInterval(update, 1000 / 60); // 60 FPS
-    }
-
-
-    function upgradeDrone(attribute) {
-      const cost = 200;
-      // if (coins >= cost) {
-      //   coins -= cost;
-      droneUpgrades[attribute]++;
-
-      // Update existing drones with new upgrade levels
-      drones.forEach(drone => {
-        switch (attribute) {
-          case 'speed':
-            drone.speed = 2 * droneUpgrades.speed;
-            break;
-          case 'laserSpeed':
-            drone.laserSpeed = 5 * droneUpgrades.laserSpeed;
-            break;
-          case 'laserInterval':
-            drone.laserInterval = 120 / droneUpgrades.laserInterval;
-            break;
-        }
-      });
-      // updateCoinsDisplay();
-      // updateMarketplaceDisplay();
-
-    }
-
-    function applyGravity(object) {
-      const dx = planet.x - object.x;
-      const dy = planet.y - object.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      let force = gravityStrength / (distance * distance); // Inverse-square law
-      if (force > 0.9) {
-        console.log(force);
-        force = 0.9;
-      }
-
-      object.dx += force * dx / distance;
-      object.dy += force * dy / distance;
-    }
-
-    // Update all drones
-    function updateDrones() {
-      drones.forEach(drone => {
-        const dx = ship.x - drone.x;
-        const dy = ship.y - drone.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance > 250) { // If the drone is too far from the ship
-          const angleToShip = Math.atan2(dy, dx);
-          drone.direction = angleToShip; // Change direction towards the ship
-        }
-
-        drone.x += Math.cos(drone.direction) * drone.speed;
-        drone.y += Math.sin(drone.direction) * drone.speed;
-
-        if (drone.x < 0) drone.x = canvas.width;
-        else if (drone.x > canvas.width) drone.x = 0;
-        if (drone.y < 0) drone.y = canvas.height;
-        else if (drone.y > canvas.height) drone.y = 0;
-
-        for (let i = drone.lasers.length - 1; i >= 0; i--) {
-          let laser = drone.lasers[i];
-          laser.x += Math.cos(laser.direction) * drone.laserSpeed;
-          laser.y += Math.sin(laser.direction) * drone.laserSpeed;
-
-          if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
-            drone.lasers.splice(i, 1);
-          }
-        }
-
-        drone.laserTimer++;
-        if (drone.laserTimer >= drone.laserInterval) {
-          drone.laserTimer = 0;
-          let laser = {
-            x: drone.x,
-            y: drone.y,
-            direction: Math.random() * Math.PI * 2,
-            size: 2
-          };
-          drone.lasers.push(laser);
-        }
-
-        // Track damage for drone lasers
-        drone.lasers.forEach(laser => {
-          for (let j = asteroids.length - 1; j >= 0; j--) {
-            let asteroid = asteroids[j];
-            if (isColliding(laser, asteroid)) {
-              let actualDamage = Math.min(drone.damage + damageBooster, asteroid.hitpoints);
-              asteroid.hitpoints -= actualDamage;
-              damageReport.drone += actualDamage;
-            }
-          }
-        });
-
-        checkLaserCollisions(drone.lasers, false);
-      });
-    }
-
-
-    function updateBomberDrones() {
-      bomberDrones.forEach(drone => {
-        const dx = ship.x - drone.x;
-        const dy = ship.y - drone.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance > 200) {
-          const angleToShip = Math.atan2(dy, dx);
-          const deviationAngle = (Math.random() - 0.5) * (Math.PI / 3);
-          drone.direction = angleToShip + deviationAngle;
-
-        }
-
-        drone.x += Math.cos(drone.direction) * drone.speed;
-        drone.y += Math.sin(drone.direction) * drone.speed;
-
-        if (drone.x < 0) drone.x = canvas.width;
-        else if (drone.x > canvas.width) drone.x = 0;
-        if (drone.y < 0) drone.y = canvas.height;
-        else if (drone.y > canvas.height) drone.y = 0;
-
-        drone.bombTimer++;
-        if (drone.bombTimer >= drone.bombInterval) {
-          drone.bombTimer = 0;
-          let bomb = {
-            x: drone.x,
-            y: drone.y,
-            radius: bomberDroneUpgrades.bombRadius,
-            damage: bomberDroneUpgrades.bombDamage
-          };
-          drone.bombs.push(bomb);
-          playRandomBombLaySound();
-        }
-
-        for (let i = drone.bombs.length - 1; i >= 0; i--) {
-          let bomb = drone.bombs[i];
-          for (let j = asteroids.length - 1; j >= 0; j--) {
-            let asteroid = asteroids[j];
-            let dx = bomb.x - asteroid.x;
-            let dy = bomb.y - asteroid.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < bomb.radius + asteroid.size) {
-              let actualDamage = Math.min(bomb.damage + damageBooster, asteroid.hitpoints);
-              asteroid.hitpoints -= actualDamage;
-              damageReport.bomberDrones += actualDamage;
-
-              if (asteroid.hitpoints <= 0) {
-                asteroids.splice(j, 1);
-                processAsteroidDeath(asteroid);
-                score += 50;
-                increaseXP(20);
-              }
-              createExplosion(bomb.x, bomb.y, 1);
-              drone.bombs.splice(i, 1);
-              break;
-            }
-          }
-          if (bomb.x < 0 || bomb.x > canvas.width || bomb.y < 0 || bomb.y > canvas.height) {
-            drone.bombs.splice(i, 1);
-          }
-        }
-      });
-    }
-
-    function drawDrones() {
-      drones.forEach(drone => {
-
-        ctx.save();
-        ctx.translate(drone.x, drone.y);
-        ctx.rotate(drone.direction);
-        ctx.drawImage(drone.image, -drone.size, -drone.size, drone.size * 2, drone.size * 2);
-        ctx.restore();
-
-        // ctx.save();
-        // ctx.translate(drone.x, drone.y);
-        // ctx.rotate(drone.direction);
-        // ctx.beginPath();
-        // ctx.moveTo(0, -drone.size);
-        // ctx.lineTo(-drone.size, drone.size);
-        // ctx.lineTo(drone.size, drone.size);
-        // ctx.closePath();
-        // ctx.fillStyle = 'cyan';
-        // ctx.fill();
-        // ctx.restore();
-
-        ctx.fillStyle = 'cyan';
-        for (let i = 0; i < drone.lasers.length; i++) {
-          let laser = drone.lasers[i];
-          ctx.fillRect(laser.x - 1, laser.y - 1, 2, 2);
-        }
-      });
-    }
-
-    function drawBomberDrones() {
-      bomberDrones.forEach(drone => {
-
-        ctx.save();
-        ctx.translate(drone.x, drone.y);
-        ctx.rotate(drone.direction);
-        ctx.drawImage(drone.image, -drone.size, -drone.size, drone.size * 2, drone.size * 2);
-        ctx.restore();
-
-        // ctx.save();
-        // ctx.translate(drone.x, drone.y);
-        // ctx.rotate(drone.direction);
-        // ctx.beginPath();
-        // ctx.moveTo(0, -drone.size);
-        // ctx.lineTo(-drone.size, drone.size);
-        // ctx.lineTo(drone.size, drone.size);
-        // ctx.closePath();
-        // ctx.fillStyle = 'magenta';
-        // ctx.fill();
-        // ctx.restore();
-
-        // Draw bombs
-        ctx.fillStyle = 'orange';
-        drone.bombs.forEach(bomb => {
-          ctx.beginPath();
-          ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
-          ctx.fill();
-        });
-      });
-    }
-
 
 
     function drawLives() {
+      const lifeWidth = 10;  // Width of each life rectangle
+      const lifeHeight = 30; // Height of each life rectangle (3 times the width)
+      const spacing = 5;     // Space between life rectangles
+      const startX = 20;     // Starting X position for the first life
+      const startY = canvas.height - 40; // Y position for lives, 40 pixels from the bottom
+
+      ctx.fillStyle = 'green';
 
       if (currentMode === GameModes.COOP) {
-        document.getElementById('livesDisplay').textContent = `P1 Lives: ${ship.lives} | P2 Lives: ${ship2.lives}`;
-      } else {
-        document.getElementById('livesDisplay').textContent = `Lives: ${lives}`;
-      }
+        // Draw lives for Player 1
+        for (let i = 0; i < ship.lives; i++) {
+          const x = startX + (lifeWidth + spacing) * i;
+          ctx.fillRect(x, startY, lifeWidth, lifeHeight);
+        }
 
+        // Draw lives for Player 2
+        const player2StartX = canvas.width - startX - (lifeWidth + spacing) * ship2.lives;
+        for (let i = 0; i < ship2.lives; i++) {
+          const x = player2StartX + (lifeWidth + spacing) * i;
+          ctx.fillRect(x, startY, lifeWidth, lifeHeight);
+        }
+
+        // Update HTML display
+        document.getElementById('livesDisplay').textContent = `P1 Health: ${ship.lives} | P2 Health: ${ship2.lives}`;
+      } else {
+        // Single player mode
+        for (let i = 0; i < lives; i++) {
+          const x = startX + (lifeWidth + spacing) * i;
+          ctx.fillRect(x, startY, lifeWidth, lifeHeight);
+        }
+
+        // Update HTML display
+        document.getElementById('livesDisplay').textContent = `Health: ${lives}`;
+      }
     }
 
 
@@ -2887,31 +2344,6 @@
       ship.speed = 0;
     }
 
-    function buySuperWeapon(weapon) {
-      switch (weapon) {
-        case 'missile':
-          if (coins >= 200) {
-            coins -= 200;
-            superWeapons.missile++;
-            updateMarketplaceDisplay();
-          }
-          break;
-        case 'laser':
-          if (coins >= 300) {
-            coins -= 300;
-            superWeapons.laser++;
-            updateMarketplaceDisplay();
-          }
-          break;
-        case 'bomb':
-          if (coins >= 400) {
-            coins -= 400;
-            superWeapons.bomb++;
-            updateMarketplaceDisplay();
-          }
-          break;
-      }
-    }
 
     let explosiveRockets = [];
 
@@ -4228,7 +3660,6 @@
 
 
 
-  <script src="js/ships.js"></script>
 
 
 
@@ -4275,6 +3706,7 @@
   <script src="js/game.js"></script>
   <script src="js/asteroids.js"></script>
   <script src="js/weapons.js"></script>
+  <script src="js/ships.js"></script>
   <script src="js/upgrades-main.js"></script>
 
   <script src="js/aliens.js"></script>
