@@ -695,7 +695,7 @@ function generateFlameParticles(startX, startY, endX, endY, flameWidth) {
             speed: Math.random() * 2 + 1,
             direction: angle + (Math.random() - 0.5) * 0.2,
             life: Math.random() * 30 + 20,
-            color: 'rgba(0, 0, 255, 0.8)'
+            color: 'rgba(0, 0, 255, 0.8)' // Blue flame particles
         };
         particles.push(particle);
     }
