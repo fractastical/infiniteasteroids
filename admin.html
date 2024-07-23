@@ -16,6 +16,12 @@
         <p>Total Session Time: <span id="totalSessionTime"></span></p>
         <p>Average Session Time: <span id="averageSessionTime"></span></p>
     </div>
+
+    <div id="newUserInfo">
+        <p>New Users (Last 7 Days): <span id="newUsersWeek"></span></p>
+        <p>New Users (Last 30 Days): <span id="newUsersMonth"></span></p>
+    </div>
+
     <div id="topWeapons">
         <h2>Top Weapons Used</h2>
         <ol id="topWeaponsList"></ol>
@@ -116,10 +122,12 @@
         }
 
         // Function to display the admin dashboard data
-        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores) {
+        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth) {
             document.getElementById('totalSessions').textContent = totalSessions;
             document.getElementById('totalSessionTime').textContent = formatTime(totalSessionTime);
             document.getElementById('averageSessionTime').textContent = formatTime(averageSessionTime);
+            document.getElementById('newUsersWeek').textContent = newUsersWeek;
+            document.getElementById('newUsersMonth').textContent = newUsersMonth;
 
             const topWeaponsList = document.getElementById('topWeaponsList');
             topWeapons.forEach((weapon) => {
@@ -218,6 +226,28 @@
             });
         }
 
+        function calculateRecentNewUsers(newUsersData) {
+            const today = new Date();
+            const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+            let newUsersWeek = 0;
+            let newUsersMonth = 0;
+
+            Object.entries(newUsersData).forEach(([dateString, count]) => {
+                const date = new Date(dateString);
+                if (date >= oneWeekAgo) {
+                    newUsersWeek += count;
+                }
+                if (date >= oneMonthAgo) {
+                    newUsersMonth += count;
+                }
+            });
+
+            return { newUsersWeek, newUsersMonth };
+        }
+
+
         // Fetch data from Firestore and display admin dashboard
         db.collection('users')
             .get()
@@ -262,7 +292,10 @@
                 const topWeaponsHighScores = getTopWeaponsUsedHighScores(allSessions, 100000);
                 const topWeaponsUltraHighScores = getTopWeaponsUsedHighScores(allSessions, 500000);
 
-                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores);
+                const { newUsersWeek, newUsersMonth } = calculateRecentNewUsers(newUsersData);
+
+                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth);
+
                 // displayNewUsersChart(newUsersData);
                 // displayTimeSpentChart(timeSpentData);
             })
