@@ -58,7 +58,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.9311.
+    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.9312.
   </div>
 
 
@@ -2482,8 +2482,13 @@
           }
           else {
 
-            clearInterval(gameLoop);
-            isPaused = true;
+            if (document.getElementById('rouletteContainer').style.display == 'none' && document.getElementById('endScreen').style.display == 'none') {
+
+              clearInterval(gameLoop);
+              isPaused = true;
+
+            }
+
 
           }
 
