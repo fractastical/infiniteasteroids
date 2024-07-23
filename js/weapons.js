@@ -658,18 +658,20 @@ function updateFlamethrower() {
         let flameRange = flamethrower.range;
         let flameWidth = 20;
 
-        // Calculate the endpoint of the flamethrower
-        let endX = ship.x + flameRange * Math.sin(ship.rotation * Math.PI / 180);
-        let endY = ship.y - flameRange * Math.cos(ship.rotation * Math.PI / 180);
+        // Calculate the endpoint of the flamethrower from the front of the ship
+        let shipFrontX = ship.x + ship.size * Math.sin(ship.rotation * Math.PI / 180);
+        let shipFrontY = ship.y - ship.size * Math.cos(ship.rotation * Math.PI / 180);
+        let endX = shipFrontX + flameRange * Math.sin(ship.rotation * Math.PI / 180);
+        let endY = shipFrontY - flameRange * Math.cos(ship.rotation * Math.PI / 180);
 
         // Generate flame particles
-        generateFlameParticles(ship.x, ship.y, endX, endY, flameWidth);
+        generateFlameParticles(shipFrontX, shipFrontY, endX, endY, flameWidth);
 
         // Check for collisions with asteroids
         for (let i = asteroids.length - 1; i >= 0; i--) {
             let asteroid = asteroids[i];
-            let dx = asteroid.x - ship.x;
-            let dy = asteroid.y - ship.y;
+            let dx = asteroid.x - shipFrontX;
+            let dy = asteroid.y - shipFrontY;
             let distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance < flameRange && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < flameWidth / 2) {
@@ -678,24 +680,27 @@ function updateFlamethrower() {
                 asteroid.distanceFromCenter = distance; // Track the distance from the center of the flame
             }
         }
-
         flamethrower.active = false;
     }
 }
 
 function generateFlameParticles(startX, startY, endX, endY, flameWidth) {
     const angle = Math.atan2(endY - startY, endX - startX);
-    for (let i = 0; i < 10; i++) {
-        const offsetX = (Math.random() - 0.5) * flameWidth;
-        const offsetY = (Math.random() - 0.5) * flameWidth;
+    const particleCount = 20; // Increase particle count for a denser flame effect
+
+    for (let i = 0; i < particleCount; i++) {
+        const distance = Math.random() * flamethrower.range;
+        const offsetX = (Math.random() - 0.5) * flameWidth * (distance / flamethrower.range);
+        const offsetY = (Math.random() - 0.5) * flameWidth * (distance / flamethrower.range);
+
         const particle = {
-            x: startX + offsetX,
-            y: startY + offsetY,
+            x: startX + Math.cos(angle) * distance + offsetX,
+            y: startY + Math.sin(angle) * distance + offsetY,
             size: Math.random() * 4 + 2,
             speed: Math.random() * 2 + 1,
             direction: angle + (Math.random() - 0.5) * 0.2,
             life: Math.random() * 30 + 20,
-            color: 'rgba(0, 0, 255, 0.8)' // Blue flame particles
+            color: `hsl(${Math.random() * 60 + 180}, 100%, ${Math.random() * 50 + 50}%)` // Blue to cyan flame particles
         };
         particles.push(particle);
     }
