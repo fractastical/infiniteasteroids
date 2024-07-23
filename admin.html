@@ -20,6 +20,8 @@
     <div id="newUserInfo">
         <p>New Users (Last 7 Days): <span id="newUsersWeek"></span></p>
         <p>New Users (Last 30 Days): <span id="newUsersMonth"></span></p>
+        <p>New Users (Last 90 Days): <span id="newUsers90Days"></span></p>
+
     </div>
 
     <div id="topWeapons">
@@ -122,12 +124,13 @@
         }
 
         // Function to display the admin dashboard data
-        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth) {
+        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth, newUsers90Days) {
             document.getElementById('totalSessions').textContent = totalSessions;
             document.getElementById('totalSessionTime').textContent = formatTime(totalSessionTime);
             document.getElementById('averageSessionTime').textContent = formatTime(averageSessionTime);
             document.getElementById('newUsersWeek').textContent = newUsersWeek;
             document.getElementById('newUsersMonth').textContent = newUsersMonth;
+            document.getElementById('newUsers90Days').textContent = newUsers90Days;
 
             const topWeaponsList = document.getElementById('topWeaponsList');
             topWeapons.forEach((weapon) => {
@@ -230,9 +233,11 @@
             const today = new Date();
             const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
             const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            const ninetyDaysAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
 
             let newUsersWeek = 0;
             let newUsersMonth = 0;
+            let newUsers90Days = 0;
 
             Object.entries(newUsersData).forEach(([dateString, count]) => {
                 const date = new Date(dateString);
@@ -242,10 +247,14 @@
                 if (date >= oneMonthAgo) {
                     newUsersMonth += count;
                 }
+                if (date >= ninetyDaysAgo) {
+                    newUsers90Days += count;
+                }
             });
 
-            return { newUsersWeek, newUsersMonth };
+            return { newUsersWeek, newUsersMonth, newUsers90Days };
         }
+
 
 
         // Fetch data from Firestore and display admin dashboard
@@ -292,9 +301,9 @@
                 const topWeaponsHighScores = getTopWeaponsUsedHighScores(allSessions, 100000);
                 const topWeaponsUltraHighScores = getTopWeaponsUsedHighScores(allSessions, 500000);
 
-                const { newUsersWeek, newUsersMonth } = calculateRecentNewUsers(newUsersData);
+                const { newUsersWeek, newUsersMonth, newUsers90Days } = calculateRecentNewUsers(newUsersData);
 
-                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth);
+                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth, newUsers90Days);
 
                 // displayNewUsersChart(newUsersData);
                 // displayTimeSpentChart(timeSpentData);
