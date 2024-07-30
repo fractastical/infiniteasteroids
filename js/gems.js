@@ -272,6 +272,7 @@ function activateGemUpgrades() {
     isPaused = false;
     unlockSound.play();
     displayGems = [];
+    activeGemUpgrades = null;
     clearInterval(gameLoop);
     gameLoop = setInterval(update, 1000 / 60);
 
