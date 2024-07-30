@@ -770,14 +770,16 @@
 
     function checkAlienDamage(weapon) {
 
+      let actualDamage = 0;
+
       for (let j = swarmingAliens.length - 1; j >= 0; j--) {
         const swarmingalien = swarmingAliens[j];
         if (isColliding(weapon, swarmingalien)) {
           swarmingAliens.splice(j, 1);
           increaseXP(40);
           score += 40;
+          actualDamage += 1;
           createExplosion(swarmingalien.x, swarmingalien.y, 1);
-          lasers.splice(i, 1); // Remove laser
           break;
         }
 
@@ -786,16 +788,20 @@
 
       for (let j = aliens.length - 1; j >= 0; j--) {
         const alien = aliens[j];
+        actualDamage += 1;
         if (isColliding(weapon, alien)) {
-          handleLaserAlienCollision(laser, alien);
+          createExplosion(alien.x, alien.y);
+          aliens.splice(aliens.indexOf(alien), 1);
+          increaseXP(300);
+          aliensKilled++;
+          score += 300; // Adjust the score as needed
           break;
         }
       }
 
       if (alien && isColliding(weapon, alien)) {
 
-        let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
-        let actualDamage = Math.min(damage + damageBooster, alien.hitpoints); // Ensure we don't overkill the asteroid
+        actualDamage = Math.min(weapon.damage + damageBooster, alien.hitpoints); // Ensure we don't overkill the asteroid
         alien.hitpoints -= actualDamage;
 
         createExplosion(alien.x, alien.y);
@@ -807,17 +813,13 @@
           increaseXP(30 * 20);
           score += 1000;
         }
-        lasers.splice(i, 1); // Remove laser
-        break;
       }
 
 
       if (superbossAlien && isColliding(weapon, superbossAlien)) {
 
-        let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
-        let actualDamage = Math.min(damage + damageBooster, superbossAlien.hitpoints); // Ensure we don't overkill the asteroid
+        actualDamage = Math.min(weapon.damage + damageBooster, superbossAlien.hitpoints); // Ensure we don't overkill the asteroid
         superbossAlien.hitpoints -= actualDamage;
-
         createExplosion(superbossAlien.x, superbossAlien.y);
 
         if (superbossAlien.hitpoints <= 0) {
@@ -829,15 +831,12 @@
           increaseXP(30 * 20);
           score += 100000;
         }
-        lasers.splice(i, 1); // Remove laser
-        break;
       }
 
 
       if (megaBossAlien && isColliding(weapon, megaBossAlien)) {
 
-        let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
-        let actualDamage = Math.min(damage + damageBooster, megaBossAlien.hitpoints); // Ensure we don't overkill the asteroid
+        actualDamage = Math.min(weapon.damage + damageBooster, megaBossAlien.hitpoints); // Ensure we don't overkill the asteroid
         megaBossAlien.hitpoints -= actualDamage;
 
         createExplosion(megaBossAlien.x, megaBossAlien.y);
@@ -851,10 +850,9 @@
           increaseXP(30 * 20);
           score += 100000;
         }
-        break;
       }
 
-
+      return actualDamage;
     }
 
 

@@ -1388,6 +1388,10 @@ function updateBoomerang() {
             }
         }
     }
+
+    damageReport.boomerang += checkAlienDamage(boomerang);
+
+
 }
 
 const boomerangImage = new Image();
