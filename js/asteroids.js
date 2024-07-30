@@ -28,7 +28,7 @@ function createAsteroids(side) {
             let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
             let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
             let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
-            let isRareAsteroid = Math.random() < 0.05; // 5% chance for a rare asteroid
+            let isRareAsteroid = Math.random() < 0.4; // 5% chance for a rare asteroid
 
             let dx = 1;
             let dy = 1;
@@ -78,6 +78,8 @@ function createAsteroids(side) {
             let type = 'normal';
 
             if (isRareAsteroid) {
+                console.log("Rare asteroid created:", type, color);
+
                 const rareTypes = ['exploding', 'freezing', 'chainLightning', 'acid'];
                 type = rareTypes[Math.floor(Math.random() * rareTypes.length)];
                 hitpoints = 5; // Fixed hitpoints for rare asteroids
@@ -162,6 +164,36 @@ function createAsteroids(side) {
         }
     }
 }
+
+function drawAsteroids() {
+    for (let i = 0; i < asteroids.length; i++) {
+        let asteroid = asteroids[i];
+
+        ctx.lineWidth = asteroid.hitpoints + 1;
+
+        ctx.beginPath();
+        ctx.arc(asteroid.x, asteroid.y, asteroid.size, 0, Math.PI * 2);
+        ctx.closePath();
+
+        if (asteroid.type !== 'normal') {
+            // Fill rare asteroids
+            ctx.fillStyle = asteroid.color;
+            console.log(asteroid.color);
+            ctx.fill();
+        } else {
+            // Use shades of grey for non-rare asteroids
+            ctx.strokeStyle = asteroid.color;
+        }
+
+        // Set stroke color for rare asteroids
+        ctx.strokeStyle = asteroid.type !== 'normal' ? 'white' : ctx.strokeStyle;
+        ctx.stroke(); // Stroke all asteroids
+
+        // Debugging: Log asteroid drawing
+        // console.log("Drawing asteroid:", asteroid.type, ctx.fillStyle, asteroid.x, asteroid.y);
+    }
+}
+
 
 function createEndlessSlowAsteroids() {
     const baseAsteroidCount = 20;
@@ -390,18 +422,8 @@ function updateAsteroids() {
     }
 }
 
-function drawAsteroids() {
-    for (let i = 0; i < asteroids.length; i++) {
-        ctx.strokeStyle = asteroids[i].color;
-        ctx.lineWidth = asteroids[i].hitpoints + 1; // Set the line width to the asteroid's hitpoints
-        ctx.beginPath();
-        ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.stroke(); // Draw only the outline
-    }
-}
 
-function createExplosion(x, y, hitpoints = 1, asteroidImage = "") {
+function createExplosion(x, y, hitpoints = 1) {
     const baseSize = 15; // Base size for explosions
     const sizeReductionFactor = 1.5; // Size reduction per hitpoint
     const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
@@ -425,6 +447,45 @@ function createExplosion(x, y, hitpoints = 1, asteroidImage = "") {
         color: randomColor
     };
     explosions.push(explosion);
+}
+
+function processAsteroidDeath(asteroid) {
+    createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+    asteroidsKilled++;
+
+    // Handle rare asteroid effects
+    switch (asteroid.type) {
+        case 'exploding':
+            const explosionRadius = 100; // Adjust this value as needed
+            const explosionDamage = asteroid.initialHitpoints; // Use initial hitpoints for damage
+            createAreaDamage(asteroid.x, asteroid.y, explosionRadius, explosionDamage);
+            break;
+        case 'freezing':
+            applyFreezeEffect(asteroid.x, asteroid.y);
+            break;
+        case 'chainLightning':
+            fireChainLightningFromPosition(asteroid.x, asteroid.y);
+            break;
+        case 'acid':
+            createAcidArea(asteroid.x, asteroid.y);
+            break;
+    }
+
+    const baseDropChance = 0.1; // 10% base chance to drop a gem
+    const hitpointFactor = 0.005; // Increase drop chance by 0.5% per hitpoint
+    const dropChance = Math.min(baseDropChance + (asteroid.initialHitpoints * hitpointFactor), 1);
+
+    if (Math.random() < dropChance && droppedGems.length < 40) {
+        const gemType = selectGemType(asteroid.initialHitpoints);
+        droppedGems.push({
+            x: asteroid.x,
+            y: asteroid.y,
+            size: 10,
+            type: gemType,
+            dx: asteroid.dx / 5,
+            dy: asteroid.dy / 5
+        });
+    }
 }
 
 function getRandomOrangeShade() {
@@ -585,16 +646,6 @@ function updateAsteroids() {
     }
 }
 
-function drawAsteroids() {
-    for (let i = 0; i < asteroids.length; i++) {
-        ctx.strokeStyle = asteroids[i].color;
-        ctx.lineWidth = asteroids[i].hitpoints + 1; // Set the line width to the asteroid's hitpoints
-        ctx.beginPath();
-        ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].size, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.stroke(); // Draw only the outline
-    }
-}
 
 
 // Initialize acid areas array

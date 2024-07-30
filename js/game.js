@@ -326,14 +326,7 @@ function update() {
     if (!invincible) {
         for (let i = 0; i < asteroids.length; i++) {
             if (isColliding(ship, asteroids[i])) {
-                createExplosion(ship.x, ship.y);
-                resetShip(false);
-                if (!invincible)
-                    lives--;
-                playShipDestroyedSound();
-                invincible = true;
-                invincibilityTimer = invincibilityDuration;
-                if (lives === 0) gameOver = true;
+                processPlayerDeath();
             }
         }
     }
@@ -405,6 +398,24 @@ function update() {
     drawScore();
     // if (gameOver) drawDamageReport();
 
+
+}
+
+function processPlayerDeath() {
+
+    createExplosion(ship.x, ship.y);
+    resetShip(false);
+
+    if (!invincible) {
+        lives--;
+        // clear area after death
+        createAreaDamage(ship.x, ship.y, 200, 10);
+    }
+
+    playShipDestroyedSound();
+    invincible = true;
+    invincibilityTimer = invincibilityDuration;
+    if (lives === 0) gameOver = true;
 
 }
 

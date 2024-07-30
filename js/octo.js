@@ -132,14 +132,7 @@ function updateOctoInkProjectiles() {
         ink.y += ink.dy;
 
         if (isColliding(ink, ship)) {
-            createExplosion(ship.x, ship.y);
-            resetShip();
-            lives--;
-            invincible = true;
-            invincibilityTimer = invincibilityDuration;
-            if (lives === 0) gameOver = true;
-            octoInkProjectiles.splice(i, 1);
-            continue;
+            processPlayerDeath();
         }
 
         if (ink.x < 0 || ink.x > canvas.width || ink.y < 0 || ink.y > canvas.height) {
@@ -159,12 +152,7 @@ function updateOctoTentacles() {
         const endY = tentacle.y + Math.sin(tentacle.angle) * tentacle.length;
 
         if (isColliding({ x: endX, y: endY }, ship)) {
-            createExplosion(ship.x, ship.y);
-            resetShip();
-            lives--;
-            invincible = true;
-            invincibilityTimer = invincibilityDuration;
-            if (lives === 0) gameOver = true;
+            processPlayerDeath();
         }
     });
 }
@@ -189,12 +177,7 @@ function updateOctoElectricShocks() {
             const endY = shock.y + Math.sin(shock.angle) * shock.range;
 
             if (isColliding({ x: endX, y: endY }, ship)) {
-                createExplosion(ship.x, ship.y);
-                resetShip();
-                lives--;
-                invincible = true;
-                invincibilityTimer = invincibilityDuration;
-                if (lives === 0) gameOver = true;
+                processPlayerDeath();
             }
         }
     });

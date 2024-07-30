@@ -931,7 +931,7 @@ function updateAsteroidFire() {
                 asteroids.splice(i, 1);
             }
         } else {
-            asteroid.color = 'gray'; // Reset the asteroid color if not on fire
+            // asteroid.color = 'gray'; // Reset the asteroid color if not on fire
         }
     }
 }

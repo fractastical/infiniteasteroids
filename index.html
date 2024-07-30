@@ -968,8 +968,8 @@
 
             } else {
               // Lighten the color slightly
-              let colorValue = Math.max(40, 30 + (asteroid.hitpoints * 3)); // Adjust color value
-              asteroid.color = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
+              // let colorValue = Math.max(40, 30 + (asteroid.hitpoints * 3)); // Adjust color value
+              // asteroid.color = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
             }
 
             lasers.splice(i, 1);
@@ -1004,6 +1004,24 @@
       createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
       asteroidsKilled++;
 
+      // Handle rare asteroid effects
+      switch (asteroid.type) {
+        case 'exploding':
+          const explosionRadius = 100; // Adjust this value as needed
+          const explosionDamage = asteroid.initialHitpoints; // Use initial hitpoints for damage
+          createAreaDamage(asteroid.x, asteroid.y, explosionRadius, explosionDamage);
+          break;
+        case 'freezing':
+          applyFreezeEffect(asteroid.x, asteroid.y);
+          break;
+        case 'chainLightning':
+          fireChainLightningFromPosition(asteroid.x, asteroid.y);
+          break;
+        case 'acid':
+          createAcidArea(asteroid.x, asteroid.y);
+          break;
+      }
+
       const baseDropChance = 0.1; // 10% base chance to drop a gem
       const hitpointFactor = 0.005; // Increase drop chance by 0.5% per hitpoint
       const dropChance = Math.min(baseDropChance + (asteroid.initialHitpoints * hitpointFactor), 1);
@@ -1020,7 +1038,6 @@
         });
       }
     }
-
     function selectGemType(hitpoints) {
       const epicThreshold = 30;
       const rareThreshold = 15;
@@ -1775,34 +1792,6 @@
     }
 
 
-    function createExplosion(x, y, hitpoints = 1, asteroidImage = "") {
-      const baseSize = 15; // Base size for explosions
-      const sizeReductionFactor = 1.5; // Size reduction per hitpoint
-
-      const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
-      const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015
-
-      let randomColor;
-      if (hitpoints > 10) {
-        randomColor = getRandomPurpleShade();
-      } else if (hitpoints > 7) {
-        randomColor = getRandomBlueShade();
-      } else if (hitpoints > 3) {
-        randomColor = getRandomRedShade();
-      } else {
-        randomColor = getRandomOrangeShade();
-      }
-
-      let explosion = {
-        x: x,
-        y: y,
-        size: randomSize,
-        alpha: 1,
-        alphaDecay: randomAlphaDecay,
-        color: randomColor
-      };
-      explosions.push(explosion);
-    }
 
     // Function to get a random shade of orange
     function getRandomOrangeShade() {

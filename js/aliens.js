@@ -220,14 +220,7 @@ function updateAliens() {
 
             // Collision with player (for all alien types)
             if (!invincible && isColliding(alien, ship)) {
-                createExplosion(ship.x, ship.y);
-                resetShip(false);
-                lives--;
-                playShipDestroyedSound();
-                invincible = true;
-                invincibilityTimer = invincibilityDuration;
-                if (lives === 0) gameOver = true;
-                return;
+                processPlayerDeath();
             }
         });
 
@@ -570,14 +563,7 @@ function updateAlienLasers() {
         laser.y += laser.dy;
 
         if (!invincible && isColliding(laser, ship)) {
-            createExplosion(ship.x, ship.y);
-            resetShip(false);
-            lives--;
-            playShipDestroyedSound();
-            invincible = true;
-            invincibilityTimer = invincibilityDuration;
-            if (lives === 0) gameOver = true;
-            return;
+            processPlayerDeath();
         }
 
         if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
@@ -647,15 +633,7 @@ function updateBossAlienLaser() {
     alienLaser.y += alienLaser.dy;
 
     if (!invincible && isColliding(alienLaser, ship)) {
-        alienLaser = null;
-        createExplosion(ship.x, ship.y);
-        resetShip(false);
-        lives--;
-        playShipDestroyedSound();
-        invincible = true;
-        invincibilityTimer = invincibilityDuration;
-        if (lives === 0) gameOver = true;
-        return;
+        processPlayerDeath();
     }
 
     if (alienLaser.x < 0 || alienLaser.x > canvas.width || alienLaser.y < 0 || alienLaser.y > canvas.height) {
@@ -670,14 +648,7 @@ function updateSuperBossAlienLasers() {
         laser.y += laser.dy;
 
         if (!invincible && isColliding(laser, ship)) {
-            createExplosion(ship.x, ship.y);
-            resetShip(false);
-            lives--;
-            playShipDestroyedSound();
-            invincible = true;
-            invincibilityTimer = invincibilityDuration;
-            if (lives === 0) gameOver = true;
-            return;
+            processPlayerDeath();
         }
 
         if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
@@ -719,14 +690,7 @@ function updateSwarmingAliens() {
 
             // Collision with player
             if (!invincible && isColliding(alien, ship)) {
-                createExplosion(ship.x, ship.y);
-                resetShip(false);
-                lives--;
-                playShipDestroyedSound();
-                invincible = true;
-                invincibilityTimer = invincibilityDuration;
-                if (lives === 0) gameOver = true;
-                return;
+                processPlayerDeath();
             }
         });
     }
