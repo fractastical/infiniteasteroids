@@ -259,6 +259,10 @@ function spawnSuperBossAlien() {
         maxHitpoints: 5000,
         shootInterval: 220 // Adjust this value as needed
     };
+
+    if (testMode)
+        superbossAlien.hitpoints = 20;
+
     aliens.push(superbossAlien);
 }
 

@@ -17,6 +17,9 @@ function startGame() {
         laserInterval: 1
     };
 
+    particles = [];
+    shockwaves = [];
+
 
     // startGamingSessionApi();
     createAsteroids();
@@ -348,17 +351,7 @@ function update() {
 
     updateExplosions();
     drawExplosions();
-
-    updateBossAlien();
-    drawBossAlien();
-    updateBossAlienLaser();
-    drawBossAlienLaser();
-    updateSuperBossAlien();
-    drawSuperBossAlien();
-
     // drawMegaBossAlienLaser();
-    updateMegaBossAlien();
-    drawMegaBossAlien();
 
 
     updateAliens();
@@ -367,6 +360,17 @@ function update() {
     drawSwarmingAliens();
     drawAliens();
     drawAlienLasers();
+    updateBossAlien();
+    drawBossAlien();
+    updateBossAlienLaser();
+    drawBossAlienLaser();
+    updateSuperBossAlien();
+    drawSuperBossAlien();
+    updateMegaBossAlien();
+    drawMegaBossAlien();
+    updateAndDrawParticles();
+    updateAndDrawShockwaves();
+
 
 
     spawnTimer -= 1 / 60; // Assuming 60 FPS
