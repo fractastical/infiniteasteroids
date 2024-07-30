@@ -2,6 +2,11 @@ const alienImage = new Image();
 alienImage.src = 'icons/little_alien_ship_green.png';
 const bossAlienImage = new Image();
 bossAlienImage.src = 'icons/alien_boss_ship_green.png';
+const superBossAlienImage = new Image();
+superBossAlienImage.src = 'icons/cool_evil_alien_22.png';
+const megaBossAlienImage = new Image();
+megaBossAlienImage.src = 'icons/cool_evil_alien_22.png';
+
 
 // Load swarming alien images
 const swarmingAlienImages = [];
@@ -308,7 +313,7 @@ function drawSuperBossAlien() {
     if (!superbossAlien) return;
     ctx.save();
     ctx.translate(superbossAlien.x, superbossAlien.y);
-    ctx.drawImage(bossAlienImage, -superbossAlien.size / 2, -superbossAlien.size / 2, superbossAlien.size, superbossAlien.size);
+    ctx.drawImage(superBossAlienImage, -superbossAlien.size / 2, -superbossAlien.size / 2, superbossAlien.size, superbossAlien.size);
     ctx.restore();
     drawSuperBossHitpointBar();
 }
