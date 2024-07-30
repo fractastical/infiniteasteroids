@@ -651,6 +651,87 @@ function activateFlamethrower() {
 
 }
 
+function fireExplosiveRocket() {
+    if (explosiveRocket.timer === 0) {
+        const angle = ship.rotation * Math.PI / 180;
+        const rocket = {
+            x: ship.x + Math.sin(angle) * 20,
+            y: ship.y - Math.cos(angle) * 20,
+            angle: angle,
+            speed: explosiveRocket.speed,
+            damage: explosiveRocket.damage,
+            radius: explosiveRocket.radius,
+            distance: 0 // Add distance property to track rocket's travel distance
+        };
+        explosiveRockets.push(rocket);
+        explosiveRocket.timer = explosiveRocket.cooldown;
+    }
+}
+
+function updateExplosiveRockets() {
+    for (let i = explosiveRockets.length - 1; i >= 0; i--) {
+        const rocket = explosiveRockets[i];
+        rocket.x += Math.sin(rocket.angle) * rocket.speed;
+        rocket.y -= Math.cos(rocket.angle) * rocket.speed;
+        rocket.distance += rocket.speed; // Update the rocket's travel distance
+
+        if (rocket.distance >= 200) { // Check if the rocket has traveled a certain distance
+            createExplosion(rocket.x, rocket.y, 0); // Create an explosion effect at the rocket's position
+            applyExplosiveDamage(rocket); // Apply area damage to asteroids within the explosion radius
+            explosiveRockets.splice(i, 1); // Remove the rocket from the array
+            continue;
+        }
+
+        if (rocket.x < 0 || rocket.x > canvas.width || rocket.y < 0 || rocket.y > canvas.height) {
+            explosiveRockets.splice(i, 1);
+        }
+    }
+}
+
+// Draw lasers
+function drawLasers() {
+    ctx.fillStyle = 'red';
+    for (let i = 0; i < ship.lasers.length; i++) {
+        ctx.fillRect(ship.lasers[i].x - 1, ship.lasers[i].y - 1, ship.laserLevel / 2 + 3, ship.laserLevel / 2 + 3); // Drawing lasers as small squares for better collision detection
+    }
+}
+
+// Update lasers
+function updateLasers() {
+    for (let i = 0; i < ship.lasers.length; i++) {
+        let laser = ship.lasers[i];
+        laser.x += 10 * Math.sin(laser.rotation * Math.PI / 180);
+        laser.y -= 10 * Math.cos(laser.rotation * Math.PI / 180);
+
+        // Remove lasers that are off-screen
+        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
+            ship.lasers.splice(i, 1);
+            i--;
+        }
+    }
+}
+
+
+function applyExplosiveDamage(rocket) {
+    for (let j = asteroids.length - 1; j >= 0; j--) {
+        const asteroid = asteroids[j];
+        const dx = rocket.x - asteroid.x;
+        const dy = rocket.y - asteroid.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < rocket.radius) {
+            const damage = Math.min(rocket.damage, asteroid.hitpoints);
+            asteroid.hitpoints -= damage;
+            damageReport.explosiveRocket += damage;
+
+            if (asteroid.hitpoints <= 0) {
+                processAsteroidDeath(asteroid);
+                asteroids.splice(j, 1);
+            }
+        }
+    }
+}
+
 
 function updateFlamethrower() {
     if (flamethrower.active) {
