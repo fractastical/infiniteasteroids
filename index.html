@@ -606,7 +606,7 @@
         let accelerationAmount = ship.acceleration;
 
         if (ship === ship && touchAccelerating)
-          accelerationAmount *= 5;
+          accelerationAmount *= 2;
         ship.velocityX += accelerationAmount * Math.sin(angle);
         ship.velocityY -= accelerationAmount * Math.cos(angle);
 
