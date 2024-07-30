@@ -396,8 +396,9 @@ function updateDisplayGems() {
 function updateGems() {
     const centerX = canvas.width / 2;
     const centerY = 250; // Same fixed position as planet
-    const speedFactor = 0.005; // Increased from 0.00005 to make movement more noticeable
-    const maxSpeed = 2; // Maximum speed to prevent gems from moving too fast
+    const baseSpeedFactor = 0.05; // Adjust this value to control overall speed
+    const minDistance = 5; // Minimum distance from center
+    const maxSpeed = 2; // Maximum speed limit
 
     for (let i = 0; i < droppedGems.length; i++) {
         let gem = droppedGems[i];
@@ -406,40 +407,39 @@ function updateGems() {
         let directionX = centerX - gem.x;
         let directionY = centerY - gem.y;
 
-        // Normalize the direction vector
+        // Calculate distance
         let distance = Math.sqrt(directionX * directionX + directionY * directionY);
 
-        if (distance > 0) {  // Avoid division by zero
+        if (distance > minDistance) {  // Only move if not too close to center
+            // Normalize the direction vector
             directionX /= distance;
             directionY /= distance;
 
-            // Set the velocity directly instead of adding to it
+            // Speed increases with distance, but slows down near the center
+            let speedFactor = baseSpeedFactor * (1 + distance / 100);
+
+            // Set the velocity
             gem.dx = directionX * speedFactor;
             gem.dy = directionY * speedFactor;
 
             // Limit the speed
             let speed = Math.sqrt(gem.dx * gem.dx + gem.dy * gem.dy);
             if (speed > maxSpeed) {
-                gem.dx = (gem.dx / speed) * maxSpeed;
-                gem.dy = (gem.dy / speed) * maxSpeed;
+                let scaleFactor = maxSpeed / speed;
+                gem.dx *= scaleFactor;
+                gem.dy *= scaleFactor;
             }
 
             // Update gem position
             gem.x += gem.dx;
             gem.y += gem.dy;
-
-            // console.log(`Gem moved to: (${gem.x.toFixed(2)}, ${gem.y.toFixed(2)})`);
-
-            // Remove gems that are very close to the center
-            if (distance < 5) {
-                console.log("Gem reached center, removing");
-                // // droppedGems.splice(i, 1);
-                // i--;
-            }
+        } else {
+            // If very close to center, set position to center
+            gem.x = centerX;
+            gem.y = centerY;
         }
     }
 }
-
 function applyUpgrades(upgrades) {
     upgrades.forEach(upgrade => {
         // Apply each upgrade logic here
