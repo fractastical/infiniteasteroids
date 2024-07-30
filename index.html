@@ -43,6 +43,31 @@
     </div>
   </div>
 
+  <!-- Add this somewhere appropriate in your body tag -->
+  <div id="upgradeShopModal" class="modal">
+    <div class="modal-content">
+      <h2>Upgrade Shop</h2>
+      <div id="upgrade-shop" class="upgrade-container"></div>
+      <button id="closeUpgradeShop">Close Shop</button>
+    </div>
+  </div>
+
+  <div id="shipCustomizationModal" class="modal">
+      <h2>Ship Customization</h2>
+      <div id="shipPreview"></div>
+      <div id="equippedUpgrades" class="upgrade-container">
+        <h3>Equipped Upgrades</h3>
+        <!-- Equipped upgrades will be added here dynamically -->
+      </div>
+      <div id="availableUpgrades" class="upgrade-container">
+        <h3>Available Upgrades</h3>
+        <!-- Available upgrades will be added here dynamically -->
+      </div>
+      <button id="saveCustomization">Save and Close</button>
+    </div>
+  </div>
+
+
   <div class="top-right" id="loginContainer">
     <a href="#" id="login-link">Login</a>
   </div>
@@ -2026,6 +2051,7 @@
       fourthUpgradeUnlocked = false;
       doubleTurret = false;
       tripleTurret = false;
+      alienLasers = [];
 
       turret = {
         x: 0,

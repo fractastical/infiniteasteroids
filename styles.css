@@ -855,3 +855,71 @@ td {
 #controlsInfo {
     margin-left: auto;
 }
+
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-bottom: 20px;
+}
+
+.upgrade-item {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    width: calc(33.333% - 10px);
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upgrade-item:hover {
+    background-color: #e0e0e0;
+}
+
+.upgrade-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.upgrade-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+}
+
+.upgrade-info p {
+    margin: 0;
+    font-size: 12px;
+}
+
+#upgradeModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.mega-upgrade-option {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.mega-upgrade-option:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.upgrade-icon {
+    width: 50px;
+    height: 50px;
+}

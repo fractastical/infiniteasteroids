@@ -148,6 +148,14 @@ function update() {
 
     }
 
+
+    checkFloatingIslandSpawn();
+    updateFloatingIsland();
+    checkIslandCollision();
+    updateMegaUpgrades();
+    drawFloatingIsland();
+    drawActiveMegaUpgrades();
+
     if (planetMode) {
         applyGravity(ship);
         if (currentMode === GameModes.COOP) {

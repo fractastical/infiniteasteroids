@@ -1,256 +1,304 @@
-const upgrades = [];
-
-// const upgrades = [
-//     {
-//         name: 'Glitch Effect',
-//         description: 'Applies a glitch effect to nearby asteroids, causing them to malfunction and break apart.',
-//         icon: 'icons/upgrades/glitch-effect.png',
-//         rarity: 'rare',
-//         price: 100
-//     },
-//     {
-//         name: 'Time Dilation',
-//         description: 'Slows down time for a short duration, making it easier to evade asteroids and aim at targets.',
-//         icon: 'icons/upgrades/time-dilation.png',
-//         rarity: 'common',
-//         price: 50
-//     },
-//     {
-//         name: 'Space Potato',
-//         description: 'Summons a giant space potato that orbits around the ship, absorbing incoming asteroids and projectiles.',
-//         icon: 'icons/upgrades/space-potato.png',
-//         rarity: 'epic',
-//         price: 200
-//     },
-//     {
-//         name: 'Damage Booster',
-//         description: 'Temporarily boosts the damage output of all weapons.',
-//         icon: 'icons/upgrades/damage-booster.png',
-//         rarity: 'common',
-//         price: 75
-//     },
-//     {
-//         name: 'Space Monkey',
-//         description: 'Deploys a mischievous space monkey that distracts and confuses nearby asteroids.',
-//         icon: 'icons/upgrades/space-monkey.png',
-//         rarity: 'uncommon',
-//         price: 120
-//     },
-//     {
-//         name: 'Space Pizza',
-//         description: 'Launches a delicious space pizza that attracts and satisfies nearby asteroids, making them harmless.',
-//         icon: 'icons/upgrades/space-pizza.png',
-//         rarity: 'common',
-//         price: 50
-//     },
-//     {
-//         name: 'Space Pixie',
-//         description: 'Summons a helpful space pixie that automatically collects power-ups and bonuses.',
-//         icon: 'icons/upgrades/space-pixie.png',
-//         rarity: 'uncommon',
-//         price: 100
-//     },
-//     {
-//         name: 'Quantum Shield',
-//         description: 'Generates a shield that temporarily protects the ship from all damage.',
-//         icon: 'icons/upgrades/quantum-shield.png',
-//         rarity: 'rare',
-//         price: 150
-//     },
-//     {
-//         name: 'Warp Drive',
-//         description: 'Allows the ship to make short teleportation jumps to avoid danger.',
-//         icon: 'icons/upgrades/warp-drive.png',
-//         rarity: 'epic',
-//         price: 250
-//     },
-//     {
-//         name: 'Gravity Well',
-//         description: 'Creates a gravity well that pulls in nearby asteroids and projectiles.',
-//         icon: 'icons/upgrades/gravity-well.png',
-//         rarity: 'rare',
-//         price: 175
-//     },
-//     {
-//         name: 'Plasma Cannon',
-//         description: 'Equips the ship with a powerful plasma cannon that deals heavy damage.',
-//         icon: 'icons/upgrades/plasma-cannon.png',
-//         rarity: 'epic',
-//         price: 300
-//     },
-//     {
-//         name: 'Nano Repair Bots',
-//         description: 'Deploys nano bots that slowly repair the ship over time.',
-//         icon: 'icons/upgrades/nano-repair-bots.png',
-//         rarity: 'uncommon',
-//         price: 100
-//     },
-//     {
-//         name: 'EMP Blast',
-//         description: 'Unleashes an EMP blast that disables all enemy electronics for a short duration.',
-//         icon: 'icons/upgrades/emp-blast.png',
-//         rarity: 'rare',
-//         price: 150
-//     },
-//     {
-//         name: 'Homing Missiles',
-//         description: 'Equips the ship with homing missiles that track and destroy enemies.',
-//         icon: 'icons/upgrades/homing-missiles.png',
-//         rarity: 'epic',
-//         price: 200
-//     },
-//     {
-//         name: 'Photon Beam',
-//         description: 'Fires a continuous photon beam that pierces through multiple targets.',
-//         icon: 'icons/upgrades/photon-beam.png',
-//         rarity: 'epic',
-//         price: 250
-//     },
-//     {
-//         name: 'Energy Surge',
-//         description: 'Provides a temporary surge in energy, increasing fire rate and speed.',
-//         icon: 'icons/upgrades/energy-surge.png',
-//         rarity: 'common',
-//         price: 75
-//     },
-//     {
-//         name: 'Cloaking Device',
-//         description: 'Renders the ship invisible to enemies for a short period.',
-//         icon: 'icons/upgrades/cloaking-device.png',
-//         rarity: 'rare',
-//         price: 180
-//     },
-//     {
-//         name: 'Tachyon Drive',
-//         description: 'Increases the ship\'s speed and maneuverability significantly.',
-//         icon: 'icons/upgrades/tachyon-drive.png',
-//         rarity: 'epic',
-//         price: 300
-//     },
-//     {
-//         name: 'Reflective Armor',
-//         description: 'Adds reflective armor that bounces off projectiles.',
-//         icon: 'icons/upgrades/reflective-armor.png',
-//         rarity: 'uncommon',
-//         price: 120
-//     },
-//     {
-//         name: 'Shield Overcharge',
-//         description: 'Overcharges the ship\'s shield, providing extra protection.',
-//         icon: 'icons/upgrades/shield-overcharge.png',
-//         rarity: 'common',
-//         price: 50
-//     },
-//     {
-//         name: 'Anti-Matter Missiles',
-//         description: 'Fires missiles that cause massive explosions upon impact.',
-//         icon: 'icons/upgrades/anti-matter-missiles.png',
-//         rarity: 'epic',
-//         price: 300
-//     },
-//     {
-//         name: 'Ion Cannon',
-//         description: 'Fires a powerful ion beam that disintegrates enemies.',
-//         icon: 'icons/upgrades/ion-cannon.png',
-//         rarity: 'rare',
-//         price: 200
-//     },
-//     {
-//         name: 'Temporal Shield',
-//         description: 'Creates a shield that temporarily stops time around the ship.',
-//         icon: 'icons/upgrades/temporal-shield.png',
-//         rarity: 'epic',
-//         price: 250
-//     },
-//     {
-//         name: 'Black Hole Generator',
-//         description: 'Generates a black hole that sucks in and destroys everything in its vicinity.',
-//         icon: 'icons/upgrades/black-hole-generator.png',
-//         rarity: 'legendary',
-//         price: 400
-//     },
-//     {
-//         name: 'Solar Flare',
-//         description: 'Unleashes a solar flare that burns all enemies on the screen.',
-//         icon: 'icons/upgrades/solar-flare.png',
-//         rarity: 'rare',
-//         price: 220
-//     }
-
-// ];
-
-
-const baseProbabilities = {
-    legendary: 0.001,
-    epic: 0.1,
-    rare: 1,
-    uncommon: 10
+// Floating Island
+const floatingIsland = {
+    x: -100,
+    y: canvas.height / 2,
+    width: 150,
+    height: 100,
+    speed: 1,
+    active: false,
+    image: null
 };
 
-function getAdjustedProbability(baseProbability, wave) {
-    return Math.min(baseProbability + (baseProbability * 0.5 * wave), 10); // Cap at 10%
-}
+floatingIsland.image = new Image();
+floatingIsland.image.src = 'icons/floatingisland.png';
 
-function createProbabilityPool(upgrades, wave) {
-    let pool = [];
-    upgrades.forEach(upgrade => {
-        const probability = getAdjustedProbability(baseProbabilities[upgrade.rarity], wave);
-        const slots = Math.round(probability * 1000); // Convert probability to slots (multiplying by 1000)
-        for (let i = 0; i < slots; i++) {
-            pool.push(upgrade);
+// Mega Upgrades
+const megaUpgrades = [
+    {
+        name: 'Glitch Effect',
+        description: 'Randomly causes asteroids to malfunction and break apart.',
+        icon: 'icons/upgrades/mainframe.png',
+        cooldown: 30 * 60, // 30 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            glitchEffect.active = true;
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+                glitchEffect.update();
+            } else {
+                glitchEffect.active = false;
+            }
         }
-    });
-    return pool;
-}
-
-function getRandomAffordableUpgrades(coinSupply, wave) {
-    // Create a probability pool based on wave level
-    const pool = createProbabilityPool(upgrades, wave);
-
-    // Filter the upgrades that the player can afford
-    const affordablePool = pool.filter(upgrade => upgrade.price <= coinSupply);
-
-    // Shuffle the affordable upgrades pool
-    affordablePool.sort(() => 0.5 - Math.random());
-
-    // Select up to three upgrades
-    const selectedUpgrades = [];
-    const selectedIndices = new Set();
-    while (selectedUpgrades.length < 3 && affordablePool.length > 0) {
-        const randomIndex = Math.floor(Math.random() * affordablePool.length);
-        if (!selectedIndices.has(randomIndex)) {
-            selectedUpgrades.push(affordablePool[randomIndex]);
-            selectedIndices.add(randomIndex);
+    },
+    {
+        name: 'Time Dilation',
+        description: 'Slows down time, making it easier to evade asteroids and aim.',
+        icon: 'icons/upgrades/void.png',
+        cooldown: 45 * 60, // 45 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            timeDilation.active = true;
+            timeDilation.timer = timeDilation.duration;
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+            }
+            timeDilation.update();
+        }
+    },
+    {
+        name: 'Space Potato',
+        description: 'Summons a space potato that orbits the ship, slowing down nearby objects.',
+        icon: 'icons/upgrades/potato.png',
+        cooldown: 60 * 60, // 60 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            spacePotato.activate();
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+                spacePotato.update();
+            } else {
+                spacePotato.deactivate();
+            }
+        },
+        draw: spacePotato.draw
+    },
+    {
+        name: 'Gravity Bomb',
+        description: 'Creates a gravity well that pulls in nearby asteroids.',
+        icon: 'icons/upgrades/void.png', // Replace with appropriate icon
+        cooldown: 40 * 60, // 40 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            gravityBomb.activate();
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+            }
+            gravityBomb.update();
+        }
+    },
+    {
+        name: 'Asteroid Splitter',
+        description: 'Randomly splits asteroids into smaller pieces.',
+        icon: 'icons/upgrades/void.png', // Replace with appropriate icon
+        cooldown: 50 * 60, // 50 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+                asteroidSplitter.update();
+            }
+        }
+    },
+    {
+        name: 'Quantum Teleporter',
+        description: 'Teleports the nearest asteroid to a random location around the ship.',
+        icon: 'icons/upgrades/void.png', // Replace with appropriate icon
+        cooldown: 35 * 60, // 35 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            quantumTeleporter.activate();
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+            }
+            quantumTeleporter.update();
         }
     }
-
-    return selectedUpgrades;
-}
+];
 
 
-const activeUpgrades = [];
-
-function addUpgrade(upgrade) {
-    activeUpgrades.push(upgrade);
-}
-
-function removeUpgrade(upgrade) {
-    const index = activeUpgrades.indexOf(upgrade);
-    if (index !== -1) {
-        activeUpgrades.splice(index, 1);
-    }
-}
-
-function updateUpgrades() {
-    activeUpgrades.forEach(upgrade => {
+function updateMegaUpgrades() {
+    activeMegaUpgrades.forEach(upgrade => {
         if (typeof upgrade.update === 'function') {
             upgrade.update();
         }
     });
 }
 
-// // Example usage
-// const currentCoinSupply = 100;
-// const currentWave = 5;
-// const selectedUpgrades = getRandomAffordableUpgrades(currentCoinSupply, currentWave);
-// console.log(selectedUpgrades);
+function drawActiveMegaUpgrades() {
+    const upgradeSize = 40;
+    const padding = 10;
+    const startX = canvas.width - upgradeSize - padding;
+    const startY = padding;
+
+    activeMegaUpgrades.forEach((upgrade, index) => {
+        const x = startX;
+        const y = startY + (upgradeSize + padding) * index;
+
+        // Draw background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(x, y, upgradeSize, upgradeSize);
+
+        // Draw icon
+        const icon = new Image();
+        icon.src = upgrade.icon;
+        ctx.drawImage(icon, x, y, upgradeSize, upgradeSize);
+
+        // Draw cooldown overlay if applicable
+        if (upgrade.cooldown && upgrade.cooldownTimer) {
+            const cooldownPercentage = upgrade.cooldownTimer / upgrade.cooldown;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(x, y + upgradeSize * (1 - cooldownPercentage), upgradeSize, upgradeSize * cooldownPercentage);
+        }
+
+        // Call the draw function if it exists (for upgrades like Space Potato)
+        if (typeof upgrade.draw === 'function') {
+            upgrade.draw();
+        }
+    });
+}
+
+// ... rest of the code remains the same
+const activeMegaUpgrades = [];
+
+function checkFloatingIslandSpawn() {
+    if (wave % 15 === 0 && !floatingIsland.active) {
+        floatingIsland.active = true;
+        floatingIsland.x = -100;
+    }
+}
+
+function updateFloatingIsland() {
+    if (floatingIsland.active) {
+        floatingIsland.x += floatingIsland.speed;
+        if (floatingIsland.x > canvas.width) {
+            floatingIsland.active = false;
+        }
+    }
+}
+
+function drawFloatingIsland() {
+    if (floatingIsland.active) {
+        ctx.drawImage(floatingIsland.image, floatingIsland.x, floatingIsland.y, floatingIsland.width, floatingIsland.height);
+    }
+}
+
+function checkIslandCollision() {
+    if (floatingIsland.active &&
+        ship.x < floatingIsland.x + floatingIsland.width &&
+        ship.x + ship.size > floatingIsland.x &&
+        ship.y < floatingIsland.y + floatingIsland.height &&
+        ship.y + ship.size > floatingIsland.y) {
+        openUpgradeOptions();
+    }
+}
+
+function openUpgradeOptions() {
+    pauseGame();
+    floatingIsland.active = false;
+
+    const upgradeModal = document.createElement('div');
+    upgradeModal.id = 'upgradeModal';
+    upgradeModal.innerHTML = `
+      <h2>Choose Your Upgrade</h2>
+      <button id="megaUpgrade">Mega Upgrade</button>
+      <button id="restoreHealth">Restore Health</button>
+    `;
+    document.body.appendChild(upgradeModal);
+
+    document.getElementById('megaUpgrade').addEventListener('click', selectMegaUpgrade);
+    document.getElementById('restoreHealth').addEventListener('click', restoreHealth);
+}
+
+function selectMegaUpgrade() {
+    const availableMegaUpgrades = megaUpgrades.filter(upgrade => !activeMegaUpgrades.some(active => active.name === upgrade.name));
+    if (availableMegaUpgrades.length > 0) {
+        const megaUpgradeOptions = getRandomMegaUpgrades(availableMegaUpgrades, 3);
+        displayMegaUpgradeOptions(megaUpgradeOptions);
+    } else {
+        alert("No more mega upgrades available!");
+        closeUpgradeModal();
+    }
+}
+
+function getRandomMegaUpgrades(upgrades, count) {
+    const shuffled = upgrades.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}
+
+function displayMegaUpgradeOptions(megaUpgradeOptions) {
+    const upgradeModal = document.getElementById('upgradeModal');
+    upgradeModal.innerHTML = '<h2>Choose a Mega Upgrade</h2>';
+
+    megaUpgradeOptions.forEach(upgrade => {
+        const upgradeElement = document.createElement('div');
+        upgradeElement.className = 'mega-upgrade-option';
+        upgradeElement.innerHTML = `
+        <img src="${upgrade.icon}" alt="${upgrade.name}" class="upgrade-icon">
+        <h3>${upgrade.name}</h3>
+        <p>${upgrade.description}</p>
+      `;
+        upgradeElement.addEventListener('click', () => applyMegaUpgrade(upgrade));
+        upgradeModal.appendChild(upgradeElement);
+    });
+}
+
+function applyMegaUpgrade(upgrade) {
+    const newUpgrade = { ...upgrade, cooldownTimer: 0 };
+    activeMegaUpgrades.push(newUpgrade);
+    newUpgrade.effect();
+    closeUpgradeModal();
+    resumeGame();
+}
+
+function restoreHealth() {
+    lives = Math.min(lives + 1, 3);
+    closeUpgradeModal();
+    resumeGame();
+}
+
+function closeUpgradeModal() {
+    document.getElementById('upgradeModal').remove();
+}
+
+function updateMegaUpgrades() {
+    activeMegaUpgrades.forEach(upgrade => {
+        if (typeof upgrade.update === 'function') {
+            upgrade.update();
+        }
+    });
+}
+
+
+function handleMegaUpgradeClick(event) {
+    const upgradeSize = 40;
+    const padding = 10;
+    const startX = canvas.width - upgradeSize - padding;
+    const startY = padding;
+
+    const clickX = event.clientX - canvas.offsetLeft;
+    const clickY = event.clientY - canvas.offsetTop;
+
+    activeMegaUpgrades.forEach((upgrade, index) => {
+        const x = startX;
+        const y = startY + (upgradeSize + padding) * index;
+
+        if (clickX >= x && clickX <= x + upgradeSize &&
+            clickY >= y && clickY <= y + upgradeSize) {
+            if (upgrade.cooldownTimer === 0) {
+                upgrade.effect();
+            }
+        }
+    });
+}
+
+// Event Listeners
+canvas.addEventListener('click', handleMegaUpgradeClick);
+
