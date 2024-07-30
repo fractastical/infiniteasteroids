@@ -910,45 +910,58 @@
 
 
     function processAsteroidDeath(asteroid) {
-
       createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
       asteroidsKilled++;
-      let gemRarity;
-      let baseLineHitpoints = 0;
-      let baseLineRandomness = 0.1;
 
-      if (testMode) {
-        baseLineHitpoints = 0;
-        baseLineRandomness = 0.1;
-        console.log("test mode");
+      const baseDropChance = 0.1; // 10% base chance to drop a gem
+      const hitpointFactor = 0.005; // Increase drop chance by 0.5% per hitpoint
+      const dropChance = Math.min(baseDropChance + (asteroid.initialHitpoints * hitpointFactor), 1);
 
-      }
-      if (asteroid.initialHitpoints > 30) {
-        gemRarity = 'epic';
-      } else if (asteroid.initialHitpoints > 15) {
-        gemRarity = 'rare';
-      } else if (asteroid.initialHitpoints > baseLineHitpoints) {
-        gemRarity = 'common';
-      }
-
-      if (gemRarity && Math.random() < baseLineRandomness && droppedGems.length < 40) {
-        // console.log("gem");
-
+      if (Math.random() < dropChance && droppedGems.length < 40) {
+        const gemType = selectGemType(asteroid.initialHitpoints);
         droppedGems.push({
           x: asteroid.x,
           y: asteroid.y,
           size: 10,
-          type: gemRarity,
-          dx: asteroid.dx / 5, // Gem's velocity in the x-direction
-          dy: asteroid.dy / 5  // Gem's velocity in the y-direction
-
+          type: gemType,
+          dx: asteroid.dx / 5,
+          dy: asteroid.dy / 5
         });
       }
-
-
     }
 
+    function selectGemType(hitpoints) {
+      const epicThreshold = 30;
+      const rareThreshold = 15;
 
+      // Probabilities (adjust these to fine-tune gem distribution)
+      let commonProb = 0.7;
+      let rareProb = 0.25;
+      let epicProb = 0.05;
+
+      // Adjust probabilities based on hitpoints
+      if (hitpoints > epicThreshold) {
+        epicProb += 0.15;
+        rareProb += 0.10;
+        commonProb -= 0.25;
+      } else if (hitpoints > rareThreshold) {
+        rareProb += 0.15;
+        epicProb += 0.05;
+        commonProb -= 0.20;
+      }
+
+      // Normalize probabilities
+      const total = commonProb + rareProb + epicProb;
+      commonProb /= total;
+      rareProb /= total;
+      epicProb /= total;
+
+      // Weighted random selection
+      const rand = Math.random();
+      if (rand < commonProb) return 'common';
+      if (rand < commonProb + rareProb) return 'rare';
+      return 'epic';
+    }
 
     function drawLives() {
       const lifeWidth = 10;  // Width of each life rectangle
