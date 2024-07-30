@@ -239,35 +239,6 @@
     <button onclick="toggleVolumeScreen()">Close</button>
   </div>
 
-  <div id="marketplace">
-    <h2>Marketplace</h2>
-    <p>Coins: <span id="coins">0</span></p>
-    <button onclick="upgrade('lasers')">Upgrade Lasers (Cost: 100)</button> Level: <span id="laserLevel">1</span><br>
-    <button onclick="upgrade('maxbullets')">Upgrade Max Bullets (Cost: 100)</button> Level: <span
-      id="maxBulletsLevel">1</span><br>
-    <button onclick="upgrade('laserCooldown')">Upgrade Laser Cooldown (Cost: 100)</button> Level: <span
-      id="laserCooldownLevel">1</span><br>
-    <button onclick="upgrade('explosivelaser')">Explosive Lasers (Cost: 100)</button> Level: <span
-      id="explosiveLaserLevel">1</span><br>
-
-    <!-- <button onclick="upgrade('acceleration')">Upgrade Acceleration (Cost: 100)</button> Level: <span id="accelerationLevel">1</span><br> -->
-    <button onclick="upgrade('rotationSpeed')">Upgrade Rotation Speed (Cost: 100)</button> Level: <span
-      id="rotationSpeedLevel">1</span><br>
-    <button onclick="buyDrone()">Buy Drone (Cost: 800)</button><br>
-    <button onclick="upgradeDrone('speed')">Upgrade Drone Speed (Cost: 200)</button> Level: <span
-      id="droneSpeedLevel">1</span><br>
-    <!-- <button onclick="upgradeDrone('laserSpeed')">Upgrade Drone Laser Speed (Cost: 200)</button> Level: <span id="droneLaserSpeedLevel">1</span><br> -->
-    <button onclick="upgradeDrone('laserInterval')">Upgrade Drone Firing Frequency (Cost: 200)</button> Level: <span
-      id="droneLaserIntervalLevel">1</span><br>
-    <button onclick="buyTurret()">Buy Autocannon (Cost: 1000)</button><br>
-    <button onclick="upgrade('turretRange')">Upgrade Autocannon Range (Cost: 200)</button> Level: <span
-      id="turretRangeLevel">1</span><br>
-    <button onclick="upgrade('turretFireRate')">Upgrade Autocannon Fire Rate (Cost: 200)</button> Level: <span
-      id="turretFireRateLevel">1</span><br>
-    <button onclick="upgrade('turretDamage')">Upgrade Autocannon Damage (Cost: 200)</button> Level: <span
-      id="turretDamageLevel">1</span><br>
-    <button onclick="exitMarketplace()">Exit Marketplace</button>
-  </div>
 
 
   <audio id="background-music" src="sounds/music_loop.mp3" loop></audio>
@@ -322,7 +293,6 @@
     let joystickStartX, joystickStartY;
     let isMusicPlaying = true; // Flag to track music state
 
-    const marketplace = document.getElementById('marketplace');
     const coinsDisplay = document.getElementById('coins');
 
     const laserLevelDisplay = document.getElementById('laserLevel');
@@ -578,10 +548,6 @@
     // });
 
 
-    // lower left corner to access store
-    // if (e.touches[0].clientX < canvas.width / 5 && e.touches[0].clientY > canvas.height * 4 / 5) {
-    //   pauseGameForMarketplace();
-    // }
 
     let touchAccelerating = false;
 
@@ -1709,81 +1675,7 @@
       });
     }
 
-    function pauseGameForMarketplace() {
-      clearInterval(gameLoop);
-      marketplace.style.display = 'block';
-      backgroundMusic.pause(); // Pause the background music
 
-    }
-
-    function exitMarketplace() {
-      marketplace.style.display = 'none';
-      invincible = true;
-      invincibilityTimer = invincibilityDuration / 2;
-      updateMarketplaceDisplay(); // Update display to reflect current levels
-      clearInterval(gameLoop);
-
-
-      gameLoop = setInterval(update, 1000 / 60); // Resume game loop
-      backgroundMusic.play(); // Resume the background music
-
-    }
-
-    function upgrade(attribute) {
-      const cost = 100;
-      console.log("updgradeing with coins");
-      if (coins >= cost) {
-        coins -= cost;
-        switch (attribute) {
-          case 'lasers':
-            ship.laserLevel++;
-            break;
-          case 'maxbullets':
-            ship.maxBulletsLevel++;
-            break;
-          case 'explosivelaser':
-            ship.explosiveLaserLevel++;
-            break;
-          case 'acceleration':
-            ship.accelerationLevel++;
-            ship.acceleration = 0.1 * ship.accelerationLevel;
-            break;
-          case 'laserCooldown':
-            ship.laserCooldownLevel++;
-            ship.maxBulletsLevel++;
-            ship.laserCooldown = Math.max(5, ship.laserCooldown - 3);
-            break;
-          case 'rotationSpeed':
-            ship.rotationSpeedLevel++;
-            ship.rotationSpeed = 2 * ship.rotationSpeedLevel;
-            break;
-          case 'turretRange':
-            turretUpgrades.range++;
-            turret.range = 200 * turretUpgrades.range;
-            break;
-          case 'turretFireRate':
-            turretUpgrades.fireRate++;
-            turret.fireInterval = 120 / turretUpgrades.fireRate;
-            break;
-          case 'turretDamage':
-            turretUpgrades.damage++;
-            turret.damage = turretUpgrades.damage + 1;
-            break;
-          case 'boomerangSpeed':
-            boomerangUpgrades.speed++;
-            boomerang.speed = 2 * boomerangUpgrades.speed;
-            break;
-          case 'boomerangDamage':
-            boomerangUpgrades.damage++;
-            boomerang.damage = boomerangUpgrades.damage;
-            break;
-
-        }
-
-        updateMarketplaceDisplay();
-        updateCoinsDisplay();
-      }
-    }
 
 
     let fourthUpgradeUnlocked = false;
@@ -2326,23 +2218,6 @@
 
 
 
-
-    // Function to update marketplace display
-    function updateMarketplaceDisplay() {
-      coinsDisplay.textContent = coins;
-      laserLevelDisplay.textContent = ship.laserLevel;
-      // accelerationLevelDisplay.textContent = ship.accelerationLevel;
-      document.getElementById('laserCooldownLevel').textContent = ship.laserCooldownLevel;
-      document.getElementById('explosiveLaserLevel').textContent = ship.explosiveLaserLevel;
-      document.getElementById('turretRangeLevel').textContent = turretUpgrades.range;
-      document.getElementById('turretFireRateLevel').textContent = turretUpgrades.fireRate;
-      document.getElementById('turretDamageLevel').textContent = turretUpgrades.damage;
-      rotationSpeedLevelDisplay.textContent = ship.rotationSpeedLevel;
-      maxBulletsLevelDisplay.textContent = ship.maxBulletsLevel;
-      droneSpeedLevelDisplay.textContent = droneUpgrades.speed;
-      // droneLaserSpeedLevelDisplay.textContent = droneUpgrades.laserSpeed;
-      droneLaserIntervalLevelDisplay.textContent = droneUpgrades.laserInterval;
-    }
 
 
     let keys = {};
