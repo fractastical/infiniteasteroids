@@ -33,7 +33,7 @@
         <ol id="topWeaponsHighScoresList"></ol>
     </div>
     <div id="topWeaponsUltraHighScores">
-        <h2>Top Weapons Used (Scores above 500,000)</h2>
+        <h2 id="topWeaponsUltraHighScoresHeader">Top Weapons Used (Scores above 500,000)</h2>
         <ol id="topWeaponsUltraHighScoresList"></ol>
     </div>
     <h2>Number of New Users per Day</h2>
@@ -124,15 +124,17 @@
         }
 
         // Function to display the admin dashboard data
-        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth, newUsers90Days) {
+        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth, newUsers90Days, scoresAbove500k) {
             document.getElementById('totalSessions').textContent = totalSessions;
             document.getElementById('totalSessionTime').textContent = formatTime(totalSessionTime);
             document.getElementById('averageSessionTime').textContent = formatTime(averageSessionTime);
+
             document.getElementById('newUsersWeek').textContent = newUsersWeek;
             document.getElementById('newUsersMonth').textContent = newUsersMonth;
             document.getElementById('newUsers90Days').textContent = newUsers90Days;
 
             const topWeaponsList = document.getElementById('topWeaponsList');
+            topWeaponsList.innerHTML = '';
             topWeapons.forEach((weapon) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = `${weapon.weapon}: ${weapon.count} times, Average Damage: ${weapon.averageDamage.toFixed(2)}`;
@@ -140,13 +142,18 @@
             });
 
             const topWeaponsHighScoresList = document.getElementById('topWeaponsHighScoresList');
+            topWeaponsHighScoresList.innerHTML = '';
             topWeaponsHighScores.forEach((weapon) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = `${weapon.weapon}: ${weapon.count} times, Average Damage: ${weapon.averageDamage.toFixed(2)}`;
                 topWeaponsHighScoresList.appendChild(listItem);
             });
 
+            const topWeaponsUltraHighScoresHeader = document.getElementById('topWeaponsUltraHighScoresHeader');
+            topWeaponsUltraHighScoresHeader.textContent = `Top Weapons Used (Scores above 500,000) - ${scoresAbove500k} scores`;
+
             const topWeaponsUltraHighScoresList = document.getElementById('topWeaponsUltraHighScoresList');
+            topWeaponsUltraHighScoresList.innerHTML = '';
             topWeaponsUltraHighScores.forEach((weapon) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = `${weapon.weapon}: ${weapon.count} times, Average Damage: ${weapon.averageDamage.toFixed(2)}`;
@@ -229,6 +236,134 @@
             });
         }
 
+        // function calculateRecentNewUsers(newUsersData) {
+        //     const today = new Date();
+        //     const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        //     const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+        //     const ninetyDaysAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+
+        //     let newUsersWeek = 0;
+        //     let newUsersMonth = 0;
+        //     let newUsers90Days = 0;
+
+        //     Object.entries(newUsersData).forEach(([dateString, count]) => {
+        //         const date = new Date(dateString);
+        //         if (date >= oneWeekAgo) {
+        //             newUsersWeek += count;
+        //         }
+        //         if (date >= oneMonthAgo) {
+        //             newUsersMonth += count;
+        //         }
+        //         if (date >= ninetyDaysAgo) {
+        //             newUsers90Days += count;
+        //         }
+        //     });
+
+        //     return { newUsersWeek, newUsersMonth, newUsers90Days };
+        // }
+
+
+
+        // Fetch data from Firestore and display admin dashboard
+        db.collection('users')
+            .get()
+            .then((querySnapshot) => {
+                console.log('Total number of documents:', querySnapshot.size);
+
+                let totalSessions = 0;
+                let totalSessionTime = 0;
+                const allSessions = [];
+                const newUsersData = {};
+                const timeSpentData = {};
+                let scoresAbove500k = 0;
+
+                querySnapshot.forEach((doc, index) => {
+                    const userData = doc.data();
+                    console.log(`User ${index + 1} ID:`, doc.id);
+
+                    const gameSessions = userData.games?.InfiniteSpaceWar?.scores || [];
+                    console.log(`User ${index + 1} total sessions:`, gameSessions.length);
+
+                    let earliestLoginTime = null;
+
+                    // Log details of each session and find the earliest login time
+                    gameSessions.forEach((session, sessionIndex) => {
+                        console.log(`User ${index + 1}, Session ${sessionIndex + 1}:`, {
+                            loginTime: session.loginTime ? session.loginTime.toDate() : 'Invalid Date',
+                            sessionLength: session.sessionLength,
+                            score: session.score
+                        });
+
+                        if (session.loginTime && session.loginTime.toDate instanceof Function) {
+                            const loginTime = session.loginTime.toDate();
+                            if (!earliestLoginTime || loginTime < earliestLoginTime) {
+                                earliestLoginTime = loginTime;
+                            }
+                        }
+
+                        if (session.score > 500000) {
+                            scoresAbove500k++;
+                        }
+                    });
+
+                    console.log(`User ${index + 1} earliest login time:`, earliestLoginTime);
+
+                    // Filter out sessions longer than 5 hours (18000 seconds * 1000 milliseconds)
+                    const validSessions = gameSessions.filter(session => {
+                        const sessionLength = parseFloat(session.sessionLength);
+                        return !isNaN(sessionLength) && sessionLength <= 18000 * 1000;
+                    });
+                    console.log(`User ${index + 1} valid sessions:`, validSessions.length);
+
+                    if (earliestLoginTime) {
+                        const dateString = earliestLoginTime.toISOString().split('T')[0];
+                        newUsersData[dateString] = (newUsersData[dateString] || 0) + 1;
+                        console.log(`Added user to newUsersData for date:`, dateString);
+                    } else {
+                        console.log(`User ${index + 1} has no valid login time`);
+                    }
+
+                    validSessions.forEach(session => {
+                        if (session.loginTime && session.loginTime.toDate instanceof Function) {
+                            const loginTime = session.loginTime.toDate();
+                            const sessionDateString = loginTime.toISOString().split('T')[0];
+                            timeSpentData[sessionDateString] = (timeSpentData[sessionDateString] || 0) + parseFloat(session.sessionLength);
+                            console.log(`Added session time for date:`, sessionDateString);
+                        }
+                    });
+
+                    totalSessions += validSessions.length;
+                    totalSessionTime += calculateTotalSessionTime(validSessions);
+                    allSessions.push(...validSessions);
+                });
+
+                console.log('New users data:', newUsersData);
+                console.log('Time spent data:', timeSpentData);
+                console.log('Total sessions:', totalSessions);
+                console.log('Total session time:', totalSessionTime);
+                console.log('Scores above 500,000:', scoresAbove500k);
+
+                const averageSessionTime = calculateAverageSessionTime(totalSessionTime, totalSessions);
+                console.log('Average session time:', averageSessionTime);
+
+                const topWeapons = getTopWeaponsUsed(allSessions);
+                console.log('Top weapons:', topWeapons);
+
+                const topWeaponsHighScores = getTopWeaponsUsedHighScores(allSessions, 100000);
+                console.log('Top weapons (high scores):', topWeaponsHighScores);
+
+                const topWeaponsUltraHighScores = getTopWeaponsUsedHighScores(allSessions, 500000);
+                console.log('Top weapons (ultra high scores):', topWeaponsUltraHighScores);
+
+                const { newUsersWeek, newUsersMonth, newUsers90Days } = calculateRecentNewUsers(newUsersData);
+                console.log('New users counts:', { newUsersWeek, newUsersMonth, newUsers90Days });
+
+                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth, newUsers90Days, scoresAbove500k);
+            })
+            .catch((error) => {
+                console.error('Error fetching admin data:', error);
+            });
+
         function calculateRecentNewUsers(newUsersData) {
             const today = new Date();
             const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -241,76 +376,19 @@
 
             Object.entries(newUsersData).forEach(([dateString, count]) => {
                 const date = new Date(dateString);
-                if (date >= oneWeekAgo) {
-                    newUsersWeek += count;
-                }
-                if (date >= oneMonthAgo) {
-                    newUsersMonth += count;
-                }
                 if (date >= ninetyDaysAgo) {
                     newUsers90Days += count;
+                    if (date >= oneMonthAgo) {
+                        newUsersMonth += count;
+                        if (date >= oneWeekAgo) {
+                            newUsersWeek += count;
+                        }
+                    }
                 }
             });
 
             return { newUsersWeek, newUsersMonth, newUsers90Days };
         }
-
-
-
-        // Fetch data from Firestore and display admin dashboard
-        db.collection('users')
-            .get()
-            .then((querySnapshot) => {
-                let totalSessions = 0;
-                let totalSessionTime = 0;
-                const allSessions = [];
-                const newUsersData = {};
-                const timeSpentData = {};
-
-                querySnapshot.forEach((doc) => {
-                    const userData = doc.data();
-                    const creationDate = userData.creationDate ? userData.creationDate.toDate() : null;
-                    if (creationDate) {
-                        const dateString = creationDate.toISOString().split('T')[0];
-                        newUsersData[dateString] = (newUsersData[dateString] || 0) + 1;
-                    }
-
-                    const gameSessions = userData.games?.InfiniteSpaceWar?.scores || [];
-
-                    // Filter out sessions longer than 5 hours (18000 seconds * 1000 milliseconds)
-                    const validSessions = gameSessions.filter(session => {
-                        const sessionLength = parseFloat(session.sessionLength);
-                        return !isNaN(sessionLength) && sessionLength <= 18000 * 1000;
-                    });
-
-                    validSessions.forEach(session => {
-                        const sessionDate = session.date ? session.date.toDate() : null;
-                        if (sessionDate) {
-                            const sessionDateString = sessionDate.toISOString().split('T')[0];
-                            timeSpentData[sessionDateString] = (timeSpentData[sessionDateString] || 0) + parseFloat(session.sessionLength);
-                        }
-                    });
-
-                    totalSessions += validSessions.length;
-                    totalSessionTime += calculateTotalSessionTime(validSessions);
-                    allSessions.push(...validSessions);
-                });
-
-                const averageSessionTime = calculateAverageSessionTime(totalSessionTime, totalSessions);
-                const topWeapons = getTopWeaponsUsed(allSessions);
-                const topWeaponsHighScores = getTopWeaponsUsedHighScores(allSessions, 100000);
-                const topWeaponsUltraHighScores = getTopWeaponsUsedHighScores(allSessions, 500000);
-
-                const { newUsersWeek, newUsersMonth, newUsers90Days } = calculateRecentNewUsers(newUsersData);
-
-                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth, newUsers90Days);
-
-                // displayNewUsersChart(newUsersData);
-                // displayTimeSpentChart(timeSpentData);
-            })
-            .catch((error) => {
-                console.error('Error fetching admin data:', error);
-            });
     </script>
 </body>
 
