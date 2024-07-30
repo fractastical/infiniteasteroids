@@ -263,6 +263,7 @@ let displayGems = [];
 function activateGemUpgrades() {
 
     applyUpgrades(activeGemUpgrades);
+    activeGemUpgrades = null;
     spinButton.disabled = false;
     spinButton.style.display = 'block';
     rouletteContainer.style.display = 'none';
@@ -272,7 +273,6 @@ function activateGemUpgrades() {
     isPaused = false;
     unlockSound.play();
     displayGems = [];
-    activeGemUpgrades = null;
     clearInterval(gameLoop);
     gameLoop = setInterval(update, 1000 / 60);
 
