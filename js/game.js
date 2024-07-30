@@ -1,5 +1,3 @@
-let megaExplosions = [];
-
 
 // Game loop
 function startGame() {

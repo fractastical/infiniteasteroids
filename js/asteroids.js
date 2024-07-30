@@ -557,6 +557,31 @@ function createMegaExplosionEffect(x, y, radius) {
     megaExplosions.push(megaExplosion);
 }
 
+function drawMegaExplosions() {
+    for (let i = megaExplosions.length - 1; i >= 0; i--) {
+        let explosion = megaExplosions[i];
+
+        ctx.beginPath();
+        ctx.arc(explosion.x, explosion.y, explosion.currentRadius, 0, Math.PI * 2);
+        ctx.fillStyle = explosion.colors[explosion.currentColorIndex];
+        ctx.fill();
+
+        // Update explosion
+        explosion.currentRadius += explosion.radius / explosion.duration;
+        explosion.duration--;
+
+        // Cycle through colors
+        if (explosion.duration % 5 === 0) {
+            explosion.currentColorIndex = (explosion.currentColorIndex + 1) % explosion.colors.length;
+        }
+
+        // Remove finished explosions
+        if (explosion.duration <= 0) {
+            megaExplosions.splice(i, 1);
+        }
+    }
+}
+
 
 
 function screenShake(intensity, duration) {
