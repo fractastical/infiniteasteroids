@@ -161,7 +161,7 @@
           <td>
 
             <button id="easyButton" onclick="initializeGame(GameModes.EASY)">Easy</button>
-            <button id="normalButton" onclick="initializeGame(GameModes.NORMAL)" disabled>Normal</button>
+            <button id="normalButton" onclick="initializeGame(GameModes.NORMAL)">Normal</button>
             <button id="hardButton" onclick="initializeGame(GameModes.HARD)" disabled>Hard</button>
             <button id="heroButton" onclick="initializeGame(GameModes.HERO)" disabled>Hero</button>
           </td>
@@ -2315,7 +2315,7 @@
       const achievementsList = document.getElementById('achievementsList');
       achievementsList.innerHTML = '';
 
-      document.getElementById('normalButton').disabled = !Achievements.complete_easy_mode.reached;
+      // document.getElementById('normalButton').disabled = !Achievements.complete_easy_mode.reached;
       document.getElementById('hardButton').disabled = !Achievements.complete_normal_mode.reached;
       document.getElementById('heroButton').disabled = !Achievements.complete_hard_mode.reached;
 
