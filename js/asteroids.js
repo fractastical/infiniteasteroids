@@ -178,7 +178,6 @@ function drawAsteroids() {
         if (asteroid.type !== 'normal') {
             // Fill rare asteroids
             ctx.fillStyle = asteroid.color;
-            console.log(asteroid.color);
             ctx.fill();
         } else {
             // Use shades of grey for non-rare asteroids
@@ -423,8 +422,8 @@ function updateAsteroids() {
 }
 
 
-function createExplosion(x, y, hitpoints = 1) {
-    const baseSize = 15; // Base size for explosions
+function createExplosion(x, y, hitpoints = 1, sizeMultiplier = 1) {
+    const baseSize = 15 * sizeMultiplier; // Base size for explosions
     const sizeReductionFactor = 1.5; // Size reduction per hitpoint
     const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
     const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015
@@ -450,7 +449,7 @@ function createExplosion(x, y, hitpoints = 1) {
 }
 
 function processAsteroidDeath(asteroid) {
-    createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
+    createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints);
     asteroidsKilled++;
 
     // Handle rare asteroid effects
@@ -459,17 +458,19 @@ function processAsteroidDeath(asteroid) {
             const explosionRadius = 100; // Adjust this value as needed
             const explosionDamage = asteroid.initialHitpoints; // Use initial hitpoints for damage
             createAreaDamage(asteroid.x, asteroid.y, explosionRadius, explosionDamage);
+            createExplosion(asteroid.x, asteroid.y, 7, 2.5);
             break;
         case 'freezing':
             applyFreezeEffect(asteroid.x, asteroid.y);
             break;
         case 'chainLightning':
-            fireChainLightningFromPosition(asteroid.x, asteroid.y);
+            fireChainLightningFromAsteroid(asteroid);
             break;
         case 'acid':
-            createAcidArea(asteroid.x, asteroid.y);
+            createAcidExplosion(asteroid.x, asteroid.y, 200, 1000);
             break;
     }
+
 
     const baseDropChance = 0.1; // 10% base chance to drop a gem
     const hitpointFactor = 0.005; // Increase drop chance by 0.5% per hitpoint
@@ -503,36 +504,38 @@ function getRandomPurpleShade() {
     return shades[Math.floor(Math.random() * shades.length)];
 }
 
-function handleRareAsteroidEffects(asteroid) {
-    switch (asteroid.type) {
-        case 'exploding':
-            createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints);
-            break;
-        case 'freezing':
-            applyFreezeEffect(asteroid.x, asteroid.y);
-            break;
-        case 'chainLightning':
-            fireChainLightningFromAsteroid(asteroid);
-            break;
-        case 'acid':
-            createAcidArea(asteroid.x, asteroid.y);
-            break;
-    }
-}
+// function handleRareAsteroidEffects(asteroid) {
+//     switch (asteroid.type) {
+//         case 'exploding':
+//             createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints);
+//             break;
+//         case 'freezing':
+//             applyFreezeEffect(asteroid.x, asteroid.y);
+//             break;
+//         case 'chainLightning':
+//             fireChainLightningFromAsteroid(asteroid);
+//             break;
+//         case 'acid':
+//             createAcidArea(asteroid.x, asteroid.y);
+//             break;
+//     }
+// }
 
-function applyFreezeEffect(x, y) {
-    const freezeRadius = 100;
+function applyFreezeEffect(x, y, radius = 1000) {
+    const freezeRadius = radius;
     for (let i = 0; i < asteroids.length; i++) {
         let dx = asteroids[i].x - x;
         let dy = asteroids[i].y - y;
         let distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < freezeRadius) {
-            asteroids[i].dx = 0;
-            asteroids[i].dy = 0;
-            setTimeout(() => {
-                asteroids[i].dx = Math.random() * 2 - 1;
-                asteroids[i].dy = Math.random() * 2 - 1;
-            }, 3000);
+            asteroids[i].dx *= 0.5;
+            asteroids[i].dy *= 0.5;
+            // setTimeout(() => {
+            //     if (asteroids[i]) {
+            //         asteroids[i].dx = Math.random() * 2 - 1;
+            //         asteroids[i].dy = Math.random() * 2 - 1;
+            //     }
+            // }, 3000);
         }
     }
 }
@@ -546,53 +549,6 @@ function fireChainLightningFromAsteroid(asteroid) {
     }
 }
 
-function createAcidArea(x, y) {
-    const acidRadius = 100;
-    const acidDuration = 300;
-    let acidArea = {
-        x: x,
-        y: y,
-        radius: acidRadius,
-        duration: acidDuration
-    };
-    acidAreas.push(acidArea);
-}
-
-function updateAcidAreas() {
-    for (let i = acidAreas.length - 1; i >= 0; i--) {
-        let area = acidAreas[i];
-        area.duration--;
-
-        for (let j = asteroids.length - 1; j >= 0; j--) {
-            let asteroid = asteroids[j];
-            let dx = asteroid.x - area.x;
-            let dy = asteroid.y - area.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < area.radius) {
-                let actualDamage = Math.min(5 + damageBooster, asteroid.hitpoints);
-                asteroid.hitpoints -= actualDamage;
-                if (asteroid.hitpoints <= 0) {
-                    handleRareAsteroidEffects(asteroid);
-                    asteroids.splice(j, 1);
-                }
-            }
-        }
-
-        if (area.duration <= 0) {
-            acidAreas.splice(i, 1);
-        }
-    }
-}
-
-function drawAcidAreas() {
-    ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
-    for (let i = 0; i < acidAreas.length; i++) {
-        let area = acidAreas[i];
-        ctx.beginPath();
-        ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
 
 function updateAsteroids() {
     if (currentMode === GameModes.ENDLESS_SLOW) {
@@ -637,10 +593,10 @@ function updateAsteroids() {
                     }
                 }
 
-                if (asteroids[i].hitpoints <= 0) {
-                    handleRareAsteroidEffects(asteroids[i]);
-                    asteroids.splice(i, 1);
-                }
+                // if (asteroids[i].hitpoints <= 0) {
+                //     handleRareAsteroidEffects(asteroids[i]);
+                //     asteroids.splice(i, 1);
+                // }
             }
         }
     }

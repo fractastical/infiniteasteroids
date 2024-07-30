@@ -58,7 +58,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.9312.
+    Ship type: Basic&nbsp;&nbsp; &nbsp; v 0.9411.
   </div>
 
 
@@ -458,7 +458,7 @@
     let gameLoop;
     let explosions = [];
     let lives = 3;
-    let testMode = false;
+    let testMode = true;
 
     if (testMode)
       lives = 1;
@@ -1000,44 +1000,6 @@
     }
 
 
-    function processAsteroidDeath(asteroid) {
-      createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints, asteroid.image);
-      asteroidsKilled++;
-
-      // Handle rare asteroid effects
-      switch (asteroid.type) {
-        case 'exploding':
-          const explosionRadius = 100; // Adjust this value as needed
-          const explosionDamage = asteroid.initialHitpoints; // Use initial hitpoints for damage
-          createAreaDamage(asteroid.x, asteroid.y, explosionRadius, explosionDamage);
-          break;
-        case 'freezing':
-          applyFreezeEffect(asteroid.x, asteroid.y);
-          break;
-        case 'chainLightning':
-          fireChainLightningFromPosition(asteroid.x, asteroid.y);
-          break;
-        case 'acid':
-          createAcidArea(asteroid.x, asteroid.y);
-          break;
-      }
-
-      const baseDropChance = 0.1; // 10% base chance to drop a gem
-      const hitpointFactor = 0.005; // Increase drop chance by 0.5% per hitpoint
-      const dropChance = Math.min(baseDropChance + (asteroid.initialHitpoints * hitpointFactor), 1);
-
-      if (Math.random() < dropChance && droppedGems.length < 40) {
-        const gemType = selectGemType(asteroid.initialHitpoints);
-        droppedGems.push({
-          x: asteroid.x,
-          y: asteroid.y,
-          size: 10,
-          type: gemType,
-          dx: asteroid.dx / 5,
-          dy: asteroid.dy / 5
-        });
-      }
-    }
     function selectGemType(hitpoints) {
       const epicThreshold = 30;
       const rareThreshold = 15;
@@ -1511,7 +1473,7 @@
       if (Achievements.drone_damage.reached) count++;
       if (Achievements.laser_damage.reached) count++;
       if (Achievements.alien_megaboss_killed.reached) count++;
-      if (Achievements.alien_supermegaboss_killed.reached) count++;
+      // if (Achievements.alien_supermegaboss_killed.reached) count++;
 
 
       // Check the conditions of each ship
@@ -1761,10 +1723,10 @@
           asteroid.hitpoints -= actualDamage;
           totalDamage += actualDamage;
 
-          if (asteroid.hitpoints <= 0) {
-            processAsteroidDeath(asteroid);
-            asteroids.splice(i, 1);
-          }
+          // if (asteroid.hitpoints <= 0) {
+          //   processAsteroidDeath(asteroid);
+          //   asteroids.splice(i, 1);
+          // }
 
           coins += actualDamage * 15;
           increaseXP(actualDamage * 15);

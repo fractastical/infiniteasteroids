@@ -16,7 +16,7 @@ for (let i = 1; i <= 9; i++) {
     swarmingAlienImages.push(img);
 }
 
-const AlienTypes = {
+const SwarmingAlienTypes = {
     TOP: { hitpoints: 1, color: 'blue', speed: 0.5, direction: 1 },  // direction 1 means downward
     BOTTOM: { hitpoints: 1, color: 'red', speed: 0.3, direction: -1 },  // direction -1 means upward
     HORIZONTAL: { hitpoints: 2, color: 'green', speed: 0.4, shootInterval: 250 },
@@ -37,8 +37,8 @@ let alienLasers = [];
 function spawnAliens(wave) {
 
     if (testMode) {
-        // spawnSwarmingAliens(SwarmingAlienTypes.TOP, 1);
-        // spawnSwarmingAliens(SwarmingAlienTypes.BOTTOM, 1);
+        spawnSwarmingAliens(SwarmingAlienTypes.TOP, 1);
+        spawnSwarmingAliens(SwarmingAlienTypes.BOTTOM, 1);
         // spawnHuntingAliens(10);
 
     }
@@ -124,9 +124,9 @@ function spawnHuntingAliens(count) {
             x: x + offsetX,
             y: y + offsetY,
             size: alienSize,
-            speed: AlienTypes.HUNTING.speed,
-            hitpoints: AlienTypes.HUNTING.hitpoints,
-            type: AlienTypes.HUNTING,
+            speed: SwarmingAlienTypes.HUNTING.speed,
+            hitpoints: SwarmingAlienTypes.HUNTING.hitpoints,
+            type: SwarmingAlienTypes.HUNTING,
             image: alienImage  // Assuming you have an image for this type
         };
 
@@ -162,7 +162,7 @@ function updateAliens() {
 
         aliens.forEach(alien => {
             switch (alien.type) {
-                case AlienTypes.HUNTING:
+                case SwarmingAlienTypes.HUNTING:
                     // Hunting aliens follow the player
                     const dx = ship.x - alien.x;
                     const dy = ship.y - alien.y;
@@ -178,8 +178,8 @@ function updateAliens() {
                     else if (alien.y > canvas.height) alien.y = 0;
                     break;
 
-                case AlienTypes.TOP:
-                case AlienTypes.BOTTOM:
+                case SwarmingAlienTypes.TOP:
+                case SwarmingAlienTypes.BOTTOM:
                     // Vertical movement
                     alien.y += alien.speed * alien.direction;
 
@@ -199,7 +199,7 @@ function updateAliens() {
                     }
                     break;
 
-                case AlienTypes.HORIZONTAL:
+                case SwarmingAlienTypes.HORIZONTAL:
                     // Horizontal movement
                     if (frameCount % horizontalSwarmMoveInterval === 0) {
                         alien.x += horizontalSwarmDirection * alien.speed;
@@ -228,7 +228,7 @@ function updateAliens() {
         if (dropHorizontalSwarm) {
             horizontalSwarmDirection *= -1;
             aliens.forEach(alien => {
-                if (alien.type === AlienTypes.HORIZONTAL) {
+                if (alien.type === SwarmingAlienTypes.HORIZONTAL) {
                     alien.y += horizontalSwarmDropDistance;
                 }
             });
@@ -334,34 +334,6 @@ function spawnMegaBossAlien() {
     aliens.push(megaBossAlien);
 }
 
-function updateMegaBossAlien() {
-    if (!megaBossAlien) return;
-    if (!freezeEffect.active) {
-        const dx = ship.x - megaBossAlien.x;
-        const dy = ship.y - megaBossAlien.y;
-        const angle = Math.atan2(dy, dx);
-
-        megaBossAlien.x += Math.cos(angle) * megaBossAlien.speed;
-        megaBossAlien.y += Math.sin(angle) * megaBossAlien.speed;
-
-        megaBossAlien.shootTimer++;
-        if (megaBossAlien.shootTimer >= megaBossAlien.shootInterval) {
-            megaBossAlien.shootTimer = 0;
-            shootMegaBossAlienLaser();
-        }
-
-        megaBossAlien.spawnTimer++;
-        if (megaBossAlien.spawnTimer >= 120) {
-            megaBossAlien.spawnTimer = 0;
-            spawnLittleAliensAroundMegaBoss();
-        }
-
-        if (megaBossAlien.x < 0) megaBossAlien.x = canvas.width;
-        else if (megaBossAlien.x > canvas.width) megaBossAlien.x = 0;
-        if (megaBossAlien.y < 0) megaBossAlien.y = canvas.height;
-        else if (megaBossAlien.y > canvas.height) megaBossAlien.y = 0;
-    }
-}
 
 function shootMegaBossAlienLaser() {
     if (!megaBossAlien) return;
@@ -585,9 +557,9 @@ function shootAlienLaser(alien) {
     let laserSpeed = alienLaserSpeed;
     let laserDirection;
 
-    if (alien.type === AlienTypes.TOP) {
+    if (alien.type === SwarmingAlienTypes.TOP) {
         laserDirection = 1; // Downward
-    } else if (alien.type === AlienTypes.BOTTOM) {
+    } else if (alien.type === SwarmingAlienTypes.BOTTOM) {
         laserDirection = -1; // Upward
     } else {
         laserDirection = 1; // Downward for horizontal aliens

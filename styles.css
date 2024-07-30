@@ -537,7 +537,7 @@ button {
     margin-right: 10px;
     background-size: contain;
     background-repeat: no-repeat;
-    background-color: white;
+    /* background-color: white; */
     /* Black background */
     border-radius: 50%;
     /* Make icons circular */
