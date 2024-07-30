@@ -484,7 +484,7 @@
     let gameLoop;
     let explosions = [];
     let lives = 3;
-    let testMode = false;
+    let testMode = true;
 
     if (testMode)
       lives = 1;
@@ -1181,10 +1181,10 @@
       const { newlyUnlockedAchievements, newlyUnlockedWeapons } = updateAchievementsAtEnd();
 
       // Get three random affordable upgrades
-      const affordableUpgrades = getRandomAffordableUpgrades(coins);
+      // const affordableUpgrades = getRandomAffordableUpgrades(coins);
 
       // Display the end game screen
-      displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades);
+      displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons);
     }
     function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
       const endScreen = document.getElementById('endScreen');
@@ -1275,83 +1275,83 @@
       });
 
       // Clear and set affordable upgrades
-      upgradesList.innerHTML = '';
-      affordableUpgrades.forEach(upgrade => {
-        const li = document.createElement('li');
-        li.style.display = 'flex';
-        li.style.alignItems = 'center';
+      // upgradesList.innerHTML = '';
+      // // affordableUpgrades.forEach(upgrade => {
+      // //   const li = document.createElement('li');
+      // //   li.style.display = 'flex';
+      // //   li.style.alignItems = 'center';
 
-        const icon = document.createElement('div');
-        icon.classList.add('weaponClassIcon', upgrade.icon);
-        icon.style.width = '24px';
-        icon.style.height = '24px';
-        icon.style.marginRight = '10px';
+      // //   const icon = document.createElement('div');
+      // //   icon.classList.add('weaponClassIcon', upgrade.icon);
+      // //   icon.style.width = '24px';
+      // //   icon.style.height = '24px';
+      // //   icon.style.marginRight = '10px';
 
-        const text = document.createElement('span');
-        text.textContent = `${upgrade.name} - ${upgrade.price} coins (${upgrade.rarity})`;
+      // //   const text = document.createElement('span');
+      // //   text.textContent = `${upgrade.name} - ${upgrade.price} coins (${upgrade.rarity})`;
 
-        const buyButton = document.createElement('button');
-        buyButton.textContent = 'Buy';
-        buyButton.onclick = () => purchaseUpgrade(upgrade);
+      // // const buyButton = document.createElement('button');
+      // // buyButton.textContent = 'Buy';
+      // // buyButton.onclick = () => purchaseUpgrade(upgrade);
 
-        li.appendChild(icon);
-        li.appendChild(text);
-        li.appendChild(buyButton);
-        upgradesList.appendChild(li);
-      });
+      // li.appendChild(icon);
+      // li.appendChild(text);
+      // li.appendChild(buyButton);
+      // upgradesList.appendChild(li);
+      // });
 
       // Show the end screen
       endScreen.style.display = 'flex';
     }
 
-    function purchaseUpgrade(upgrade) {
-      if (coins >= upgrade.price) {
-        coins -= upgrade.price;
-        // Add the upgrade to the player's upgrades
-        playerUpgrades.push(upgrade);
+    // function purchaseUpgrade(upgrade) {
+    //   if (coins >= upgrade.price) {
+    //     coins -= upgrade.price;
+    //     // Add the upgrade to the player's upgrades
+    //     playerUpgrades.push(upgrade);
 
-        // Update the display of current coins
-        document.getElementById('currentCoins').textContent = `Current Coins: ${coins}`;
+    //     // Update the display of current coins
+    //     document.getElementById('currentCoins').textContent = `Current Coins: ${coins}`;
 
-        // Optionally remove the purchased upgrade from the list or disable the buy button
-        // Here we simply remove the item from the list
-        const upgradesList = document.getElementById('upgradesList');
-        upgradesList.innerHTML = '';
-        const affordableUpgrades = getRandomAffordableUpgrades(coins);
-        affordableUpgrades.forEach(upgrade => {
-          const li = document.createElement('li');
-          li.style.display = 'flex';
-          li.style.alignItems = 'center';
+    //     // Optionally remove the purchased upgrade from the list or disable the buy button
+    //     // Here we simply remove the item from the list
+    //     const upgradesList = document.getElementById('upgradesList');
+    //     upgradesList.innerHTML = '';
+    //     const affordableUpgrades = getRandomAffordableUpgrades(coins);
+    //     affordableUpgrades.forEach(upgrade => {
+    //       const li = document.createElement('li');
+    //       li.style.display = 'flex';
+    //       li.style.alignItems = 'center';
 
-          const img = document.createElement('img');
-          img.src = upgrade.icon;
-          img.alt = upgrade.name;
-          img.style.width = '24px';
-          img.style.height = '24px';
-          img.style.marginRight = '10px';
+    //       const img = document.createElement('img');
+    //       img.src = upgrade.icon;
+    //       img.alt = upgrade.name;
+    //       img.style.width = '24px';
+    //       img.style.height = '24px';
+    //       img.style.marginRight = '10px';
 
-          const text = document.createElement('span');
-          text.textContent = `${upgrade.name} - ${upgrade.price} coins (${upgrade.rarity})`;
+    //       const text = document.createElement('span');
+    //       text.textContent = `${upgrade.name} - ${upgrade.price} coins (${upgrade.rarity})`;
 
-          const buyButton = document.createElement('button');
-          buyButton.textContent = 'Buy';
-          buyButton.onclick = () => purchaseUpgrade(upgrade);
+    //       const buyButton = document.createElement('button');
+    //       buyButton.textContent = 'Buy';
+    //       buyButton.onclick = () => purchaseUpgrade(upgrade);
 
-          li.appendChild(img);
-          li.appendChild(text);
-          li.appendChild(buyButton);
-          upgradesList.appendChild(li);
-        });
+    //       li.appendChild(img);
+    //       li.appendChild(text);
+    //       li.appendChild(buyButton);
+    //       upgradesList.appendChild(li);
+    //     });
 
-        // Save the updated coins and upgrades to the server
-        saveUserUpgrades(userId, gameId, {
-          coins: coins,
-          upgrades: playerUpgrades
-        });
-      } else {
-        alert('Not enough coins to purchase this upgrade.');
-      }
-    }
+    //     // Save the updated coins and upgrades to the server
+    //     saveUserUpgrades(userId, gameId, {
+    //       coins: coins,
+    //       upgrades: playerUpgrades
+    //     });
+    //   } else {
+    //     alert('Not enough coins to purchase this upgrade.');
+    //   }
+    // }
 
     function saveUserUpgrades(userId, gameId, data) {
       // Example function to save user upgrades and coins to the server
@@ -2373,7 +2373,7 @@
       const upgradesList = document.getElementById('upgradesList');
       upgradesList.innerHTML = '';
 
-      upgrades.forEach(upgrade => {
+      megaUpgrades.forEach(upgrade => {
         const upgradeElement = document.createElement('div');
         upgradeElement.classList.add('upgrade');
         upgradeElement.style.opacity = upgrade.owned ? '1' : '0.5';
@@ -2654,6 +2654,21 @@
 
     });
 
+    function pauseGame() {
+      if (!isPaused) {
+        clearInterval(gameLoop);
+        isPaused = true;
+      }
+    }
+
+    function resumeGame() {
+      if (isPaused) {
+        clearInterval(gameLoop);
+        gameLoop = setInterval(update, 1000 / 60);
+        isPaused = false;
+      }
+    }
+
   </script>
   <script type="module">
 
@@ -2780,20 +2795,6 @@
       }
     });
 
-    function pauseGame() {
-      if (!isPaused) {
-        clearInterval(gameLoop);
-        isPaused = true;
-      }
-    }
-
-    function resumeGame() {
-      if (isPaused) {
-        clearInterval(gameLoop);
-        gameLoop = setInterval(update, 1000 / 60);
-        isPaused = false;
-      }
-    }
 
     async function loadUserData(userId) {
       try {
@@ -2808,8 +2809,8 @@
           const gameAchievements = userData.games?.[gameId]?.achievements || {};
           Object.assign(Achievements, gameAchievements);
 
-          const gameUpgrades = userData.games?.[gameId]?.upgrades || {};
-          Object.assign(upgrades, gameUpgrades);
+          const gameUpgrades = userData.games?.[gameId]?.megaUpgrades || {};
+          Object.assign(megaUpgrades, gameUpgrades);
 
           populateAchievements();
           populateUpgrades();
@@ -2843,10 +2844,10 @@
       if (userDoc.exists()) {
         const userData = userDoc.data();
         const existingAchievements = userData.games?.[gameName]?.achievements || {};
-        const existingUpgrades = userData.games?.[gameName]?.upgrades || {};
+        const existingMegaUpgrades = userData.games?.[gameName]?.megaUpgrades || {};
 
         const updatedAchievements = { ...existingAchievements, ...Achievements };
-        const updatedUpgrades = { ...existingUpgrades, ...upgrades };
+        const updatedMegaUpgrades = { ...existingMegaUpgrades, ...megaUpgrades };
 
         const fullGameData = {
           [`games.${gameName}.scores`]: arrayUnion({
@@ -2857,7 +2858,7 @@
             gameMode: currentMode  // Add the game mode to the saved data
           }),
           [`games.${gameName}.achievements`]: updatedAchievements,
-          [`games.${gameName}.upgrades`]: updatedUpgrades
+          [`games.${gameName}.megaUpgrades`]: updatedMegaUpgrades
         };
 
         await updateDoc(userDocRef, fullGameData);
@@ -3061,6 +3062,7 @@
   <script src="js/weapons.js"></script>
   <script src="js/ships.js"></script>
   <script src="js/upgrade-menu.js"></script>
+  <script src="js/upgrades-functions.js"></script>
   <script src="js/upgrades-main.js"></script>
 
   <script src="js/aliens.js"></script>
