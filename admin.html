@@ -59,6 +59,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const MAX_VALID_SCORE = 90000000; // 90 million
 
         // Function to calculate total session time in milliseconds
         function calculateTotalSessionTime(sessions) {
@@ -105,7 +106,7 @@
             let qualifyingSessions = 0;
 
             sessions.forEach((session) => {
-                if (session.score > scoreThreshold && session.topWeapons) {
+                if (session.score > scoreThreshold && session.score <= MAX_VALID_SCORE && session.topWeapons) {
                     qualifyingSessions++;
                     session.topWeapons.forEach((weapon) => {
                         if (weaponStats[weapon.weapon]) {
