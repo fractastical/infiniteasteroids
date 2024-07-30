@@ -190,7 +190,7 @@ function startRoulette() {
     isPaused = true;
 
     let angle = 0;
-    const spinDuration = 5000; // Total spin duration
+    const spinDuration = 2500; // Total spin duration
     const spinInterval = 20; // Interval for updating the rotation
     const totalRotations = 5; // Complete at least 5 rotations
     const totalSpins = totalRotations * 2 * Math.PI; // Total radians for 5 full rotations
