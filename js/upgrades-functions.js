@@ -1,3 +1,7 @@
+
+const potatoImage = new Image();
+potatoImage.src = 'icons/upgrades/potatoroid_10.png';
+
 const glitchEffect = {
     update: function () {
         for (let i = 0; i < asteroids.length; i++) {
@@ -29,7 +33,6 @@ const gravityBomb = {
     radius: 200,
     duration: 300,
     timer: 0,
-    pull: 0.5,
     active: false,
     update: function () {
         if (this.active) {
@@ -42,9 +45,10 @@ const gravityBomb = {
                     const dy = ship.y - asteroids[i].y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
                     if (distance < this.radius) {
-                        const angle = Math.atan2(dy, dx);
-                        asteroids[i].dx += Math.cos(angle) * this.pull;
-                        asteroids[i].dy += Math.sin(angle) * this.pull;
+                        const corner = this.getNearestCorner(asteroids[i]);
+                        const angle = Math.atan2(corner.y - asteroids[i].y, corner.x - asteroids[i].x);
+                        asteroids[i].dx += Math.cos(angle);
+                        asteroids[i].dy += Math.sin(angle);
                     }
                 }
             }
@@ -53,6 +57,30 @@ const gravityBomb = {
     activate: function () {
         this.active = true;
         this.timer = this.duration;
+    },
+    getNearestCorner: function (asteroid) {
+        const corners = [
+            { x: 0, y: 0 }, // Top-left corner
+            { x: canvas.width, y: 0 }, // Top-right corner
+            { x: 0, y: canvas.height }, // Bottom-left corner
+            { x: canvas.width, y: canvas.height } // Bottom-right corner
+        ];
+        let nearestCorner = corners[0];
+        let minDistance = this.getDistance(asteroid, corners[0]);
+
+        for (let i = 1; i < corners.length; i++) {
+            const distance = this.getDistance(asteroid, corners[i]);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestCorner = corners[i];
+            }
+        }
+        return nearestCorner;
+    },
+    getDistance: function (asteroid, corner) {
+        const dx = asteroid.x - corner.x;
+        const dy = asteroid.y - corner.y;
+        return Math.sqrt(dx * dx + dy * dy);
     }
 };
 
@@ -69,9 +97,9 @@ const asteroidSplitter = {
                         x: asteroid.x,
                         y: asteroid.y,
                         size: asteroid.size / 2,
-                        speed: asteroid.speed * 1.5,
-                        dx: Math.random() * 2 - 1,
-                        dy: Math.random() * 2 - 1,
+                        speed: asteroid.speed * 0.2,
+                        dx: Math.random() * 1.5 - 1,
+                        dy: Math.random() * 1.5 - 1,
                         hitpoints: Math.floor(asteroid.hitpoints / 2),
                         color: asteroid.color
                     };

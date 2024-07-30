@@ -14,25 +14,25 @@ floatingIsland.image.src = 'icons/upgrades/floating_island_22.png';
 
 // Mega Upgrades
 const megaUpgrades = [
-    // {
-    //     name: 'Glitch Effect',
-    //     description: 'Randomly causes asteroids to malfunction and break apart.',
-    //     icon: 'icons/upgrades/mainframe.png',
-    //     cooldown: 30 * 60, // 30 seconds at 60 FPS
-    //     cooldownTimer: 0,
-    //     effect: function () {
-    //         glitchEffect.active = true;
-    //         this.cooldownTimer = this.cooldown;
-    //     },
-    //     update: function () {
-    //         if (this.cooldownTimer > 0) {
-    //             this.cooldownTimer--;
-    //             glitchEffect.update();
-    //         } else {
-    //             glitchEffect.active = false;
-    //         }
-    //     }
-    // },
+    {
+        name: 'Glitch Effect',
+        description: 'Randomly causes asteroids to malfunction and break apart.',
+        icon: 'icons/upgrades/mainframe.png',
+        cooldown: 30 * 60, // 30 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            glitchEffect.active = true;
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+                glitchEffect.update();
+            } else {
+                glitchEffect.active = false;
+            }
+        }
+    },
     // {
     //     name: 'Time Dilation',
     //     description: 'Slows down time, making it easier to evade asteroids and aim.',
@@ -88,22 +88,22 @@ const megaUpgrades = [
     //         gravityBomb.update();
     //     }
     // },
-    // {
-    //     name: 'Asteroid Splitter',
-    //     description: 'Randomly splits asteroids into smaller pieces.',
-    //     icon: 'icons/upgrades/asteroid_splitter_22.png', // Replace with appropriate icon
-    //     cooldown: 50 * 60, // 50 seconds at 60 FPS
-    //     cooldownTimer: 0,
-    //     effect: function () {
-    //         this.cooldownTimer = this.cooldown;
-    //     },
-    //     update: function () {
-    //         if (this.cooldownTimer > 0) {
-    //             this.cooldownTimer--;
-    //             asteroidSplitter.update();
-    //         }
-    //     }
-    // },
+    {
+        name: 'Asteroid Splitter',
+        description: 'Randomly splits asteroids into smaller pieces.',
+        icon: 'icons/upgrades/asteroid_splitter_22.png', // Replace with appropriate icon
+        cooldown: 50 * 60, // 50 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+                asteroidSplitter.update();
+            }
+        }
+    },
     {
         name: 'Quantum Teleporter',
         description: 'Teleports the nearest asteroid to a random location around the ship.',
@@ -120,7 +120,37 @@ const megaUpgrades = [
             }
             quantumTeleporter.update();
         }
-    }
+    },
+    {
+        name: 'XP Monkey',
+        description: 'Doubles the XP gained from destroying asteroids for a limited time.',
+        icon: 'icons/upgrades/monkey.png', // Replace with appropriate icon
+        cooldown: 45 * 60, // 45 seconds at 60 FPS
+        cooldownTimer: 0,
+        duration: 15 * 60, // 15 seconds duration at 60 FPS
+        durationTimer: 0,
+        effect: function () {
+            xpBooster.active = true;
+            levelUpXPMultiplier *= 0.9; // Double the XP multiplier
+        },
+        update: function () {
+            // No need to update anything since the effect is permanent
+        }
+    },
+    {
+        name: 'Damage Pickle',
+        description: 'Increases all weapon damage by 10.',
+        icon: 'icons/upgrades/pickle.png', // Replace with appropriate icon
+        effect: function () {
+            damagePickle.active = true;
+            damageBooster += 10; // Increase damage by 10
+        },
+        update: function () {
+            // No need to update anything since the effect is permanent
+        }
+    },
+
+
 ];
 
 
