@@ -458,7 +458,7 @@
     let gameLoop;
     let explosions = [];
     let lives = 3;
-    let testMode = true;
+    let testMode = false;
 
     if (testMode)
       lives = 1;
@@ -824,8 +824,8 @@
 
         if (superbossAlien.hitpoints <= 0) {
           createExplosion(superbossAlien.x, superbossAlien.y, 50);
-          superbossAlien = null; // Destroy alien
           createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
+          superbossAlien = null; // Destroy alien
           aliensKilled++;
           Achievements.alien_megaboss_killed.reached = true;
           increaseXP(30 * 20);
@@ -915,8 +915,8 @@
 
           if (superbossAlien.hitpoints <= 0) {
             createExplosion(superbossAlien.x, superbossAlien.y, 50);
-            superbossAlien = null; // Destroy alien
             createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
+            superbossAlien = null; // Destroy alien
             aliensKilled++;
             Achievements.alien_megaboss_killed.reached = true;
             increaseXP(30 * 20);
@@ -1164,7 +1164,6 @@
       const waveElement = document.getElementById('wave');
       const scoreElement = document.getElementById('score');
       const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
-      // const bonusCoinsElement = document.getElementById('bonusCoins');
       const currentCoinsElement = document.getElementById('currentCoins');
       const damageReportList = document.getElementById('damageReportList');
       const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
@@ -1186,7 +1185,6 @@
         scoreElement.textContent = `Score: ${score}`;
       }
 
-
       asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
       // bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)}`;
       // currentCoinsElement.textContent = `Current Coins: ${coins}`;
@@ -1202,17 +1200,16 @@
           li.style.display = 'flex';
           li.style.alignItems = 'center';
 
-          const img = document.createElement('img');
-          img.src = weaponInfo.icon;
-          img.alt = weaponInfo.name;
-          img.style.width = '24px';
-          img.style.height = '24px';
-          img.style.marginRight = '10px';
+          const icon = document.createElement('div');
+          icon.classList.add('weaponClassIcon', weaponInfo.icon);
+          icon.style.width = '24px';
+          icon.style.height = '24px';
+          icon.style.marginRight = '10px';
 
           const text = document.createElement('span');
           text.textContent = `${weaponInfo.name}: ${damage} (DPM: ${weaponDPM[weapon]})`;
 
-          li.appendChild(img);
+          li.appendChild(icon);
           li.appendChild(text);
           damageReportList.appendChild(li);
         }
@@ -1227,17 +1224,16 @@
           li.style.display = 'flex';
           li.style.alignItems = 'center';
 
-          const img = document.createElement('img');
-          img.src = weaponInfo.icon;
-          img.alt = weaponInfo.name;
-          img.style.width = '24px';
-          img.style.height = '24px';
-          img.style.marginRight = '10px';
+          const icon = document.createElement('div');
+          icon.classList.add('weaponClassIcon', weaponInfo.icon);
+          icon.style.width = '24px';
+          icon.style.height = '24px';
+          icon.style.marginRight = '10px';
 
           const text = document.createElement('span');
           text.textContent = weaponInfo.name;
 
-          li.appendChild(img);
+          li.appendChild(icon);
           li.appendChild(text);
           unlockedWeaponsList.appendChild(li);
         }
@@ -1258,12 +1254,11 @@
         li.style.display = 'flex';
         li.style.alignItems = 'center';
 
-        const img = document.createElement('img');
-        img.src = upgrade.icon;
-        img.alt = upgrade.name;
-        img.style.width = '24px';
-        img.style.height = '24px';
-        img.style.marginRight = '10px';
+        const icon = document.createElement('div');
+        icon.classList.add('weaponClassIcon', upgrade.icon);
+        icon.style.width = '24px';
+        icon.style.height = '24px';
+        icon.style.marginRight = '10px';
 
         const text = document.createElement('span');
         text.textContent = `${upgrade.name} - ${upgrade.price} coins (${upgrade.rarity})`;
@@ -1272,7 +1267,7 @@
         buyButton.textContent = 'Buy';
         buyButton.onclick = () => purchaseUpgrade(upgrade);
 
-        li.appendChild(img);
+        li.appendChild(icon);
         li.appendChild(text);
         li.appendChild(buyButton);
         upgradesList.appendChild(li);
@@ -1462,6 +1457,7 @@
       if (Achievements.destroy_100_asteroids.reached) count++;
       if (Achievements.kill_5_aliens.reached) count++;
       if (Achievements.kill_15_aliens.reached) count++;
+      if (Achievements.kill_50_aliens.reached) count++;
       if (Achievements.no_lives_lost.reached) count++;
       if (Achievements.death_ray_damage.reached) count++;
       if (Achievements.complete_meteor_normal_mode.reached) count++;
@@ -2446,6 +2442,7 @@
       complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Hero Mode. Unlock Extra Life.' },
       kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
       kill_15_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 15 Aliens. Unlock Chain Lightning.' },
+      kill_50_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 50 Aliens. Unlock Sonic Boomerang.' },
       complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Shower Easy Mode. Unlock Starhawk' },
       complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Shower Normal Mode. Unlock Double Turret.' },
       complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode. Unlock Solar Phoenix .' },
@@ -2506,6 +2503,8 @@
       if (damageReport.lasers >= Achievements.laser_damage.required) addAchievement('laser_damage');
       if (aliensKilled >= 5) addAchievement('kill_5_aliens');
       if (aliensKilled >= 15) addAchievement('kill_15_aliens');
+      if (aliensKilled >= 50) addAchievement('kill_50_aliens');
+
 
       localStorage.setItem('achievements', JSON.stringify(Achievements));
       populateAchievements();
@@ -2522,6 +2521,7 @@
         'kill_5_aliens': 'Death Ray',
         'complete_planet_hard_mode': 'Explosive Rocket',
         'kill_15_aliens': 'Chain Lightning',
+        'kill_50_aliens': 'SonicBoomerang',
         'no_lives_lost': 'Nano Swarm',
         'acid_bomb_damage': 'Flamethrower'
       };

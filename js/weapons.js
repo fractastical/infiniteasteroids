@@ -516,74 +516,73 @@ const weapons = [
     {
         name: 'Basic Laser',
         description: 'Standard weapon. Fires straight lasers.',
-        icon: 'icons/Basiclaser.svg'
+        icon: 'icon-basiclaser'
     },
     {
         name: 'Explosive Laser',
         description: 'Lasers explode on impact, causing area damage.',
-        icon: 'icons/Explosivelaser.svg'
+        icon: 'icon-explosive'
     },
     {
         name: 'Laser Drone',
         description: 'Drone that flies around you shooting randomly.',
-        icon: 'icons/laserdrone.png'
+        icon: 'icon-drone'
     },
     {
         name: 'Bomber Drone',
         description: 'Drone that leaves protective mines that explode with area damage when an asteroid gets nearby.',
-        icon: 'icons/Bomberdrone.svg'
+        icon: 'icon-bomberdrone'
     },
     {
         name: 'Acid Bomb',
         description: 'Releases acid that deals damage over time in an area.',
-        icon: 'icons/Acidbomb.svg'
+        icon: 'icon-acid'
     },
     {
         name: 'Sonic Blast',
         description: 'Creates a wave that damages all enemies in its path.',
-        icon: 'icons/Sonicray.svg'
+        icon: 'icon-sonic'
     },
     {
         name: 'Death Ray',
         description: 'Fire a beam that melts and instakills everything in its path.',
-        icon: 'icons/Deathray.svg'
+        icon: 'icon-deathray'
     },
     {
         name: 'Boomerang',
         description: 'A boomerang that bounces around the level.',
-        icon: 'icons/Boomerang.svg'
+        icon: 'icon-boomerang'
     },
     {
         name: 'Freeze Ray',
         description: 'Freezes enemies in place for a short duration.',
-        icon: 'icons/Freeze.svg'
+        icon: 'icon-freeze'
     },
     {
         name: 'Nano Swarm',
         description: 'A swarm of nanobots that seek and destroy enemies.',
-        icon: 'icons/nanodrone.png'
+        icon: 'icon-drone'
     },
     {
         name: 'Turret',
         description: 'Deploys a turret that automatically shoots at enemies.',
-        icon: 'icons/Autocannon.svg'
+        icon: 'icon-turret'
     },
     {
         name: 'Flamethrower',
         description: 'Shoots a continuous stream of fire.',
-        icon: 'icons/flamethrower.png'
+        icon: 'icon-flamethrower'
     },
     {
         name: 'Chain Lightning',
         description: 'Fires a lightning bolt that bounces between asteroids.',
-        icon: 'icons/chainlightning.png'
+        icon: 'icon-chainlightning'
     },
     {
         name: 'Explosive Rocket',
         description: 'Fires a slow-moving rocket that causes explosive AoE damage on impact.',
-        icon: 'icons/explosive-rocket.png'
+        icon: 'icon-explosiverocket'
     }
-
 ];
 
 

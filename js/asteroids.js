@@ -467,7 +467,7 @@ function processAsteroidDeath(asteroid) {
             fireChainLightningFromAsteroid(asteroid);
             break;
         case 'acid':
-            createAcidExplosion(asteroid.x, asteroid.y, 200, 1000);
+            createAcidExplosion(asteroid.x, asteroid.y, 100, 1000);
             break;
     }
 

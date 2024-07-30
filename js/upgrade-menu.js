@@ -56,7 +56,7 @@ function getRandomUpgrades(count) {
     if (comboWeapons.explosiveDrone) {
         availableUpgrades.push('Activate Explosive Drone');
     }
-    if (comboWeapons.sonicBoomerang) {
+    if (comboWeapons.sonicBoomerang && Achievements.kill_50_aliens.reached) {
         availableUpgrades.push('Activate Sonic Boomerang');
     }
 
