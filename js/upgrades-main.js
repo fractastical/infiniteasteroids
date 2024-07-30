@@ -10,7 +10,7 @@ const floatingIsland = {
 };
 
 floatingIsland.image = new Image();
-floatingIsland.image.src = 'icons/upgrades/floating_island_22.png';
+floatingIsland.image.src = 'icons/upgrades/floating_island_10.png';
 
 // Mega Upgrades
 const megaUpgrades = [
@@ -193,7 +193,7 @@ const activeMegaUpgrades = [];
 
 function checkFloatingIslandSpawn() {
 
-    if (wave % 15 === 0 && !floatingIsland.active) {
+    if (wave % 12 === 0 && !floatingIsland.active) {
         floatingIsland.active = true;
         floatingIsland.x = -100;
     }

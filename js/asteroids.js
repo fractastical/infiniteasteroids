@@ -452,6 +452,10 @@ function createExplosion(x, y, hitpoints = 1, sizeMultiplier = 1) {
     explosions.push(explosion);
 }
 
+let lastRareAsteroids = [];
+const maxRareAsteroidsDisplayed = 3;
+
+
 function processAsteroidDeath(asteroid) {
     createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints);
     asteroidsKilled++;
@@ -459,19 +463,23 @@ function processAsteroidDeath(asteroid) {
     // Handle rare asteroid effects
     switch (asteroid.type) {
         case 'exploding':
-            const explosionRadius = 100; // Adjust this value as needed
-            const explosionDamage = asteroid.initialHitpoints; // Use initial hitpoints for damage
+            const explosionRadius = 100;
+            const explosionDamage = asteroid.initialHitpoints;
             createAreaDamage(asteroid.x, asteroid.y, explosionRadius, explosionDamage);
             createExplosion(asteroid.x, asteroid.y, 7, 2.5);
+            addRareAsteroidToDisplay(asteroid.type, '#FF0000');  // Red
             break;
         case 'freezing':
             applyFreezeEffect(asteroid.x, asteroid.y);
+            addRareAsteroidToDisplay(asteroid.type, '#00BFFF');  // Blue
             break;
         case 'chainLightning':
             fireChainLightningFromAsteroid(asteroid);
+            addRareAsteroidToDisplay(asteroid.type, '#FFFF00');  // Yellow
             break;
         case 'acid':
             createAcidExplosion(asteroid.x, asteroid.y, 100, 1000);
+            addRareAsteroidToDisplay(asteroid.type, '#00FF00');  // Green
             break;
     }
 
@@ -492,6 +500,41 @@ function processAsteroidDeath(asteroid) {
         });
     }
 }
+
+function addRareAsteroidToDisplay(type, color) {
+    if (type !== 'normal') {
+        lastRareAsteroids.unshift({ type, color });
+        if (lastRareAsteroids.length > maxRareAsteroidsDisplayed) {
+            lastRareAsteroids.pop();
+        }
+    }
+}
+
+function drawRareAsteroidIndicators() {
+    const indicatorSize = 30;
+    const padding = 10;
+    const startX = canvas.width - (indicatorSize + padding) * maxRareAsteroidsDisplayed;
+    const startY = canvas.height - indicatorSize - padding;
+
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    lastRareAsteroids.forEach((asteroid, index) => {
+        const x = startX + (indicatorSize + padding) * index;
+
+        // Draw colored circle
+        ctx.beginPath();
+        ctx.arc(x + indicatorSize / 2, startY + indicatorSize / 2, indicatorSize / 2, 0, Math.PI * 2);
+        ctx.fillStyle = asteroid.color;
+        ctx.fill();
+
+        // Draw asteroid type initial
+        ctx.fillStyle = 'white';
+        ctx.fillText(asteroid.type[0].toUpperCase(), x + indicatorSize / 2, startY + indicatorSize / 2);
+    });
+}
+
 
 function getRandomOrangeShade() {
     const shades = ['#FF4500', '#FF6347', '#FF8C00', '#FFA500', '#FF7F50'];

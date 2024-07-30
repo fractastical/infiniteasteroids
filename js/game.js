@@ -155,6 +155,7 @@ function update() {
     updateMegaUpgrades();
     drawFloatingIsland();
     drawActiveMegaUpgrades();
+    drawRareAsteroidIndicators();
 
     if (planetMode) {
         applyGravity(ship);
