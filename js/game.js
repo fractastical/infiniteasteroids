@@ -139,8 +139,13 @@ function update() {
     // document.getElementById('waveCounter').textContent = `Next Wave: ${secondsUntilNextWave}s`;
 
     updateShip(ship, 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ');
+
     if (currentMode === GameModes.COOP) {
         updateShip(ship2, 'a', 'd', 'w', 's', 'q');
+    } else {
+
+        updateShip(ship, 'a', 'd', 'w', 's', 'q');
+
     }
 
     if (planetMode) {
