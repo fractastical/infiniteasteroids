@@ -1,8 +1,8 @@
 function getRandomUpgrades(count) {
     const availableUpgrades = [
-        ...(getUpgradeCount('laser') <= 9 ? ['Increase Laser Level', 'Decrease Laser Cooldown'] : []),
+        ...(getUpgradeCount('laser') <= 9 ? ['Increase Laser Level', 'Decrease Laser Cooldown', 'Increase Max Speed'] : []),
         // 'Increase Rotation Speed',
-        ...(activeWeaponClasses.includes('turret') ? (getUpgradeCount('turret') <= 9 ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : []) : ['Activate Turret'])
+        ...(activeWeaponClasses.includes('turret') ? (getUpgradeCount('turret') <= 9 ? ['Increase Turret Firerate', 'Increase Turret Damage'] : []) : ['Activate Turret'])
 
     ];
 
@@ -20,7 +20,7 @@ function getRandomUpgrades(count) {
     if (Achievements.complete_normal_mode.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? (getUpgradeCount('acid') <= 9 ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : []) : ['Activate Acid Bomb']));
     if (Achievements.destroy_100_asteroids.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? (getUpgradeCount('drone') <= 9 ? ['Increase Drone Firerate'] : []) : ['Activate Drone']));
+        availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? (getUpgradeCount('drone') <= 9 ? ['Increase Drone Firerate', 'Increase Drone Damange'] : []) : ['Activate Drone']));
     if (Achievements.kill_5_aliens.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? (getUpgradeCount('deathray') <= 9 ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : []) : ['Activate Death Ray']));
     // TEMP

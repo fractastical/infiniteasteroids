@@ -400,7 +400,7 @@ function update() {
     updateParticles();
     drawParticles();
 
-    drawEdgeOverlay();
+    // drawEdgeOverlay();
     drawLives();
     drawScore();
     // if (gameOver) drawDamageReport();

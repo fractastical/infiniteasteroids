@@ -118,6 +118,7 @@ let drone = {
     speed: 0.0001,
     direction: Math.random() * Math.PI * 2,
     lasers: [],
+    damage: 1,
     laserSpeed: 3,
     laserInterval: 80, // Fire lasers every 120 frames (2 second)
     laserTimer: 0
@@ -184,6 +185,9 @@ function applyUpgrade(upgrade) {
             ship.maxBulletsLevel++;
             ship.laserCooldown = Math.max(5, ship.laserCooldown - 3);
             break;
+        case 'Max Speed':
+            ship.maxspeed++;
+            break;
         case 'Increase Rotation Speed':
             ship.rotationSpeedLevel++;
             ship.rotationSpeed = 2 * ship.rotationSpeedLevel;
@@ -219,6 +223,12 @@ function applyUpgrade(upgrade) {
             droneUpgrades.laserInterval++;
             drones.forEach(drone => {
                 drone.laserInterval = 80 / droneUpgrades.laserInterval;
+            });
+            break;
+        case 'Increase Drone Damage':
+            droneUpgrades.damageLevel++;
+            drones.forEach(drone => {
+                drone.damage += 3;
             });
             break;
         case 'Activate Sonic Blast':

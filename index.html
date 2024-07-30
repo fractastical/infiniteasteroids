@@ -376,7 +376,7 @@
       speed: 0,
       acceleration: 0.15,
       deceleration: 0.96,
-      maxSpeed: 5,
+      maxSpeed: 3,
       rotation: 0,
       rotationSpeed: 2.5,
       lasers: [],
@@ -481,7 +481,9 @@
     let droneUpgrades = {
       speed: 1,
       laserSpeed: 1,
-      laserInterval: 1
+      laserInterval: 1,
+      damageLevel: 1
+
     };
 
 
@@ -640,6 +642,14 @@
       } else {
         ship.velocityX *= ship.deceleration;
         ship.velocityY *= ship.deceleration;
+      }
+
+      // Limit the ship's speed to maxSpeed
+      let speed = Math.sqrt(ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY);
+      if (speed > ship.maxSpeed) {
+        let ratio = ship.maxSpeed / speed;
+        ship.velocityX *= ratio;
+        ship.velocityY *= ratio;
       }
 
       if (keys[shootKey] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
@@ -1465,7 +1475,7 @@
         case 'turret':
           return turretUpgrades.range + turretUpgrades.fireRate + turretUpgrades.damage - 2;
         case 'drone':
-          return droneUpgrades.laserInterval; // Assuming this is the main upgrade for drones
+          return droneUpgrades.laserInterval + droneUpgrades.damageLevel; // Assuming this is the main upgrade for drones
         case 'sonic':
           return sonicBlast.rangeLevel + sonicBlast.damageLevel + sonicBlast.cooldownLevel - 2; // Example calculation
         case 'bomberdrone':
@@ -2162,7 +2172,7 @@
         speed: 0,
         acceleration: 0.15,
         deceleration: 0.96,
-        maxSpeed: 5,
+        maxSpeed: 3,
         rotation: 0,
         rotationSpeed: 1.9,
         lasers: [],
@@ -3010,11 +3020,12 @@
   <script src="js/asteroids.js"></script>
   <script src="js/weapons.js"></script>
   <script src="js/ships.js"></script>
-  <script src="js/upgrades-menu.js"></script>
+  <script src="js/upgrade-menu.js"></script>
   <script src="js/upgrades-main.js"></script>
 
   <script src="js/aliens.js"></script>
   <script src="js/gems.js"></script>
+  <script src="js/special-effects.js"></script>
 
 
   <!-- <div id="auth" class="hidden">
