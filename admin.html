@@ -16,26 +16,28 @@
         <p>Total Session Time: <span id="totalSessionTime"></span></p>
         <p>Average Session Time: <span id="averageSessionTime"></span></p>
     </div>
-
     <div id="newUserInfo">
         <p>New Users (Last 7 Days): <span id="newUsersWeek"></span></p>
         <p>New Users (Last 30 Days): <span id="newUsersMonth"></span></p>
         <p>New Users (Last 90 Days): <span id="newUsers90Days"></span></p>
-
     </div>
-
     <div id="topWeapons">
         <h2>Top Weapons Used</h2>
         <ol id="topWeaponsList"></ol>
     </div>
     <div id="topWeaponsHighScores">
-        <h2>Top Weapons Used (Scores above 100,000)</h2>
+        <h2 id="topWeaponsHighScoresHeader">Top Weapons Used (Scores above 100,000)</h2>
         <ol id="topWeaponsHighScoresList"></ol>
     </div>
     <div id="topWeaponsUltraHighScores">
         <h2 id="topWeaponsUltraHighScoresHeader">Top Weapons Used (Scores above 500,000)</h2>
         <ol id="topWeaponsUltraHighScoresList"></ol>
     </div>
+    <div id="topWeaponsUltraUltraHighScores">
+        <h2 id="topWeaponsUltraUltraHighScoresHeader">Top Weapons Used (Scores above 2,500,000)</h2>
+        <ol id="topWeaponsUltraUltraHighScoresList"></ol>
+    </div>
+
     <h2>Number of New Users per Day</h2>
     <canvas id="newUsersChart"></canvas>
 
@@ -100,9 +102,11 @@
         // Function to get the top weapons used by average damage done for high scores
         function getTopWeaponsUsedHighScores(sessions, scoreThreshold) {
             const weaponStats = {};
+            let qualifyingSessions = 0;
 
             sessions.forEach((session) => {
                 if (session.score > scoreThreshold && session.topWeapons) {
+                    qualifyingSessions++;
                     session.topWeapons.forEach((weapon) => {
                         if (weaponStats[weapon.weapon]) {
                             weaponStats[weapon.weapon].totalDamage += weapon.damage;
@@ -114,53 +118,78 @@
                 }
             });
 
-            return Object.entries(weaponStats)
+            const topWeapons = Object.entries(weaponStats)
                 .map(([weapon, stats]) => ({
                     weapon,
                     averageDamage: stats.totalDamage / stats.count,
                     count: stats.count
                 }))
                 .sort((a, b) => b.averageDamage - a.averageDamage);
+
+            return { topWeapons, qualifyingSessions };
         }
 
         // Function to display the admin dashboard data
-        function displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth, newUsers90Days, scoresAbove500k) {
-            document.getElementById('totalSessions').textContent = totalSessions;
-            document.getElementById('totalSessionTime').textContent = formatTime(totalSessionTime);
-            document.getElementById('averageSessionTime').textContent = formatTime(averageSessionTime);
+        function displayAdminData(
+            totalSessions, totalSessionTime, averageSessionTime,
+            topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, topWeaponsUltraUltraHighScores,
+            newUsersWeek, newUsersMonth, newUsers90Days,
+            scoresAbove100k, scoresAbove500k, scoresAbove2_5M,
+            totalTimeAbove100k, totalTimeAbove500k, totalTimeAbove2_5M
+        ) {
+            function setTextContent(id, text) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = text;
+                } else {
+                    console.warn(`Element with id '${id}' not found`);
+                }
+            }
 
-            document.getElementById('newUsersWeek').textContent = newUsersWeek;
-            document.getElementById('newUsersMonth').textContent = newUsersMonth;
-            document.getElementById('newUsers90Days').textContent = newUsers90Days;
+            function populateList(id, items) {
+                const list = document.getElementById(id);
+                if (list) {
+                    list.innerHTML = '';
+                    items.forEach((item) => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${item.weapon}: ${item.count} times, Average Damage: ${item.averageDamage.toFixed(2)}`;
+                        list.appendChild(listItem);
+                    });
+                } else {
+                    console.warn(`List with id '${id}' not found`);
+                }
+            }
 
-            const topWeaponsList = document.getElementById('topWeaponsList');
-            topWeaponsList.innerHTML = '';
-            topWeapons.forEach((weapon) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${weapon.weapon}: ${weapon.count} times, Average Damage: ${weapon.averageDamage.toFixed(2)}`;
-                topWeaponsList.appendChild(listItem);
-            });
+            setTextContent('totalSessions', totalSessions);
+            setTextContent('totalSessionTime', formatTime(totalSessionTime));
+            setTextContent('averageSessionTime', formatTime(averageSessionTime));
 
-            const topWeaponsHighScoresList = document.getElementById('topWeaponsHighScoresList');
-            topWeaponsHighScoresList.innerHTML = '';
-            topWeaponsHighScores.forEach((weapon) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${weapon.weapon}: ${weapon.count} times, Average Damage: ${weapon.averageDamage.toFixed(2)}`;
-                topWeaponsHighScoresList.appendChild(listItem);
-            });
+            setTextContent('newUsersWeek', newUsersWeek);
+            setTextContent('newUsersMonth', newUsersMonth);
+            setTextContent('newUsers90Days', newUsers90Days);
 
-            const topWeaponsUltraHighScoresHeader = document.getElementById('topWeaponsUltraHighScoresHeader');
-            topWeaponsUltraHighScoresHeader.textContent = `Top Weapons Used (Scores above 500,000) - ${scoresAbove500k} scores`;
+            populateList('topWeaponsList', topWeapons);
 
-            const topWeaponsUltraHighScoresList = document.getElementById('topWeaponsUltraHighScoresList');
-            topWeaponsUltraHighScoresList.innerHTML = '';
-            topWeaponsUltraHighScores.forEach((weapon) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${weapon.weapon}: ${weapon.count} times, Average Damage: ${weapon.averageDamage.toFixed(2)}`;
-                topWeaponsUltraHighScoresList.appendChild(listItem);
-            });
+            function populateWeaponsList(id, weaponData, scoreThreshold, scoresAbove, totalTimeAbove) {
+                const { topWeapons, qualifyingSessions } = weaponData;
+                const avgTime = scoresAbove > 0 ? totalTimeAbove / scoresAbove : 0;
+
+                setTextContent(
+                    `${id}Header`,
+                    `Top Weapons Used (Scores above ${scoreThreshold.toLocaleString()}) - ${qualifyingSessions} scores, ` +
+                    `Total Time: ${formatTime(totalTimeAbove)}, Avg Time: ${formatTime(avgTime)}`
+                );
+
+                populateList(`${id}List`, topWeapons);
+            }
+
+
+            populateWeaponsList('topWeaponsHighScores', topWeaponsHighScores, 100000, scoresAbove100k, totalTimeAbove100k);
+            populateWeaponsList('topWeaponsUltraHighScores', topWeaponsUltraHighScores, 500000, scoresAbove500k, totalTimeAbove500k);
+            populateWeaponsList('topWeaponsUltraUltraHighScores', topWeaponsUltraUltraHighScores, 2500000, scoresAbove2_5M, totalTimeAbove2_5M);
+
+
         }
-
         // Function to format time in milliseconds to a readable format (hh:mm:ss)
         function formatTime(timeInMilliseconds) {
             const timeInSeconds = timeInMilliseconds / 1000;
@@ -275,7 +304,12 @@
                 const allSessions = [];
                 const newUsersData = {};
                 const timeSpentData = {};
+                let scoresAbove100k = 0;
                 let scoresAbove500k = 0;
+                let scoresAbove2_5M = 0;
+                let totalTimeAbove100k = 0;
+                let totalTimeAbove500k = 0;
+                let totalTimeAbove2_5M = 0;
 
                 querySnapshot.forEach((doc, index) => {
                     const userData = doc.data();
@@ -286,7 +320,6 @@
 
                     let earliestLoginTime = null;
 
-                    // Log details of each session and find the earliest login time
                     gameSessions.forEach((session, sessionIndex) => {
                         console.log(`User ${index + 1}, Session ${sessionIndex + 1}:`, {
                             loginTime: session.loginTime ? session.loginTime.toDate() : 'Invalid Date',
@@ -301,14 +334,23 @@
                             }
                         }
 
-                        if (session.score > 500000) {
-                            scoresAbove500k++;
+                        const sessionLength = parseFloat(session.sessionLength);
+                        if (!isNaN(sessionLength) && sessionLength <= 18000 * 1000) {
+                            if (session.score > 2500000) {
+                                scoresAbove2_5M++;
+                                totalTimeAbove2_5M += sessionLength;
+                            } else if (session.score > 500000) {
+                                scoresAbove500k++;
+                                totalTimeAbove500k += sessionLength;
+                            } else if (session.score > 100000) {
+                                scoresAbove100k++;
+                                totalTimeAbove100k += sessionLength;
+                            }
                         }
                     });
 
                     console.log(`User ${index + 1} earliest login time:`, earliestLoginTime);
 
-                    // Filter out sessions longer than 5 hours (18000 seconds * 1000 milliseconds)
                     const validSessions = gameSessions.filter(session => {
                         const sessionLength = parseFloat(session.sessionLength);
                         return !isNaN(sessionLength) && sessionLength <= 18000 * 1000;
@@ -341,7 +383,9 @@
                 console.log('Time spent data:', timeSpentData);
                 console.log('Total sessions:', totalSessions);
                 console.log('Total session time:', totalSessionTime);
+                console.log('Scores above 100,000:', scoresAbove100k);
                 console.log('Scores above 500,000:', scoresAbove500k);
+                console.log('Scores above 2,500,000:', scoresAbove2_5M);
 
                 const averageSessionTime = calculateAverageSessionTime(totalSessionTime, totalSessions);
                 console.log('Average session time:', averageSessionTime);
@@ -350,15 +394,19 @@
                 console.log('Top weapons:', topWeapons);
 
                 const topWeaponsHighScores = getTopWeaponsUsedHighScores(allSessions, 100000);
-                console.log('Top weapons (high scores):', topWeaponsHighScores);
-
                 const topWeaponsUltraHighScores = getTopWeaponsUsedHighScores(allSessions, 500000);
-                console.log('Top weapons (ultra high scores):', topWeaponsUltraHighScores);
+                const topWeaponsUltraUltraHighScores = getTopWeaponsUsedHighScores(allSessions, 2500000);
 
                 const { newUsersWeek, newUsersMonth, newUsers90Days } = calculateRecentNewUsers(newUsersData);
                 console.log('New users counts:', { newUsersWeek, newUsersMonth, newUsers90Days });
 
-                displayAdminData(totalSessions, totalSessionTime, averageSessionTime, topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, newUsersWeek, newUsersMonth, newUsers90Days, scoresAbove500k);
+                displayAdminData(
+                    totalSessions, totalSessionTime, averageSessionTime,
+                    topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, topWeaponsUltraUltraHighScores,
+                    newUsersWeek, newUsersMonth, newUsers90Days,
+                    scoresAbove100k, scoresAbove500k, scoresAbove2_5M,
+                    totalTimeAbove100k, totalTimeAbove500k, totalTimeAbove2_5M
+                );
             })
             .catch((error) => {
                 console.error('Error fetching admin data:', error);

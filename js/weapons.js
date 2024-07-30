@@ -1660,7 +1660,7 @@ function updateDrones() {
                 if (isColliding(laser, asteroid)) {
                     let actualDamage = Math.min(drone.damage + damageBooster, asteroid.hitpoints);
                     asteroid.hitpoints -= actualDamage;
-                    damageReport.drone += actualDamage;
+                    damageReport.drones += actualDamage;
 
                     if (comboExplosiveDroneActive) {
                         createExplosion(asteroid.x, asteroid.y, 0);
@@ -1692,7 +1692,7 @@ function applyExplosiveDamageToNearbyAsteroids(explodedAsteroid) {
         if (distance < explodingDrone.explosionRadius) {
             const damage = Math.min(explodingDrone.damage, asteroid.hitpoints);
             asteroid.hitpoints -= damage;
-            damageReport.drone += damage;
+            damageReport.drones += damage;
 
             if (asteroid.hitpoints <= 0) {
                 processAsteroidDeath(asteroid);
