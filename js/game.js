@@ -1,3 +1,5 @@
+let megaExplosions = [];
+
 
 // Game loop
 function startGame() {
@@ -156,6 +158,7 @@ function update() {
     drawFloatingIsland();
     drawActiveMegaUpgrades();
     drawRareAsteroidIndicators();
+    drawMegaExplosions();
 
     if (planetMode) {
         applyGravity(ship);

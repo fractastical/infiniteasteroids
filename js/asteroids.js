@@ -508,6 +508,75 @@ function addRareAsteroidToDisplay(type, color) {
             lastRareAsteroids.pop();
         }
     }
+
+    if (lastRareAsteroids.length === 3 &&
+        lastRareAsteroids.every(asteroid => asteroid.type === 'exploding')) {
+        triggerMegaExplosion();
+        // Clear the lastRareAsteroids array after triggering mega explosion
+        lastRareAsteroids = [];
+    }
+
+}
+
+function triggerMegaExplosion() {
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const megaExplosionRadius = Math.min(canvas.width, canvas.height) / 2;
+    const megaExplosionDamage = 100; // Adjust this value as needed
+
+    // Create visual effect for mega explosion
+    createMegaExplosionEffect(centerX, centerY, megaExplosionRadius);
+
+    // Apply area damage
+    createAreaDamage(centerX, centerY, megaExplosionRadius, megaExplosionDamage);
+
+    // Add screen shake or other visual effects here
+    screenShake(20, 1000); // Example: 20 pixel shake for 1000ms
+
+    // Play a sound effect if you have one
+    // playSound('megaExplosion');
+
+    console.log("Mega Explosion Triggered!");
+}
+
+function createMegaExplosionEffect(x, y, radius) {
+    const duration = 60; // Number of frames the explosion lasts
+    const explosionColors = ['#FF0000', '#FF5500', '#FFAA00', '#FFFF00', '#FFFFFF'];
+
+    let megaExplosion = {
+        x: x,
+        y: y,
+        radius: radius,
+        currentRadius: 0,
+        duration: duration,
+        colors: explosionColors,
+        currentColorIndex: 0
+    };
+
+    // Add to a new array for mega explosions if you don't want to use the regular explosions array
+    megaExplosions.push(megaExplosion);
+}
+
+
+
+function screenShake(intensity, duration) {
+    let shakeTimeLeft = duration;
+
+    function shake() {
+        if (shakeTimeLeft > 0) {
+            let shakeX = (Math.random() - 0.5) * intensity;
+            let shakeY = (Math.random() - 0.5) * intensity;
+
+            ctx.translate(shakeX, shakeY);
+
+            shakeTimeLeft -= 16; // Assuming 60 FPS
+            requestAnimationFrame(shake);
+        } else {
+            ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset the canvas transform
+        }
+    }
+
+    shake();
 }
 
 function drawRareAsteroidIndicators() {
