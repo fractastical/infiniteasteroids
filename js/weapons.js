@@ -1,3 +1,6 @@
+
+const MAX_UPGRADE_COUNT = 10;
+
 let boomerang = {
     x: canvas.width / 2,
     y: canvas.height / 2,
@@ -402,8 +405,17 @@ function applyUpgrade(upgrade) {
             chainLightningUpgrades.cooldown++;
             chainLightning.cooldown = Math.max(60, 300 - 30 * chainLightningUpgrades.cooldown);
             break;
-
+        case 'Activate Flame Chain Lightning':
+            activateComboFlameChainLightning();
+            break;
+        case 'Activate Explosive Drone':
+            activateComboExplosiveDrone();
+            break;
+        case 'Activate Sonic Boomerang':
+            activateComboSonicBoomerang();
+            break;
     }
+
 }
 
 let damageReportStartTimes = {};
@@ -849,6 +861,11 @@ function updateFlamethrower() {
                 asteroid.isOnFire = true; // Set the asteroid on fire
                 asteroid.fireTimer = 0; // Reset the fire timer
                 asteroid.distanceFromCenter = distance; // Track the distance from the center of the flame
+
+                // Trigger chain lightning if combo is active
+                if (comboFlameChainLightningActive) {
+                    fireChainLightning(asteroid, chainLightning.bounces);
+                }
             }
         }
         flamethrower.active = false;
@@ -1519,6 +1536,38 @@ function selectUpgrade(choice) {
     gameLoop = setInterval(update, 1000 / 60); // 60 FPS
 }
 
+function updateSonicBlast() {
+    for (let i = sonicBlast.waves.length - 1; i >= 0; i--) {
+        let wave = sonicBlast.waves[i];
+        wave.radius += sonicBlast.speed;
+
+        for (let j = asteroids.length - 1; j >= 0; j--) {
+            let asteroid = asteroids[j];
+            let dx = asteroid.x - wave.x;
+            let dy = asteroid.y - wave.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < wave.radius && !wave.hitAsteroids.includes(asteroid)) {
+                let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitpoints);
+                asteroid.hitpoints -= actualDamage;
+                damageReport.sonicBlast += actualDamage;
+                wave.hitAsteroids.push(asteroid);
+
+                if (asteroid.hitpoints <= 0) {
+                    processAsteroidDeath(asteroid);
+                    asteroids.splice(j, 1);
+                    score += actualDamage * 50;
+                    coins += actualDamage * 20;
+                    increaseXP(actualDamage * 20);
+                }
+            }
+        }
+
+        if (wave.radius > sonicBlast.range) {
+            sonicBlast.waves.splice(i, 1);
+        }
+    }
+}
 
 function upgradeDrone(attribute) {
     const cost = 200;
@@ -1566,9 +1615,9 @@ function updateDrones() {
         const dy = ship.y - drone.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance > 250) { // If the drone is too far from the ship
+        if (distance > 250) {
             const angleToShip = Math.atan2(dy, dx);
-            drone.direction = angleToShip; // Change direction towards the ship
+            drone.direction = angleToShip;
         }
 
         drone.x += Math.cos(drone.direction) * drone.speed;
@@ -1601,7 +1650,6 @@ function updateDrones() {
             drone.lasers.push(laser);
         }
 
-        // Track damage for drone lasers
         drone.lasers.forEach(laser => {
             for (let j = asteroids.length - 1; j >= 0; j--) {
                 let asteroid = asteroids[j];
@@ -1609,12 +1657,45 @@ function updateDrones() {
                     let actualDamage = Math.min(drone.damage + damageBooster, asteroid.hitpoints);
                     asteroid.hitpoints -= actualDamage;
                     damageReport.drone += actualDamage;
+
+                    if (comboExplosiveDroneActive) {
+                        createExplosion(asteroid.x, asteroid.y, 0);
+                        applyExplosiveDamageToNearbyAsteroids(asteroid);
+                    }
+
+                    if (asteroid.hitpoints <= 0) {
+                        processAsteroidDeath(asteroid);
+                        asteroids.splice(j, 1);
+                        score += actualDamage * 50;
+                        coins += actualDamage * 20;
+                        increaseXP(actualDamage * 20);
+                    }
                 }
             }
         });
 
         checkLaserCollisions(drone.lasers, false);
     });
+}
+
+function applyExplosiveDamageToNearbyAsteroids(explodedAsteroid) {
+    for (let j = asteroids.length - 1; j >= 0; j--) {
+        const asteroid = asteroids[j];
+        const dx = explodedAsteroid.x - asteroid.x;
+        const dy = explodedAsteroid.y - asteroid.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < explodingDrone.explosionRadius) {
+            const damage = Math.min(explodingDrone.damage, asteroid.hitpoints);
+            asteroid.hitpoints -= damage;
+            damageReport.drone += damage;
+
+            if (asteroid.hitpoints <= 0) {
+                processAsteroidDeath(asteroid);
+                asteroids.splice(j, 1);
+            }
+        }
+    }
 }
 
 
@@ -1741,3 +1822,41 @@ function drawBomberDrones() {
         });
     });
 }
+
+function canActivateComboWeapons() {
+    const flamethrowerMaxed = getUpgradeCount('flamethrower') >= MAX_UPGRADE_COUNT;
+    const chainLightningMaxed = getUpgradeCount('chainlightning') >= MAX_UPGRADE_COUNT;
+    const explosiveLaserMaxed = getUpgradeCount('explosive') >= MAX_UPGRADE_COUNT;
+    const droneMaxed = getUpgradeCount('drone') >= MAX_UPGRADE_COUNT;
+    const boomerangMaxed = getUpgradeCount('boomerang') >= MAX_UPGRADE_COUNT;
+    const sonicBlastMaxed = getUpgradeCount('sonic') >= MAX_UPGRADE_COUNT;
+
+    return {
+        flameChainLightning: flamethrowerMaxed && chainLightningMaxed,
+        explosiveDrone: explosiveLaserMaxed && droneMaxed,
+        sonicBoomerang: boomerangMaxed && sonicBlastMaxed
+    };
+}
+
+let comboFlameChainLightningActive = false;
+let comboExplosiveDroneActive = false;
+let comboSonicBoomerangActive = false;
+
+function activateComboFlameChainLightning() {
+    if (canActivateComboWeapons().flameChainLightning) {
+        comboFlameChainLightningActive = true;
+    }
+}
+
+function activateComboExplosiveDrone() {
+    if (canActivateComboWeapons().explosiveDrone) {
+        comboExplosiveDroneActive = true;
+    }
+}
+
+function activateComboSonicBoomerang() {
+    if (canActivateComboWeapons().sonicBoomerang) {
+        comboSonicBoomerangActive = true;
+    }
+}
+

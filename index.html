@@ -759,33 +759,6 @@
     });
 
 
-    function updateSonicBlast() {
-      for (let i = 0; i < sonicBlast.waves.length; i++) {
-        const wave = sonicBlast.waves[i];
-        wave.radius += sonicBlast.speed;
-
-        for (let j = 0; j < asteroids.length; j++) {
-          const asteroid = asteroids[j];
-          if (isColliding(wave, asteroid) && !wave.hitAsteroids.includes(asteroid.id)) {
-            wave.hitAsteroids.push(asteroid.id);
-            let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitpoints);
-            asteroid.hitpoints -= actualDamage;
-            damageReport.sonicBlast += actualDamage;
-
-            if (asteroid.hitpoints <= 0) {
-              processAsteroidDeath(asteroid);
-              asteroids.splice(j, 1);
-              j--;
-            }
-          }
-        }
-
-        if (wave.radius > sonicBlast.range) {
-          sonicBlast.waves.splice(i, 1);
-          i--;
-        }
-      }
-    }
 
 
     let asteroidDifficultySpeedMultiplier = 1;

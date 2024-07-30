@@ -48,6 +48,19 @@ function getRandomUpgrades(count) {
     // if (Achievements.complete_hard_mode.reached)
     //   availableUpgrades.push('Damage Booster');
 
+    //TODO: add achievements
+    const comboWeapons = canActivateComboWeapons();
+    if (comboWeapons.flameChainLightning) {
+        availableUpgrades.push('Activate Flame Chain Lightning');
+    }
+    if (comboWeapons.explosiveDrone) {
+        availableUpgrades.push('Activate Explosive Drone');
+    }
+    if (comboWeapons.sonicBoomerang) {
+        availableUpgrades.push('Activate Sonic Boomerang');
+    }
+
+
     const upgrades = [];
     for (let i = 0; i < count; i++) {
         if (availableUpgrades.length === 0) break; // Exit loop if no more upgrades available
