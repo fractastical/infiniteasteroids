@@ -45,22 +45,25 @@ function createAsteroids(side) {
 
             let x, y;
             let spawnArea = Math.random();
+
             if (!meteorMode) {
+                let spawnPercentage = wave === 1 ? 0.2 : 0.03; // 20% for wave 1, 3% for others
+
                 if (spawnArea < 0.25) {
                     // Top edge
                     x = Math.random() * canvas.width;
-                    y = Math.random() * (canvas.height * 0.1);
+                    y = Math.random() * (canvas.height * spawnPercentage);
                 } else if (spawnArea < 0.5) {
                     // Right edge
-                    x = canvas.width * 0.9 + Math.random() * (canvas.width * 0.1);
+                    x = canvas.width * 0.9 + Math.random() * (canvas.width * spawnPercentage);
                     y = Math.random() * canvas.height;
                 } else if (spawnArea < 0.75) {
                     // Bottom edge
                     x = Math.random() * canvas.width;
-                    y = canvas.height * 0.9 + Math.random() * (canvas.height * 0.1);
+                    y = canvas.height * 0.9 + Math.random() * (canvas.height * spawnPercentage);
                 } else {
                     // Left edge
-                    x = Math.random() * (canvas.width * 0.1);
+                    x = Math.random() * (canvas.width * spawnPercentage);
                     y = Math.random() * canvas.height;
                 }
             } else {
