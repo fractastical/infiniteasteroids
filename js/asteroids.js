@@ -28,7 +28,7 @@ function createAsteroids(side) {
             let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
             let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
             let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
-            let isRareAsteroid = Math.random() < 0.4; // 5% chance for a rare asteroid
+            let isRareAsteroid = Math.random() < 0.05; // 5% chance for a rare asteroid
 
             let dx = 1;
             let dy = 1;
