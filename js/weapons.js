@@ -696,6 +696,86 @@ function drawLasers() {
     }
 }
 
+
+function drawAcidBombs() {
+    ctx.fillStyle = 'green';
+    for (let i = 0; i < acidBomb.activeBombs.length; i++) {
+        let bomb = acidBomb.activeBombs[i];
+        ctx.beginPath();
+        ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function firenanoswarm() {
+    if (nanoswarm.timer === 0) {
+        let missile = {
+            x: ship.x,
+            y: ship.y,
+            target: findNearestAsteroid(),
+            speed: nanoswarm.speed * nanoswarmUpgrades.speed,
+            damage: nanoswarm.damage * nanoswarmUpgrades.damage
+        };
+        nanoswarm.activeMissiles.push(missile);
+        nanoswarm.timer = nanoswarm.cooldown;
+    }
+}
+
+function updatenanoswarms() {
+    for (let i = nanoswarm.activeMissiles.length - 1; i >= 0; i--) {
+        let missile = nanoswarm.activeMissiles[i];
+        if (missile.target) {
+            let dx = missile.target.x - missile.x;
+            let dy = missile.target.y - missile.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < missile.target.size) {
+                createExplosion(missile.target.x, missile.target.y);
+                let index = asteroids.indexOf(missile.target);
+                // let actualDamage = asteroids[index].hitpoints;
+                damageReport.nano += 5;
+                increaseXP(5 * 20);
+                asteroids.splice(index, 1);
+                nanoswarm.activeMissiles.splice(i, 1);
+                continue;
+            }
+
+            let angle = Math.atan2(dy, dx);
+            missile.x += missile.speed * Math.cos(angle);
+            missile.y += missile.speed * Math.sin(angle);
+        } else {
+            nanoswarm.activeMissiles.splice(i, 1);
+        }
+    }
+}
+
+function drawnanoswarms() {
+    for (let i = 0; i < nanoswarm.activeMissiles.length; i++) {
+        let missile = nanoswarm.activeMissiles[i];
+        ctx.save();
+        ctx.translate(missile.x, missile.y);
+
+        // Calculate the rotation angle based on the missile's direction
+        let angle = Math.atan2(missile.dy, missile.dx);
+        ctx.rotate(angle);
+
+        // Draw the nano missile image
+        ctx.drawImage(droneImages.nanoDrone, -5, -5, 10, 10);
+        ctx.restore();
+    }
+}
+
+function handleLaserAlienCollision(laser, alien) {
+    createExplosion(alien.x, alien.y);
+    aliens.splice(aliens.indexOf(alien), 1);
+    ship.lasers.splice(ship.lasers.indexOf(laser), 1);
+    increaseXP(300);
+    aliensKilled++;
+    score += 300; // Adjust the score as needed
+}
+
+
+
 // Update lasers
 function updateLasers() {
     for (let i = 0; i < ship.lasers.length; i++) {

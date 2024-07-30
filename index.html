@@ -785,84 +785,6 @@
     let invincibilityDuration = 160; // 3.5 seconds (60 FPS)
 
 
-    function drawAcidBombs() {
-      ctx.fillStyle = 'green';
-      for (let i = 0; i < acidBomb.activeBombs.length; i++) {
-        let bomb = acidBomb.activeBombs[i];
-        ctx.beginPath();
-        ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    function firenanoswarm() {
-      if (nanoswarm.timer === 0) {
-        let missile = {
-          x: ship.x,
-          y: ship.y,
-          target: findNearestAsteroid(),
-          speed: nanoswarm.speed * nanoswarmUpgrades.speed,
-          damage: nanoswarm.damage * nanoswarmUpgrades.damage
-        };
-        nanoswarm.activeMissiles.push(missile);
-        nanoswarm.timer = nanoswarm.cooldown;
-      }
-    }
-
-    function updatenanoswarms() {
-      for (let i = nanoswarm.activeMissiles.length - 1; i >= 0; i--) {
-        let missile = nanoswarm.activeMissiles[i];
-        if (missile.target) {
-          let dx = missile.target.x - missile.x;
-          let dy = missile.target.y - missile.y;
-          let distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < missile.target.size) {
-            createExplosion(missile.target.x, missile.target.y);
-            let index = asteroids.indexOf(missile.target);
-            // let actualDamage = asteroids[index].hitpoints;
-            damageReport.nano += 5;
-            increaseXP(5 * 20);
-            asteroids.splice(index, 1);
-            nanoswarm.activeMissiles.splice(i, 1);
-            continue;
-          }
-
-          let angle = Math.atan2(dy, dx);
-          missile.x += missile.speed * Math.cos(angle);
-          missile.y += missile.speed * Math.sin(angle);
-        } else {
-          nanoswarm.activeMissiles.splice(i, 1);
-        }
-      }
-    }
-
-    function drawnanoswarms() {
-      for (let i = 0; i < nanoswarm.activeMissiles.length; i++) {
-        let missile = nanoswarm.activeMissiles[i];
-        ctx.save();
-        ctx.translate(missile.x, missile.y);
-
-        // Calculate the rotation angle based on the missile's direction
-        let angle = Math.atan2(missile.dy, missile.dx);
-        ctx.rotate(angle);
-
-        // Draw the nano missile image
-        ctx.drawImage(droneImages.nanoDrone, -5, -5, 10, 10);
-        ctx.restore();
-      }
-    }
-
-    function handleLaserAlienCollision(laser, alien) {
-      createExplosion(alien.x, alien.y);
-      aliens.splice(aliens.indexOf(alien), 1);
-      ship.lasers.splice(ship.lasers.indexOf(laser), 1);
-      increaseXP(300);
-      aliensKilled++;
-      score += 300; // Adjust the score as needed
-    }
-
-
 
 
     // Function to handle laser collisions
@@ -1344,164 +1266,6 @@
         });
     }
 
-    // function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
-    //             const endScreen = document.getElementById('endScreen');
-    //             const waveElement = document.getElementById('wave');
-    //             const scoreElement = document.getElementById('score');
-    //             const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
-    //             const bonusCoinsElement = document.getElementById('bonusCoins');
-    //             const currentCoinsElement = document.getElementById('currentCoins');
-    //             const damageReportList = document.getElementById('damageReportList');
-    //             const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
-    //             const achievementsList = document.getElementById('achievementsList');
-    //             const upgradesList = document.getElementById('upgradesList');
-
-    //             // Set game stats
-    //             waveElement.textContent = `Wave: ${wave}`;
-    //             scoreElement.textContent = `Score: ${score}`;
-    //             asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
-    //             bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)} `;
-    //             currentCoinsElement.textContent = `Current Coins: ${coins} `;
-
-    //             // Clear and set damage report
-    //             damageReportList.innerHTML = '';
-    //             const weaponDPM = calculateWeaponDPM();
-    //             topWeapons.forEach(({ weapon, damage }) => {
-    //               const weaponName = damageReportMapping[weapon];
-    //               const weaponInfo = weapons.find(w => w.name === weaponName);
-    //               if (weaponInfo) {
-    //                 const li = document.createElement('li');
-    //                 li.style.display = 'flex';
-    //                 li.style.alignItems = 'center';
-
-    //                 const img = document.createElement('img');
-    //                 img.src = weaponInfo.icon;
-    //                 img.alt = weaponInfo.name;
-    //                 img.style.width = '24px';
-    //                 img.style.height = '24px';
-    //                 img.style.marginRight = '10px';
-
-    //                 const text = document.createElement('span');
-    //                 text.textContent = `${weaponInfo.name}: ${damage} (DPM: ${weaponDPM[weapon]})`;
-
-    //                 li.appendChild(img);
-    //                 li.appendChild(text);
-    //                 damageReportList.appendChild(li);
-    //               }
-    //             });
-
-    //             // Clear and set recently unlocked weapons
-    //             unlockedWeaponsList.innerHTML = '';
-    //             newlyUnlockedWeapons.forEach(weaponName => {
-    //               const weaponInfo = weapons.find(w => w.name === weaponName);
-    //               if (weaponInfo) {
-    //                 const li = document.createElement('li');
-    //                 li.style.display = 'flex';
-    //                 li.style.alignItems = 'center';
-
-    //                 const img = document.createElement('img');
-    //                 img.src = weaponInfo.icon;
-    //                 img.alt = weaponInfo.name;
-    //                 img.style.width = '24px';
-    //                 img.style.height = '24px';
-    //                 img.style.marginRight = '10px';
-
-    //                 const text = document.createElement('span');
-    //                 text.textContent = weaponInfo.name;
-
-    //                 li.appendChild(img);
-    //                 li.appendChild(text);
-    //                 unlockedWeaponsList.appendChild(li);
-    //               }
-    //             });
-
-    //             // Clear and set achievements
-    //             achievementsList.innerHTML = '';
-    //             newlyUnlockedAchievements.forEach(achievement => {
-    //               const li = document.createElement('li');
-    //               li.textContent = achievement;
-    //               achievementsList.appendChild(li);
-    //             });
-
-    //             // Clear and set affordable upgrades
-    //             upgradesList.innerHTML = '';
-    //             affordableUpgrades.forEach(upgrade => {
-    //               const li = document.createElement('li');
-    //               li.style.display = 'flex';
-    //               li.style.alignItems = 'center';
-
-    //               const img = document.createElement('img');
-    //               img.src = upgrade.icon;
-    //               img.alt = upgrade.name;
-    //               img.style.width = '24px';
-    //               img.style.height = '24px';
-    //               img.style.marginRight = '10px';
-
-    //               const text = document.createElement('span');
-    //               text.textContent = `${upgrade.name} - ${upgrade.price} coins(${upgrade.rarity})`;
-
-    //               const buyButton = document.createElement('button');
-    //               buyButton.textContent = 'Buy';
-    //               buyButton.onclick = () => purchaseUpgrade(upgrade);
-
-    //               li.appendChild(img);
-    //               li.appendChild(text);
-    //               li.appendChild(buyButton);
-    //               upgradesList.appendChild(li);
-    //             });
-
-    //             // Show the end screen
-    //             endScreen.style.display = 'flex';
-    //           }
-
-    // function purchaseUpgrade(upgrade) {
-    //             if (coins >= upgrade.price) {
-    //               coins -= upgrade.price;
-    //               // Add the upgrade to the player's upgrades
-    //               playerUpgrades.push(upgrade);
-
-    //               // Update the display of current coins
-    //               document.getElementById('currentCoins').textContent = `Current Coins: ${coins} `;
-
-    //               // Optionally remove the purchased upgrade from the list or disable the buy button
-    //               // Here we simply remove the item from the list
-    //               const upgradesList = document.getElementById('upgradesList');
-    //               upgradesList.innerHTML = '';
-    //               const affordableUpgrades = getRandomAffordableUpgrades(coins);
-    //               affordableUpgrades.forEach(upgrade => {
-    //                 const li = document.createElement('li');
-    //                 li.style.display = 'flex';
-    //                 li.style.alignItems = 'center';
-
-    //                 const img = document.createElement('img');
-    //                 img.src = upgrade.icon;
-    //                 img.alt = upgrade.name;
-    //                 img.style.width = '24px';
-    //                 img.style.height = '24px';
-    //                 img.style.marginRight = '10px';
-
-    //                 const text = document.createElement('span');
-    //                 text.textContent = `${upgrade.name} - ${upgrade.price} coins(${upgrade.rarity})`;
-
-    //                 const buyButton = document.createElement('button');
-    //                 buyButton.textContent = 'Buy';
-    //                 buyButton.onclick = () => purchaseUpgrade(upgrade);
-
-    //                 li.appendChild(img);
-    //                 li.appendChild(text);
-    //                 li.appendChild(buyButton);
-    //                 upgradesList.appendChild(li);
-    //               });
-
-    //               // Save the updated coins and upgrades to the server
-    //               saveUserUpgrades(userId, gameId, {
-    //                 coins: coins,
-    //                 upgrades: playerUpgrades
-    //               });
-    //             } else {
-    //               alert('Not enough coins to purchase this upgrade.');
-    //             }
-    //           }
 
     function saveUserUpgrades(userId, gameId, data) {
       // Example function to save user upgrades and coins to the server
@@ -1521,108 +1285,6 @@
         });
     }
 
-    // function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
-    //   const endScreen = document.getElementById('endScreen');
-    //   const waveElement = document.getElementById('wave');
-    //   const scoreElement = document.getElementById('score');
-    //   const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
-    //   const bonusCoinsElement = document.getElementById('bonusCoins');
-    //   const damageReportList = document.getElementById('damageReportList');
-    //   const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
-    //   const achievementsList = document.getElementById('achievementsList');
-    //   const upgradesList = document.getElementById('upgradesList');
-
-    //   // Set game stats
-    //   waveElement.textContent = `Wave: ${wave} `;
-    //   scoreElement.textContent = `Score: ${score} `;
-    //   asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled} `;
-    //   bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)} `;
-
-    //   // Clear and set damage report
-    //   damageReportList.innerHTML = '';
-    //   const weaponDPM = calculateWeaponDPM();
-    //   topWeapons.forEach(({ weapon, damage }) => {
-    //     const weaponName = damageReportMapping[weapon];
-    //     const weaponInfo = weapons.find(w => w.name === weaponName);
-    //     if (weaponInfo) {
-    //       const li = document.createElement('li');
-    //       li.style.display = 'flex';
-    //       li.style.alignItems = 'center';
-
-    //       const img = document.createElement('img');
-    //       img.src = weaponInfo.icon;
-    //       img.alt = weaponInfo.name;
-    //       img.style.width = '24px';
-    //       img.style.height = '24px';
-    //       img.style.marginRight = '10px';
-
-    //       const text = document.createElement('span');
-    //       text.textContent = `${weaponInfo.name}: ${damage} (DPM: ${weaponDPM[weapon]})`;
-
-    //       li.appendChild(img);
-    //       li.appendChild(text);
-    //       damageReportList.appendChild(li);
-    //     }
-    //   });
-
-    //   // Clear and set recently unlocked weapons
-    //   unlockedWeaponsList.innerHTML = '';
-    //   newlyUnlockedWeapons.forEach(weaponName => {
-    //     const weaponInfo = weapons.find(w => w.name === weaponName);
-    //     if (weaponInfo) {
-    //       const li = document.createElement('li');
-    //       li.style.display = 'flex';
-    //       li.style.alignItems = 'center';
-
-    //       const img = document.createElement('img');
-    //       img.src = weaponInfo.icon;
-    //       img.alt = weaponInfo.name;
-    //       img.style.width = '24px';
-    //       img.style.height = '24px';
-    //       img.style.marginRight = '10px';
-
-    //       const text = document.createElement('span');
-    //       text.textContent = weaponInfo.name;
-
-    //       li.appendChild(img);
-    //       li.appendChild(text);
-    //       unlockedWeaponsList.appendChild(li);
-    //     }
-    //   });
-
-    //   // Clear and set achievements
-    //   achievementsList.innerHTML = '';
-    //   newlyUnlockedAchievements.forEach(achievement => {
-    //     const li = document.createElement('li');
-    //     li.textContent = achievement;
-    //     achievementsList.appendChild(li);
-    //   });
-
-    //   // Clear and set affordable upgrades
-    //   upgradesList.innerHTML = '';
-    //   affordableUpgrades.forEach(upgrade => {
-    //     const li = document.createElement('li');
-    //     li.style.display = 'flex';
-    //     li.style.alignItems = 'center';
-
-    //     const img = document.createElement('img');
-    //     img.src = upgrade.icon;
-    //     img.alt = upgrade.name;
-    //     img.style.width = '24px';
-    //     img.style.height = '24px';
-    //     img.style.marginRight = '10px';
-
-    //     const text = document.createElement('span');
-    //     text.textContent = `${upgrade.name} - ${upgrade.price} coins(${upgrade.rarity})`;
-
-    //     li.appendChild(img);
-    //     li.appendChild(text);
-    //     upgradesList.appendChild(li);
-    //   });
-
-    //   // Show the end screen
-    //   endScreen.style.display = 'flex';
-    // }
 
     function calculateWeaponDPM() {
       const weaponDPM = {};
@@ -1740,65 +1402,6 @@
     }
     let damageBooster = 0;
 
-    function getRandomUpgrades(count) {
-      const availableUpgrades = [
-        ...(getUpgradeCount('laser') <= 9 ? ['Increase Laser Level', 'Decrease Laser Cooldown'] : []),
-        // 'Increase Rotation Speed',
-        ...(activeWeaponClasses.includes('turret') ? (getUpgradeCount('turret') <= 9 ? ['Increase Turret Range', 'Increase Turret Firerate', 'Increase Turret Damage'] : []) : ['Activate Turret'])
-
-      ];
-
-      if (Achievements.reach_wave_2.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('bomberdrone') ? (getUpgradeCount('bomberdrone') <= 9 ? ['Increase Bomber Drone Bomb Radius', 'Increase Bomber Drone Bomb Damage'] : []) : ['Activate Bomber Drone'])
-        );
-      if (Achievements.reach_wave_5.reached && (currentMode != GameModes.ENDLESS_SLOW))
-        availableUpgrades.push(...(activeWeaponClasses.includes('freeze') ? (getUpgradeCount('freeze') <= 9 ? ['Increase Freeze Duration', 'Decrease Freeze Cooldown'] : []) : ['Activate Freeze Effect']));
-      if (Achievements.laser_damage.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? (getUpgradeCount('explosive') <= 9 ? ['Increase Explosive Laser Level'] : []) : ['Activate Explosive Laser']));
-      if (Achievements.reach_wave_10.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('sonic') ? (getUpgradeCount('sonic') <= 9 ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : []) : ['Activate Sonic Blast']));
-      if (Achievements.reach_wave_20.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('boomerang') ? (getUpgradeCount('boomerang') <= 9 ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : []) : ['Activate Boomerang']));
-      if (Achievements.complete_normal_mode.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? (getUpgradeCount('acid') <= 9 ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : []) : ['Activate Acid Bomb']));
-      if (Achievements.destroy_100_asteroids.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('drone') ? (getUpgradeCount('drone') <= 9 ? ['Increase Drone Firerate'] : []) : ['Activate Drone']));
-      if (Achievements.kill_5_aliens.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('deathray') ? (getUpgradeCount('deathray') <= 9 ? ['Increase Death Ray Length', 'Increase Death Ray Width', 'Decrease Death Ray Cooldown'] : []) : ['Activate Death Ray']));
-      // TEMP
-      if (Achievements.complete_hard_mode.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('explosiverocket') ? (getUpgradeCount('explosiverocket') <= 9 ? ['Increase Explosive Rocket Damage', 'Increase Explosive Rocket Radius', 'Decrease Explosive Rocket Cooldown'] : []) : ['Activate Explosive Rocket']));
-
-      if (Achievements.kill_15_aliens.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('chainlightning') ? (getUpgradeCount('chainlightning') <= 9 ? ['Increase Chain Lightning Range', 'Increase Chain Lightning Damage', 'Increase Chain Lightning Bounces', 'Decrease Chain Lightning Cooldown'] : []) : ['Activate Chain Lightning']));
-
-      if (Achievements.no_lives_lost.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('nanoswarm') ? (getUpgradeCount('nanoswarm') <= 9 ? ['Boost Nano Swarm', 'Decrease Nano Swarm Cooldown'] : []) : ['Activate Nano Swarm']));
-
-
-      if (Achievements.acid_bomb_damage.reached)
-        availableUpgrades.push(...(activeWeaponClasses.includes('flamethrower') ? (getUpgradeCount('flamethrower') <= 9 ? ['Increase Flamethrower Range', 'Increase Flamethrower Damage', 'Decrease Flamethrower Cooldown'] : []) : ['Activate Flamethrower']));
-
-      if (!fourthUpgradeUnlocked && Achievements.death_ray_damage.reached)
-        availableUpgrades.push('Extra Upgrade Choice');
-      if ((activeWeaponClasses.includes('drone') || activeWeaponClasses.includes('bomberdrone')) && Achievements.drone_damage.reached)
-        availableUpgrades.push('Drone Army');
-      if (Achievements.complete_meteor_normal_mode.reached && activeWeaponClasses.includes('turret') && !doubleTurret)
-        availableUpgrades.push('Double Turret');
-      if (Achievements.complete_planet_normal_mode.reached && activeWeaponClasses.includes('turret') && !tripleTurret)
-        availableUpgrades.push('Triple Turret');
-      // if (Achievements.complete_hard_mode.reached)
-      //   availableUpgrades.push('Damage Booster');
-
-      const upgrades = [];
-      for (let i = 0; i < count; i++) {
-        if (availableUpgrades.length === 0) break; // Exit loop if no more upgrades available
-        const randomIndex = Math.floor(Math.random() * availableUpgrades.length);
-        upgrades.push(availableUpgrades[randomIndex]);
-        availableUpgrades.splice(randomIndex, 1);
-      }
-      return upgrades;
-    }
 
 
     function drawCooldownIndicator(x, y, radius, cooldown, maxCooldown) {
@@ -1981,33 +1584,6 @@
 
     const asteroidImages = [];
 
-    // preloadAsteroidImages();
-
-    // function preloadAsteroidImages() {
-    //   const imagePaths = [
-    //     'roids/8bitroid_2657.png',
-    //     'roids/8bitroid_3590.png',
-    //     'roids/8bitroid_4692.png',
-    //     'roids/8bitroid_5715.png',
-    //     'roids/8bitroid_6560.png',
-    //     'roids/8bitroid_7406.png',
-    //     'roids/8bitroid_8170.png',
-    //     'roids/8bitroid_8775.png',
-    //     'roids/8bitroid_8824.png',
-    //     'roids/8bitroid_8892.png',
-    //     'roids/8bitroid_9074.png',
-    //     'roids/8bitroid_9292.png',
-    //     'roids/8bitroid_9449.png',
-    //     'roids/8bitroid_9460.png',
-
-    //   ];
-
-    //   imagePaths.forEach(path => {
-    //     const image = new Image();
-    //     image.src = path;
-    //     asteroidImages.push(image);
-    //   });
-    // }
 
 
     const droneImages = {
@@ -3093,19 +2669,6 @@
         });
     });
 
-    // document.getElementById('login-form').addEventListener('submit', function (event) {
-    //   event.preventDefault();
-    //   const email = document.getElementById('email').value;
-    //   const password = document.getElementById('password').value;
-    //   auth.signInWithEmailAndPassword(email, password)
-    //     .then(userCredential => {
-    //       const user = userCredential.user;
-    //       loadUserData(user.uid);
-    //     })
-    //     .catch(error => {
-    //       console.error("Error signing in:", error.message);
-    //     });
-    // });
 
     auth.onAuthStateChanged(user => {
       if (user) {
@@ -3315,93 +2878,9 @@
         default: return "Unknown Mode";
       }
     }
-    // Function to load leaderboard for a specific game
-    // async function loadLeaderboard(gameName) {
-    //   const db = getFirestore();
-    //   const usersSnapshot = await getDocs(collection(db, 'users'));
-    //   const users = [];
-
-    //   usersSnapshot.forEach(doc => {
-    //     const userData = doc.data();
-    //     const gameScores = userData.games?.[gameName]?.scores || [];
-    //     const highestScore = gameScores.reduce((max, session) => Math.max(max, session.score), 0);
-
-    //     users.push({
-    //       nickname: userData.nickname || 'Unnamed',
-    //       score: highestScore
-    //     });
-    //   });
-
-    //   users.sort((a, b) => b.score - a.score);
-    //   const topUsers = users.slice(0, 10);
-
-    //   const leaderboard = document.getElementById('leaderboard');
-    //   leaderboard.innerHTML = `< h2 > Leaderboard for ${ gameName }</h2 > `;
-    //   topUsers.forEach((user, index) => {
-    //     const userDiv = document.createElement('div');
-    //     userDiv.innerText = `${ index + 1 }. ${ user.nickname }: ${ user.score } points`;
-    //     leaderboard.appendChild(userDiv);
-    //   });
-
-    //   document.getElementById('leaderboard-container').appendChild(leaderboard);
-    // }
-
-    // Possible future verion
-    //     async function loadLeaderboard(gameName) {
-    //   // ...
-
-    //   usersSnapshot.forEach(doc => {
-    //     const userData = doc.data();
-    //     const gameScores = userData.games?.[gameName]?.scores || [];
-    //     const highestScore = gameScores.reduce((max, session) => Math.max(max, session.score), 0);
-    //     const topWeapons = gameScores.find(session => session.score === highestScore)?.topWeapons || [];
-
-    //     users.push({
-    //       nickname: userData.nickname || 'Unnamed',
-    //       score: highestScore,
-    //       topWeapons: topWeapons
-    //     });
-    //   });
-
-    //   // ...
-
-    //   topUsers.forEach((user, index) => {
-    //     const userDiv = document.createElement('div');
-    //     userDiv.innerText = `${ index + 1 }. ${ user.nickname }: ${ user.score } points`;
-
-    //     const weaponsDiv = document.createElement('div');
-    //     weaponsDiv.innerText = 'Top Weapons: ' + user.topWeapons.map(weapon => `${ weapon.weapon } (${ weapon.damage })`).join(', ');
-
-    //     leaderboard.appendChild(userDiv);
-    //     leaderboard.appendChild(weaponsDiv);
-    //   });
-
-    //   // ...
-    // }
 
     window.loadLeaderboard = loadLeaderboard;
 
-
-    // Function to save achievements
-    // async function saveAchievements() {
-    //   const Achievements = JSON.parse(localStorage.getItem('achievements')) || {};
-    //   const params = new URLSearchParams(window.location.search);
-    //   const userId = params.get('userId');
-    //   if (!userId) return;
-
-    //   const db = getFirestore();
-    //   const userDocRef = doc(db, 'users', userId);
-
-    //   // Update the achievements in Firestore
-    //   const achievementsData = {
-    //     achievements: Achievements
-    //   };
-
-    //   await updateDoc(userDocRef, achievementsData);
-    //   await setAchievementsFromApi(Achievements); // Implement this function as needed
-    // }
-
-    // window.saveAchievements = saveAchievements;
 
     // Function to load achievements from Firebase or localStorage
     async function loadAchievements() {
@@ -3494,6 +2973,7 @@
   <script src="js/asteroids.js"></script>
   <script src="js/weapons.js"></script>
   <script src="js/ships.js"></script>
+  <script src="js/upgrades-menu.js"></script>
   <script src="js/upgrades-main.js"></script>
 
   <script src="js/aliens.js"></script>
