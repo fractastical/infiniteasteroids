@@ -589,9 +589,22 @@ function shootAlienLaser(alien) {
     let laserDy = 0;
 
     if (alien.type === SwarmingAlienTypes.TOP) {
-        laserDy = laserSpeed; // Downward
+        // laserDy = laserSpeed; // Downward
+        if (alien.x < canvas.width / 2) {
+            laserDx = laserSpeed; // Rightward
+        } else {
+            laserDx = -laserSpeed; // Leftward
+        }
+
     } else if (alien.type === SwarmingAlienTypes.BOTTOM) {
-        laserDy = -laserSpeed; // Upward
+
+        if (alien.x < canvas.width / 2) {
+            laserDx = laserSpeed; // Rightward
+        } else {
+            laserDx = -laserSpeed; // Leftward
+        }
+
+        // laserDy = -laserSpeed; // Upward
     } else if (alien.type === SwarmingAlienTypes.HORIZONTAL) {
         // Determine horizontal laser direction based on position
         if (alien.x < canvas.width / 2) {

@@ -14,25 +14,25 @@ floatingIsland.image.src = 'icons/upgrades/floating_island_10.png';
 
 // Mega Upgrades
 const megaUpgrades = [
-    {
-        name: 'Glitch Effect',
-        description: 'Randomly causes asteroids to malfunction and break apart.',
-        icon: 'icons/upgrades/mainframe.png',
-        cooldown: 30 * 60, // 30 seconds at 60 FPS
-        cooldownTimer: 0,
-        effect: function () {
-            glitchEffect.active = true;
-            this.cooldownTimer = this.cooldown;
-        },
-        update: function () {
-            if (this.cooldownTimer > 0) {
-                this.cooldownTimer--;
-                glitchEffect.update();
-            } else {
-                glitchEffect.active = false;
-            }
-        }
-    },
+    // {
+    //     name: 'Glitch Effect',
+    //     description: 'Randomly causes asteroids to malfunction and break apart.',
+    //     icon: 'icons/upgrades/mainframe.png',
+    //     cooldown: 30 * 60, // 30 seconds at 60 FPS
+    //     cooldownTimer: 0,
+    //     effect: function () {
+    //         glitchEffect.active = true;
+    //         this.cooldownTimer = this.cooldown;
+    //     },
+    //     update: function () {
+    //         if (this.cooldownTimer > 0) {
+    //             this.cooldownTimer--;
+    //             glitchEffect.update();
+    //         } else {
+    //             glitchEffect.active = false;
+    //         }
+    //     }
+    // },
     // {
     //     name: 'Time Dilation',
     //     description: 'Slows down time, making it easier to evade asteroids and aim.',
@@ -283,18 +283,21 @@ function displayMegaUpgradeOptions(megaUpgradeOptions) {
 function applyMegaUpgrade(upgrade) {
     const newUpgrade = { ...upgrade, cooldownTimer: 0 };
     activeMegaUpgrades.push(newUpgrade);
-    newUpgrade.effect();
+    if (floatingIsland.active)
+        newUpgrade.effect();
     closeUpgradeModal();
     resumeGame();
 }
 
 function restoreHealth() {
-    lives++;
+    if (floatingIsland.active)
+        lives++;
     closeUpgradeModal();
     resumeGame();
 }
 
 function closeUpgradeModal() {
+    floatingIsland.active = false;
     document.getElementById('upgradeModal').remove();
 }
 

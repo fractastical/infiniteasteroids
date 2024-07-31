@@ -838,7 +838,7 @@ function updateFlamethrower() {
     if (flamethrower.active) {
         // Define the area of effect for the flamethrower
         let flameRange = flamethrower.range;
-        let flameWidth = 20;
+        let flameWidth = 10;
 
         // Calculate the endpoint of the flamethrower from the front of the ship
         let shipFrontX = ship.x + ship.size * Math.sin(ship.rotation * Math.PI / 180);
@@ -1080,6 +1080,10 @@ function updateAcidAreas() {
 
         for (let j = asteroids.length - 1; j >= 0; j--) {
             let asteroid = asteroids[j];
+
+            //Because of some unknown bug
+            if (!asteroid.x || !area.x)
+                break;
             let dx = asteroid.x - area.x;
             let dy = asteroid.y - area.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
