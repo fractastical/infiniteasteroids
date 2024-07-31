@@ -1196,7 +1196,8 @@
       const damageReportList = document.getElementById('damageReportList');
       const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
       const newAchievementsList = document.getElementById('newAchievementsList');
-      const upgradesList = document.getElementById('upgradesList');
+      const achievementSound = unlockSound;
+      // document.getElementById('achievementSound');
 
       // Set game stats
       if (currentMode === GameModes.ENDLESS_SLOW) {
@@ -1214,8 +1215,6 @@
       }
 
       asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
-      // bonusCoinsElement.textContent = `Bonus Coins for Next Round: ${Math.floor(score * 0.06)}`;
-      // currentCoinsElement.textContent = `Current Coins: ${coins}`;
 
       // Clear and set damage report
       damageReportList.innerHTML = '';
@@ -1269,17 +1268,29 @@
 
       // Clear and set achievements
       newAchievementsList.innerHTML = '';
-      newlyUnlockedAchievements.forEach(achievement => {
+      function displayAchievementsSequentially(index) {
+        if (index >= newlyUnlockedAchievements.length) return;
+
+        const achievement = newlyUnlockedAchievements[index];
         const li = document.createElement('li');
         li.textContent = achievement;
+        li.classList.add('flash'); // Add the flashing animation class
         newAchievementsList.appendChild(li);
-      });
 
+        achievementSound.play();
+
+        // Remove the flash class after the animation duration (1 second)
+        setTimeout(() => {
+          li.classList.remove('flash');
+          displayAchievementsSequentially(index + 1); // Display the next achievement
+        }, 1000); // Adjust the duration as needed
+      }
+
+      displayAchievementsSequentially(0); // Start displaying achievements from the first one
 
       // Show the end screen
       endScreen.style.display = 'flex';
       levelUpModal.style.display = 'none';
-
     }
 
 
