@@ -71,39 +71,39 @@ const megaUpgrades = [
         },
         draw: spacePotato.draw
     },
-    // {
-    //     name: 'Gravity Bomb',
-    //     description: 'Creates a gravity well that pulls in nearby asteroids.',
-    //     icon: 'icons/upgrades/void.png', // Replace with appropriate icon
-    //     cooldown: 40 * 60, // 40 seconds at 60 FPS
-    //     cooldownTimer: 0,
-    //     effect: function () {
-    //         gravityBomb.activate();
-    //         this.cooldownTimer = this.cooldown;
-    //     },
-    //     update: function () {
-    //         if (this.cooldownTimer > 0) {
-    //             this.cooldownTimer--;
-    //         }
-    //         gravityBomb.update();
-    //     }
-    // },
     {
-        name: 'Asteroid Splitter',
-        description: 'Randomly splits asteroids into smaller pieces.',
-        icon: 'icons/upgrades/asteroid_splitter_22.png', // Replace with appropriate icon
-        cooldown: 50 * 60, // 50 seconds at 60 FPS
+        name: 'Gravity Bomb',
+        description: 'Creates a gravity well that pulls in nearby asteroids.',
+        icon: 'icons/upgrades/void.png', // Replace with appropriate icon
+        cooldown: 40 * 60, // 40 seconds at 60 FPS
         cooldownTimer: 0,
         effect: function () {
+            gravityBomb.activate();
             this.cooldownTimer = this.cooldown;
         },
         update: function () {
             if (this.cooldownTimer > 0) {
                 this.cooldownTimer--;
-                asteroidSplitter.update();
             }
+            gravityBomb.update();
         }
     },
+    // {
+    //     name: 'Asteroid Splitter',
+    //     description: 'Randomly splits asteroids into smaller pieces.',
+    //     icon: 'icons/upgrades/asteroid_splitter_22.png', // Replace with appropriate icon
+    //     cooldown: 50 * 60, // 50 seconds at 60 FPS
+    //     cooldownTimer: 0,
+    //     effect: function () {
+    //         this.cooldownTimer = this.cooldown;
+    //     },
+    //     update: function () {
+    //         if (this.cooldownTimer > 0) {
+    //             this.cooldownTimer--;
+    //             asteroidSplitter.update();
+    //         }
+    //     }
+    // },
     {
         name: 'Quantum Teleporter',
         description: 'Teleports the nearest asteroid to a random location around the ship.',
