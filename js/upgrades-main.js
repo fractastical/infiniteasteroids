@@ -130,7 +130,7 @@ const megaUpgrades = [
         duration: 15 * 60, // 15 seconds duration at 60 FPS
         durationTimer: 0,
         effect: function () {
-            xpBooster.active = true;
+            // xpBooster.active = true;
             levelUpXPMultiplier *= 0.9; // Double the XP multiplier
         },
         update: function () {
@@ -142,7 +142,7 @@ const megaUpgrades = [
         description: 'Increases all weapon damage by 10.',
         icon: 'icons/upgrades/pickle.png', // Replace with appropriate icon
         effect: function () {
-            damagePickle.active = true;
+            // damagePickle.active = true;
             damageBooster += 10; // Increase damage by 10
         },
         update: function () {

@@ -1303,6 +1303,8 @@
 
       // Show the end screen
       endScreen.style.display = 'flex';
+      levelUpModal.style.display = 'none';
+
     }
 
     // function purchaseUpgrade(upgrade) {
@@ -1433,6 +1435,7 @@
 
 
     let fourthUpgradeUnlocked = false;
+    const levelUpModal = document.getElementById('levelUpModal');
 
     function levelUp() {
       level++;
@@ -1448,7 +1451,6 @@
       const upgrades = getRandomUpgrades(upgradesToRetrieve);
 
       // Display the level-up modal
-      const levelUpModal = document.getElementById('levelUpModal');
       document.getElementById('upgrade1').textContent = `1. ${upgrades[0]} `;
       document.getElementById('upgrade2').textContent = `2. ${upgrades[1]} `;
       document.getElementById('upgrade3').textContent = `3. ${upgrades[2]} `;
