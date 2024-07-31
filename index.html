@@ -2815,11 +2815,11 @@
           const gameAchievements = userData.games?.[gameId]?.achievements || {};
           Object.assign(Achievements, gameAchievements);
 
-          const gameUpgrades = userData.games?.[gameId]?.megaUpgrades || {};
-          Object.assign(megaUpgrades, gameUpgrades);
+          // const gameUpgrades = userData.games?.[gameId]?.megaUpgrades || {};
+          // Object.assign(megaUpgrades, gameUpgrades);
 
           populateAchievements();
-          populateUpgrades();
+          // populateUpgrades();
         } else {
           console.log("No such document!");
         }
@@ -2850,10 +2850,11 @@
       if (userDoc.exists()) {
         const userData = userDoc.data();
         const existingAchievements = userData.games?.[gameName]?.achievements || {};
-        const existingMegaUpgrades = userData.games?.[gameName]?.megaUpgrades || {};
+
+        const activeMegaUpgradeNames = activeMegaUpgrades.map(upgrade => upgrade.name);
 
         const updatedAchievements = { ...existingAchievements, ...Achievements };
-        const updatedMegaUpgrades = { ...existingMegaUpgrades, ...megaUpgrades };
+
 
         const fullGameData = {
           [`games.${gameName}.scores`]: arrayUnion({
@@ -2861,10 +2862,11 @@
             topWeapons: gameData.topWeapons,
             sessionLength: sessionLength,
             loginTime: loginTime,
-            gameMode: currentMode  // Add the game mode to the saved data
+            gameMode: currentMode,
+            usedUpgrades: gameMode
+            // Add the game mode to the saved data
           }),
           [`games.${gameName}.achievements`]: updatedAchievements,
-          [`games.${gameName}.megaUpgrades`]: updatedMegaUpgrades
         };
 
         await updateDoc(userDocRef, fullGameData);
@@ -2879,7 +2881,6 @@
             }
           ],
           [`games.${gameName}.achievements`]: Achievements,
-          [`games.${gameName}.upgrades`]: upgrades
         };
 
         await setDoc(userDocRef, gameData);
