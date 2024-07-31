@@ -1275,31 +1275,6 @@
         newAchievementsList.appendChild(li);
       });
 
-      // Clear and set affordable upgrades
-      // upgradesList.innerHTML = '';
-      // // affordableUpgrades.forEach(upgrade => {
-      // //   const li = document.createElement('li');
-      // //   li.style.display = 'flex';
-      // //   li.style.alignItems = 'center';
-
-      // //   const icon = document.createElement('div');
-      // //   icon.classList.add('weaponClassIcon', upgrade.icon);
-      // //   icon.style.width = '24px';
-      // //   icon.style.height = '24px';
-      // //   icon.style.marginRight = '10px';
-
-      // //   const text = document.createElement('span');
-      // //   text.textContent = `${upgrade.name} - ${upgrade.price} coins (${upgrade.rarity})`;
-
-      // // const buyButton = document.createElement('button');
-      // // buyButton.textContent = 'Buy';
-      // // buyButton.onclick = () => purchaseUpgrade(upgrade);
-
-      // li.appendChild(icon);
-      // li.appendChild(text);
-      // li.appendChild(buyButton);
-      // upgradesList.appendChild(li);
-      // });
 
       // Show the end screen
       endScreen.style.display = 'flex';
@@ -1307,54 +1282,6 @@
 
     }
 
-    // function purchaseUpgrade(upgrade) {
-    //   if (coins >= upgrade.price) {
-    //     coins -= upgrade.price;
-    //     // Add the upgrade to the player's upgrades
-    //     playerUpgrades.push(upgrade);
-
-    //     // Update the display of current coins
-    //     document.getElementById('currentCoins').textContent = `Current Coins: ${coins}`;
-
-    //     // Optionally remove the purchased upgrade from the list or disable the buy button
-    //     // Here we simply remove the item from the list
-    //     const upgradesList = document.getElementById('upgradesList');
-    //     upgradesList.innerHTML = '';
-    //     const affordableUpgrades = getRandomAffordableUpgrades(coins);
-    //     affordableUpgrades.forEach(upgrade => {
-    //       const li = document.createElement('li');
-    //       li.style.display = 'flex';
-    //       li.style.alignItems = 'center';
-
-    //       const img = document.createElement('img');
-    //       img.src = upgrade.icon;
-    //       img.alt = upgrade.name;
-    //       img.style.width = '24px';
-    //       img.style.height = '24px';
-    //       img.style.marginRight = '10px';
-
-    //       const text = document.createElement('span');
-    //       text.textContent = `${upgrade.name} - ${upgrade.price} coins (${upgrade.rarity})`;
-
-    //       const buyButton = document.createElement('button');
-    //       buyButton.textContent = 'Buy';
-    //       buyButton.onclick = () => purchaseUpgrade(upgrade);
-
-    //       li.appendChild(img);
-    //       li.appendChild(text);
-    //       li.appendChild(buyButton);
-    //       upgradesList.appendChild(li);
-    //     });
-
-    //     // Save the updated coins and upgrades to the server
-    //     saveUserUpgrades(userId, gameId, {
-    //       coins: coins,
-    //       upgrades: playerUpgrades
-    //     });
-    //   } else {
-    //     alert('Not enough coins to purchase this upgrade.');
-    //   }
-    // }
 
     function saveUserUpgrades(userId, gameId, data) {
       // Example function to save user upgrades and coins to the server
