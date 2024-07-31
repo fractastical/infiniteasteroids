@@ -289,7 +289,7 @@ function applyMegaUpgrade(upgrade) {
 }
 
 function restoreHealth() {
-    lives = Math.min(lives + 1, 3);
+    lives++;
     closeUpgradeModal();
     resumeGame();
 }
