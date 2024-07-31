@@ -196,7 +196,8 @@ function startRoulette() {
     const totalSpins = totalRotations * 2 * Math.PI; // Total radians for 5 full rotations
 
     const spinSound = new Audio('sounds/upgrade_loop.mp3');
-    spinSound.play();
+    if (!toggleSoundOff)
+        spinSound.play();
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     createGemExplosion();
