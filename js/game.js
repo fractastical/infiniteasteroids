@@ -14,7 +14,9 @@ function startGame() {
     droneUpgrades = {
         speed: 1,
         laserSpeed: 1,
-        laserInterval: 1
+        laserInterval: 1,
+        damageLevel: 1
+
     };
 
     particles = [];

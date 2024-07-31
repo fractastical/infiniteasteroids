@@ -1590,6 +1590,10 @@ function upgradeDrone(attribute) {
             case 'laserInterval':
                 drone.laserInterval = 120 / droneUpgrades.laserInterval;
                 break;
+            case 'damageLevel':
+                drone.damageLevel += 1;
+                break;
+
         }
     });
     // updateCoinsDisplay();
