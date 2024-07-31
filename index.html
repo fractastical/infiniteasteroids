@@ -2382,11 +2382,14 @@
         upgradeElement.style.opacity = upgrade.owned ? '1' : '0.5';
 
         const icon = document.createElement('img');
+        icon.classList.add('upgrade-icon');
         icon.src = upgrade.icon;
         icon.alt = upgrade.name;
         upgradeElement.appendChild(icon);
 
         const description = document.createElement('span');
+        description.classList.add('upgrade-info');
+
         description.textContent = upgrade.description;
         upgradeElement.appendChild(description);
 
