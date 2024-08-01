@@ -2807,6 +2807,8 @@
 
         const updatedAchievements = { ...existingAchievements, ...Achievements };
 
+        //FirebaseError: Function arrayUnion() called with invalid data. Unsupported field value: undefined (found in document users/fpm9uNmvYeb9HKnZ32juQTmyxzj2)
+        // usedUpgrades: activeMegaUpgradeNames
 
         const fullGameData = {
           [`games.${gameName}.scores`]: arrayUnion({
@@ -2814,8 +2816,7 @@
             topWeapons: gameData.topWeapons,
             sessionLength: sessionLength,
             loginTime: loginTime,
-            gameMode: currentMode,
-            usedUpgrades: activeMegaUpgradeNames
+            gameMode: currentMode
             // Add the game mode to the saved data
           }),
           [`games.${gameName}.achievements`]: updatedAchievements,

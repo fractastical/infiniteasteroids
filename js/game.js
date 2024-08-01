@@ -367,7 +367,7 @@ function update() {
     updateAliens();
     updateAlienLasers();
     // updateSwarmingAliens();
-    drawSwarmingAliens();
+    // drawSwarmingAliens();
     drawAliens();
     drawAlienLasers();
     updateBossAlien();
@@ -401,7 +401,7 @@ function update() {
     }
 
     if (gameOver) endGame();
-    if (wave == 10 && currentMode == gameMode.EASY)
+    if (wave == 10 && currentMode == GameModes.EASY)
         updateAchievementsAtEnd();
 
     // if (wave == 30) updateAchievementsAtEnd();
