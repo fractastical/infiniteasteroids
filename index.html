@@ -485,7 +485,7 @@
     let gameLoop;
     let explosions = [];
     let lives = 3;
-    let testMode = true;
+    let testMode = false;
 
     if (testMode)
       lives = 1;
@@ -1708,12 +1708,12 @@
 
       const currTimeInMS = Date.now();
       if (xp >= (xpToNextLevel / 2)) {
-        if (lastLevelUp + 1000 > currTimeInMS) {
+        if (lastLevelUp > currTimeInMS - 1000) {
+          amount = amount / 20;
+        } else if (lastLevelUp > currTimeInMS - 3000) {
           amount = amount / 10;
-        } else if (lastLevelUp + 3000 > currTimeInMS) {
-          amount = amount / 5;
-        } else if (lastLevelUp + 5000 > currTimeInMS) {
-          amount = amount / 2.5;
+        } else if (lastLevelUp > currTimeInMS - 5000) {
+          amount = amount / 3;
         }
       }
       xp += amount;
