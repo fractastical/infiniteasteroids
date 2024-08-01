@@ -1382,6 +1382,10 @@ function updateBoomerang() {
             asteroid.hitpoints -= actualDamage;
             damageReport.boomerang += actualDamage;
 
+            if (comboSonicBoomerangActive) {
+                triggerSonicBlastEffect(boomerang.x, boomerang.y, sonicBlast.range);
+            }
+
             if (asteroid.hitpoints <= 0) {
                 processAsteroidDeath(asteroid);
                 asteroids.splice(i, 1);
@@ -1393,8 +1397,48 @@ function updateBoomerang() {
     }
 
     damageReport.boomerang += checkAlienDamage(boomerang);
+}
 
+function triggerSonicBlastEffect(x, y, range) {
+    let wave = {
+        x: x,
+        y: y,
+        radius: 0,
+        hitAsteroids: [] // Array to store the IDs of hit asteroids
+    };
+    sonicBlast.waves.push(wave);
 
+    // Update sonic blast waves to expand and deal damage
+    for (let i = sonicBlast.waves.length - 1; i >= 0; i--) {
+        let wave = sonicBlast.waves[i];
+        wave.radius += sonicBlast.speed;
+
+        for (let j = asteroids.length - 1; j >= 0; j--) {
+            let asteroid = asteroids[j];
+            let dx = asteroid.x - wave.x;
+            let dy = asteroid.y - wave.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < wave.radius && !wave.hitAsteroids.includes(asteroid)) {
+                let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitpoints);
+                asteroid.hitpoints -= actualDamage;
+                damageReport.sonicBlast += actualDamage;
+                wave.hitAsteroids.push(asteroid);
+
+                if (asteroid.hitpoints <= 0) {
+                    processAsteroidDeath(asteroid);
+                    asteroids.splice(j, 1);
+                    score += actualDamage * 50;
+                    coins += actualDamage * 20;
+                    increaseXP(actualDamage * 20);
+                }
+            }
+        }
+
+        if (wave.radius > range) {
+            sonicBlast.waves.splice(i, 1);
+        }
+    }
 }
 
 const boomerangImage = new Image();
