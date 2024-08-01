@@ -432,7 +432,10 @@ function drawAliens() {
     aliens.forEach(alien => {
         ctx.save();
         ctx.translate(alien.x, alien.y);
-        ctx.drawImage(alien.image, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+        if (alien.image)
+            ctx.drawImage(alien.image, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+        else
+            ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
         ctx.restore();
     });
 }
