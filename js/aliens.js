@@ -97,6 +97,7 @@ function spawnAliens(wave) {
             speed: 0.5,
             direction: Math.random() * Math.PI * 2,
             shootTimer: 0,
+            type: SwarmingAlienTypes.LITTLE,
             hitpoints: 1,
             shootInterval: 220 // Adjust this value as needed
         };
@@ -431,7 +432,7 @@ function drawAliens() {
     aliens.forEach(alien => {
         ctx.save();
         ctx.translate(alien.x, alien.y);
-        ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+        ctx.drawImage(alien.image, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
         ctx.restore();
     });
 }
@@ -590,11 +591,12 @@ function shootAlienLaser(alien) {
 
     if (alien.type === SwarmingAlienTypes.TOP) {
         // laserDy = laserSpeed; // Downward
-        if (alien.x < canvas.width / 2) {
-            laserDx = laserSpeed; // Rightward
-        } else {
-            laserDx = -laserSpeed; // Leftward
-        }
+        laserDx = 1;
+        // if (alien.x < canvas.width / 2) {
+        //     laserDx = laserSpeed; // Rightward
+        // } else {
+        //     laserDx = -laserSpeed; // Leftward
+        // }
 
     } else if (alien.type === SwarmingAlienTypes.BOTTOM) {
 
@@ -690,47 +692,47 @@ function drawSuperBossAlienLasers() {
     });
 }
 
-function updateSwarmingAliens() {
-    if (!freezeEffect.active) {
-        swarmingAliens.forEach(alien => {
-            // Move vertically
-            alien.y += alien.speed * alien.direction;
+// function updateSwarmingAliens() {
+//     if (!freezeEffect.active) {
+//         swarmingAliens.forEach(alien => {
+//             // Move vertically
+//             alien.y += alien.speed * alien.direction;
 
-            // Wrap around vertically
-            if (alien.y > canvas.height) {
-                alien.y = -alien.size;
-            } else if (alien.y < -alien.size) {
-                alien.y = canvas.height;
-            }
+//             // Wrap around vertically
+//             if (alien.y > canvas.height) {
+//                 alien.y = -alien.size;
+//             } else if (alien.y < -alien.size) {
+//                 alien.y = canvas.height;
+//             }
 
-            // Shooting logic
-            alien.shootTimer++;
-            if (alien.shootTimer >= alien.shootInterval) {
-                alien.shootTimer = 0;
-                shootSwarmingAlienLaser(alien);
-                // Reset shoot interval
-                alien.shootInterval = Math.random() * 4000 + 1000;
-            }
+//             // Shooting logic
+//             alien.shootTimer++;
+//             if (alien.shootTimer >= alien.shootInterval) {
+//                 alien.shootTimer = 0;
+//                 shootSwarmingAlienLaser(alien);
+//                 // Reset shoot interval
+//                 alien.shootInterval = Math.random() * 4000 + 1000;
+//             }
 
-            // Collision with player
-            if (!invincible && isColliding(alien, ship)) {
-                processPlayerDeath();
-            }
-        });
-    }
-}
+//             // Collision with player
+//             if (!invincible && isColliding(alien, ship)) {
+//                 processPlayerDeath();
+//             }
+//         });
+//     }
+// }
 
 
-function shootSwarmingAlienLaser(alien) {
-    const laser = {
-        x: alien.x + alien.size / 2,
-        y: alien.y + (alien.direction === 1 ? alien.size : 0),
-        dx: 0,
-        dy: alienLaserSpeed * alien.direction
-    };
-    alienLasers.push(laser);
-    playAlienLaserSound();
-}
+// function shootSwarmingAlienLaser(alien) {
+//     const laser = {
+//         x: alien.x + alien.size / 2,
+//         y: alien.y + (alien.direction === 1 ? alien.size : 0),
+//         dx: 0,
+//         dy: alienLaserSpeed * alien.direction
+//     };
+//     alienLasers.push(laser);
+//     playAlienLaserSound();
+// }
 
 
 function spawnSwarmingAliens(type, count) {
@@ -769,7 +771,7 @@ function spawnSwarmingAliens(type, count) {
         if (newSwarmingAlien.x >= canvas.width) newSwarmingAlien.x = canvas.width - alienSize;
         if (newSwarmingAlien.x < 0) newSwarmingAlien.x = 0;
 
-        swarmingAliens.push(newSwarmingAlien);
+        aliens.push(newSwarmingAlien);
     }
 }
 

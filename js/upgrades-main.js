@@ -189,7 +189,7 @@ function drawActiveMegaUpgrades() {
     });
 }
 // ... rest of the code remains the same
-const activeMegaUpgrades = [];
+let activeMegaUpgrades = [];
 
 function checkFloatingIslandSpawn() {
 
@@ -283,15 +283,15 @@ function displayMegaUpgradeOptions(megaUpgradeOptions) {
 function applyMegaUpgrade(upgrade) {
     const newUpgrade = { ...upgrade, cooldownTimer: 0 };
     activeMegaUpgrades.push(newUpgrade);
-    if (floatingIsland.active)
-        newUpgrade.effect();
+    // if (floatingIsland.active)
+    newUpgrade.effect();
     closeUpgradeModal();
     resumeGame();
 }
 
 function restoreHealth() {
-    if (floatingIsland.active)
-        lives++;
+    // if (floatingIsland.active)
+    lives++;
     closeUpgradeModal();
     resumeGame();
 }

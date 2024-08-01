@@ -366,7 +366,7 @@ function update() {
 
     updateAliens();
     updateAlienLasers();
-    updateSwarmingAliens();
+    // updateSwarmingAliens();
     drawSwarmingAliens();
     drawAliens();
     drawAlienLasers();

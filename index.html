@@ -485,7 +485,7 @@
     let gameLoop;
     let explosions = [];
     let lives = 3;
-    let testMode = false;
+    let testMode = true;
 
     if (testMode)
       lives = 1;
@@ -1374,9 +1374,11 @@
 
     let fourthUpgradeUnlocked = false;
     const levelUpModal = document.getElementById('levelUpModal');
+    let lastLevelUp = Date.now();
 
     function levelUp() {
       level++;
+      lastLevelUp = Date.now();
       xp = 0;  // Reset XP
       xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier); // Increase XP required for next level
       updateXPBar();
@@ -1703,6 +1705,17 @@
 
 
     function increaseXP(amount) {
+
+      const currTimeInMS = Date.now();
+      if (xp >= (xpToNextLevel / 2)) {
+        if (lastLevelUp + 1000 > currTimeInMS) {
+          amount = amount / 10;
+        } else if (lastLevelUp + 3000 > currTimeInMS) {
+          amount = amount / 5;
+        } else if (lastLevelUp + 5000 > currTimeInMS) {
+          amount = amount / 2.5;
+        }
+      }
       xp += amount;
       document.getElementById('xpBarContainer').style.display = 'block';
 
