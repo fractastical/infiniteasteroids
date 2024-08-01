@@ -912,6 +912,13 @@ function drawFlameParticles() {
     });
 }
 
+function setAsteroidOnFire(asteroid) {
+    asteroid.isOnFire = true; // Set the asteroid on fire
+    asteroid.fireTimer = 0; // Reset the fire timer
+    asteroid.distanceFromCenter = 0; // Track the distance from the center of the flame
+}
+
+
 function updateAsteroidFire() {
     for (let i = asteroids.length - 1; i >= 0; i--) {
         let asteroid = asteroids[i];
@@ -929,8 +936,6 @@ function updateAsteroidFire() {
                 processAsteroidDeath(asteroid);
                 asteroids.splice(i, 1);
             }
-        } else {
-            // asteroid.color = 'gray'; // Reset the asteroid color if not on fire
         }
     }
 }
@@ -971,10 +976,13 @@ function fireChainLightning(target, bounces) {
     target.hitpoints -= actualDamage;
     damageReport.chainlightning += actualDamage;
 
+
     if (target.hitpoints <= 0) {
         createExplosion(target.x, target.y, target.hitpoints, target.image);
         let index = asteroids.indexOf(target);
         asteroids.splice(index, 1);
+    } else if (comboFlameChainLightningActive) {
+        setAsteroidOnFire(target);
     }
 
     drawChainLightning(ship, target);
