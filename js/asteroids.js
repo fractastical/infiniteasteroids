@@ -59,12 +59,12 @@ function createAsteroids(side) {
                     y = Math.random() * (canvas.height * spawnPercentage);
                 } else if (spawnArea < 0.5) {
                     // Right edge
-                    x = canvas.width * 0.9 + Math.random() * (canvas.width * spawnPercentage);
+                    x = canvas.width * 0.97 + Math.random() * (canvas.width * spawnPercentage);
                     y = Math.random() * canvas.height;
                 } else if (spawnArea < 0.75) {
                     // Bottom edge
                     x = Math.random() * canvas.width;
-                    y = canvas.height * 0.9 + Math.random() * (canvas.height * spawnPercentage);
+                    y = canvas.height * 0.97 + Math.random() * (canvas.height * spawnPercentage);
                 } else {
                     // Left edge
                     x = Math.random() * (canvas.width * spawnPercentage);
@@ -82,7 +82,7 @@ function createAsteroids(side) {
             let type = 'normal';
 
             if (isRareAsteroid) {
-                console.log("Rare asteroid created:", type, color);
+                // console.log("Rare asteroid created:", type, color);
 
                 const rareTypes = ['exploding', 'freezing', 'chainLightning', 'acid'];
                 type = rareTypes[Math.floor(Math.random() * rareTypes.length)];
