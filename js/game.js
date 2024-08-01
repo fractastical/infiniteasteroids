@@ -447,17 +447,19 @@ function initializeGame(mode) {
         case GameModes.NORMAL:
             asteroidDifficultySpeedMultiplier = 0.9;
             levelUpXPMultiplier = 1.17;
-            invincibilityDuration = 190;
+            invincibilityDuration = 180;
             modeScoreMultiplier = 4;
             break;
         case GameModes.HARD:
             asteroidDifficultySpeedMultiplier = 1.1;
             levelUpXPMultiplier = 1.27;
+            invincibilityDuration = 140;
             modeScoreMultiplier = 6;
             break;
         case GameModes.HERO:
             asteroidDifficultySpeedMultiplier = 1.3;
             levelUpXPMultiplier = 1.35;
+            invincibilityDuration = 130;
             modeScoreMultiplier = 8;
             break;
         case GameModes.METEORSHOWEREASY:

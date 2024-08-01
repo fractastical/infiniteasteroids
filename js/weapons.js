@@ -1529,18 +1529,23 @@ function drawSonicBlast() {
     }
 }
 
+let mostRecentUpgradeApplied = false;
 
 function selectUpgrade(choice) {
     console.log(choice);
     const upgrades = window.levelUpgrades;
     console.log(upgrades);
 
-    applyUpgrade(upgrades[choice - 1]);
+    if (!mostRecentUpgradeApplied)
+        applyUpgrade(upgrades[choice - 1]);
+    mostRecentUpgradeApplied = true;
+
     document.getElementById('levelUpModal').style.display = 'none';
     isPaused = false;
     // Resume the game
     clearInterval(gameLoop);
     gameLoop = setInterval(update, 1000 / 60); // 60 FPS
+
 }
 
 function updateSonicBlast() {
