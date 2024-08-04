@@ -1378,7 +1378,11 @@
 
     function levelUp() {
       level++;
+      console.log()
+      let prevLevelUp = lastLevelUp;
       lastLevelUp = Date.now();
+
+      console.log(lastLevelUp - prevLevelUp);
       xp = 0;  // Reset XP
       xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier); // Increase XP required for next level
       updateXPBar();
@@ -1720,6 +1724,7 @@
       document.getElementById('xpBarContainer').style.display = 'block';
 
       updateXPBar();
+
       if (xp >= xpToNextLevel && currTimeInMS > (lastLevelUp + 5000)) {
 
         levelUp();
