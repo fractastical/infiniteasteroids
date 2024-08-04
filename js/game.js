@@ -142,13 +142,17 @@ function update() {
 
     updateShip(ship, 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ');
 
-    if (currentMode === GameModes.COOP) {
-        updateShip(ship2, 'a', 'd', 'w', 's', 'q');
-    } else {
+    if (document.getElementById('loginPopup').style.display == 'none') {
 
-        updateShip(ship, 'a', 'd', 'w', 's', 'q');
+        if (currentMode === GameModes.COOP) {
+            updateShip(ship2, 'a', 'd', 'w', 's', 'q');
+        } else {
+            updateShip(ship, 'a', 'd', 'w', 's', 'q');
+
+        }
 
     }
+
 
 
     checkFloatingIslandSpawn();
