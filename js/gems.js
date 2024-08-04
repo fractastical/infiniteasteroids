@@ -349,11 +349,8 @@ function checkGemCollection() {
             }
 
             // Increase the XP and check for level up
-            xp += xpBoost;
+            increaseXp(xpBoost);
             updateXPBar();
-            if (xp >= xpToNextLevel) {
-                levelUp();
-            }
 
             // Remove the collected gem
             droppedGems.splice(i, 1);
