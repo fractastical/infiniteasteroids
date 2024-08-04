@@ -1217,8 +1217,12 @@ function buyDrone() {
         laserInterval: 70 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
         laserTimer: 0
     };
-    drones.push(drone);
-    playDeployDroneSound();
+    //MAX 5 drones
+    if (drones.length < 6) {
+        drones.push(drone);
+        playDeployDroneSound();
+
+    }
     // updateCoinsDisplay();
     // }
 }

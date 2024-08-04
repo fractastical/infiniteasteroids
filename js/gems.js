@@ -70,7 +70,7 @@ gemImages.rare.src = 'icons/rare_gem.png';
 gemImages.epic.src = 'icons/epic_gem.png';
 
 let activeGemUpgrades = null;
-const unlockSound = new Audio('sounds/levelUp.mp3');
+const unlockSound = new Audio('../sounds/levelUp.mp3');
 
 // const canvas = document.getElementById('gameCanvas');
 // const ctx = canvas.getContext('2d');
@@ -272,7 +272,7 @@ function activateGemUpgrades() {
     // keyboardHint.remove(); // Remove the keyboard hint
 
     isPaused = false;
-    unlockSound.play();
+    // unlockSound.play();
     displayGems = [];
     clearInterval(gameLoop);
     gameLoop = setInterval(update, 1000 / 60);
