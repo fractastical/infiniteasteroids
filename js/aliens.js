@@ -34,6 +34,7 @@ let swarmingAliens = [];
 
 let aliens = [];
 let alienLasers = [];
+let octoMode = false;
 
 function spawnAliens(wave) {
 
@@ -42,6 +43,12 @@ function spawnAliens(wave) {
         spawnSwarmingAliens(SwarmingAlienTypes.BOTTOM, 10);
         // spawnSuperBossAlien();
         spawnHuntingAliens(10);
+
+    }
+
+    if (octoMode) {
+
+        spawnOcto();
 
     }
 

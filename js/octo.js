@@ -1,10 +1,11 @@
 const octoImage = new Image();
-octoImage.src = 'icons/octopus.png'; // Ensure you have this image
+octoImage.src = 'icons/cool_evil_alien_22.png'; // Ensure you have this image
+// megaBossAlienImage.src = ;
 
 const octoArmImages = [];
 for (let i = 1; i <= 8; i++) {
     const img = new Image();
-    img.src = `icons/arm_${i}.png`; // Ensure you have these images for each arm
+    img.src = `icons/octo_arm_${i}.png`; // Ensure you have these images for each arm
     octoArmImages.push(img);
 }
 
