@@ -834,59 +834,25 @@ function applyExplosiveDamage(rocket) {
 }
 
 
-function updateFlamethrower() {
-    if (flamethrower.active) {
-        // Define the area of effect for the flamethrower
-        let flameRange = flamethrower.range;
-        let flameWidth = 10;
-
-        // Calculate the endpoint of the flamethrower from the front of the ship
-        let shipFrontX = ship.x + ship.size * Math.sin(ship.rotation * Math.PI / 180);
-        let shipFrontY = ship.y - ship.size * Math.cos(ship.rotation * Math.PI / 180);
-        let endX = shipFrontX + flameRange * Math.sin(ship.rotation * Math.PI / 180);
-        let endY = shipFrontY - flameRange * Math.cos(ship.rotation * Math.PI / 180);
-
-        // Generate flame particles
-        generateFlameParticles(shipFrontX, shipFrontY, endX, endY, flameWidth);
-
-        // Check for collisions with asteroids
-        for (let i = asteroids.length - 1; i >= 0; i--) {
-            let asteroid = asteroids[i];
-            let dx = asteroid.x - shipFrontX;
-            let dy = asteroid.y - shipFrontY;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < flameRange && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < flameWidth / 2) {
-                asteroid.isOnFire = true; // Set the asteroid on fire
-                asteroid.fireTimer = 0; // Reset the fire timer
-                asteroid.distanceFromCenter = distance; // Track the distance from the center of the flame
-
-                // Trigger chain lightning if combo is active
-                if (comboFlameChainLightningActive) {
-                    fireChainLightning(asteroid, chainLightning.bounces);
-                }
-            }
-        }
-        flamethrower.active = false;
-    }
-}
 
 function generateFlameParticles(startX, startY, endX, endY, flameWidth) {
     const angle = Math.atan2(endY - startY, endX - startX);
-    const particleCount = 20; // Increase particle count for a denser flame effect
+    const particleCount = 50; // Increase particle count for a denser flame effect
 
     for (let i = 0; i < particleCount; i++) {
         const distance = Math.random() * flamethrower.range;
-        const offsetX = (Math.random() - 0.5) * flameWidth * (distance / flamethrower.range);
-        const offsetY = (Math.random() - 0.5) * flameWidth * (distance / flamethrower.range);
+        const widthAtDistance = flameWidth * (distance / flamethrower.range);
+        const offsetX = (Math.random() - 0.5) * widthAtDistance;
+        const offsetY = (Math.random() - 0.5) * widthAtDistance;
 
         const particle = {
             x: startX + Math.cos(angle) * distance + offsetX,
             y: startY + Math.sin(angle) * distance + offsetY,
-            size: Math.random() * 4 + 2,
-            speed: Math.random() * 2 + 1,
-            direction: angle + (Math.random() - 0.5) * 0.2,
-            life: Math.random() * 30 + 20,
+            size: Math.random() * 3 + 1,
+            speed: Math.random() * 1 + 0.5,
+            direction: angle + (Math.random() - 0.5) * 0.1,
+            life: Math.random() * 20 + 10,
+            maxLife: 30,
             color: `hsl(${Math.random() * 60 + 180}, 100%, ${Math.random() * 50 + 50}%)` // Blue to cyan flame particles
         };
         particles.push(particle);
@@ -894,7 +860,9 @@ function generateFlameParticles(startX, startY, endX, endY, flameWidth) {
 }
 
 function drawFlameParticles() {
+    ctx.save();
     particles.forEach((particle, index) => {
+        ctx.globalAlpha = particle.life / particle.maxLife;
         ctx.fillStyle = particle.color;
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
@@ -910,536 +878,555 @@ function drawFlameParticles() {
             particles.splice(index, 1);
         }
     });
-}
-
-function setAsteroidOnFire(asteroid) {
-    asteroid.isOnFire = true; // Set the asteroid on fire
-    asteroid.fireTimer = 0; // Reset the fire timer
-    asteroid.distanceFromCenter = 0; // Track the distance from the center of the flame
-}
+    ctx.restore();
 
 
-function updateAsteroidFire() {
-    for (let i = asteroids.length - 1; i >= 0; i--) {
-        let asteroid = asteroids[i];
-        if (asteroid.isOnFire) {
-            asteroid.fireTimer++;
-            if (asteroid.fireTimer >= 60) { // Damage applied every second (assuming 60 FPS)
-                asteroid.hitpoints -= flamethrower.damagePerSecond;
-                damageReport.flamethrower += flamethrower.damagePerSecond;
-                asteroid.fireTimer = 0; // Reset the fire timer
+    function updateFlamethrower() {
+        if (flamethrower.active) {
+            // Define the area of effect for the flamethrower
+            let flameRange = flamethrower.range;
+            let flameWidth = 20; // Increase this to match the visual width
+
+            // Calculate the endpoint of the flamethrower from the front of the ship
+            let shipFrontX = ship.x + ship.size * Math.sin(ship.rotation * Math.PI / 180);
+            let shipFrontY = ship.y - ship.size * Math.cos(ship.rotation * Math.PI / 180);
+            let endX = shipFrontX + flameRange * Math.sin(ship.rotation * Math.PI / 180);
+            let endY = shipFrontY - flameRange * Math.cos(ship.rotation * Math.PI / 180);
+
+            // Generate flame particles
+            generateFlameParticles(shipFrontX, shipFrontY, endX, endY, flameWidth);
+
+            // Draw the flame cone (for debugging)
+            ctx.save();
+            ctx.globalAlpha = 0.3;
+            ctx.fillStyle = 'cyan';
+            ctx.beginPath();
+            ctx.moveTo(shipFrontX, shipFrontY);
+            ctx.lineTo(
+                shipFrontX + Math.cos(ship.rotation * Math.PI / 180 - Math.PI / 2) * flameWidth / 2,
+                shipFrontY + Math.sin(ship.rotation * Math.PI / 180 - Math.PI / 2) * flameWidth / 2
+            );
+            ctx.lineTo(endX, endY);
+            ctx.lineTo(
+                shipFrontX + Math.cos(ship.rotation * Math.PI / 180 + Math.PI / 2) * flameWidth / 2,
+                shipFrontY + Math.sin(ship.rotation * Math.PI / 180 + Math.PI / 2) * flameWidth / 2
+            );
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+
+            // Check for collisions with asteroids
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                let asteroid = asteroids[i];
+                let dx = asteroid.x - shipFrontX;
+                let dy = asteroid.y - shipFrontY;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < flameRange && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < flameWidth / 2) {
+                    asteroid.isOnFire = true; // Set the asteroid on fire
+                    asteroid.fireTimer = 0; // Reset the fire timer
+                    asteroid.distanceFromCenter = distance; // Track the distance from the center of the flame
+
+                    // Trigger chain lightning if combo is active
+                    if (comboFlameChainLightningActive) {
+                        fireChainLightning(asteroid, chainLightning.bounces);
+                    }
+                }
             }
-
-            asteroid.color = 'darkred'; // Change the asteroid color to dark red
-
-            if (asteroid.hitpoints <= 0) {
-                processAsteroidDeath(asteroid);
-                asteroids.splice(i, 1);
-            }
+            flamethrower.active = false;
         }
     }
-}
 
 
-
-
-function activateSonicBlast() {
-    if (sonicBlast.timer === 0) {
-        sonicBlast.waves.push({
-            x: ship.x,
-            y: ship.y,
-            radius: 0,
-            hitAsteroids: [], // Array to store the IDs of hit asteroids
-        });
-        sonicBlast.timer = sonicBlast.cooldown;
-    }
-}
-
-function activateChainLightning() {
-
-    if (chainLightning.timer === 0) {
-        let target = findNearestAsteroid();
-        if (target) {
-            fireChainLightning(target, chainLightning.bounces);
-            chainLightning.timer = chainLightning.cooldown;
-        }
-    }
-    playLightningSound();
-
-}
-
-function fireChainLightning(target, bounces) {
-    if (bounces <= 0 || !target) return;
-
-    let damage = chainLightning.damage;
-    let actualDamage = Math.min(damage + damageBooster, target.hitpoints);
-    target.hitpoints -= actualDamage;
-    damageReport.chainlightning += actualDamage;
-
-
-    if (target.hitpoints <= 0) {
-        createExplosion(target.x, target.y, target.hitpoints, target.image);
-        let index = asteroids.indexOf(target);
-        asteroids.splice(index, 1);
-    } else if (comboFlameChainLightningActive) {
-        setAsteroidOnFire(target);
+    function setAsteroidOnFire(asteroid) {
+        asteroid.isOnFire = true; // Set the asteroid on fire
+        asteroid.fireTimer = 0; // Reset the fire timer
+        asteroid.distanceFromCenter = 0; // Track the distance from the center of the flame
     }
 
-    drawChainLightning(ship, target);
 
-    let nextTarget = findNearestAsteroidInRange(target, chainLightning.range);
-    if (nextTarget) {
-        drawChainLightning(target, nextTarget);
-        fireChainLightning(nextTarget, bounces - 1);
-    }
-}
+    function updateAsteroidFire() {
+        for (let i = asteroids.length - 1; i >= 0; i--) {
+            let asteroid = asteroids[i];
+            if (asteroid.isOnFire) {
+                asteroid.fireTimer++;
+                if (asteroid.fireTimer >= 60) { // Damage applied every second (assuming 60 FPS)
+                    asteroid.hitpoints -= flamethrower.damagePerSecond;
+                    damageReport.flamethrower += flamethrower.damagePerSecond;
+                    asteroid.fireTimer = 0; // Reset the fire timer
+                }
 
-function drawChainLightning(source, target) {
-    ctx.beginPath();
-    ctx.moveTo(source.x, source.y);
-    ctx.lineTo(target.x, target.y);
-    ctx.strokeStyle = 'blue';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-}
-
-
-
-function activateDeathRay() {
-    if (deathRay.timer === 0) {
-        deathRayActive = true;
-        playRandomDeathRaySound();
-        deathRay.timer = deathRay.cooldown;
-    }
-}
-
-function activateFreezeEffect() {
-    if (freezeEffect.timer === 0) {
-        freezeEffect.active = true;
-        playFreezeSound();
-        freezeEffect.remainingDuration = freezeEffect.duration;
-        freezeEffect.timer = freezeEffect.cooldown;
-    }
-}
-
-
-function updateFreezeEffect() {
-    if (freezeEffect.timer > 0) {
-        freezeEffect.timer--;
-    }
-
-    if (freezeEffect.active) {
-        freezeEffect.remainingDuration--;
-
-        if (freezeEffect.remainingDuration <= 0) {
-            freezeEffect.active = false;
-        }
-    }
-}
-
-
-function fireAcidBomb() {
-    if (acidBomb.timer === 0) {
-        let angle = Math.random() * 2 * Math.PI; // Random direction
-        let bomb = {
-            x: ship.x,
-            y: ship.y,
-            radius: acidBomb.size,
-            duration: acidBomb.duration,
-            dx: Math.cos(angle),
-            dy: Math.sin(angle),
-            distanceTraveled: 0
-        };
-        acidBomb.activeBombs.push(bomb);
-        acidBomb.timer = acidBomb.cooldown;
-    }
-}
-
-function updateAcidBombs() {
-    for (let i = acidBomb.activeBombs.length - 1; i >= 0; i--) {
-        let bomb = acidBomb.activeBombs[i];
-        bomb.x += bomb.dx * 2;
-        bomb.y += bomb.dy * 2;
-        bomb.distanceTraveled += 2;
-
-        if (bomb.distanceTraveled >= 150) {
-            createAcidExplosion(bomb.x, bomb.y, bomb.radius, bomb.duration);
-            acidBomb.activeBombs.splice(i, 1);
-        }
-    }
-}
-
-function createAcidExplosion(x, y, radius, duration) {
-    createExplosion(x, y, 0); // Create visual explosion effect
-    playRandomAcidBombSound();
-    let acidArea = {
-        x: x,
-        y: y,
-        radius: radius,
-        duration: duration
-    };
-    acidBomb.activeAreas.push(acidArea);
-}
-
-function updateAcidAreas() {
-    for (let i = acidBomb.activeAreas.length - 1; i >= 0; i--) {
-        let area = acidBomb.activeAreas[i];
-        area.duration--;
-
-        for (let j = asteroids.length - 1; j >= 0; j--) {
-            let asteroid = asteroids[j];
-
-            //Because of some unknown bug
-            if (!asteroid.x || !area.x)
-                break;
-            let dx = asteroid.x - area.x;
-            let dy = asteroid.y - area.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < area.radius) {
-                let actualDamage = Math.min(acidBomb.damagePerSecond + damageBooster, asteroid.hitpoints);
-                asteroid.hitpoints -= actualDamage;
-                damageReport.acid += actualDamage;
+                asteroid.color = 'darkred'; // Change the asteroid color to dark red
 
                 if (asteroid.hitpoints <= 0) {
                     processAsteroidDeath(asteroid);
-                    asteroids.splice(j, 1);
+                    asteroids.splice(i, 1);
                 }
             }
         }
+    }
 
-        if (area.duration <= 0) {
-            acidBomb.activeAreas.splice(i, 1);
+
+
+
+    function activateSonicBlast() {
+        if (sonicBlast.timer === 0) {
+            sonicBlast.waves.push({
+                x: ship.x,
+                y: ship.y,
+                radius: 0,
+                hitAsteroids: [], // Array to store the IDs of hit asteroids
+            });
+            sonicBlast.timer = sonicBlast.cooldown;
         }
     }
-}
 
+    function activateChainLightning() {
 
-function drawAcidAreas() {
-    ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
-    for (let i = 0; i < acidBomb.activeAreas.length; i++) {
-        let area = acidBomb.activeAreas[i];
-        ctx.beginPath();
-        ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
-        ctx.fill();
-    }
-
-    for (let i = 0; i < acidAreas.length; i++) {
-        let area = acidAreas[i];
-        ctx.beginPath();
-        ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
-        ctx.fill();
-    }
-
-}
-
-
-function updateDeathRay() {
-    if (deathRayActive) {
-        // Define the area of effect for the Death Ray
-        let rayLength = deathRay.length;
-        let rayWidth = deathRay.width;
-
-        // Calculate the angle for the endpoints to create a fan effect
-        let spreadAngle = Math.PI / (15 - deathRayUpgrades.width); // Adjust the spread angle for a wider fan effect
-
-        let endX = ship.x + rayLength * Math.sin(ship.rotation * Math.PI / 180);
-        let endY = ship.y - rayLength * Math.cos(ship.rotation * Math.PI / 180);
-
-        let leftEndX = ship.x + rayLength * Math.sin((ship.rotation * Math.PI / 180) - spreadAngle);
-        let leftEndY = ship.y - rayLength * Math.cos((ship.rotation * Math.PI / 180) - spreadAngle);
-
-        let rightEndX = ship.x + rayLength * Math.sin((ship.rotation * Math.PI / 180) + spreadAngle);
-        let rightEndY = ship.y - rayLength * Math.cos((ship.rotation * Math.PI / 180) + spreadAngle);
-
-        // Check for collisions with asteroids
-        for (let i = asteroids.length - 1; i >= 0; i--) {
-            let asteroid = asteroids[i];
-            let dx = asteroid.x - ship.x;
-            let dy = asteroid.y - ship.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
-                createExplosion(asteroid.x, asteroid.y, 1, asteroid.image);
-                asteroids.splice(i, 1);
-                damageReport.deathRay += asteroid.hitpoints;
-                increaseXP(asteroid.hitpoints * 20);
-
+        if (chainLightning.timer === 0) {
+            let target = findNearestAsteroid();
+            if (target) {
+                fireChainLightning(target, chainLightning.bounces);
+                chainLightning.timer = chainLightning.cooldown;
             }
         }
+        playLightningSound();
 
-        for (let j = aliens.length - 1; j >= 0; j--) {
-            const alien = aliens[j];
-            let dx = alien.x - ship.x;
-            let dy = alien.y - ship.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
-                createExplosion(alien.x, alien.y, 12);
-                aliens.splice(j, 1);
-                damageReport.deathRay += 20;
-                increaseXP(200);
+    }
 
-            }
+    function fireChainLightning(target, bounces) {
+        if (bounces <= 0 || !target) return;
+
+        let damage = chainLightning.damage;
+        let actualDamage = Math.min(damage + damageBooster, target.hitpoints);
+        target.hitpoints -= actualDamage;
+        damageReport.chainlightning += actualDamage;
+
+
+        if (target.hitpoints <= 0) {
+            createExplosion(target.x, target.y, target.hitpoints, target.image);
+            let index = asteroids.indexOf(target);
+            asteroids.splice(index, 1);
+        } else if (comboFlameChainLightningActive) {
+            setAsteroidOnFire(target);
         }
 
+        drawChainLightning(ship, target);
 
-        // Draw the Death Ray as a triangle
-        ctx.save();
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+        let nextTarget = findNearestAsteroidInRange(target, chainLightning.range);
+        if (nextTarget) {
+            drawChainLightning(target, nextTarget);
+            fireChainLightning(nextTarget, bounces - 1);
+        }
+    }
+
+    function drawChainLightning(source, target) {
         ctx.beginPath();
-        ctx.moveTo(ship.x, ship.y);
-        ctx.lineTo(leftEndX, leftEndY);
-        ctx.lineTo(rightEndX, rightEndY);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-        deathRayActive = false;
+        ctx.moveTo(source.x, source.y);
+        ctx.lineTo(target.x, target.y);
+        ctx.strokeStyle = 'blue';
+        ctx.lineWidth = 2;
+        ctx.stroke();
     }
 
-    if (deathRay.timer > 0) {
-        deathRay.timer--;
-    }
-}
 
-// Function to buy drones
-function buyDrone() {
-    // if (coins >= droneCost) {
-    //   coins -= droneCost;
-    let drone = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        size: 10,
-        damage: 1,
-        speed: 0.5 * droneUpgrades.speed,
-        direction: Math.random() * Math.PI * 2,
-        lasers: [],
-        image: droneImages.regularDrone,
-        laserSpeed: 2 * droneUpgrades.laserSpeed,
-        laserInterval: 70 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
-        laserTimer: 0
-    };
-    //MAX 5 drones
-    if (drones.length < 6) {
-        drones.push(drone);
+
+    function activateDeathRay() {
+        if (deathRay.timer === 0) {
+            deathRayActive = true;
+            playRandomDeathRaySound();
+            deathRay.timer = deathRay.cooldown;
+        }
+    }
+
+    function activateFreezeEffect() {
+        if (freezeEffect.timer === 0) {
+            freezeEffect.active = true;
+            playFreezeSound();
+            freezeEffect.remainingDuration = freezeEffect.duration;
+            freezeEffect.timer = freezeEffect.cooldown;
+        }
+    }
+
+
+    function updateFreezeEffect() {
+        if (freezeEffect.timer > 0) {
+            freezeEffect.timer--;
+        }
+
+        if (freezeEffect.active) {
+            freezeEffect.remainingDuration--;
+
+            if (freezeEffect.remainingDuration <= 0) {
+                freezeEffect.active = false;
+            }
+        }
+    }
+
+
+    function fireAcidBomb() {
+        if (acidBomb.timer === 0) {
+            let angle = Math.random() * 2 * Math.PI; // Random direction
+            let bomb = {
+                x: ship.x,
+                y: ship.y,
+                radius: acidBomb.size,
+                duration: acidBomb.duration,
+                dx: Math.cos(angle),
+                dy: Math.sin(angle),
+                distanceTraveled: 0
+            };
+            acidBomb.activeBombs.push(bomb);
+            acidBomb.timer = acidBomb.cooldown;
+        }
+    }
+
+    function updateAcidBombs() {
+        for (let i = acidBomb.activeBombs.length - 1; i >= 0; i--) {
+            let bomb = acidBomb.activeBombs[i];
+            bomb.x += bomb.dx * 2;
+            bomb.y += bomb.dy * 2;
+            bomb.distanceTraveled += 2;
+
+            if (bomb.distanceTraveled >= 150) {
+                createAcidExplosion(bomb.x, bomb.y, bomb.radius, bomb.duration);
+                acidBomb.activeBombs.splice(i, 1);
+            }
+        }
+    }
+
+    function createAcidExplosion(x, y, radius, duration) {
+        createExplosion(x, y, 0); // Create visual explosion effect
+        playRandomAcidBombSound();
+        let acidArea = {
+            x: x,
+            y: y,
+            radius: radius,
+            duration: duration
+        };
+        acidBomb.activeAreas.push(acidArea);
+    }
+
+    function updateAcidAreas() {
+        for (let i = acidBomb.activeAreas.length - 1; i >= 0; i--) {
+            let area = acidBomb.activeAreas[i];
+            area.duration--;
+
+            for (let j = asteroids.length - 1; j >= 0; j--) {
+                let asteroid = asteroids[j];
+
+                //Because of some unknown bug
+                if (!asteroid.x || !area.x)
+                    break;
+                let dx = asteroid.x - area.x;
+                let dy = asteroid.y - area.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < area.radius) {
+                    let actualDamage = Math.min(acidBomb.damagePerSecond + damageBooster, asteroid.hitpoints);
+                    asteroid.hitpoints -= actualDamage;
+                    damageReport.acid += actualDamage;
+
+                    if (asteroid.hitpoints <= 0) {
+                        processAsteroidDeath(asteroid);
+                        asteroids.splice(j, 1);
+                    }
+                }
+            }
+
+            if (area.duration <= 0) {
+                acidBomb.activeAreas.splice(i, 1);
+            }
+        }
+    }
+
+
+    function drawAcidAreas() {
+        ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+        for (let i = 0; i < acidBomb.activeAreas.length; i++) {
+            let area = acidBomb.activeAreas[i];
+            ctx.beginPath();
+            ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        for (let i = 0; i < acidAreas.length; i++) {
+            let area = acidAreas[i];
+            ctx.beginPath();
+            ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+    }
+
+
+    function updateDeathRay() {
+        if (deathRayActive) {
+            // Define the area of effect for the Death Ray
+            let rayLength = deathRay.length;
+            let rayWidth = deathRay.width;
+
+            // Calculate the angle for the endpoints to create a fan effect
+            let spreadAngle = Math.PI / (15 - deathRayUpgrades.width); // Adjust the spread angle for a wider fan effect
+
+            let endX = ship.x + rayLength * Math.sin(ship.rotation * Math.PI / 180);
+            let endY = ship.y - rayLength * Math.cos(ship.rotation * Math.PI / 180);
+
+            let leftEndX = ship.x + rayLength * Math.sin((ship.rotation * Math.PI / 180) - spreadAngle);
+            let leftEndY = ship.y - rayLength * Math.cos((ship.rotation * Math.PI / 180) - spreadAngle);
+
+            let rightEndX = ship.x + rayLength * Math.sin((ship.rotation * Math.PI / 180) + spreadAngle);
+            let rightEndY = ship.y - rayLength * Math.cos((ship.rotation * Math.PI / 180) + spreadAngle);
+
+            // Check for collisions with asteroids
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                let asteroid = asteroids[i];
+                let dx = asteroid.x - ship.x;
+                let dy = asteroid.y - ship.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
+                    createExplosion(asteroid.x, asteroid.y, 1, asteroid.image);
+                    asteroids.splice(i, 1);
+                    damageReport.deathRay += asteroid.hitpoints;
+                    increaseXP(asteroid.hitpoints * 20);
+
+                }
+            }
+
+            for (let j = aliens.length - 1; j >= 0; j--) {
+                const alien = aliens[j];
+                let dx = alien.x - ship.x;
+                let dy = alien.y - ship.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
+                    createExplosion(alien.x, alien.y, 12);
+                    aliens.splice(j, 1);
+                    damageReport.deathRay += 20;
+                    increaseXP(200);
+
+                }
+            }
+
+
+            // Draw the Death Ray as a triangle
+            ctx.save();
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+            ctx.beginPath();
+            ctx.moveTo(ship.x, ship.y);
+            ctx.lineTo(leftEndX, leftEndY);
+            ctx.lineTo(rightEndX, rightEndY);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+            deathRayActive = false;
+        }
+
+        if (deathRay.timer > 0) {
+            deathRay.timer--;
+        }
+    }
+
+    // Function to buy drones
+    function buyDrone() {
+        // if (coins >= droneCost) {
+        //   coins -= droneCost;
+        let drone = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 10,
+            damage: 1,
+            speed: 0.5 * droneUpgrades.speed,
+            direction: Math.random() * Math.PI * 2,
+            lasers: [],
+            image: droneImages.regularDrone,
+            laserSpeed: 2 * droneUpgrades.laserSpeed,
+            laserInterval: 70 / droneUpgrades.laserInterval, // Fire lasers more frequently as the interval increases
+            laserTimer: 0
+        };
+        //MAX 5 drones
+        if (drones.length < 6) {
+            drones.push(drone);
+            playDeployDroneSound();
+
+        }
+        // updateCoinsDisplay();
+        // }
+    }
+
+    function buyBomberDrone() {
+        let bomberDrone = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 12,
+            speed: 0.5 * bomberDroneUpgrades.speed,
+            direction: Math.random() * Math.PI * 2,
+            image: droneImages.bomberDrone,
+            bombs: [],
+            bombInterval: 120,
+            bombTimer: 0
+        };
+        bomberDrones.push(bomberDrone);
         playDeployDroneSound();
 
     }
-    // updateCoinsDisplay();
-    // }
-}
-
-function buyBomberDrone() {
-    let bomberDrone = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        size: 12,
-        speed: 0.5 * bomberDroneUpgrades.speed,
-        direction: Math.random() * Math.PI * 2,
-        image: droneImages.bomberDrone,
-        bombs: [],
-        bombInterval: 120,
-        bombTimer: 0
-    };
-    bomberDrones.push(bomberDrone);
-    playDeployDroneSound();
-
-}
 
 
-function buyTurret() {
-    if (!turret.bought) {
-        // coins -= 1000;
-        turret.bought = true;
+    function buyTurret() {
+        if (!turret.bought) {
+            // coins -= 1000;
+            turret.bought = true;
+            turret.x = ship.x;
+            turret.y = ship.y;
+            // updateCoinsDisplay();
+        }
+    }
+
+
+    let doubleTurret = false;
+    let tripleTurret = false;
+
+
+
+
+    function updateTurretLasers() {
+        for (let i = turret.lasers.length - 1; i >= 0; i--) {
+            let laser = turret.lasers[i];
+            laser.x += Math.cos(laser.rotation) * 2;
+            laser.y += Math.sin(laser.rotation) * 2;
+            if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
+                turret.lasers.splice(i, 1);
+            }
+        }
+    }
+
+    function drawTurret() {
+        ctx.save();
+        ctx.translate(turret.x, turret.y);
+
+        // Draw the turret as a small cyan circle
+        ctx.beginPath();
+        ctx.arc(0, 0, 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'cyan';
+        ctx.fill();
+
+        ctx.restore();
+    }
+    function updateTurret() {
+        let nearestAsteroid = findNearestAsteroidInRange();
+        if (nearestAsteroid) {
+            let dx = nearestAsteroid.x - turret.x;
+            let dy = nearestAsteroid.y - turret.y;
+            let angle = Math.atan2(dy, dx);
+            turret.rotation = angle;
+
+            turret.fireTimer++;
+
+            if (turret.fireTimer >= turret.fireInterval) {
+                turret.fireTimer = 0;
+
+                // Calculate the laser starting positions based on the turret's rotation
+                let laserX = turret.x + Math.cos(turret.rotation) * turret.size;
+                let laserY = turret.y + Math.sin(turret.rotation) * turret.size;
+
+                let laser = {
+                    x: laserX,
+                    y: laserY,
+                    rotation: turret.rotation,
+                    size: 2,
+                    color: 'cyan'
+                };
+                turret.lasers.push(laser);
+
+                if (doubleTurret) {
+                    let offset = Math.PI / 12; // 15 degrees offset
+                    let laser1 = {
+                        x: laserX + Math.cos(turret.rotation + offset) * turret.size,
+                        y: laserY + Math.sin(turret.rotation + offset) * turret.size,
+                        rotation: turret.rotation + offset,
+                        size: 2,
+                        color: 'cyan'
+                    };
+                    turret.lasers.push(laser1);
+
+                    let laser2 = {
+                        x: laserX + Math.cos(turret.rotation - offset) * turret.size,
+                        y: laserY + Math.sin(turret.rotation - offset) * turret.size,
+                        rotation: turret.rotation - offset,
+                        size: 2,
+                        color: 'cyan'
+                    };
+                    turret.lasers.push(laser2);
+                }
+
+                if (tripleTurret) {
+                    let offset = Math.PI / 8; // 22.5 degrees offset
+                    let laser1 = {
+                        x: laserX + Math.cos(turret.rotation + offset) * turret.size,
+                        y: laserY + Math.sin(turret.rotation + offset) * turret.size,
+                        rotation: turret.rotation + offset,
+                        size: 2,
+                        color: 'cyan'
+                    };
+                    turret.lasers.push(laser1);
+
+                    let laser2 = {
+                        x: laserX + Math.cos(turret.rotation - offset) * turret.size,
+                        y: laserY + Math.sin(turret.rotation - offset) * turret.size,
+                        rotation: turret.rotation - offset,
+                        size: 2,
+                        color: 'cyan'
+                    };
+                    turret.lasers.push(laser2);
+                }
+            }
+        }
+
         turret.x = ship.x;
         turret.y = ship.y;
-        // updateCoinsDisplay();
     }
-}
 
-
-let doubleTurret = false;
-let tripleTurret = false;
-
-
-
-
-function updateTurretLasers() {
-    for (let i = turret.lasers.length - 1; i >= 0; i--) {
-        let laser = turret.lasers[i];
-        laser.x += Math.cos(laser.rotation) * 2;
-        laser.y += Math.sin(laser.rotation) * 2;
-        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
-            turret.lasers.splice(i, 1);
-        }
-    }
-}
-
-function drawTurret() {
-    ctx.save();
-    ctx.translate(turret.x, turret.y);
-
-    // Draw the turret as a small cyan circle
-    ctx.beginPath();
-    ctx.arc(0, 0, 3, 0, Math.PI * 2);
-    ctx.fillStyle = 'cyan';
-    ctx.fill();
-
-    ctx.restore();
-}
-function updateTurret() {
-    let nearestAsteroid = findNearestAsteroidInRange();
-    if (nearestAsteroid) {
-        let dx = nearestAsteroid.x - turret.x;
-        let dy = nearestAsteroid.y - turret.y;
-        let angle = Math.atan2(dy, dx);
-        turret.rotation = angle;
-
-        turret.fireTimer++;
-
-        if (turret.fireTimer >= turret.fireInterval) {
-            turret.fireTimer = 0;
-
-            // Calculate the laser starting positions based on the turret's rotation
-            let laserX = turret.x + Math.cos(turret.rotation) * turret.size;
-            let laserY = turret.y + Math.sin(turret.rotation) * turret.size;
-
-            let laser = {
-                x: laserX,
-                y: laserY,
-                rotation: turret.rotation,
-                size: 2,
-                color: 'cyan'
-            };
-            turret.lasers.push(laser);
-
-            if (doubleTurret) {
-                let offset = Math.PI / 12; // 15 degrees offset
-                let laser1 = {
-                    x: laserX + Math.cos(turret.rotation + offset) * turret.size,
-                    y: laserY + Math.sin(turret.rotation + offset) * turret.size,
-                    rotation: turret.rotation + offset,
-                    size: 2,
-                    color: 'cyan'
-                };
-                turret.lasers.push(laser1);
-
-                let laser2 = {
-                    x: laserX + Math.cos(turret.rotation - offset) * turret.size,
-                    y: laserY + Math.sin(turret.rotation - offset) * turret.size,
-                    rotation: turret.rotation - offset,
-                    size: 2,
-                    color: 'cyan'
-                };
-                turret.lasers.push(laser2);
-            }
-
-            if (tripleTurret) {
-                let offset = Math.PI / 8; // 22.5 degrees offset
-                let laser1 = {
-                    x: laserX + Math.cos(turret.rotation + offset) * turret.size,
-                    y: laserY + Math.sin(turret.rotation + offset) * turret.size,
-                    rotation: turret.rotation + offset,
-                    size: 2,
-                    color: 'cyan'
-                };
-                turret.lasers.push(laser1);
-
-                let laser2 = {
-                    x: laserX + Math.cos(turret.rotation - offset) * turret.size,
-                    y: laserY + Math.sin(turret.rotation - offset) * turret.size,
-                    rotation: turret.rotation - offset,
-                    size: 2,
-                    color: 'cyan'
-                };
-                turret.lasers.push(laser2);
-            }
+    function drawTurretLasers() {
+        for (let i = 0; i < turret.lasers.length; i++) {
+            let laser = turret.lasers[i];
+            ctx.fillStyle = laser.color;
+            ctx.beginPath();
+            ctx.arc(laser.x, laser.y, laser.size, 0, Math.PI * 2);
+            ctx.fill();
         }
     }
 
-    turret.x = ship.x;
-    turret.y = ship.y;
-}
+    function updateBoomerang() {
+        if (!boomerang.active) return;
 
-function drawTurretLasers() {
-    for (let i = 0; i < turret.lasers.length; i++) {
-        let laser = turret.lasers[i];
-        ctx.fillStyle = laser.color;
-        ctx.beginPath();
-        ctx.arc(laser.x, laser.y, laser.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
+        boomerang.x += boomerang.dx * boomerang.speed;
+        boomerang.y += boomerang.dy * boomerang.speed;
 
-function updateBoomerang() {
-    if (!boomerang.active) return;
+        // Calculate the rotation angle based on the boomerang's velocity
+        boomerang.angle = Math.atan2(boomerang.dy, boomerang.dx);
 
-    boomerang.x += boomerang.dx * boomerang.speed;
-    boomerang.y += boomerang.dy * boomerang.speed;
-
-    // Calculate the rotation angle based on the boomerang's velocity
-    boomerang.angle = Math.atan2(boomerang.dy, boomerang.dx);
-
-    // Bounce off the edges of the screen
-    if (boomerang.x < 0 || boomerang.x > canvas.width) {
-        boomerang.dx = -boomerang.dx;
-    }
-    if (boomerang.y < 0 || boomerang.y > canvas.height) {
-        boomerang.dy = -boomerang.dy;
-    }
-
-    // Check collision with asteroids
-    for (let i = 0; i < asteroids.length; i++) {
-        let asteroid = asteroids[i];
-        if (isColliding(boomerang, asteroid)) {
-            let actualDamage = Math.min(boomerang.damage + damageBooster, asteroid.hitpoints);
-            asteroid.hitpoints -= actualDamage;
-            damageReport.boomerang += actualDamage;
-
-            if (comboSonicBoomerangActive) {
-                triggerSonicBlastEffect(boomerang.x, boomerang.y, sonicBlast.range);
-            }
-
-            if (asteroid.hitpoints <= 0) {
-                processAsteroidDeath(asteroid);
-                asteroids.splice(i, 1);
-                score += actualDamage * 50;
-                coins += actualDamage * 20;
-                increaseXP(actualDamage * 20);
-            }
+        // Bounce off the edges of the screen
+        if (boomerang.x < 0 || boomerang.x > canvas.width) {
+            boomerang.dx = -boomerang.dx;
         }
-    }
+        if (boomerang.y < 0 || boomerang.y > canvas.height) {
+            boomerang.dy = -boomerang.dy;
+        }
 
-    damageReport.boomerang += checkAlienDamage(boomerang);
-}
-
-function triggerSonicBlastEffect(x, y, range) {
-    let wave = {
-        x: x,
-        y: y,
-        radius: 0,
-        hitAsteroids: [] // Array to store the IDs of hit asteroids
-    };
-    sonicBlast.waves.push(wave);
-
-    // Update sonic blast waves to expand and deal damage
-    for (let i = sonicBlast.waves.length - 1; i >= 0; i--) {
-        let wave = sonicBlast.waves[i];
-        wave.radius += sonicBlast.speed;
-
-        for (let j = asteroids.length - 1; j >= 0; j--) {
-            let asteroid = asteroids[j];
-            let dx = asteroid.x - wave.x;
-            let dy = asteroid.y - wave.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < wave.radius && !wave.hitAsteroids.includes(asteroid)) {
-                let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitpoints);
+        // Check collision with asteroids
+        for (let i = 0; i < asteroids.length; i++) {
+            let asteroid = asteroids[i];
+            if (isColliding(boomerang, asteroid)) {
+                let actualDamage = Math.min(boomerang.damage + damageBooster, asteroid.hitpoints);
                 asteroid.hitpoints -= actualDamage;
-                damageReport.sonicBlast += actualDamage;
-                wave.hitAsteroids.push(asteroid);
+                damageReport.boomerang += actualDamage;
+
+                if (comboSonicBoomerangActive) {
+                    triggerSonicBlastEffect(boomerang.x, boomerang.y, sonicBlast.range);
+                }
 
                 if (asteroid.hitpoints <= 0) {
                     processAsteroidDeath(asteroid);
-                    asteroids.splice(j, 1);
+                    asteroids.splice(i, 1);
                     score += actualDamage * 50;
                     coins += actualDamage * 20;
                     increaseXP(actualDamage * 20);
@@ -1447,293 +1434,34 @@ function triggerSonicBlastEffect(x, y, range) {
             }
         }
 
-        if (wave.radius > range) {
-            sonicBlast.waves.splice(i, 1);
-        }
-    }
-}
-
-const boomerangImage = new Image();
-boomerangImage.src = 'icons/Boomeranggold.png';
-
-function drawBoomerang() {
-    if (!boomerang.active) return;
-
-    // ctx.fillStyle = 'orange';
-    // ctx.beginPath();
-    // ctx.arc(boomerang.x, boomerang.y, boomerang.size, 0, Math.PI * 2);
-    // ctx.closePath();
-    // ctx.fill();
-
-    ctx.save();
-    ctx.translate(boomerang.x, boomerang.y);
-    ctx.rotate(boomerang.angle);
-    ctx.drawImage(boomerangImage, -boomerang.size / 2, -boomerang.size / 2, boomerang.size * 3, boomerang.size * 3);
-    ctx.restore();
-
-}
-
-function activateBoomerang() {
-    boomerang.active = true;
-    boomerang.x = canvas.width / 2;
-    boomerang.y = canvas.height / 2;
-    boomerang.dx = (Math.random() * 2.2 - 1) * boomerang.speed;
-    boomerang.dy = (Math.random() * 2.2 - 1) * boomerang.speed;
-}
-
-function shootTripleLaser() {
-    const baseRotation = ship.rotation;
-    console.log("tripple");
-    // Center laser
-    const centerLaserX = ship.x + 100 * Math.sin(baseRotation * Math.PI / 180);
-    const centerLaserY = ship.y - 100 * Math.cos(baseRotation * Math.PI / 180);
-    ship.lasers.push({ x: centerLaserX, y: centerLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
-
-    // Left laser
-    const leftLaserX = ship.x + 100 * Math.sin((baseRotation - 10) * Math.PI / 180);
-    const leftLaserY = ship.y - 100 * Math.cos((baseRotation - 10) * Math.PI / 180);
-    ship.lasers.push({ x: leftLaserX, y: leftLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
-
-    // Right laser
-    const rightLaserX = ship.x + 100 * Math.sin((baseRotation + 10) * Math.PI / 180);
-    const rightLaserY = ship.y - 100 * Math.cos((baseRotation + 10) * Math.PI / 180);
-    ship.lasers.push({ x: rightLaserX, y: rightLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
-
-    // Set the laser timer
-    ship.laserTimer = ship.laserCooldown;
-}
-
-function shootLasers() {
-    if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
-
-    // Use the custom shoot function if it exists, otherwise use default shooting
-    if (currentShip === 'solarPhoenix') {
-        shootTripleLaser();
-
-    } else if (currentShip === 'quantumStriker' && ships.quantumStriker.shoot) {
-        ships.quantumStriker.shoot();
-    } else {
-        const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
-        const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
-        ship.lasers.push({ x: laserX, y: laserY, rotation: ship.rotation, size: ship.laserLevel + 1 });
-        ship.laserTimer = ship.laserCooldown;
+        damageReport.boomerang += checkAlienDamage(boomerang);
     }
 
-    playRandomShotSound();
-}
+    function triggerSonicBlastEffect(x, y, range) {
+        let wave = {
+            x: x,
+            y: y,
+            radius: 0,
+            hitAsteroids: [] // Array to store the IDs of hit asteroids
+        };
+        sonicBlast.waves.push(wave);
 
+        // Update sonic blast waves to expand and deal damage
+        for (let i = sonicBlast.waves.length - 1; i >= 0; i--) {
+            let wave = sonicBlast.waves[i];
+            wave.radius += sonicBlast.speed;
 
-
-function shootShotgunStyle() {
-    const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
-    const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
-
-    // Calculate the spread angles
-    const spreadAngle = 10; // Spread angle in degrees
-    const baseRotation = ship.rotation;
-
-    // Create three lasers with spread
-    ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation - spreadAngle, size: ship.laserLevel + 1 });
-    ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation, size: ship.laserLevel + 1 });
-    ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation + spreadAngle, size: ship.laserLevel + 1 });
-
-    // Set the laser timer to half the cooldown
-    ship.laserTimer = ship.laserCooldown * 2; // Slow down fire interval by half
-}
-
-
-function findNearestAsteroid() {
-    let nearestAsteroid = null;
-    let nearestDistance = Infinity;
-    for (let i = 0; i < asteroids.length; i++) {
-        let dx = ship.x - asteroids[i].x;
-        let dy = ship.y - asteroids[i].y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < nearestDistance) {
-            nearestAsteroid = asteroids[i];
-            nearestDistance = distance;
-        }
-    }
-    return nearestAsteroid;
-}
-
-
-function findNearestAsteroidInRange() {
-    let nearestAsteroid = null;
-    let nearestDistance = Infinity;
-    for (let i = 0; i < asteroids.length; i++) {
-        let dx = turret.x - asteroids[i].x;
-        let dy = turret.y - asteroids[i].y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < nearestDistance && distance <= turret.range) {
-            nearestAsteroid = asteroids[i];
-            nearestDistance = distance;
-        }
-    }
-    return nearestAsteroid;
-}
-
-
-function drawSonicBlast() {
-    ctx.strokeStyle = 'blue';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < sonicBlast.waves.length; i++) {
-        const wave = sonicBlast.waves[i];
-        ctx.beginPath();
-        ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
-        ctx.stroke();
-    }
-}
-
-let mostRecentUpgradeApplied = false;
-
-function selectUpgrade(choice) {
-    console.log(choice);
-    const upgrades = window.levelUpgrades;
-    console.log(upgrades);
-
-    if (!mostRecentUpgradeApplied)
-        applyUpgrade(upgrades[choice - 1]);
-    mostRecentUpgradeApplied = true;
-
-    document.getElementById('levelUpModal').style.display = 'none';
-    isPaused = false;
-    // Resume the game
-    clearInterval(gameLoop);
-    gameLoop = setInterval(update, 1000 / 60); // 60 FPS
-
-}
-
-function updateSonicBlast() {
-    for (let i = sonicBlast.waves.length - 1; i >= 0; i--) {
-        let wave = sonicBlast.waves[i];
-        wave.radius += sonicBlast.speed;
-
-        for (let j = asteroids.length - 1; j >= 0; j--) {
-            let asteroid = asteroids[j];
-            let dx = asteroid.x - wave.x;
-            let dy = asteroid.y - wave.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < wave.radius && !wave.hitAsteroids.includes(asteroid)) {
-                let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitpoints);
-                asteroid.hitpoints -= actualDamage;
-                damageReport.sonicBlast += actualDamage;
-                wave.hitAsteroids.push(asteroid);
-
-                if (asteroid.hitpoints <= 0) {
-                    processAsteroidDeath(asteroid);
-                    asteroids.splice(j, 1);
-                    score += actualDamage * 50;
-                    coins += actualDamage * 20;
-                    increaseXP(actualDamage * 20);
-                }
-            }
-        }
-
-        if (wave.radius > sonicBlast.range) {
-            sonicBlast.waves.splice(i, 1);
-        }
-    }
-}
-
-function upgradeDrone(attribute) {
-    const cost = 200;
-    // if (coins >= cost) {
-    //   coins -= cost;
-    droneUpgrades[attribute]++;
-
-    // Update existing drones with new upgrade levels
-    drones.forEach(drone => {
-        switch (attribute) {
-            case 'speed':
-                drone.speed = 2 * droneUpgrades.speed;
-                break;
-            case 'laserSpeed':
-                drone.laserSpeed = 5 * droneUpgrades.laserSpeed;
-                break;
-            case 'laserInterval':
-                drone.laserInterval = 120 / droneUpgrades.laserInterval;
-                break;
-            case 'damageLevel':
-                drone.damageLevel += 1;
-                break;
-
-        }
-    });
-    // updateCoinsDisplay();
-    // updateMarketplaceDisplay();
-
-}
-
-function applyGravity(object) {
-    const dx = planet.x - object.x;
-    const dy = planet.y - object.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    let force = gravityStrength / (distance * distance); // Inverse-square law
-    if (force > 0.9) {
-        console.log(force);
-        force = 0.9;
-    }
-
-    object.dx += force * dx / distance;
-    object.dy += force * dy / distance;
-}
-
-// Update all drones
-function updateDrones() {
-    drones.forEach(drone => {
-        const dx = ship.x - drone.x;
-        const dy = ship.y - drone.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance > 250) {
-            const angleToShip = Math.atan2(dy, dx);
-            drone.direction = angleToShip;
-        }
-
-        drone.x += Math.cos(drone.direction) * drone.speed;
-        drone.y += Math.sin(drone.direction) * drone.speed;
-
-        if (drone.x < 0) drone.x = canvas.width;
-        else if (drone.x > canvas.width) drone.x = 0;
-        if (drone.y < 0) drone.y = canvas.height;
-        else if (drone.y > canvas.height) drone.y = 0;
-
-        for (let i = drone.lasers.length - 1; i >= 0; i--) {
-            let laser = drone.lasers[i];
-            laser.x += Math.cos(laser.direction) * drone.laserSpeed;
-            laser.y += Math.sin(laser.direction) * drone.laserSpeed;
-
-            if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
-                drone.lasers.splice(i, 1);
-            }
-        }
-
-        drone.laserTimer++;
-        if (drone.laserTimer >= drone.laserInterval) {
-            drone.laserTimer = 0;
-            let laser = {
-                x: drone.x,
-                y: drone.y,
-                direction: Math.random() * Math.PI * 2,
-                size: 2
-            };
-            drone.lasers.push(laser);
-        }
-
-        drone.lasers.forEach(laser => {
             for (let j = asteroids.length - 1; j >= 0; j--) {
                 let asteroid = asteroids[j];
-                if (isColliding(laser, asteroid)) {
-                    let actualDamage = Math.min(drone.damage + damageBooster, asteroid.hitpoints);
-                    asteroid.hitpoints -= actualDamage;
-                    damageReport.drones += actualDamage;
+                let dx = asteroid.x - wave.x;
+                let dy = asteroid.y - wave.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
 
-                    if (comboExplosiveDroneActive) {
-                        createExplosion(asteroid.x, asteroid.y, 0);
-                        applyExplosiveDamageToNearbyAsteroids(asteroid);
-                    }
+                if (distance < wave.radius && !wave.hitAsteroids.includes(asteroid)) {
+                    let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitpoints);
+                    asteroid.hitpoints -= actualDamage;
+                    damageReport.sonicBlast += actualDamage;
+                    wave.hitAsteroids.push(asteroid);
 
                     if (asteroid.hitpoints <= 0) {
                         processAsteroidDeath(asteroid);
@@ -1744,191 +1472,489 @@ function updateDrones() {
                     }
                 }
             }
-        });
 
-        checkLaserCollisions(drone.lasers, false);
-    });
-}
-
-function applyExplosiveDamageToNearbyAsteroids(explodedAsteroid) {
-    for (let j = asteroids.length - 1; j >= 0; j--) {
-        const asteroid = asteroids[j];
-        const dx = explodedAsteroid.x - asteroid.x;
-        const dy = explodedAsteroid.y - asteroid.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < explodingDrone.explosionRadius) {
-            const damage = Math.min(explodingDrone.damage, asteroid.hitpoints);
-            asteroid.hitpoints -= damage;
-            damageReport.drones += damage;
-
-            if (asteroid.hitpoints <= 0) {
-                processAsteroidDeath(asteroid);
-                asteroids.splice(j, 1);
+            if (wave.radius > range) {
+                sonicBlast.waves.splice(i, 1);
             }
         }
     }
-}
 
+    const boomerangImage = new Image();
+    boomerangImage.src = 'icons/Boomeranggold.png';
 
-function updateBomberDrones() {
-    bomberDrones.forEach(drone => {
-        const dx = ship.x - drone.x;
-        const dy = ship.y - drone.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+    function drawBoomerang() {
+        if (!boomerang.active) return;
 
-        if (distance > 200) {
-            const angleToShip = Math.atan2(dy, dx);
-            const deviationAngle = (Math.random() - 0.5) * (Math.PI / 3);
-            drone.direction = angleToShip + deviationAngle;
+        // ctx.fillStyle = 'orange';
+        // ctx.beginPath();
+        // ctx.arc(boomerang.x, boomerang.y, boomerang.size, 0, Math.PI * 2);
+        // ctx.closePath();
+        // ctx.fill();
 
+        ctx.save();
+        ctx.translate(boomerang.x, boomerang.y);
+        ctx.rotate(boomerang.angle);
+        ctx.drawImage(boomerangImage, -boomerang.size / 2, -boomerang.size / 2, boomerang.size * 3, boomerang.size * 3);
+        ctx.restore();
+
+    }
+
+    function activateBoomerang() {
+        boomerang.active = true;
+        boomerang.x = canvas.width / 2;
+        boomerang.y = canvas.height / 2;
+        boomerang.dx = (Math.random() * 2.2 - 1) * boomerang.speed;
+        boomerang.dy = (Math.random() * 2.2 - 1) * boomerang.speed;
+    }
+
+    function shootTripleLaser() {
+        const baseRotation = ship.rotation;
+        console.log("tripple");
+        // Center laser
+        const centerLaserX = ship.x + 100 * Math.sin(baseRotation * Math.PI / 180);
+        const centerLaserY = ship.y - 100 * Math.cos(baseRotation * Math.PI / 180);
+        ship.lasers.push({ x: centerLaserX, y: centerLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
+
+        // Left laser
+        const leftLaserX = ship.x + 100 * Math.sin((baseRotation - 10) * Math.PI / 180);
+        const leftLaserY = ship.y - 100 * Math.cos((baseRotation - 10) * Math.PI / 180);
+        ship.lasers.push({ x: leftLaserX, y: leftLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
+
+        // Right laser
+        const rightLaserX = ship.x + 100 * Math.sin((baseRotation + 10) * Math.PI / 180);
+        const rightLaserY = ship.y - 100 * Math.cos((baseRotation + 10) * Math.PI / 180);
+        ship.lasers.push({ x: rightLaserX, y: rightLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
+
+        // Set the laser timer
+        ship.laserTimer = ship.laserCooldown;
+    }
+
+    function shootLasers() {
+        if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
+
+        // Use the custom shoot function if it exists, otherwise use default shooting
+        if (currentShip === 'solarPhoenix') {
+            shootTripleLaser();
+
+        } else if (currentShip === 'quantumStriker' && ships.quantumStriker.shoot) {
+            ships.quantumStriker.shoot();
+        } else {
+            const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
+            const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
+            ship.lasers.push({ x: laserX, y: laserY, rotation: ship.rotation, size: ship.laserLevel + 1 });
+            ship.laserTimer = ship.laserCooldown;
         }
 
-        drone.x += Math.cos(drone.direction) * drone.speed;
-        drone.y += Math.sin(drone.direction) * drone.speed;
+        playRandomShotSound();
+    }
 
-        if (drone.x < 0) drone.x = canvas.width;
-        else if (drone.x > canvas.width) drone.x = 0;
-        if (drone.y < 0) drone.y = canvas.height;
-        else if (drone.y > canvas.height) drone.y = 0;
 
-        drone.bombTimer++;
-        if (drone.bombTimer >= drone.bombInterval) {
-            drone.bombTimer = 0;
-            let bomb = {
-                x: drone.x,
-                y: drone.y,
-                radius: bomberDroneUpgrades.bombRadius,
-                damage: bomberDroneUpgrades.bombDamage
-            };
-            drone.bombs.push(bomb);
-            playRandomBombLaySound();
+
+    function shootShotgunStyle() {
+        const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
+        const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
+
+        // Calculate the spread angles
+        const spreadAngle = 10; // Spread angle in degrees
+        const baseRotation = ship.rotation;
+
+        // Create three lasers with spread
+        ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation - spreadAngle, size: ship.laserLevel + 1 });
+        ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation, size: ship.laserLevel + 1 });
+        ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation + spreadAngle, size: ship.laserLevel + 1 });
+
+        // Set the laser timer to half the cooldown
+        ship.laserTimer = ship.laserCooldown * 2; // Slow down fire interval by half
+    }
+
+
+    function findNearestAsteroid() {
+        let nearestAsteroid = null;
+        let nearestDistance = Infinity;
+        for (let i = 0; i < asteroids.length; i++) {
+            let dx = ship.x - asteroids[i].x;
+            let dy = ship.y - asteroids[i].y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < nearestDistance) {
+                nearestAsteroid = asteroids[i];
+                nearestDistance = distance;
+            }
         }
+        return nearestAsteroid;
+    }
 
-        for (let i = drone.bombs.length - 1; i >= 0; i--) {
-            let bomb = drone.bombs[i];
+
+    function findNearestAsteroidInRange() {
+        let nearestAsteroid = null;
+        let nearestDistance = Infinity;
+        for (let i = 0; i < asteroids.length; i++) {
+            let dx = turret.x - asteroids[i].x;
+            let dy = turret.y - asteroids[i].y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < nearestDistance && distance <= turret.range) {
+                nearestAsteroid = asteroids[i];
+                nearestDistance = distance;
+            }
+        }
+        return nearestAsteroid;
+    }
+
+
+    function drawSonicBlast() {
+        ctx.strokeStyle = 'blue';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < sonicBlast.waves.length; i++) {
+            const wave = sonicBlast.waves[i];
+            ctx.beginPath();
+            ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+    }
+
+    let mostRecentUpgradeApplied = false;
+
+    function selectUpgrade(choice) {
+        console.log(choice);
+        const upgrades = window.levelUpgrades;
+        console.log(upgrades);
+
+        if (!mostRecentUpgradeApplied)
+            applyUpgrade(upgrades[choice - 1]);
+        mostRecentUpgradeApplied = true;
+
+        document.getElementById('levelUpModal').style.display = 'none';
+        isPaused = false;
+        // Resume the game
+        clearInterval(gameLoop);
+        gameLoop = setInterval(update, 1000 / 60); // 60 FPS
+
+    }
+
+    function updateSonicBlast() {
+        for (let i = sonicBlast.waves.length - 1; i >= 0; i--) {
+            let wave = sonicBlast.waves[i];
+            wave.radius += sonicBlast.speed;
+
             for (let j = asteroids.length - 1; j >= 0; j--) {
                 let asteroid = asteroids[j];
-                let dx = bomb.x - asteroid.x;
-                let dy = bomb.y - asteroid.y;
+                let dx = asteroid.x - wave.x;
+                let dy = asteroid.y - wave.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < bomb.radius + asteroid.size) {
-                    let actualDamage = Math.min(bomb.damage + damageBooster, asteroid.hitpoints);
+
+                if (distance < wave.radius && !wave.hitAsteroids.includes(asteroid)) {
+                    let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitpoints);
                     asteroid.hitpoints -= actualDamage;
-                    damageReport.bomberDrones += actualDamage;
+                    damageReport.sonicBlast += actualDamage;
+                    wave.hitAsteroids.push(asteroid);
 
                     if (asteroid.hitpoints <= 0) {
-                        asteroids.splice(j, 1);
                         processAsteroidDeath(asteroid);
-                        score += 50;
-                        increaseXP(20);
+                        asteroids.splice(j, 1);
+                        score += actualDamage * 50;
+                        coins += actualDamage * 20;
+                        increaseXP(actualDamage * 20);
                     }
-                    createExplosion(bomb.x, bomb.y, 1);
-                    drone.bombs.splice(i, 1);
-                    break;
                 }
             }
-            if (bomb.x < 0 || bomb.x > canvas.width || bomb.y < 0 || bomb.y > canvas.height) {
-                drone.bombs.splice(i, 1);
+
+            if (wave.radius > sonicBlast.range) {
+                sonicBlast.waves.splice(i, 1);
             }
         }
-    });
-}
+    }
 
-function drawDrones() {
-    drones.forEach(drone => {
+    function upgradeDrone(attribute) {
+        const cost = 200;
+        // if (coins >= cost) {
+        //   coins -= cost;
+        droneUpgrades[attribute]++;
 
-        ctx.save();
-        ctx.translate(drone.x, drone.y);
-        ctx.rotate(drone.direction);
-        ctx.drawImage(drone.image, -drone.size, -drone.size, drone.size * 2, drone.size * 2);
-        ctx.restore();
+        // Update existing drones with new upgrade levels
+        drones.forEach(drone => {
+            switch (attribute) {
+                case 'speed':
+                    drone.speed = 2 * droneUpgrades.speed;
+                    break;
+                case 'laserSpeed':
+                    drone.laserSpeed = 5 * droneUpgrades.laserSpeed;
+                    break;
+                case 'laserInterval':
+                    drone.laserInterval = 120 / droneUpgrades.laserInterval;
+                    break;
+                case 'damageLevel':
+                    drone.damageLevel += 1;
+                    break;
 
-        // ctx.save();
-        // ctx.translate(drone.x, drone.y);
-        // ctx.rotate(drone.direction);
-        // ctx.beginPath();
-        // ctx.moveTo(0, -drone.size);
-        // ctx.lineTo(-drone.size, drone.size);
-        // ctx.lineTo(drone.size, drone.size);
-        // ctx.closePath();
-        // ctx.fillStyle = 'cyan';
-        // ctx.fill();
-        // ctx.restore();
-
-        ctx.fillStyle = 'cyan';
-        for (let i = 0; i < drone.lasers.length; i++) {
-            let laser = drone.lasers[i];
-            ctx.fillRect(laser.x - 1, laser.y - 1, 2, 2);
-        }
-    });
-}
-
-function drawBomberDrones() {
-    bomberDrones.forEach(drone => {
-
-        ctx.save();
-        ctx.translate(drone.x, drone.y);
-        ctx.rotate(drone.direction);
-        ctx.drawImage(drone.image, -drone.size, -drone.size, drone.size * 2, drone.size * 2);
-        ctx.restore();
-
-        // ctx.save();
-        // ctx.translate(drone.x, drone.y);
-        // ctx.rotate(drone.direction);
-        // ctx.beginPath();
-        // ctx.moveTo(0, -drone.size);
-        // ctx.lineTo(-drone.size, drone.size);
-        // ctx.lineTo(drone.size, drone.size);
-        // ctx.closePath();
-        // ctx.fillStyle = 'magenta';
-        // ctx.fill();
-        // ctx.restore();
-
-        // Draw bombs
-        ctx.fillStyle = 'orange';
-        drone.bombs.forEach(bomb => {
-            ctx.beginPath();
-            ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
-            ctx.fill();
+            }
         });
-    });
-}
+        // updateCoinsDisplay();
+        // updateMarketplaceDisplay();
 
-function canActivateComboWeapons() {
-    const flamethrowerMaxed = getUpgradeCount('flamethrower') >= MAX_UPGRADE_COUNT;
-    const chainLightningMaxed = getUpgradeCount('chainlightning') >= MAX_UPGRADE_COUNT;
-    const explosiveLaserMaxed = getUpgradeCount('explosive') >= MAX_UPGRADE_COUNT;
-    const droneMaxed = getUpgradeCount('drone') >= MAX_UPGRADE_COUNT;
-    const boomerangMaxed = getUpgradeCount('boomerang') >= MAX_UPGRADE_COUNT;
-    const sonicBlastMaxed = getUpgradeCount('sonic') >= MAX_UPGRADE_COUNT;
-
-    return {
-        flameChainLightning: flamethrowerMaxed && chainLightningMaxed,
-        explosiveDrone: explosiveLaserMaxed && droneMaxed,
-        sonicBoomerang: boomerangMaxed && sonicBlastMaxed
-    };
-}
-
-let comboFlameChainLightningActive = false;
-let comboExplosiveDroneActive = false;
-let comboSonicBoomerangActive = false;
-
-function activateComboFlameChainLightning() {
-    if (canActivateComboWeapons().flameChainLightning) {
-        comboFlameChainLightningActive = true;
     }
-}
 
-function activateComboExplosiveDrone() {
-    if (canActivateComboWeapons().explosiveDrone) {
-        comboExplosiveDroneActive = true;
-    }
-}
+    function applyGravity(object) {
+        const dx = planet.x - object.x;
+        const dy = planet.y - object.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        let force = gravityStrength / (distance * distance); // Inverse-square law
+        if (force > 0.9) {
+            console.log(force);
+            force = 0.9;
+        }
 
-function activateComboSonicBoomerang() {
-    if (canActivateComboWeapons().sonicBoomerang) {
-        comboSonicBoomerangActive = true;
+        object.dx += force * dx / distance;
+        object.dy += force * dy / distance;
     }
-}
+
+    // Update all drones
+    function updateDrones() {
+        drones.forEach(drone => {
+            const dx = ship.x - drone.x;
+            const dy = ship.y - drone.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance > 250) {
+                const angleToShip = Math.atan2(dy, dx);
+                drone.direction = angleToShip;
+            }
+
+            drone.x += Math.cos(drone.direction) * drone.speed;
+            drone.y += Math.sin(drone.direction) * drone.speed;
+
+            if (drone.x < 0) drone.x = canvas.width;
+            else if (drone.x > canvas.width) drone.x = 0;
+            if (drone.y < 0) drone.y = canvas.height;
+            else if (drone.y > canvas.height) drone.y = 0;
+
+            for (let i = drone.lasers.length - 1; i >= 0; i--) {
+                let laser = drone.lasers[i];
+                laser.x += Math.cos(laser.direction) * drone.laserSpeed;
+                laser.y += Math.sin(laser.direction) * drone.laserSpeed;
+
+                if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
+                    drone.lasers.splice(i, 1);
+                }
+            }
+
+            drone.laserTimer++;
+            if (drone.laserTimer >= drone.laserInterval) {
+                drone.laserTimer = 0;
+                let laser = {
+                    x: drone.x,
+                    y: drone.y,
+                    direction: Math.random() * Math.PI * 2,
+                    size: 2
+                };
+                drone.lasers.push(laser);
+            }
+
+            drone.lasers.forEach(laser => {
+                for (let j = asteroids.length - 1; j >= 0; j--) {
+                    let asteroid = asteroids[j];
+                    if (isColliding(laser, asteroid)) {
+                        let actualDamage = Math.min(drone.damage + damageBooster, asteroid.hitpoints);
+                        asteroid.hitpoints -= actualDamage;
+                        damageReport.drones += actualDamage;
+
+                        if (comboExplosiveDroneActive) {
+                            createExplosion(asteroid.x, asteroid.y, 0);
+                            applyExplosiveDamageToNearbyAsteroids(asteroid);
+                        }
+
+                        if (asteroid.hitpoints <= 0) {
+                            processAsteroidDeath(asteroid);
+                            asteroids.splice(j, 1);
+                            score += actualDamage * 50;
+                            coins += actualDamage * 20;
+                            increaseXP(actualDamage * 20);
+                        }
+                    }
+                }
+            });
+
+            checkLaserCollisions(drone.lasers, false);
+        });
+    }
+
+    function applyExplosiveDamageToNearbyAsteroids(explodedAsteroid) {
+        for (let j = asteroids.length - 1; j >= 0; j--) {
+            const asteroid = asteroids[j];
+            const dx = explodedAsteroid.x - asteroid.x;
+            const dy = explodedAsteroid.y - asteroid.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < explodingDrone.explosionRadius) {
+                const damage = Math.min(explodingDrone.damage, asteroid.hitpoints);
+                asteroid.hitpoints -= damage;
+                damageReport.drones += damage;
+
+                if (asteroid.hitpoints <= 0) {
+                    processAsteroidDeath(asteroid);
+                    asteroids.splice(j, 1);
+                }
+            }
+        }
+    }
+
+
+    function updateBomberDrones() {
+        bomberDrones.forEach(drone => {
+            const dx = ship.x - drone.x;
+            const dy = ship.y - drone.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance > 200) {
+                const angleToShip = Math.atan2(dy, dx);
+                const deviationAngle = (Math.random() - 0.5) * (Math.PI / 3);
+                drone.direction = angleToShip + deviationAngle;
+
+            }
+
+            drone.x += Math.cos(drone.direction) * drone.speed;
+            drone.y += Math.sin(drone.direction) * drone.speed;
+
+            if (drone.x < 0) drone.x = canvas.width;
+            else if (drone.x > canvas.width) drone.x = 0;
+            if (drone.y < 0) drone.y = canvas.height;
+            else if (drone.y > canvas.height) drone.y = 0;
+
+            drone.bombTimer++;
+            if (drone.bombTimer >= drone.bombInterval) {
+                drone.bombTimer = 0;
+                let bomb = {
+                    x: drone.x,
+                    y: drone.y,
+                    radius: bomberDroneUpgrades.bombRadius,
+                    damage: bomberDroneUpgrades.bombDamage
+                };
+                drone.bombs.push(bomb);
+                playRandomBombLaySound();
+            }
+
+            for (let i = drone.bombs.length - 1; i >= 0; i--) {
+                let bomb = drone.bombs[i];
+                for (let j = asteroids.length - 1; j >= 0; j--) {
+                    let asteroid = asteroids[j];
+                    let dx = bomb.x - asteroid.x;
+                    let dy = bomb.y - asteroid.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < bomb.radius + asteroid.size) {
+                        let actualDamage = Math.min(bomb.damage + damageBooster, asteroid.hitpoints);
+                        asteroid.hitpoints -= actualDamage;
+                        damageReport.bomberDrones += actualDamage;
+
+                        if (asteroid.hitpoints <= 0) {
+                            asteroids.splice(j, 1);
+                            processAsteroidDeath(asteroid);
+                            score += 50;
+                            increaseXP(20);
+                        }
+                        createExplosion(bomb.x, bomb.y, 1);
+                        drone.bombs.splice(i, 1);
+                        break;
+                    }
+                }
+                if (bomb.x < 0 || bomb.x > canvas.width || bomb.y < 0 || bomb.y > canvas.height) {
+                    drone.bombs.splice(i, 1);
+                }
+            }
+        });
+    }
+
+    function drawDrones() {
+        drones.forEach(drone => {
+
+            ctx.save();
+            ctx.translate(drone.x, drone.y);
+            ctx.rotate(drone.direction);
+            ctx.drawImage(drone.image, -drone.size, -drone.size, drone.size * 2, drone.size * 2);
+            ctx.restore();
+
+            // ctx.save();
+            // ctx.translate(drone.x, drone.y);
+            // ctx.rotate(drone.direction);
+            // ctx.beginPath();
+            // ctx.moveTo(0, -drone.size);
+            // ctx.lineTo(-drone.size, drone.size);
+            // ctx.lineTo(drone.size, drone.size);
+            // ctx.closePath();
+            // ctx.fillStyle = 'cyan';
+            // ctx.fill();
+            // ctx.restore();
+
+            ctx.fillStyle = 'cyan';
+            for (let i = 0; i < drone.lasers.length; i++) {
+                let laser = drone.lasers[i];
+                ctx.fillRect(laser.x - 1, laser.y - 1, 2, 2);
+            }
+        });
+    }
+
+    function drawBomberDrones() {
+        bomberDrones.forEach(drone => {
+
+            ctx.save();
+            ctx.translate(drone.x, drone.y);
+            ctx.rotate(drone.direction);
+            ctx.drawImage(drone.image, -drone.size, -drone.size, drone.size * 2, drone.size * 2);
+            ctx.restore();
+
+            // ctx.save();
+            // ctx.translate(drone.x, drone.y);
+            // ctx.rotate(drone.direction);
+            // ctx.beginPath();
+            // ctx.moveTo(0, -drone.size);
+            // ctx.lineTo(-drone.size, drone.size);
+            // ctx.lineTo(drone.size, drone.size);
+            // ctx.closePath();
+            // ctx.fillStyle = 'magenta';
+            // ctx.fill();
+            // ctx.restore();
+
+            // Draw bombs
+            ctx.fillStyle = 'orange';
+            drone.bombs.forEach(bomb => {
+                ctx.beginPath();
+                ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        });
+    }
+
+    function canActivateComboWeapons() {
+        const flamethrowerMaxed = getUpgradeCount('flamethrower') >= MAX_UPGRADE_COUNT;
+        const chainLightningMaxed = getUpgradeCount('chainlightning') >= MAX_UPGRADE_COUNT;
+        const explosiveLaserMaxed = getUpgradeCount('explosive') >= MAX_UPGRADE_COUNT;
+        const droneMaxed = getUpgradeCount('drone') >= MAX_UPGRADE_COUNT;
+        const boomerangMaxed = getUpgradeCount('boomerang') >= MAX_UPGRADE_COUNT;
+        const sonicBlastMaxed = getUpgradeCount('sonic') >= MAX_UPGRADE_COUNT;
+
+        return {
+            flameChainLightning: flamethrowerMaxed && chainLightningMaxed,
+            explosiveDrone: explosiveLaserMaxed && droneMaxed,
+            sonicBoomerang: boomerangMaxed && sonicBlastMaxed
+        };
+    }
+
+    let comboFlameChainLightningActive = false;
+    let comboExplosiveDroneActive = false;
+    let comboSonicBoomerangActive = false;
+
+    function activateComboFlameChainLightning() {
+        if (canActivateComboWeapons().flameChainLightning) {
+            comboFlameChainLightningActive = true;
+        }
+    }
+
+    function activateComboExplosiveDrone() {
+        if (canActivateComboWeapons().explosiveDrone) {
+            comboExplosiveDroneActive = true;
+        }
+    }
+
+    function activateComboSonicBoomerang() {
+        if (canActivateComboWeapons().sonicBoomerang) {
+            comboSonicBoomerangActive = true;
+        }
+    }
 
