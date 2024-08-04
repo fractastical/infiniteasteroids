@@ -349,7 +349,7 @@ function checkGemCollection() {
             }
 
             // Increase the XP and check for level up
-            increaseXp(xpBoost);
+            increaseXP(xpBoost);
             updateXPBar();
 
             // Remove the collected gem
