@@ -190,10 +190,13 @@ function drawActiveMegaUpgrades() {
 }
 // ... rest of the code remains the same
 let activeMegaUpgrades = [];
+let lastActivatedWave = 0;
 
 function checkFloatingIslandSpawn() {
+    // prevent island from being activated multiple times in same wave
+    if (wave % 12 === 0 && !floatingIsland.active && wave != lastActivatedWave) {
 
-    if (wave % 12 === 0 && !floatingIsland.active) {
+        lastActivatedWave = wave;
         floatingIsland.active = true;
         floatingIsland.x = -100;
     }
