@@ -1776,6 +1776,11 @@ function updateDrones() {
     });
 }
 
+let explodingDrone = {
+    damage: 10,
+    explosionRadius: 150
+}
+
 function applyExplosiveDamageToNearbyAsteroids(explodedAsteroid) {
     for (let j = asteroids.length - 1; j >= 0; j--) {
         const asteroid = asteroids[j];
