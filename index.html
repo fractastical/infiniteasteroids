@@ -1711,12 +1711,12 @@
     function increaseXP(amount) {
 
       const currTimeInMS = Date.now();
-      if (xp >= (xpToNextLevel / 2)) {
+      if (xp >= (xpToNextLevel / 1)) {
         if (lastLevelUp + 1000 > currTimeInMS) {
           amount *= 0.05;
         } else if (lastLevelUp + 3000 > currTimeInMS) {
           amount *= .1;
-        } else if (lastLevelUp + 5000 > currTimeInMS) {
+        } else if (lastLevelUp + 6000 > currTimeInMS) {
           amount *= .2;
         }
       }
