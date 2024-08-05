@@ -360,6 +360,7 @@ function applyUpgrade(upgrade) {
         case 'Drone Army':
             buyDrone();
             buyBomberDrone();
+            droneArmy = true;
             break;
         case 'Damage Booster':
             damageBooster++;

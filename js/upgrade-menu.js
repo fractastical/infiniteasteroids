@@ -38,7 +38,7 @@ function getRandomUpgrades(count) {
 
     if (!fourthUpgradeUnlocked && Achievements.death_ray_damage.reached)
         availableUpgrades.push('Extra Upgrade Choice');
-    if ((activeWeaponClasses.includes('drone') || activeWeaponClasses.includes('bomberdrone')) && Achievements.drone_damage.reached)
+    if ((activeWeaponClasses.includes('drone') || activeWeaponClasses.includes('bomberdrone')) && Achievements.drone_damage.reached && !droneArmy)
         availableUpgrades.push('Drone Army');
     if (Achievements.complete_meteor_normal_mode.reached && activeWeaponClasses.includes('turret') && !doubleTurret)
         availableUpgrades.push('Double Turret');
