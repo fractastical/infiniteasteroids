@@ -1372,7 +1372,7 @@
 
 
 
-
+    let bonuslevelUpXPMultiplier = 1;
     let fourthUpgradeUnlocked = false;
     const levelUpModal = document.getElementById('levelUpModal');
     let lastLevelUp = Date.now();
@@ -1385,7 +1385,13 @@
 
       console.log(lastLevelUp - prevLevelUp);
       xp = 0;  // Reset XP
-      xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier); // Increase XP required for next level
+      if (wave > 75) {
+        bonuslevelUpXPMultiplier = 1.5;
+      }
+      else if (wave > 50)
+        bonuslevelUpXPMultiplier = 1.2;
+
+      xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier * bonuslevelUpXPMultiplier); // Increase XP required for next level
       updateXPBar();
 
       // Generate three random upgrades
@@ -1713,12 +1719,12 @@
 
       const currTimeInMS = Date.now();
       if (xp >= (xpToNextLevel / 1)) {
-        if (lastLevelUp + 1000 > currTimeInMS) {
+        if (lastLevelUp + 2000 > currTimeInMS) {
           amount *= 0.05;
-        } else if (lastLevelUp + 3000 > currTimeInMS) {
-          amount *= .1;
-        } else if (lastLevelUp + 6000 > currTimeInMS) {
+        } else if (lastLevelUp + 5000 > currTimeInMS) {
           amount *= .2;
+        } else if (lastLevelUp + 8000 > currTimeInMS) {
+          amount *= .3;
         }
       }
       xp += amount;
@@ -1726,7 +1732,7 @@
 
       updateXPBar();
 
-      if (xp >= xpToNextLevel && currTimeInMS > (lastLevelUp + 5000)) {
+      if (xp >= xpToNextLevel && currTimeInMS > (lastLevelUp + 8000)) {
 
         levelUp();
       }
@@ -2018,6 +2024,22 @@
       droneArmy = false;
       alienLasers = [];
       activeMegaUpgrades = [];
+
+      flamethrower = {
+        cooldown: 10, // Cooldown time in frames
+        timer: 0, // Current cooldown timer
+        range: 100, // Range of the flamethrower
+        damage: 1, // Damage dealt per frame
+        active: false, // Flag to track if the flamethrower is active
+        damagePerSecond: 1 // Damage dealt per second
+      };
+
+      flamethrowerUpgrades = {
+        range: 1,
+        damage: 1,
+        cooldown: 1
+      };
+
 
       turret = {
         x: 0,
