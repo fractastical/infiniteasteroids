@@ -81,6 +81,12 @@ function createAsteroids(side) {
             let color;
             let type = 'normal';
 
+            let hpBooster = 0;
+            if (wave > 65) {
+                let multiplier = 65 - wave;
+                hpBooster = multiplier * 3;
+            }
+
             if (isRareAsteroid) {
                 // console.log("Rare asteroid created:", type, color);
 
@@ -107,15 +113,19 @@ function createAsteroids(side) {
                     color = 'darkgray';
                 } else if (isMegaHardenedAsteroid) {
                     hitpoints = 10 + wave;
+                    hitpoints += hpBooster;
                     color = '#301934'; // Very dark purple for mega hardened asteroids
                 } else if (isVeryHardenedAsteroid) {
                     hitpoints = 15;
+                    hitpoints += hpBooster;
                     color = '#0A1414'; // Very dark green color for very hardened asteroids
                 } else if (isHardenedAsteroid) {
                     hitpoints = Math.floor(Math.random() * 5) + 3; // Random hitpoints between 5 and 8
+                    hitpoints += hpBooster;
                     color = '#172727'; // Dark green color for hardened asteroids
                 } else {
                     hitpoints = 1;
+                    hitpoints += hpBooster;
                     color = 'gray';
                 }
             }
