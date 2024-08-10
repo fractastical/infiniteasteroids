@@ -495,7 +495,9 @@ function processAsteroidDeath(asteroid) {
 
 
     let baseDropChance = 0.15; // 10% base chance to drop a gem
-    if (wave > 25)
+    if (wave > 45)
+        baseDropChance = 0.01; // 10% base chance to drop a gem
+    else if (wave > 25)
         baseDropChance = 0.03; // 10% base chance to drop a gem
     else if (wave > 15)
         baseDropChance = 0.05; // 10% base chance to drop a gem
