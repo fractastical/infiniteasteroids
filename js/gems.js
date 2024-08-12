@@ -70,7 +70,7 @@ gemImages.rare.src = 'icons/rare_gem.png';
 gemImages.epic.src = 'icons/epic_gem.png';
 
 let activeGemUpgrades = null;
-const unlockSound = new Audio('../sounds/levelUp.mp3');
+const unlockSound = new Audio('sounds/levelup.mp3');
 
 // const canvas = document.getElementById('gameCanvas');
 // const ctx = canvas.getContext('2d');
@@ -97,7 +97,8 @@ function createIconElement(iconClass) {
 
 function positionIcons() {
     const rouletteIcons = document.getElementById('rouletteIcons');
-    rouletteIcons.innerHTML = '';
+    if (rouletteIcons)
+        rouletteIcons.innerHTML = '';
 
     const rouletteContainer = document.getElementById('rouletteContainer');
     const containerWidth = rouletteContainer.offsetWidth;
@@ -449,7 +450,7 @@ function applyUpgrades(upgrades) {
 }
 
 // Call positionIcons to initially position the icons around the roulette wheel
-positionIcons();
+// positionIcons();
 
 // Add draw loop to keep updating the canvas
 // function draw() {

@@ -1,3 +1,77 @@
+let starHawk = false;
+let currentShip = 'basic';
+let currentShipType = 'basic';
+
+const shipSwitcher = document.getElementById('shipType');
+
+// Draw the ship
+function drawShip() {
+    if (!invincible || (invincibilityTimer % 20 < 10)) {
+        ctx.save();
+        ctx.translate(ship.x, ship.y);
+        ctx.rotate(ship.rotation * Math.PI / 180);
+
+        // Draw the current ship
+        ships[currentShip].draw();
+
+        ctx.restore();
+    }
+}
+
+function shootShotgunStyle() {
+    const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
+    const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
+
+    // Calculate the spread angles
+    const spreadAngle = 10; // Spread angle in degrees
+    const baseRotation = ship.rotation;
+
+    // Create three lasers with spread
+    ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation - spreadAngle, size: ship.laserLevel + 1 });
+    ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation, size: ship.laserLevel + 1 });
+    ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation + spreadAngle, size: ship.laserLevel + 1 });
+
+    // Set the laser timer to half the cooldown
+    ship.laserTimer = ship.laserCooldown * 2; // Slow down fire interval by half
+}
+
+shipSwitcher.addEventListener('click', (event) => {
+    console.log("switch");
+    const shipNames = Object.keys(ships);
+    let nextIndex = (shipNames.indexOf(currentShip) + 1) % shipNames.length;
+    console.log(ships[shipNames[nextIndex]]);
+
+    console.log(shipNames);
+    console.log(nextIndex);
+
+    // Find the next available ship based on the conditions
+    while (!ships[shipNames[nextIndex]].condition()) {
+        console.log(ships[shipNames[nextIndex]]);
+
+        nextIndex = (nextIndex + 1) % shipNames.length;
+    }
+    console.log(nextIndex);
+
+    currentShip = shipNames[nextIndex];
+    console.log(currentShip);
+
+    const shipData = ships[currentShip];
+    console.log(shipData);
+
+
+    shipSwitcher.innerHTML = `Ship type: ${shipData.name}`;
+
+    console.log(shipSwitcher);
+
+    // Update ship properties
+    lives = shipData.lives;
+    ship.laserLevel = shipData.laserLevel;
+    ship.weaponSlots = shipData.weaponSlots;
+    ship.upgradeSlots = shipData.upgradeSlots;
+
+});
+
+
 
 let basicShip = {
     x: canvas.width / 2,

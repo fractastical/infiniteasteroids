@@ -1551,22 +1551,6 @@ function shootLasers() {
 
 
 
-function shootShotgunStyle() {
-    const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
-    const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
-
-    // Calculate the spread angles
-    const spreadAngle = 10; // Spread angle in degrees
-    const baseRotation = ship.rotation;
-
-    // Create three lasers with spread
-    ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation - spreadAngle, size: ship.laserLevel + 1 });
-    ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation, size: ship.laserLevel + 1 });
-    ship.lasers.push({ x: laserX, y: laserY, rotation: baseRotation + spreadAngle, size: ship.laserLevel + 1 });
-
-    // Set the laser timer to half the cooldown
-    ship.laserTimer = ship.laserCooldown * 2; // Slow down fire interval by half
-}
 
 
 function findNearestAsteroid() {
@@ -1964,3 +1948,341 @@ function activateComboSonicBoomerang() {
     }
 }
 
+
+function checkAlienDamage(weapon) {
+
+    let actualDamage = 0;
+
+    for (let j = swarmingAliens.length - 1; j >= 0; j--) {
+        const swarmingalien = swarmingAliens[j];
+        if (isColliding(weapon, swarmingalien)) {
+            swarmingAliens.splice(j, 1);
+            increaseXP(40);
+            score += 40;
+            actualDamage += 1;
+            createExplosion(swarmingalien.x, swarmingalien.y, 1);
+            break;
+        }
+
+
+    }
+
+    for (let j = aliens.length - 1; j >= 0; j--) {
+        const alien = aliens[j];
+        actualDamage += 1;
+        if (isColliding(weapon, alien)) {
+            createExplosion(alien.x, alien.y);
+            aliens.splice(aliens.indexOf(alien), 1);
+            increaseXP(300);
+            aliensKilled++;
+            score += 300; // Adjust the score as needed
+            break;
+        }
+    }
+
+    if (alien && isColliding(weapon, alien)) {
+
+        actualDamage = Math.min(weapon.damage + damageBooster, alien.hitpoints); // Ensure we don't overkill the asteroid
+        alien.hitpoints -= actualDamage;
+
+        createExplosion(alien.x, alien.y);
+
+        if (alien.hitpoints <= 0) {
+            createExplosion(alien.x, alien.y, 15);
+            alien = null; // Destroy alien
+            aliensKilled++;
+            increaseXP(30 * 20);
+            score += 1000;
+        }
+    }
+
+
+    if (superbossAlien && isColliding(weapon, superbossAlien)) {
+
+        actualDamage = Math.min(weapon.damage + damageBooster, superbossAlien.hitpoints); // Ensure we don't overkill the asteroid
+        superbossAlien.hitpoints -= actualDamage;
+        createExplosion(superbossAlien.x, superbossAlien.y);
+
+        if (superbossAlien.hitpoints <= 0) {
+            createExplosion(superbossAlien.x, superbossAlien.y, 50);
+            createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
+            superbossAlien = null; // Destroy alien
+            aliensKilled++;
+            Achievements.alien_megaboss_killed.reached = true;
+            increaseXP(30 * 20);
+            score += 100000;
+        }
+    }
+
+
+    if (megaBossAlien && isColliding(weapon, megaBossAlien)) {
+
+        actualDamage = Math.min(weapon.damage + damageBooster, megaBossAlien.hitpoints); // Ensure we don't overkill the asteroid
+        megaBossAlien.hitpoints -= actualDamage;
+
+        createExplosion(megaBossAlien.x, megaBossAlien.y);
+
+        if (megaBossAlien.hitpoints <= 0) {
+            createExplosion(megaBossAlien.x, megaBossAlien.y, 50);
+            megaBossAlien = null; // Destroy alien
+            createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
+            aliensKilled++;
+            Achievements.alien_supermegaboss_killed.reached = true;
+            increaseXP(30 * 20);
+            score += 100000;
+        }
+    }
+
+    return actualDamage;
+}
+
+
+// Function to handle laser collisions
+function checkLaserCollisions(lasers, isShip) {
+    for (let i = lasers.length - 1; i >= 0; i--) {
+        let laser = lasers[i];
+
+
+        for (let j = swarmingAliens.length - 1; j >= 0; j--) {
+            const swarmingalien = swarmingAliens[j];
+            if (isColliding(laser, swarmingalien)) {
+                swarmingAliens.splice(j, 1);
+                increaseXP(40);
+                score += 40;
+                createExplosion(swarmingalien.x, swarmingalien.y, 1);
+                lasers.splice(i, 1); // Remove laser
+                break;
+            }
+
+
+        }
+
+
+        for (let j = aliens.length - 1; j >= 0; j--) {
+            const alien = aliens[j];
+            if (isColliding(laser, alien)) {
+                handleLaserAlienCollision(laser, alien);
+                break;
+            }
+        }
+
+        if (alien && isColliding(laser, alien)) {
+
+            let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
+            let actualDamage = Math.min(damage + damageBooster, alien.hitpoints); // Ensure we don't overkill the asteroid
+            alien.hitpoints -= actualDamage;
+
+            createExplosion(alien.x, alien.y);
+
+            if (alien.hitpoints <= 0) {
+                createExplosion(alien.x, alien.y, 15);
+                alien = null; // Destroy alien
+                aliensKilled++;
+                increaseXP(30 * 20);
+                score += 1000;
+            }
+            lasers.splice(i, 1); // Remove laser
+            break;
+        }
+
+
+        if (superbossAlien && isColliding(laser, superbossAlien)) {
+
+            let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
+            let actualDamage = Math.min(damage + damageBooster, superbossAlien.hitpoints); // Ensure we don't overkill the asteroid
+            superbossAlien.hitpoints -= actualDamage;
+
+            createExplosion(superbossAlien.x, superbossAlien.y);
+
+            if (superbossAlien.hitpoints <= 0) {
+                createExplosion(superbossAlien.x, superbossAlien.y, 50);
+                createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
+                superbossAlien = null; // Destroy alien
+                aliensKilled++;
+                Achievements.alien_megaboss_killed.reached = true;
+                increaseXP(30 * 20);
+                score += 100000;
+            }
+            lasers.splice(i, 1); // Remove laser
+            break;
+        }
+
+
+        if (megaBossAlien && isColliding(laser, megaBossAlien)) {
+
+            let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
+            let actualDamage = Math.min(damage + damageBooster, megaBossAlien.hitpoints); // Ensure we don't overkill the asteroid
+            megaBossAlien.hitpoints -= actualDamage;
+
+            createExplosion(megaBossAlien.x, megaBossAlien.y);
+
+            if (megaBossAlien.hitpoints <= 0) {
+                createExplosion(megaBossAlien.x, megaBossAlien.y, 50);
+                megaBossAlien = null; // Destroy alien
+                createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
+                aliensKilled++;
+                Achievements.alien_supermegaboss_killed.reached = true;
+                increaseXP(30 * 20);
+                score += 100000;
+            }
+            lasers.splice(i, 1); // Remove laser
+            break;
+        }
+
+        for (let j = asteroids.length - 1; j >= 0; j--) {
+            let asteroid = asteroids[j];
+            if (isColliding(laser, asteroid)) {
+                let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
+
+                let actualDamage = Math.min(damage + damageBooster, asteroid.hitpoints); // Ensure we don't overkill the asteroid
+                asteroid.hitpoints -= actualDamage;
+
+                if (asteroid.hitpoints <= 0) {
+                    //shrapnel
+                    if (asteroid.isLarge) {
+                        createSmallerAsteroids(asteroid.x, asteroid.y, asteroid.size, asteroid.speed, 1); // Split into smaller asteroids
+                    }
+                    asteroids.splice(j, 1);
+
+                    processAsteroidDeath(asteroid);
+
+
+                } else {
+                    // Lighten the color slightly
+                    // let colorValue = Math.max(40, 30 + (asteroid.hitpoints * 3)); // Adjust color value
+                    // asteroid.color = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
+                }
+
+                lasers.splice(i, 1);
+                score += actualDamage * 50; // Increase score based on actual damage
+
+                playRandomMeteorDestroySound();
+                coins += actualDamage * 20; // Add coins based on actual damage
+                increaseXP(actualDamage * 20); // Increase XP based on actual damage
+
+                // Track damage
+                if (isShip) {
+                    damageReport.lasers += actualDamage;
+
+                    // Handle explosive laser effect
+                    if (ship.explosiveLaserLevel > 0) {
+                        createExplosion(laser.x, laser.y, 0);
+                        let areaDamage = createAreaDamage(laser.x, laser.y, ship.explosiveLaserLevel * 15, ship.laserLevel); // Increase radius based on explosiveLaserLevel and damage based on laserLevel
+                        damageReport.explosive += areaDamage;
+                    }
+                } else {
+                    damageReport.turret += actualDamage;
+                }
+
+                break;
+            }
+        }
+    }
+}
+
+
+function selectGemType(hitpoints) {
+    const epicThreshold = 30;
+    const rareThreshold = 15;
+
+    // Probabilities (adjust these to fine-tune gem distribution)
+    let commonProb = 0.7;
+    let rareProb = 0.25;
+    let epicProb = 0.05;
+
+    // Adjust probabilities based on hitpoints
+    if (hitpoints > epicThreshold) {
+        epicProb += 0.15;
+        rareProb += 0.10;
+        commonProb -= 0.25;
+    } else if (hitpoints > rareThreshold) {
+        rareProb += 0.15;
+        epicProb += 0.05;
+        commonProb -= 0.20;
+    }
+
+    // Normalize probabilities
+    const total = commonProb + rareProb + epicProb;
+    commonProb /= total;
+    rareProb /= total;
+    epicProb /= total;
+
+    // Weighted random selection
+    const rand = Math.random();
+    if (rand < commonProb) return 'common';
+    if (rand < commonProb + rareProb) return 'rare';
+    return 'epic';
+}
+
+function drawLives() {
+    const lifeWidth = 10;  // Width of each life rectangle
+    const lifeHeight = 30; // Height of each life rectangle (3 times the width)
+    const spacing = 5;     // Space between life rectangles
+    const startX = document.getElementById('livesDisplay').getBoundingClientRect().right + 30;     // Starting X position for the first life
+    const startY = canvas.height - 40; // Y position for lives, 40 pixels from the bottom
+    // console.log(startX);
+
+    ctx.fillStyle = 'green';
+
+    if (currentMode === GameModes.COOP) {
+        // Draw lives for Player 1
+        for (let i = 0; i < ship.lives; i++) {
+            const x = startX + (lifeWidth + spacing) * i;
+            ctx.fillRect(x, startY, lifeWidth, lifeHeight);
+        }
+
+        // Draw lives for Player 2
+        const player2StartX = canvas.width - startX - (lifeWidth + spacing) * ship2.lives;
+        for (let i = 0; i < ship2.lives; i++) {
+            const x = player2StartX + (lifeWidth + spacing) * i;
+            ctx.fillRect(x, startY, lifeWidth, lifeHeight);
+        }
+
+        // Update HTML display
+        document.getElementById('livesDisplay').textContent = `P1 Health: ${ship.lives} | P2 Health: ${ship2.lives}`;
+    } else {
+        // Single player mode
+        for (let i = 0; i < lives; i++) {
+            const x = startX + (lifeWidth + spacing) * i;
+            ctx.fillRect(x, startY, lifeWidth, lifeHeight);
+        }
+
+        // Update HTML display
+        document.getElementById('livesDisplay').textContent = `Health: ${lives}`;
+    }
+}
+
+
+function drawCoins() {
+    ctx.fillStyle = 'white';
+    ctx.font = '20px Press Start 2P';
+    ctx.textAlign = 'left';
+    let coinmessage = 'Coins: ' + coins;
+    if (isMobile())
+        coinmessage = coinmessage + '    tap for store';
+    else
+        coinmessage = coinmessage + "    'b' for store";
+
+    ctx.fillText(coinmessage, 20, canvas.height - 30);
+}
+
+// function drawDrone() {
+//   ctx.save();
+//   ctx.translate(drone.x, drone.y);
+//   ctx.rotate(drone.direction);
+//   ctx.beginPath();
+//   ctx.moveTo(0, -drone.size);
+//   ctx.lineTo(-drone.size, drone.size);
+//   ctx.lineTo(drone.size, drone.size);
+//   ctx.closePath();
+//   ctx.fillStyle = 'cyan';
+//   ctx.fill();
+//   ctx.restore();
+
+//   // Draw drone lasers
+//   ctx.fillStyle = 'cyan';
+//   for (let i = 0; i < drone.lasers.length; i++) {
+//     let laser = drone.lasers[i];
+//     ctx.fillRect(laser.x - 1, laser.y - 1, 2, 2);
+//   }
+// }

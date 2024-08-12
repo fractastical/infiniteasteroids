@@ -1,5 +1,36 @@
 let acidAreas = [];
 
+let chanceForSmallAsteroid = 3;
+let chanceForVerySmallAsteroid = 1;
+let chanceForHardenedAsteroid = 5;
+let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
+let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
+
+function createSmallerAsteroids(x, y, size, speed, hitpoints) {
+    const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
+    const speedMultiplier = 0.2; // Decrease speed for smaller asteroids
+    const newSize = size / 2; // New size for smaller asteroids
+
+    for (let i = 0; i < 3; i++) {
+        const angleVariation = (Math.random() - 0.5) * 0.7; // Random variation between -0.1 and 0.1 radians
+        const angle = baseAngles[i] + angleVariation;
+
+        let asteroid = {
+            x: x,
+            y: y,
+            size: newSize,
+            speed: speed * speedMultiplier,
+            dx: Math.cos(angle) * speed * speedMultiplier,
+            dy: Math.sin(angle) * speed * speedMultiplier,
+            hitpoints: hitpoints,
+            initialHitpoints: hitpoints, // Store the initial hitpoints
+            color: 'gray'
+        };
+        asteroids.push(asteroid);
+    }
+}
+
+const asteroidImages = [];
 
 function createAsteroids(side) {
     if (currentMode === GameModes.ENDLESS_SLOW) {

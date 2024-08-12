@@ -139,11 +139,11 @@ const megaUpgrades = [
     },
     {
         name: 'Damage Pickle',
-        description: 'Increases all weapon damage by 10.',
+        description: 'Increases all weapon damage by 5.',
         icon: 'icons/upgrades/pickle.png', // Replace with appropriate icon
         effect: function () {
             // damagePickle.active = true;
-            damageBooster += 10; // Increase damage by 10
+            damageBooster += 5; // Increase damage by 10
         },
         update: function () {
             // No need to update anything since the effect is permanent
