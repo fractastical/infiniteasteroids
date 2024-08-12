@@ -151,13 +151,21 @@
             <button onclick="modifyWeapon('explosiverocket.radius', 5)">Radius +5</button>
             <button onclick="modifyWeapon('explosiverocket.cooldown', -10)">Cooldown -10</button>
         </div>
+
+        <div class="weapon-section">
+            <h4>Combo Weapons</h4>
+            <button onclick="modifyWeapon('flameChainLightning.active', 1)">Activate Flame Chain Lightning</button>
+            <button onclick="modifyWeapon('explosiveDrone.active', 1)">Activate Explosive Drone</button>
+            <button onclick="modifyWeapon('sonicBoomerang.active', 1)">Activate Sonic Boomerang</button>
+        </div>
+
     </div>
 
     <!-- Right Control Panel -->
     <div class="control-panel right">
         <h3>Game Controls</h3>
         <button onclick="spawnAsteroids(10)">Spawn 10 Asteroids</button>
-        <button onclick="spawnAliens(5)">Spawn 5 Aliens</button>
+        <button onclick="spawnAliens(27)">Spawn aliens</button>
         <button onclick="spawnBossAlien()">Spawn Boss Alien</button>
         <button onclick="spawnSuperBossAlien()">Spawn Super Boss Alien</button>
         <button onclick="spawnMegaBossAlien()">Spawn Mega Boss Alien</button>
@@ -268,21 +276,36 @@
             let obj = window;
             for (let i = 0; i < parts.length - 1; i++) {
                 if (obj[parts[i]] === undefined) {
-                    console.error(`${parts[i]} is undefined in ${weaponPath}`);
-                    return;
+                    obj[parts[i]] = {};
                 }
                 obj = obj[parts[i]];
             }
 
             const lastPart = parts[parts.length - 1];
-            if (obj[lastPart] === undefined) {
-                console.error(`${lastPart} is undefined in ${weaponPath}`);
-                return;
+            if (lastPart === 'active') {
+                // Handle activation of combo weapons
+                switch (weaponClass) {
+                    case 'flameChainLightning':
+                        activateComboFlameChainLightning();
+                        break;
+                    case 'explosiveDrone':
+                        activateComboExplosiveDrone();
+                        break;
+                    case 'sonicBoomerang':
+                        activateComboSonicBoomerang();
+                        break;
+                }
+            } else {
+                if (obj[lastPart] === undefined) {
+                    obj[lastPart] = 0;
+                }
+                obj[lastPart] += value;
             }
 
-            obj[lastPart] += value;
             console.log(`${weaponPath} modified by ${value}`);
         }
+
+
         function spawnAsteroids(count) {
             for (let i = 0; i < count; i++) {
                 createAsteroids();
@@ -311,15 +334,15 @@
             console.log("Spawned boss alien");
         }
 
-        function spawnSuperBossAlien() {
-            spawnSuperBossAlien();
-            console.log("Spawned super boss alien");
-        }
+        // function spawnSuperBossAlien() {
+        //     spawnSuperBossAlien();
+        //     console.log("Spawned super boss alien");
+        // }
 
-        function spawnMegaBossAlien() {
-            spawnMegaBossAlien();
-            console.log("Spawned mega boss alien");
-        }
+        // function spawnMegaBossAlien() {
+        //     spawnMegaBossAlien();
+        //     console.log("Spawned mega boss alien");
+        // }
 
         function toggleInvincibility() {
             invincible = !invincible;
