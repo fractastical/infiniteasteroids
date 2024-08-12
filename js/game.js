@@ -1,5 +1,10 @@
 
 
+// for leaderboard and telegram API 
+let gameId = "InfiniteSpaceWar";
+
+
+
 const joystick = document.getElementById('joystick');
 const joystickInner = document.getElementById('joystick-inner');
 const joystickHandle = document.getElementById('joystickHandle');
@@ -399,6 +404,21 @@ function startGame() {
     isMusicPlaying = true;
 }
 
+
+const resizeCanvas = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    resetShip();
+    // Scale the canvas to handle high DPI screens
+    // ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+    // // Reposition the ship to the center of the canvas
+    // ship.x = canvas.width / 2 / window.devicePixelRatio;
+    // ship.y = canvas.height - 50 / window.devicePixelRatio;
+};
+resizeCanvas();
+
+window.addEventListener('resize', resizeCanvas);
 
 
 function toggleMusic() {
