@@ -631,6 +631,22 @@ button {
     background-image: url('icons/exploding_rocket_22.png');
 }
 
+.icon-plasmacannon {
+    background-image: url('icons/plasma_cannon.png');
+}
+
+.icon-gravitywell {
+    background-image: url('icons/gravity_well.png');
+}
+
+.icon-cryobomb {
+    background-image: url('icons/cryo_bomb.png');
+}
+
+.icon-gravityblast {
+    background-image: url('icons/gravity_blast.png');
+}
+
 
 .icon- {
     background-image: url('icons/Basiclaser.svg');
