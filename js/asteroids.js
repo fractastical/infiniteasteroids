@@ -580,14 +580,94 @@ function addRareAsteroidToDisplay(type, color) {
         }
     }
 
-    if (lastRareAsteroids.length === 3 &&
-        lastRareAsteroids.every(asteroid => asteroid.type === 'exploding')) {
-        triggerMegaExplosion();
-        // Clear the lastRareAsteroids array after triggering mega explosion
-        lastRareAsteroids = [];
+    if (lastRareAsteroids.length === 3) {
+        if (lastRareAsteroids.every(asteroid => asteroid.type === 'exploding')) {
+            triggerMegaExplosion();
+            lastRareAsteroids = [];
+        } else if (lastRareAsteroids.every(asteroid => asteroid.type === 'chainLightning')) {
+            triggerLightningStorm();
+            lastRareAsteroids = [];
+        } else if (lastRareAsteroids.every(asteroid => asteroid.type === 'acid')) {
+            triggerAcidRain();
+            lastRareAsteroids = [];
+        } else if (lastRareAsteroids.every(asteroid => asteroid.type === 'freezing')) {
+            triggerMegaFreeze();
+            lastRareAsteroids = [];
+        }
+    }
+}
+
+function triggerLightningStorm() {
+    console.log("Lightning Storm Triggered!");
+    // Create multiple chain lightning effects across the screen
+    for (let i = 0; i < 5; i++) {
+        let randomAsteroid = asteroids[Math.floor(Math.random() * asteroids.length)];
+        if (randomAsteroid) {
+            fireChainLightningFromAsteroid(randomAsteroid);
+        }
+    }
+    // Add screen flash effect
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    setTimeout(() => {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }, 100);
+
+    // playSound('thunder');
+}
+
+function triggerAcidRain() {
+    console.log("Acid Rain Triggered!");
+    // Create multiple acid areas across the screen
+    for (let i = 0; i < 10; i++) {
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height;
+        createAcidExplosion(x, y, 50, 5000); // smaller radius, longer duration
     }
 
+    // Add a green tint to the screen
+    ctx.fillStyle = 'rgba(0, 255, 0, 0.2)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // playSound('acidRain');
 }
+
+function triggerMegaFreeze() {
+    console.log("Mega Freeze Triggered!");
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const megaFreezeRadius = Math.min(canvas.width, canvas.height) / 2;
+    const freezeDuration = 10000; // 10 seconds
+
+    applyMegaFreezeEffect(centerX, centerY, megaFreezeRadius, freezeDuration);
+
+    // Add a blue tint to the screen
+    ctx.fillStyle = 'rgba(0, 191, 255, 0.2)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Create a visual freeze effect
+    createFreezeVisualEffect(centerX, centerY, megaFreezeRadius);
+
+    // playSound('megaFreeze');
+}
+
+function applyMegaFreezeEffect(x, y, radius, duration) {
+    for (let asteroid of asteroids) {
+        let dx = asteroid.x - x;
+        let dy = asteroid.y - y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < radius) {
+            asteroid.frozen = true;
+            asteroid.frozenDuration = duration;
+            asteroid.originalSpeed = asteroid.speed;
+            asteroid.speed *= 0.1; // Slow down to 10% of original speed
+        }
+    }
+}
+
+
 
 function triggerMegaExplosion() {
     const centerX = canvas.width / 2;
