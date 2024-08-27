@@ -547,7 +547,18 @@ function processAsteroidDeath(asteroid) {
     const dropChance = Math.min(baseDropChance + (asteroid.initialHitpoints * hitpointFactor), 1);
 
     if (Math.random() < dropChance && droppedGems.length < 40) {
-        const gemType = selectGemType(asteroid.initialHitpoints);
+        let gemType = selectGemType(asteroid.initialHitpoints);
+        if (gemType == 'epic') {
+
+            // max one epic gem every 7 waves starting with 7th wave
+            if (lastEpicWave > wave - 7)
+                gemType = 'rare';
+            else
+                lastEpicWave = wave;
+
+        }
+
+
         droppedGems.push({
             x: asteroid.x,
             y: asteroid.y,
@@ -558,6 +569,8 @@ function processAsteroidDeath(asteroid) {
         });
     }
 }
+
+let lastEpicWave = 0;
 
 function addRareAsteroidToDisplay(type, color) {
     if (type !== 'normal') {
