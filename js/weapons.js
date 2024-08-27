@@ -2279,18 +2279,18 @@ function selectGemType(hitpoints) {
     const rareThreshold = 15;
 
     // Probabilities (adjust these to fine-tune gem distribution)
-    let commonProb = 0.7;
+    let commonProb = 0.74;
     let rareProb = 0.25;
-    let epicProb = 0.05;
+    let epicProb = 0.01;
 
     // Adjust probabilities based on hitpoints
     if (hitpoints > epicThreshold) {
-        epicProb += 0.15;
-        rareProb += 0.10;
+        epicProb += 0.05;
+        rareProb += 0.20;
         commonProb -= 0.25;
     } else if (hitpoints > rareThreshold) {
         rareProb += 0.15;
-        epicProb += 0.05;
+        epicProb += 0.03;
         commonProb -= 0.20;
     }
 
