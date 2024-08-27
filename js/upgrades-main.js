@@ -10,7 +10,7 @@ const floatingIsland = {
 };
 
 floatingIsland.image = new Image();
-floatingIsland.image.src = 'icons/upgrades/floating_island_10.png';
+floatingIsland.image.src = 'icons/sparkle_island_1.png';
 
 // Mega Upgrades
 const megaUpgrades = [
@@ -194,7 +194,7 @@ let lastActivatedWave = 0;
 
 function checkFloatingIslandSpawn() {
     // prevent island from being activated multiple times in same wave
-    if (wave % 12 === 0 && !floatingIsland.active && wave != lastActivatedWave) {
+    if (wave % 20 === 0 && !floatingIsland.active && wave != lastActivatedWave) {
 
         lastActivatedWave = wave;
         floatingIsland.active = true;
