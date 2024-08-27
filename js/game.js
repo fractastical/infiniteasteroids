@@ -1365,8 +1365,8 @@ function handleKeyDown(event) {
             // startRoulette();
 
         } else if (event.key === 'v' || event.key === 'V') {
-
-            toggleVolumeScreen();
+            if (!loginFormOpen)
+                toggleVolumeScreen();
         }
 
 
