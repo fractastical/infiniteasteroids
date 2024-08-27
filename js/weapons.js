@@ -244,7 +244,7 @@ function applyUpgrade(upgrade) {
             break;
         case 'Increase Rotation Speed':
             ship.rotationSpeedLevel++;
-            ship.rotationSpeed = 1.6 + 0.1 * ship.rotationSpeedLevel;
+            ship.rotationSpeed = 1.55 + 0.05 * ship.rotationSpeedLevel;
             break;
         case 'Activate Explosive Laser':
             activateWeaponClass('explosive');
