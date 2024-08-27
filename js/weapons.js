@@ -175,6 +175,57 @@ let flamethrowerUpgrades = {
     cooldown: 1
 };
 
+let plasmaCannon = {
+    cooldown: 120, // Cooldown time in frames (2 seconds at 60 FPS)
+    timer: 0, // Current cooldown timer
+    damage: 15, // Damage dealt by the plasma shot
+    speed: 4, // Speed of the plasma shot
+    radius: 30, // Explosion radius on impact
+    active: false // Flag to track if the plasma cannon is active
+};
+
+let plasmaCannonUpgrades = {
+    damage: 1,
+    radius: 1,
+    cooldown: 1
+};
+
+function firePlasmaCannon() {
+    if (plasmaCannon.timer === 0) {
+        const angle = ship.rotation * Math.PI / 180;
+        const shot = {
+            x: ship.x + Math.sin(angle) * 20,
+            y: ship.y - Math.cos(angle) * 20,
+            angle: angle,
+            speed: plasmaCannon.speed,
+            damage: plasmaCannon.damage,
+            radius: plasmaCannon.radius,
+            distance: 0
+        };
+        plasmaShots.push(shot);
+        plasmaCannon.timer = plasmaCannon.cooldown;
+    }
+}
+
+function updatePlasmaShots() {
+    for (let i = plasmaShots.length - 1; i >= 0; i--) {
+        const shot = plasmaShots[i];
+        shot.x += Math.sin(shot.angle) * shot.speed;
+        shot.y -= Math.cos(shot.angle) * shot.speed;
+        shot.distance += shot.speed;
+
+        if (shot.distance >= 300) { // Check if the shot has traveled a certain distance
+            createExplosion(shot.x, shot.y, 0); // Create an explosion effect at the shot's position
+            applyExplosiveDamage(shot); // Apply area damage to asteroids within the explosion radius
+            plasmaShots.splice(i, 1); // Remove the shot from the array
+            continue;
+        }
+
+        if (shot.x < 0 || shot.x > canvas.width || shot.y < 0 || shot.y > canvas.height) {
+            plasmaShots.splice(i, 1);
+        }
+    }
+}
 
 function applyUpgrade(upgrade) {
     const now = Date.now();
@@ -488,6 +539,7 @@ function activateWeaponClass(weaponClass) {
 
     }
 }
+
 // Update function to draw active weapon classes with cooldown indicators
 function drawActiveWeaponClasses() {
     const container = document.getElementById('activeWeaponClassesContainer');
@@ -583,7 +635,28 @@ const weapons = [
         name: 'Explosive Rocket',
         description: 'Fires a slow-moving rocket that causes explosive AoE damage on impact.',
         icon: 'icon-explosiverocket'
+    },
+    {
+        name: 'Plasma Cannon',
+        description: 'Fires powerful plasma shots that explode on impact, dealing area damage.',
+        icon: 'icon-plasmacannon'
+    },
+    {
+        name: 'Gravity Well',
+        description: 'Creates a gravity well that pulls in nearby asteroids, slowing them down.',
+        icon: 'icon-gravitywell'
+    },
+    {
+        name: 'Cryo Bomb',
+        description: 'Combines Acid Bomb and Freeze Ray to create an explosive area effect that freezes enemies.',
+        icon: 'icon-cryobomb'
+    },
+    {
+        name: 'Gravity Blast',
+        description: 'Combines Gravity Well and Sonic Blast to create a powerful gravitational explosion followed by a sonic wave.',
+        icon: 'icon-gravityblast'
     }
+
 ];
 
 
@@ -1918,17 +1991,25 @@ function canActivateComboWeapons() {
     const droneMaxed = getUpgradeCount('drone') >= MAX_UPGRADE_COUNT;
     const boomerangMaxed = getUpgradeCount('boomerang') >= MAX_UPGRADE_COUNT;
     const sonicBlastMaxed = getUpgradeCount('sonic') >= MAX_UPGRADE_COUNT;
+    const acidBombMaxed = getUpgradeCount('acid') >= MAX_UPGRADE_COUNT;
+    const freezeRayMaxed = getUpgradeCount('freeze') >= MAX_UPGRADE_COUNT;
+    const gravityWellMaxed = getUpgradeCount('gravitywell') >= MAX_UPGRADE_COUNT;
 
     return {
         flameChainLightning: flamethrowerMaxed && chainLightningMaxed,
         explosiveDrone: explosiveLaserMaxed && droneMaxed,
-        sonicBoomerang: boomerangMaxed && sonicBlastMaxed
+        sonicBoomerang: boomerangMaxed && sonicBlastMaxed,
+        cryoBomb: acidBombMaxed && freezeRayMaxed,
+        gravityBlast: gravityWellMaxed && sonicBlastMaxed,
+
     };
 }
 
 let comboFlameChainLightningActive = false;
 let comboExplosiveDroneActive = false;
 let comboSonicBoomerangActive = false;
+let comboCryoBombActive = false;
+let comboGravityBlastActive = false;
 
 function activateComboFlameChainLightning() {
     if (canActivateComboWeapons().flameChainLightning) {
@@ -1945,6 +2026,18 @@ function activateComboExplosiveDrone() {
 function activateComboSonicBoomerang() {
     if (canActivateComboWeapons().sonicBoomerang) {
         comboSonicBoomerangActive = true;
+    }
+}
+
+function activateComboCryoBomb() {
+    if (canActivateComboWeapons().cryoBomb) {
+        comboCryoBombActive = true;
+    }
+}
+
+function activateComboGravityBlast() {
+    if (canActivateComboWeapons().gravityBlast) {
+        comboGravityBlastActive = true;
     }
 }
 
