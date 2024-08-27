@@ -1312,7 +1312,7 @@ function handleKeyDown(event) {
 
         if (event.key === 'Enter') {
 
-            if (document.getElementById('rouletteContainer').style.display != 'none') {
+            if (document.getElementById('rouletteContainer').style.display == 'block') {
 
                 const okButton = document.querySelector('#upgradeDisplay button');
                 console.log(okButton);

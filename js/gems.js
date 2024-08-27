@@ -264,12 +264,13 @@ let displayGems = [];
 
 function activateGemUpgrades() {
 
-    applyUpgrades(activeGemUpgrades);
-    activeGemUpgrades = null;
+    rouletteContainer.style.display = 'none';
     spinButton.disabled = false;
     spinButton.style.display = 'block';
-    rouletteContainer.style.display = 'none';
     upgradeDisplay.innerHTML = '';
+
+    applyUpgrades(activeGemUpgrades);
+    activeGemUpgrades = null;
     // keyboardHint.remove(); // Remove the keyboard hint
 
     isPaused = false;
