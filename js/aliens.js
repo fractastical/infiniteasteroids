@@ -274,7 +274,8 @@ function updateAliens() {
 
 function spawnSuperBossAlien() {
     const laughSound = new Audio('sounds/alien_laugh3.mp3');
-    laughSound.play();
+    if (!toggleSoundOff)
+        laughSound.play();
 
     superbossAlien = {
         x: canvas.width / 2,
@@ -353,7 +354,8 @@ function drawSuperBossAlien() {
 
 function spawnMegaBossAlien() {
     const laughSound = new Audio('sounds/alien_laugh3.mp3');
-    laughSound.play();
+    if (!toggleSoundOff)
+        laughSound.play();
 
     megaBossAlien = {
         x: canvas.width / 2,

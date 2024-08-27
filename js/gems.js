@@ -165,6 +165,9 @@ function updateIconPositions(angle) {
 
 
 function startRoulette() {
+
+    clearInterval(gameLoop);
+
     const rouletteContainer = document.getElementById('rouletteContainer');
     rouletteContainer.style.display = 'flex';
     // rouletteContainer.style.display = 'block';
@@ -187,7 +190,6 @@ function startRoulette() {
 
 
     //doublecheck that it didn't unpause
-    clearInterval(gameLoop);
     isPaused = true;
 
     let angle = 0;

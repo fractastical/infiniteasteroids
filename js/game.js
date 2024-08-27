@@ -1315,7 +1315,7 @@ function handleKeyDown(event) {
             if (document.getElementById('rouletteContainer').style.display == 'block') {
 
                 const okButton = document.querySelector('#upgradeDisplay button');
-                console.log(okButton);
+                // console.log(okButton);
                 if (okButton) {
                     okButton.click();
                 } else {
@@ -1817,8 +1817,8 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
         li.textContent = achievement;
         li.classList.add('flash'); // Add the flashing animation class
         newAchievementsList.appendChild(li);
-
-        achievementSound.play();
+        if (!toggleSoundOff)
+            achievementSound.play();
 
         // Remove the flash class after the animation duration (1 second)
         setTimeout(() => {
