@@ -1094,15 +1094,51 @@ function fireChainLightning(target, bounces) {
     }
 }
 
-function drawChainLightning(source, target) {
+function drawChainLightning(source, target, branchProbability = 0.5, depth = 0, maxDepth = 3) {
+    if (depth > maxDepth) return;
+
+    const midX = (source.x + target.x) / 2;
+    const midY = (source.y + target.y) / 2;
+
+    // Add some randomness to the midpoint
+    const offsetX = (Math.random() - 0.5) * 30;
+    const offsetY = (Math.random() - 0.5) * 30;
+
+    const midPoint = {
+        x: midX + offsetX,
+        y: midY + offsetY
+    };
+
+    // Draw the main branch
     ctx.beginPath();
     ctx.moveTo(source.x, source.y);
+    ctx.lineTo(midPoint.x, midPoint.y);
     ctx.lineTo(target.x, target.y);
-    ctx.strokeStyle = 'blue';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-}
 
+    // Set the stroke style
+    ctx.strokeStyle = `rgba(0, 191, 255, ${1 - depth * 0.2})`; // Lighter blue color
+    ctx.lineWidth = 3 - depth; // Thinner lines for sub-branches
+    ctx.stroke();
+
+    // Chance to create a fork
+    if (Math.random() < branchProbability) {
+        // Create a new branch point
+        const branchOffsetX = (Math.random() - 0.5) * 50;
+        const branchOffsetY = (Math.random() - 0.5) * 50;
+        const newTarget = {
+            x: midPoint.x + branchOffsetX,
+            y: midPoint.y + branchOffsetY
+        };
+
+        // Recursively draw the new branch
+        drawChainLightning(midPoint, newTarget, branchProbability * 0.8, depth + 1, maxDepth);
+    }
+
+    // Continue the main branch recursively
+    if (depth < maxDepth) {
+        drawChainLightning(midPoint, target, branchProbability * 0.8, depth + 1, maxDepth);
+    }
+}
 
 
 function activateDeathRay() {
