@@ -687,6 +687,11 @@ margin-top: 20px;
 text-align: left;
 } */
 
+#allLeaderboardsContainer {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
 #achievementsList {
     display: flex;
     flex-wrap: wrap;

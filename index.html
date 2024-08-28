@@ -23,6 +23,17 @@
   <div id="leftArrow" class="flashing-arrow" style="left: 20px; top: 50%;"></div>
   <div id="rightArrow" class="flashing-arrow" style="right: 20px; top: 50%;"></div>
 
+  <!-- New Leaderboard Modal -->
+  <div id="allLeaderboardsModal" class="modal">
+    <div class="modal-content">
+      <h2>All Game Modes Leaderboard</h2>
+      <div id="allLeaderboardsContainer">
+        <!-- Leaderboards for each game mode will be dynamically added here -->
+      </div>
+      <button id="closeAllLeaderboards">Close</button>
+    </div>
+  </div>
+
 
   <div id="loginPopup" class="modal">
     <div class="modal-content">
@@ -212,6 +223,7 @@
           <td>
 
             <button id="endlessSlowButton" onclick="initializeGame(GameModes.ENDLESS_SLOW)">Endless </button>
+            <button id="viewAllLeaderboardsButton">View All Leaderboards</button>
 
 
           </td>
