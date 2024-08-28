@@ -10,6 +10,9 @@ const joystickInner = document.getElementById('joystick-inner');
 const joystickHandle = document.getElementById('joystickHandle');
 const restartButton = document.getElementById('restartButton');
 const backgroundMusic = document.getElementById('background-music');
+const megabossBackgroundMusic = document.getElementById('megaboss-background-music');
+const superMegabossBackgroundMusic = document.getElementById('supermegaboss-background-music');
+//const octoboss BackgroundMusic = document.getElementById('octoboss-background-music');
 
 let isTouchingJoystick = false;
 let joystickStartX, joystickStartY;
@@ -24,7 +27,7 @@ const rotationSpeedLevelDisplay = document.getElementById('rotationSpeedLevel');
 const droneSpeedLevelDisplay = document.getElementById('droneSpeedLevel');
 // const droneLaserSpeedLevelDisplay = document.getElementById('droneLaserSpeedLevel');
 const droneLaserIntervalLevelDisplay = document.getElementById('droneLaserIntervalLevel');
-let toggleOff = false;
+let toggleMusicOff = false;
 let toggleSoundOff = false;
 
 const GameModes = {
@@ -399,7 +402,7 @@ function startGame() {
     }
 
     gameLoop = setInterval(update, 1000 / 60); // 60 FPS
-    if (!toggleOff)
+    if (!toggleMusicOff)
         backgroundMusic.play(); // Play the background music
     isMusicPlaying = true;
 }
@@ -422,8 +425,8 @@ window.addEventListener('resize', resizeCanvas);
 
 
 function toggleMusic() {
-    if (!toggleOff)
-        toggleOff = true;
+    if (!toggleMusicOff)
+        toggleMusicOff = true;
     backgroundMusic.pause();
 
     if (isMusicPlaying) {
@@ -517,7 +520,7 @@ function update() {
     }
 
     // if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
-    //   if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
+    //   if (!toggleMusicOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
     //   playRandomThrusterSound();
 
     //   // Move backwards with higher initial acceleration
@@ -934,7 +937,7 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
     }
 
     if (keys[upKey] || (ship === ship && touchAccelerating)) {
-        if (!toggleOff) backgroundMusic.play();
+        if (!toggleMusicOff) backgroundMusic.play();
         playRandomThrusterSound();
 
         let accelerationAmount = ship.acceleration;
@@ -961,7 +964,7 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
         }
 
         if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
-            if (!toggleOff) backgroundMusic.play();
+            if (!toggleMusicOff) backgroundMusic.play();
             playRandomThrusterSound();
 
             const initialBackwardAcceleration = ship.acceleration * 1.5;

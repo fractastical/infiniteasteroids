@@ -274,8 +274,15 @@ function updateAliens() {
 
 function spawnSuperBossAlien() {
     const laughSound = new Audio('sounds/alien_laugh3.mp3');
+    if (!toggleMusicOff) {
+        backgroundMusic.pause();
+    }
     if (!toggleSoundOff)
         laughSound.play();
+    if (!toggleMusicOff) {
+        superMegabossBackgroundMusic.play();
+    }
+
 
     superbossAlien = {
         x: canvas.width / 2,
@@ -353,9 +360,16 @@ function drawSuperBossAlien() {
 }
 
 function spawnMegaBossAlien() {
-    const laughSound = new Audio('sounds/alien_laugh3.mp3');
+    if (!toggleMusicOff) {
+        backgroundMusic.pause();
+    }
     if (!toggleSoundOff)
         laughSound.play();
+    if (!toggleMusicOff) {
+        megabossBackgroundMusic.play();
+    }
+
+
 
     megaBossAlien = {
         x: canvas.width / 2,
