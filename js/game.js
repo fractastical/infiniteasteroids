@@ -653,7 +653,6 @@ function update() {
 
 
 
-    drawShip();
     drawActiveWeaponClasses();
 
     updateBoomerang();
@@ -766,6 +765,7 @@ function update() {
     drawLives();
     drawScore();
     // if (gameOver) drawDamageReport();
+    drawShip();
 
 
 }
