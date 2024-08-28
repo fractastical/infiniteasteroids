@@ -1198,21 +1198,30 @@ function createAcidExplosion(x, y, radius, duration) {
     acidBomb.activeAreas.push(acidArea);
 }
 
+
 function updateAcidAreas() {
     for (let i = acidBomb.activeAreas.length - 1; i >= 0; i--) {
         let area = acidBomb.activeAreas[i];
-        area.duration--;
 
+        // Update the wave expansion
+        if (area.currentRadius < area.finalRadius) {
+            area.currentRadius += area.waveSpeed;
+        }
+
+        // Decrease the opacity over time to create a fading effect
+        area.opacity = Math.max(0, area.opacity - 0.02);
+
+        // Check for collision with asteroids within the expanding wave
         for (let j = asteroids.length - 1; j >= 0; j--) {
-            let asteroid = asteroids[j];
 
-            //Because of some unknown bug
-            if (!asteroid.x || !area.x)
-                break;
+            if (!asteroids[j].x || !area.x) break;  // Safety check to prevent errors
+
+            let asteroid = asteroids[j];
             let dx = asteroid.x - area.x;
             let dy = asteroid.y - area.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < area.radius) {
+
+            if (distance < area.currentRadius) {
                 let actualDamage = Math.min(acidBomb.damagePerSecond + damageBooster, asteroid.hitpoints);
                 asteroid.hitpoints -= actualDamage;
                 damageReport.acid += actualDamage;
@@ -1224,29 +1233,47 @@ function updateAcidAreas() {
             }
         }
 
-        if (area.duration <= 0) {
+        // Reduce the duration and remove the area if it has expired
+        area.duration--;
+        if (area.duration <= 0 || area.opacity <= 0) {
             acidBomb.activeAreas.splice(i, 1);
+        }
+    }
+
+    // Update static acid areas (if any)
+    for (let i = acidAreas.length - 1; i >= 0; i--) {
+        let area = acidAreas[i];
+        area.duration--;
+
+        if (area.duration <= 0) {
+            acidAreas.splice(i, 1);
         }
     }
 }
 
 
 function drawAcidAreas() {
-    ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+    // Dynamic wave-based rendering for acidBomb active areas
+    ctx.save();
     for (let i = 0; i < acidBomb.activeAreas.length; i++) {
         let area = acidBomb.activeAreas[i];
+
+        // Draw the expanding wave
+        ctx.fillStyle = `rgba(0, 255, 0, ${0.3 * (1 - area.waveProgress)})`;
         ctx.beginPath();
-        ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
+        ctx.arc(area.x, area.y, area.radius * area.waveProgress, 0, Math.PI * 2);
         ctx.fill();
     }
+    ctx.restore();
 
+    // Static rendering for predefined acid areas
+    ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
     for (let i = 0; i < acidAreas.length; i++) {
         let area = acidAreas[i];
         ctx.beginPath();
         ctx.arc(area.x, area.y, area.radius, 0, Math.PI * 2);
         ctx.fill();
     }
-
 }
 
 
