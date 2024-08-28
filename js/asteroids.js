@@ -498,7 +498,8 @@ function createExplosion(x, y, hitpoints = 1, sizeMultiplier = 1) {
         alphaDecay: randomAlphaDecay,
         color: randomColor
     };
-    explosions.push(explosion);
+    if (explosions.length < HARDCAPONASTEROIDEXPLOSIONS)
+        explosions.push(explosion);
 }
 
 let lastRareAsteroids = [];

@@ -1094,7 +1094,7 @@ function fireChainLightning(target, bounces) {
     }
 }
 
-function drawChainLightning(source, target, branchProbability = 0.5, depth = 0, maxDepth = 3) {
+function drawChainLightning(source, target, branchProbability = 0.5, depth = 0, maxDepth = FRACTALLIGHTNINGDEPTH) {
     if (depth > maxDepth) return;
 
     const midX = (source.x + target.x) / 2;
