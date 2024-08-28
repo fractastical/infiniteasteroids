@@ -46,3 +46,43 @@ function drawFlameParticles() {
     });
     ctx.restore();
 }
+
+function drawSonicBlast() {
+    ctx.save();
+    ctx.lineWidth = 2; // Increase line width for better visibility
+
+    const simplifiedMode = fps < 30; // Fallback to simpler effects if FPS drops below 30
+
+    for (let i = 0; i < sonicBlast.waves.length; i++) {
+        const wave = sonicBlast.waves[i];
+
+        if (simplifiedMode) {
+            // Simplified mode: single layer, basic opacity
+            ctx.strokeStyle = `rgba(0, 0, 255, 0.5)`;
+            ctx.beginPath();
+            ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
+            ctx.stroke();
+        } else {
+            // Full effect: Multiple layers with dynamic opacity
+            // First layer: Outer wave, faster, more transparent
+            ctx.strokeStyle = `rgba(0, 0, 255, ${Math.max(0.1, 1 - wave.radius / wave.maxRadius)})`;
+            ctx.beginPath();
+            ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Second layer: Middle wave, slower, more opaque
+            ctx.strokeStyle = `rgba(0, 0, 200, ${Math.max(0.3, 1 - wave.radius / (wave.maxRadius * 1.5))})`;
+            ctx.beginPath();
+            ctx.arc(wave.x, wave.y, wave.radius * 0.8, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Third layer: Inner wave, slowest, most opaque
+            ctx.strokeStyle = `rgba(0, 0, 150, ${Math.max(0.5, 1 - wave.radius / (wave.maxRadius * 2))})`;
+            ctx.beginPath();
+            ctx.arc(wave.x, wave.y, wave.radius * 0.5, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+    }
+
+    ctx.restore();
+}
