@@ -925,28 +925,6 @@ function generateFlameParticles(startX, startY, endX, endY, flameWidth) {
     }
 }
 
-function drawFlameParticles() {
-    ctx.save();
-    particles.forEach((particle, index) => {
-        ctx.globalAlpha = particle.life / particle.maxLife;
-        ctx.fillStyle = particle.color;
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Update particle position
-        particle.x += Math.cos(particle.direction) * particle.speed;
-        particle.y += Math.sin(particle.direction) * particle.speed;
-
-        // Reduce particle life
-        particle.life--;
-        if (particle.life <= 0) {
-            particles.splice(index, 1);
-        }
-    });
-    ctx.restore();
-}
-
 function updateFlamethrower() {
     if (flamethrower.active) {
         // Define the area of effect for the flamethrower

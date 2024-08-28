@@ -22,3 +22,27 @@ function drawAcidBombs() {
         }
     }
 }
+
+
+function drawFlameParticles() {
+    ctx.save();
+    let intensityFactor = fps >= 45 ? 1 : 0.5; // Scale effect based on FPS
+    particles.forEach((particle, index) => {
+        ctx.globalAlpha = (particle.life / particle.maxLife) * intensityFactor;
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size * intensityFactor, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Update particle position
+        particle.x += Math.cos(particle.direction) * particle.speed * intensityFactor;
+        particle.y += Math.sin(particle.direction) * particle.speed * intensityFactor;
+
+        // Reduce particle life
+        particle.life -= intensityFactor;
+        if (particle.life <= 0) {
+            particles.splice(index, 1);
+        }
+    });
+    ctx.restore();
+}
