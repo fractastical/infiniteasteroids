@@ -249,7 +249,7 @@ function startRoulette() {
             });
 
             const okButton = document.createElement('button');
-            okButton.textContent = 'Activate [ENTER]';
+            okButton.textContent = 'Activate';
             okButton.onclick = () => {
 
                 activateGemUpgrades();
