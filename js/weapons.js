@@ -801,7 +801,8 @@ function firenanoswarm() {
             y: ship.y,
             target: findNearestAsteroid(),
             speed: nanoswarm.speed * nanoswarmUpgrades.speed,
-            damage: nanoswarm.damage * nanoswarmUpgrades.damage
+            damage: nanoswarm.damage * nanoswarmUpgrades.damage,
+            lifetime: 300 // Missile will expire after 300 frames (~5 seconds at 60 FPS)
         };
         nanoswarm.activeMissiles.push(missile);
         nanoswarm.timer = nanoswarm.cooldown;
@@ -811,6 +812,16 @@ function firenanoswarm() {
 function updatenanoswarms() {
     for (let i = nanoswarm.activeMissiles.length - 1; i >= 0; i--) {
         let missile = nanoswarm.activeMissiles[i];
+
+        // Decrement the missile's lifetime
+        missile.lifetime--;
+
+        // Check if the missile has expired
+        if (missile.lifetime <= 0) {
+            nanoswarm.activeMissiles.splice(i, 1);
+            continue;
+        }
+
         if (missile.target) {
             let dx = missile.target.x - missile.x;
             let dy = missile.target.y - missile.y;
@@ -819,7 +830,6 @@ function updatenanoswarms() {
             if (distance < missile.target.size) {
                 createExplosion(missile.target.x, missile.target.y);
                 let index = asteroids.indexOf(missile.target);
-                // let actualDamage = asteroids[index].hitpoints;
                 damageReport.nano += 5;
                 increaseXP(5 * 20);
                 asteroids.splice(index, 1);
@@ -835,6 +845,7 @@ function updatenanoswarms() {
         }
     }
 }
+
 
 function drawnanoswarms() {
     for (let i = 0; i < nanoswarm.activeMissiles.length; i++) {
@@ -1664,16 +1675,6 @@ function findNearestAsteroidInRange() {
 }
 
 
-function drawSonicBlast() {
-    ctx.strokeStyle = 'blue';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < sonicBlast.waves.length; i++) {
-        const wave = sonicBlast.waves[i];
-        ctx.beginPath();
-        ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
-        ctx.stroke();
-    }
-}
 
 let mostRecentUpgradeApplied = false;
 
