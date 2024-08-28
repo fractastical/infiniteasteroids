@@ -1552,7 +1552,9 @@ function updateBoomerang() {
         }
     }
 
-    damageReport.boomerang += checkAlienDamage(boomerang);
+    checkAlienDamage(boomerang);
+    // commenting out because appears to be a bug in damage caculation for boomerang
+    // damageReport.boomerang += checkAlienDamage(boomerang);
 }
 
 function triggerSonicBlastEffect(x, y, range) {
