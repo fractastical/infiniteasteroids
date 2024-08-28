@@ -1705,6 +1705,9 @@ function endGame() {
     console.log("this run: " + timeTaken);
     score = Math.floor(score * modeScoreMultiplier); // Ensure score is a whole number
 
+    // quick fix for unkown negative nubmer problem 
+    score = Math.abs(score);
+
     // Calculate top six weapons by damage
     const topSixWeapons = Object.entries(damageReport)
         .filter(([weapon, damage]) => damage > 0) // Only include weapons with damage
