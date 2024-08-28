@@ -1610,7 +1610,7 @@ function shootTripleLaser() {
 }
 
 function shootLasers() {
-    if (!toggleOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
+    if (!toggleMusicOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
 
     // Use the custom shoot function if it exists, otherwise use default shooting
     if (currentShip === 'solarPhoenix') {
