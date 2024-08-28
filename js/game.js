@@ -453,6 +453,9 @@ function isMobile() {
 
 
 function update() {
+
+    calculateAndAdjustFPS(); //optimize.js
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // document.getElementById('leaderboard-container').style.display = 'none';
     if (currentBackgroundImage) {
