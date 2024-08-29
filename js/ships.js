@@ -168,12 +168,24 @@ function drawShieldShip() {
 
 
 function drawBasicShip() {
+    // Draw outer white line
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(0, -15);
     ctx.lineTo(10, 10);
     ctx.lineTo(-10, 10);
     ctx.closePath();
     ctx.strokeStyle = 'white';
+    ctx.stroke();
+
+    // Draw inner magenta line
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, -13);
+    ctx.lineTo(8, 8);
+    ctx.lineTo(-8, 8);
+    ctx.closePath();
+    ctx.strokeStyle = 'magenta';
     ctx.stroke();
 }
 
