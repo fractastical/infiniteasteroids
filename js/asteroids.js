@@ -648,7 +648,7 @@ function triggerMegaFreeze() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Create a visual freeze effect
-    createFreezeVisualEffect(centerX, centerY, megaFreezeRadius);
+    // createFreezeVisualEffect(centerX, centerY, megaFreezeRadius);
 
     // playSound('megaFreeze');
 }
