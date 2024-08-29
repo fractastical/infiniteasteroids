@@ -26,7 +26,7 @@ function getRandomUpgrades(count) {
     if (Achievements.complete_hard_mode.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('explosiverocket') ? (getUpgradeCount('explosiverocket') <= 9 ? ['Increase Explosive Rocket Damage', 'Increase Explosive Rocket Radius', 'Decrease Explosive Rocket Cooldown'] : []) : ['Activate Explosive Rocket']));
 
-    if (Achievements.kill_15_aliens.reached)
+    if (Achievements.kill_50_aliens.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('chainlightning') ? (getUpgradeCount('chainlightning') <= 9 ? ['Increase Chain Lightning Range', 'Increase Chain Lightning Damage', 'Increase Chain Lightning Bounces', 'Decrease Chain Lightning Cooldown'] : []) : ['Activate Chain Lightning']));
 
     if (Achievements.no_lives_lost.reached)

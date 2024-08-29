@@ -200,8 +200,8 @@ const Achievements = {
     complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Hard Mode. Unlock Explosive Rocket.' },
     complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Hero Mode. Unlock Extra Life.' },
     kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
-    kill_15_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 15 Aliens. Unlock Chain Lightning.' },
-    kill_50_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 50 Aliens. Unlock Sonic Boomerang.' },
+    kill_50_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 50 Aliens. Unlock Chain Lightning.' },
+    kill_500_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 500 Aliens. Unlock Sonic Boomerang.' },
     complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Shower Easy Mode. Unlock Starhawk' },
     complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Shower Normal Mode. Unlock Double Turret.' },
     complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode. Unlock Solar Phoenix .' },
@@ -1413,8 +1413,8 @@ function countTechnologies() {
     if (Achievements.acid_bomb_damage.reached) count++;
     if (Achievements.destroy_100_asteroids.reached) count++;
     if (Achievements.kill_5_aliens.reached) count++;
-    if (Achievements.kill_15_aliens.reached) count++;
     if (Achievements.kill_50_aliens.reached) count++;
+    if (Achievements.kill_500_aliens.reached) count++;
     if (Achievements.no_lives_lost.reached) count++;
     if (Achievements.death_ray_damage.reached) count++;
     if (Achievements.complete_meteor_normal_mode.reached) count++;
@@ -1542,8 +1542,8 @@ function updateAchievementsAtEnd() {
     if (damageReport.drones >= Achievements.drone_damage.required) addAchievement('drone_damage');
     if (damageReport.lasers >= Achievements.laser_damage.required) addAchievement('laser_damage');
     if (aliensKilled >= 5) addAchievement('kill_5_aliens');
-    if (aliensKilled >= 15) addAchievement('kill_15_aliens');
     if (aliensKilled >= 50) addAchievement('kill_50_aliens');
+    if (aliensKilled >= 500) addAchievement('kill_500_aliens');
 
 
     localStorage.setItem('achievements', JSON.stringify(Achievements));
@@ -1560,8 +1560,8 @@ function updateAchievementsAtEnd() {
         'destroy_100_asteroids': 'Drone',
         'kill_5_aliens': 'Death Ray',
         'complete_planet_hard_mode': 'Explosive Rocket',
-        'kill_15_aliens': 'Chain Lightning',
-        'kill_50_aliens': 'SonicBoomerang',
+        'kill_50_aliens': 'Chain Lightning',
+        'kill_500_aliens': 'SonicBoomerang',
         'no_lives_lost': 'Nano Swarm',
         'acid_bomb_damage': 'Flamethrower'
     };
