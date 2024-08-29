@@ -48,8 +48,8 @@ function drawFlameParticles() {
 }
 
 function drawSonicBlast() {
-    ctx.save();
-    ctx.lineWidth = 2; // Increase line width for better visibility
+    ctx.save(); // Save the context state before making changes
+    ctx.lineWidth = 2; // Set the line width for this specific drawing
 
     const simplifiedMode = fps < 30; // Fallback to simpler effects if FPS drops below 30
 
@@ -84,5 +84,5 @@ function drawSonicBlast() {
         }
     }
 
-    ctx.restore();
+    ctx.restore(); // Restore the context state back to what it was before
 }
