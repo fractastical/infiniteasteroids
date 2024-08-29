@@ -955,3 +955,37 @@ margin-bottom: 20px;
 .flash {
     animation: flash 1s ease-in-out;
 }
+
+.selection-section {
+    margin-bottom: 20px;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #2a2a2a;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 5px;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#saveSelections {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    margin-top: 20px;
+}
+
+#saveSelections:hover {
+    background-color: #45a049;
+}
+
+Improve

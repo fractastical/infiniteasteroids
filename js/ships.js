@@ -18,6 +18,12 @@ function drawShip() {
     }
 }
 
+function showShipSelectionModal() {
+    const modal = document.getElementById('shipSelectionModal');
+    modal.style.display = 'block';
+    populateSelectors();
+}
+
 function shootShotgunStyle() {
     const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
     const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
@@ -36,38 +42,40 @@ function shootShotgunStyle() {
 }
 
 shipSwitcher.addEventListener('click', (event) => {
-    console.log("switch");
-    const shipNames = Object.keys(ships);
-    let nextIndex = (shipNames.indexOf(currentShip) + 1) % shipNames.length;
-    console.log(ships[shipNames[nextIndex]]);
 
-    console.log(shipNames);
-    console.log(nextIndex);
+    showShipSelectionModal();
+    // console.log("switch");
+    // const shipNames = Object.keys(ships);
+    // let nextIndex = (shipNames.indexOf(currentShip) + 1) % shipNames.length;
+    // console.log(ships[shipNames[nextIndex]]);
 
-    // Find the next available ship based on the conditions
-    while (!ships[shipNames[nextIndex]].condition()) {
-        console.log(ships[shipNames[nextIndex]]);
+    // console.log(shipNames);
+    // console.log(nextIndex);
 
-        nextIndex = (nextIndex + 1) % shipNames.length;
-    }
-    console.log(nextIndex);
+    // // Find the next available ship based on the conditions
+    // while (!ships[shipNames[nextIndex]].condition()) {
+    //     console.log(ships[shipNames[nextIndex]]);
 
-    currentShip = shipNames[nextIndex];
-    console.log(currentShip);
+    //     nextIndex = (nextIndex + 1) % shipNames.length;
+    // }
+    // console.log(nextIndex);
 
-    const shipData = ships[currentShip];
-    console.log(shipData);
+    // currentShip = shipNames[nextIndex];
+    // console.log(currentShip);
+
+    // const shipData = ships[currentShip];
+    // console.log(shipData);
 
 
-    shipSwitcher.innerHTML = `Ship type: ${shipData.name}`;
+    // shipSwitcher.innerHTML = `Ship type: ${shipData.name}`;
 
-    console.log(shipSwitcher);
+    // console.log(shipSwitcher);
 
-    // Update ship properties
-    lives = shipData.lives;
-    ship.laserLevel = shipData.laserLevel;
-    ship.weaponSlots = shipData.weaponSlots;
-    ship.upgradeSlots = shipData.upgradeSlots;
+    // // Update ship properties
+    // lives = shipData.lives;
+    // ship.laserLevel = shipData.laserLevel;
+    // ship.weaponSlots = shipData.weaponSlots;
+    // ship.upgradeSlots = shipData.upgradeSlots;
 
 });
 
@@ -304,3 +312,59 @@ function drawQuantumStriker() {
     ctx.strokeStyle = 'cyan';
     ctx.stroke();
 }
+
+// Function to populate the selectors with unlocked options
+function populateSelectors() {
+    const shipSelector = document.getElementById('shipSelector');
+    const secondaryWeaponSelector = document.getElementById('secondaryWeaponSelector');
+    const upgradeSelector = document.getElementById('upgradeSelector');
+
+    // Populate ship options
+    Object.keys(ships).forEach(shipKey => {
+        if (ships[shipKey].condition()) {
+            const option = document.createElement('option');
+            option.value = shipKey;
+            option.textContent = ships[shipKey].name;
+            shipSelector.appendChild(option);
+        }
+    });
+
+    // Populate secondary weapon options
+    Object.keys(secondaryWeapons).forEach(weaponKey => {
+        if (secondaryWeapons[weaponKey].isAvailable()) {
+            const option = document.createElement('option');
+            option.value = weaponKey;
+            option.textContent = secondaryWeapons[weaponKey].name;
+            secondaryWeaponSelector.appendChild(option);
+        }
+    });
+
+    // Populate upgrade options (you'll need to define your upgrade options)
+    // This is just an example
+    upgrades.forEach(upgrade => {
+        if (upgrade.isUnlocked) {
+            const option = document.createElement('option');
+            option.value = upgrade.id;
+            option.textContent = upgrade.name;
+            upgradeSelector.appendChild(option);
+        }
+    });
+}
+
+// Function to handle selections and start the game
+function handleSelections() {
+    const selectedShip = document.getElementById('shipSelector').value;
+    const selectedWeapon = document.getElementById('secondaryWeaponSelector').value;
+    const selectedUpgrade = document.getElementById('upgradeSelector').value;
+
+    // Apply selections to the game
+    currentShip = selectedShip;
+    selectSecondaryWeapon(selectedWeapon);
+    applyUpgrade(selectedUpgrade);
+
+    // Close the modal and start the game
+    document.getElementById('shipSelectionModal').style.display = 'none';
+}
+
+// Event listener for the save button
+document.getElementById('saveSelections').addEventListener('click', handleSelections);
