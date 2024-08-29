@@ -190,6 +190,25 @@ let plasmaCannonUpgrades = {
     cooldown: 1
 };
 
+const droneImages = {
+    regularDrone: 'icons/laserdrone.png',
+    bomberDrone: 'icons/bomberdrone.png',
+    nanoDrone: 'icons/nanodrone.png',
+};
+
+function preloadDroneImages() {
+    for (const droneType in droneImages) {
+        const image = new Image();
+        image.src = droneImages[droneType];
+        droneImages[droneType] = image;
+    }
+}
+
+// Call the preloadDroneImages function before starting the game
+preloadDroneImages();
+
+
+
 function firePlasmaCannon() {
     if (plasmaCannon.timer === 0) {
         const angle = ship.rotation * Math.PI / 180;
@@ -780,6 +799,34 @@ function updateExplosiveRockets() {
         if (rocket.x < 0 || rocket.x > canvas.width || rocket.y < 0 || rocket.y > canvas.height) {
             explosiveRockets.splice(i, 1);
         }
+    }
+}
+
+function drawExplosiveRockets() {
+    ctx.fillStyle = 'red'; // Color of the rocket
+    ctx.strokeStyle = 'orange'; // Outline color of the rocket
+    ctx.lineWidth = 2;
+
+    for (let i = 0; i < explosiveRockets.length; i++) {
+        const rocket = explosiveRockets[i];
+
+        // Save the context's state
+        ctx.save();
+
+        // Translate the context to the rocket's position
+        ctx.translate(rocket.x, rocket.y);
+
+        // Rotate the context to match the rocket's angle
+        ctx.rotate(rocket.angle);
+
+        // Draw the rocket as a simple rectangle
+        ctx.beginPath();
+        ctx.rect(-5, -10, 10, 20); // Adjust the size of the rocket as needed
+        ctx.fill();
+        ctx.stroke();
+
+        // Restore the context's state
+        ctx.restore();
     }
 }
 

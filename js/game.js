@@ -606,6 +606,7 @@ function update() {
         }
     }
     updateExplosiveRockets();
+    drawExplosiveRockets();
 
     if (activeWeaponClasses.includes('acid')) {
         if (acidBomb.timer > 0) {
