@@ -237,8 +237,12 @@ function drawAsteroids() {
             ctx.strokeStyle = asteroid.color;
         }
 
+
         // Set stroke color for rare asteroids
         ctx.strokeStyle = asteroid.type !== 'normal' ? 'white' : ctx.strokeStyle;
+        if (asteroid.frozen == true)
+            ctx.strokeStyle = '#22EEEE';
+
         ctx.stroke(); // Stroke all asteroids
 
         // Debugging: Log asteroid drawing
@@ -814,15 +818,16 @@ function getRandomPurpleShade() {
 //     }
 // }
 
-function applyFreezeEffect(x, y, radius = 1000) {
+function applyFreezeEffect(x, y, radius = 250) {
     const freezeRadius = radius;
     for (let i = 0; i < asteroids.length; i++) {
         let dx = asteroids[i].x - x;
         let dy = asteroids[i].y - y;
         let distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < freezeRadius) {
-            asteroids[i].dx *= 0.5;
-            asteroids[i].dy *= 0.5;
+            asteroids[i].dx *= 0.2;
+            asteroids[i].dy *= 0.2;
+            asteroids[i].frozen = true;
             // setTimeout(() => {
             //     if (asteroids[i]) {
             //         asteroids[i].dx = Math.random() * 2 - 1;
