@@ -13,8 +13,9 @@
 
 
 
+
   <!-- #INFINITEGAMES CSS START -->
-  <!-- <link rel="stylesheet" href="infinite/css/48_leaderboard_20240709215443.css"> -->
+  <link rel="stylesheet" href="infinite/css/48_leaderboard_20240829095112.css">
   <!-- #INFINITEGAMES CSS END -->
 </head>
 
@@ -27,13 +28,10 @@
   <div id="allLeaderboardsModal" class="modal">
     <div class="modal-content">
       <h2>All Game Modes Leaderboard</h2>
-      <div id="allLeaderboardsContainer">
-        <!-- Leaderboards for each game mode will be dynamically added here -->
-      </div>
+      <div id="allLeaderboardsContainer"></div>
       <button id="closeAllLeaderboards">Close</button>
     </div>
   </div>
-
 
   <div id="loginPopup" class="modal">
     <div class="modal-content">
@@ -223,7 +221,6 @@
           <td>
 
             <button id="endlessSlowButton" onclick="initializeGame(GameModes.ENDLESS_SLOW)">Endless </button>
-            <button id="viewAllLeaderboardsButton">View All Leaderboards</button>
 
 
           </td>
@@ -245,8 +242,9 @@
         <h3>Your Achievements</h3>
         <div id="achievementsList"></div>
       </div>
-      <h3>Your Upgrades</h3>
+      <!-- <h3>Your Upgrades</h3> -->
       <div id="upgradesList"></div>
+      <button id="viewAllLeaderboardsButton">View All Leaderboards</button>
 
 
       <!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
@@ -350,6 +348,33 @@
     });
 
 
+    document.getElementById('viewAllLeaderboardsButton').addEventListener('click', async () => {
+      const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
+      allLeaderboardsContainer.innerHTML = ''; // Clear previous content
+
+      const allScores = await loadAllLeaderboards(gameId); // Replace 'YourGameName' with your actual game name
+
+      for (let mode in allScores) {
+        const leaderboardDiv = document.createElement('div');
+        leaderboardDiv.className = 'leaderboard-mode';
+        leaderboardDiv.innerHTML = `<h3>${mode}</h3>`;
+
+        allScores[mode].forEach((entry, index) => {
+          const formattedScore = entry.score.toLocaleString('en-US', {
+            maximumFractionDigits: 0
+          });
+          leaderboardDiv.innerHTML += `<p>${index + 1}. ${entry.nickname}: ${formattedScore} points</p>`;
+        });
+
+        allLeaderboardsContainer.appendChild(leaderboardDiv);
+      }
+
+      document.getElementById('allLeaderboardsModal').style.display = 'block';
+    });
+
+    document.getElementById('closeAllLeaderboards').addEventListener('click', () => {
+      document.getElementById('allLeaderboardsModal').style.display = 'none';
+    });
 
 
 
@@ -417,23 +442,6 @@
 
 
 
-
-    const droneImages = {
-      regularDrone: 'icons/laserdrone.png',
-      bomberDrone: 'icons/bomberdrone.png',
-      nanoDrone: 'icons/nanodrone.png',
-    };
-
-    function preloadDroneImages() {
-      for (const droneType in droneImages) {
-        const image = new Image();
-        image.src = droneImages[droneType];
-        droneImages[droneType] = image;
-      }
-    }
-
-    // Call the preloadDroneImages function before starting the game
-    preloadDroneImages();
 
     function showArrow(side) {
       const leftArrow = document.getElementById('leftArrow');
@@ -1164,6 +1172,8 @@
         });
       });
 
+
+
       scores.sort((a, b) => b.score - a.score);
 
       const limitedScores = [];
@@ -1195,6 +1205,67 @@
       document.getElementById('leaderboard-container').appendChild(leaderboard);
     }
 
+    async function loadAllLeaderboards(gameName) {
+      const db = getFirestore();
+      const usersSnapshot = await getDocs(collection(db, 'users'));
+      const allScores = {};
+
+      const gameModes = [
+        { id: GameModes.EASY, name: "Easy" },
+        { id: GameModes.NORMAL, name: "Normal" },
+        { id: GameModes.HARD, name: "Hard" },
+        { id: GameModes.HERO, name: "Hero" },
+        { id: GameModes.METEORSHOWEREASY, name: "Meteor Shower Easy" },
+        { id: GameModes.METEORSHOWERNORMAL, name: "Meteor Shower Normal" },
+        { id: GameModes.METEORSHOWERHARD, name: "Meteor Shower Hard" },
+        { id: GameModes.METEORSHOWERHERO, name: "Meteor Shower Hero" },
+        { id: GameModes.PLANETEASY, name: "Planet Easy" },
+        { id: GameModes.PLANETNORMAL, name: "Planet Normal" },
+        { id: GameModes.PLANETHARD, name: "Planet Hard" },
+        { id: GameModes.PLANETHERO, name: "Planet Hero" },
+        { id: GameModes.ENDLESS_SLOW, name: "Endless Slow" }
+      ];
+
+      usersSnapshot.forEach(doc => {
+        const userData = doc.data();
+        gameModes.forEach(mode => {
+          const gameScores = userData.games?.[gameName]?.scores || [];
+          gameScores.forEach(session => {
+            if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === mode.id) {
+              if (!allScores[mode.name]) {
+                allScores[mode.name] = [];
+              }
+              allScores[mode.name].push({
+                nickname: userData.nickname || 'Unnamed',
+                score: session.score,
+                wave: session.wave  // Assuming we also save the wave number
+              });
+            }
+          });
+        });
+      });
+
+      // Sort and limit scores for each mode
+      for (let mode in allScores) {
+        allScores[mode].sort((a, b) => b.score - a.score);
+
+        const playerCounts = {};
+        allScores[mode] = allScores[mode].filter(score => {
+          if (!playerCounts[score.nickname]) {
+            playerCounts[score.nickname] = 0;
+          }
+          if (playerCounts[score.nickname] < 3) {
+            playerCounts[score.nickname]++;
+            return true;
+          }
+          return false;
+        }).slice(0, 12);
+      }
+
+      return allScores;
+    }
+
+
     function getGameModeName(mode) {
       switch (mode) {
         case GameModes.EASY: return "Easy";
@@ -1215,6 +1286,7 @@
     }
 
     window.loadLeaderboard = loadLeaderboard;
+    window.loadAllLeaderboards = loadAllLeaderboards;
 
 
     // Function to load achievements from Firebase or localStorage
@@ -1303,9 +1375,10 @@
 
 
 
+
   <!-- #INFINITEGAMES JS START -->
-  <!-- <script src="infinite/js/48_leaderboard_20240709215443.js"></script>
-  <script src="infinite/js/48_firebase_20240709215443.js"></script> -->
+  <script src="infinite/js/48_leaderboard_20240829095112.js"></script>
+  <script src="infinite/js/48_firebase_20240829095112.js"></script>
   <!-- #INFINITEGAMES JS END -->
 </body>
 
