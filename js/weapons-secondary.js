@@ -25,10 +25,10 @@ const secondaryWeapons = {
     explosiveBurst: {
         name: 'Bomb',
         damage: 50,
-        radius: 100, // radius of explosion
+        radius: 400, // radius of explosion
         cooldown: 500,
         uses: 3,
-        isActive: false,
+        isActive: true,
         isAvailable: () => true,
         activate: function () {
             this.isActive = true;
@@ -37,9 +37,11 @@ const secondaryWeapons = {
             this.isActive = false;
         },
         useWeapon: function () {
-            if (this.uses > 0 && this.cooldown === 0) {
+            console.log("bursting");
+            if (this.uses > 0) {
                 this.uses--;
                 createAreaDamage(ship.x, ship.y, this.radius, this.damage);
+                createExplosion(ship.x, ship.y);
                 this.cooldown = 500; // Reset cooldown after use
             } else {
                 console.log('Cannot use Explosive Burst right now.');
@@ -76,7 +78,7 @@ function selectSecondaryWeapon(weaponName) {
         secondaryWeapons[weapon].deactivate(); // Deactivate all weapons
     });
 
-    secondaryWeapons[weaponName].activate(); // Activate the selected weapon
+    secondaryWeapons[weaponName].isActive = true; // Activate the selected weapon
     console.log(`${secondaryWeapons[weaponName].name} selected as secondary weapon.`);
 }
 
@@ -92,6 +94,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 function fireSecondaryWeapon() {
+    console.log("firing secondary");
     const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
     if (activeWeapon) {
         activeWeapon.useWeapon();
@@ -99,11 +102,11 @@ function fireSecondaryWeapon() {
 }
 
 // Example of binding to a keypress (e.g., 'F' key for firing secondary weapon)
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'F') {
-        fireSecondaryWeapon();
-    }
-});
+// document.addEventListener('keydown', (event) => {
+//     if (event.key === 'F') {
+//         fireSecondaryWeapon();
+//     }
+// });
 
 function updateSecondaryWeapons() {
     Object.values(secondaryWeapons).forEach(weapon => {

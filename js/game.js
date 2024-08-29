@@ -1093,10 +1093,10 @@ function createAreaDamage(x, y, radius, damage = 1) {
             asteroid.hitpoints -= actualDamage;
             totalDamage += actualDamage;
 
-            // if (asteroid.hitpoints <= 0) {
-            //   processAsteroidDeath(asteroid);
-            //   asteroids.splice(i, 1);
-            // }
+            if (asteroid.hitpoints <= 0) {
+                // processAsteroidDeath(asteroid);
+                asteroids.splice(i, 1);
+            }
 
             coins += actualDamage * 15;
             increaseXP(actualDamage * 15);
@@ -1512,6 +1512,7 @@ function updateAchievementsAtEnd() {
     if (damageReport.deathRay >= Achievements.death_ray_damage.required) addAchievement('death_ray_damage');
     if (damageReport.drones >= Achievements.drone_damage.required) addAchievement('drone_damage');
     if (damageReport.lasers >= Achievements.laser_damage.required) addAchievement('laser_damage');
+
     if (aliensKilled >= 5) addAchievement('kill_5_aliens');
     if (aliensKilled >= 50) addAchievement('kill_50_aliens');
     if (aliensKilled >= 500) addAchievement('kill_500_aliens');
