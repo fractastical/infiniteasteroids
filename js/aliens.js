@@ -286,7 +286,7 @@ function spawnSuperBossAlien() {
 
     superbossAlien = {
         x: canvas.width / 2,
-        y: canvas.height / 2,
+        y: 2,
         size: 80,
         speed: 0.3,
         direction: Math.random() * Math.PI * 2,
@@ -373,7 +373,7 @@ function spawnMegaBossAlien() {
 
     megaBossAlien = {
         x: canvas.width / 2,
-        y: canvas.height / 2,
+        y: 2,
         size: 140,
         speed: 0.2,
         direction: Math.random() * Math.PI * 2,
