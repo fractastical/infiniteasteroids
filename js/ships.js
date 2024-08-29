@@ -7,6 +7,7 @@ const shipSwitcher = document.getElementById('shipType');
 // Draw the ship
 function drawShip() {
     if (!invincible || (invincibilityTimer % 20 < 10)) {
+        ctx.lineWidth = 1;
         ctx.save();
         ctx.translate(ship.x, ship.y);
         ctx.rotate(ship.rotation * Math.PI / 180);
@@ -341,26 +342,26 @@ function populateSelectors() {
 
     // Populate upgrade options (you'll need to define your upgrade options)
     // This is just an example
-    upgrades.forEach(upgrade => {
-        if (upgrade.isUnlocked) {
-            const option = document.createElement('option');
-            option.value = upgrade.id;
-            option.textContent = upgrade.name;
-            upgradeSelector.appendChild(option);
-        }
-    });
+    // upgrades.forEach(upgrade => {
+    //     if (upgrade.isUnlocked) {
+    //         const option = document.createElement('option');
+    //         option.value = upgrade.id;
+    //         option.textContent = upgrade.name;
+    //         upgradeSelector.appendChild(option);
+    //     }
+    // });
 }
 
 // Function to handle selections and start the game
 function handleSelections() {
     const selectedShip = document.getElementById('shipSelector').value;
     const selectedWeapon = document.getElementById('secondaryWeaponSelector').value;
-    const selectedUpgrade = document.getElementById('upgradeSelector').value;
+    // const selectedUpgrade = document.getElementById('upgradeSelector').value;
 
     // Apply selections to the game
     currentShip = selectedShip;
     selectSecondaryWeapon(selectedWeapon);
-    applyUpgrade(selectedUpgrade);
+    // applyUpgrade(selectedUpgrade);
 
     // Close the modal and start the game
     document.getElementById('shipSelectionModal').style.display = 'none';

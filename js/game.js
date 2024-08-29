@@ -213,6 +213,9 @@ const Achievements = {
     alien_megaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien Megaboss. Mega unlock.' },
     alien_supermegaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien SuperMegaBoss. Super Secret unlock.' },
     alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. Super Mega Secret unlock.' },
+    invincibilityShieldUnlocked: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Invincibility Shield.' },
+    piercingLaserUnlocked: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Piercing Laser.' },
+
 
 };
 

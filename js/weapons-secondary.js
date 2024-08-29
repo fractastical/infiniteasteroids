@@ -23,13 +23,13 @@ const secondaryWeapons = {
         }
     },
     explosiveBurst: {
-        name: 'Explosive Burst',
+        name: 'Bomb',
         damage: 50,
         radius: 100, // radius of explosion
         cooldown: 500,
         uses: 3,
         isActive: false,
-        isAvailable: () => Achievements.explosiveBurstUnlocked.reached,
+        isAvailable: () => true,
         activate: function () {
             this.isActive = true;
         },
@@ -113,8 +113,8 @@ function updateSecondaryWeapons() {
     });
 }
 
-let invincibilityTimer = 0;
-let invincible = false;
+// let invincibilityTimer = 0;
+// let invincible = false;
 
 function activateInvincibility(duration) {
     invincible = true;
