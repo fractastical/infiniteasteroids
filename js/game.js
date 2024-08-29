@@ -1304,8 +1304,6 @@ function handleKeyDown(event) {
         event.preventDefault();
     }
 
-
-
     if (document.getElementById('loginPopup') && document.getElementById('loginPopup').style.display == 'none') {
 
         // Player 2 controls
@@ -1314,71 +1312,46 @@ function handleKeyDown(event) {
             event.preventDefault();
         }
 
-        // if (event.key === ' ') { // Space bar
-        //   if (!isPaused && document.getElementById('spinButton').style.display !== 'none') {
-        //     startRoulette();
-        //   }
-        // } else
-
         if (event.key === 'Enter') {
 
             if (document.getElementById('rouletteContainer').style.display == 'block') {
 
                 const okButton = document.querySelector('#upgradeDisplay button');
-                // console.log(okButton);
                 if (okButton) {
                     okButton.click();
                 } else {
-
                     startRoulette();
                 }
             }
         }
 
         if (event.key === 'i' || event.key === 'I') {
-            // console.log("toggle1");
             toggleWeaponInfo();
         } else if (event.key === 'p' || event.key === 'P') {
-
             if (isPaused) {
-
                 clearInterval(gameLoop);
                 gameLoop = setInterval(update, 1000 / 60); // Resume game loop
                 isPaused = false;
-
-            }
-            else {
-
+            } else {
                 if (document.getElementById('rouletteContainer').style.display == 'none' && document.getElementById('endScreen').style.display == 'none') {
-
                     clearInterval(gameLoop);
                     isPaused = true;
-
                 }
-
-
             }
-
         } else if (event.key === 'm') {
-
             toggleMusic();
         } else if (event.key === 'n') {
-
             toggleSound();
-
         } else if (event.key === 'u' || event.key === 'U') {
-            // for testing new features
             clearInterval(gameLoop);
             isPaused = true;
-            // drawPlanetx(); // Draw the planet
             document.getElementById('rouletteContainer').style.display = 'block';
-            // startRoulette();
-
         } else if (event.key === 'v' || event.key === 'V') {
-            if (!loginFormOpen)
-                toggleVolumeScreen();
+            if (!loginFormOpen) toggleVolumeScreen();
+        } else if (event.key === 'x' || event.key === 'X') {
+            // Trigger the secondary weapon action here
+            fireSecondaryWeapon(); // Use the selected secondary weapon
         }
-
 
         if (document.getElementById('levelUpModal').style.display === 'block') {
             if (event.key === '1') {
@@ -1390,13 +1363,8 @@ function handleKeyDown(event) {
             } else if (fourthUpgradeUnlocked && event.key === '4') {
                 selectUpgrade(4);
             }
-
-
         }
-
     }
-
-
 }
 
 function handleKeyUp(event) {
