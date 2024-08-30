@@ -23,6 +23,7 @@ function showShipSelectionModal() {
     const modal = document.getElementById('shipSelectionModal');
     modal.style.display = 'block';
     populateSelectors();
+    updateShipPreview(); // Initialize with the first ship
 }
 
 function shootShotgunStyle() {
@@ -314,11 +315,42 @@ function drawQuantumStriker() {
     ctx.stroke();
 }
 
+
+function updateShipPreview() {
+    const selectedShip = document.getElementById('shipSelector').value;
+    const canvas = document.getElementById('shipPreviewCanvas');
+    const previewCtx = canvas.getContext('2d');
+
+    // Clear the canvas
+    previewCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Set up the context for drawing
+    previewCtx.save();
+    previewCtx.translate(canvas.width / 2, canvas.height / 2);
+    previewCtx.scale(3, 3); // Scale up the ship for better visibility
+
+    // Temporarily replace the global ctx with our preview context
+    const originalCtx = ctx;
+    ctx = previewCtx;
+
+    // Draw the selected ship
+    ships[selectedShip].draw();
+
+    // Restore the original context
+    ctx = originalCtx;
+
+    previewCtx.restore();
+}
+
 // Function to populate the selectors with unlocked options
 function populateSelectors() {
     const shipSelector = document.getElementById('shipSelector');
     const secondaryWeaponSelector = document.getElementById('secondaryWeaponSelector');
-    const upgradeSelector = document.getElementById('upgradeSelector');
+    // const upgradeSelector = document.getElementById('upgradeSelector');
+
+    shipSelector.innerHTML = '';
+    secondaryWeaponSelector.innerHTML = '';
+    // upgradeSelector.innerHTML = '';
 
     // Populate ship options
     Object.keys(ships).forEach(shipKey => {
@@ -369,3 +401,4 @@ function handleSelections() {
 
 // Event listener for the save button
 document.getElementById('saveSelections').addEventListener('click', handleSelections);
+document.getElementById('shipSelector').addEventListener('change', updateShipPreview);

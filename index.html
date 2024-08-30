@@ -93,7 +93,7 @@
 
   <!-- version -->
   <div id="shipType">
-    Ship customization
+    Customize ship
   </div>
 
 
@@ -178,6 +178,10 @@
     <div class="modal-content">
       <h2>Customize Your Ship</h2>
 
+      <div class="ship-preview">
+        <canvas id="shipPreviewCanvas" width="200" height="200"></canvas>
+      </div>
+
       <div class="selection-section">
         <h3>Select Your Ship</h3>
         <select id="shipSelector">
@@ -195,8 +199,8 @@
       <!-- <div class="selection-section">
         <h3>Select Upgrade</h3>
         <select id="upgradeSelector">
-      </select>
-    </div> -->
+        </select>
+      </div> -->
 
       <button id="saveSelections">Save</button>
     </div>
@@ -347,7 +351,7 @@
   <script>
 
     const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+    let ctx = canvas.getContext('2d');
 
   </script>
 
