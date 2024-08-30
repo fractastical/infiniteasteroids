@@ -10,7 +10,6 @@ body {
     flex-direction: column;
 }
 
-#shipType,
 #technologiesCount,
 #loginInfo {
     position: absolute;
@@ -128,10 +127,14 @@ button:hover {
     background: #00cc00;
 }
 
-#shipType {
+#technologiesCount {
+    right: 10px;
+}
+
+/* #shipType {
     left: 10px;
     top: 19px;
-}
+} */
 
 .ship-preview {
     text-align: center;
@@ -144,10 +147,32 @@ button:hover {
     background-color: #2a2a2a;
 }
 
-#technologiesCount {
-    right: 10px;
+
+#shipTypeContainer {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    z-index: 1000;
+    /* Ensure it's above other elements */
 }
 
+#miniShipPreview {
+    margin-right: 10px;
+    width: 40px;
+    /* Set a fixed width */
+    height: 40px;
+    /* Set a fixed height */
+}
+
+#shipType {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    color: #fff;
+    /* Ensure text is visible on dark backgrounds */
+}
 
 html {
     margin: 0;

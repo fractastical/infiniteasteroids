@@ -92,19 +92,23 @@
   </div>
 
   <!-- version -->
-  <div id="shipType">
-    Customize ship
+  <div id="shipTypeContainer">
+    <canvas id="miniShipPreview" width="40" height="40"></canvas>
+    <span id="shipType">Customize ship</span>
   </div>
+  <!-- <div id="shipType">
+    Ship type: Basic&nbsp;&nbsp; &nbsp;
+  </div> -->
 
 
   <div id="technologiesCount">
     v 0.9501
   </div>
   <!-- 
-  <div id="result">
+    <div id="result">
 
-  </div>
- -->
+    </div>
+  -->
   <div id="levelUpModal" class="modal">
     <div class="modal-content">
       <h2>Level Up!</h2>
@@ -162,7 +166,7 @@
     <ul id="newAchievementsList"></ul>
 
     <!-- <h3>Used Upgrades</h3>
-    <ul id="upgradesList"></ul> -->
+      <ul id="upgradesList"></ul> -->
     <p><button id="restartButton">Restart</button></p>
 
     <div id="leaderboard-container">
@@ -197,10 +201,10 @@
       </div>
 
       <!-- <div class="selection-section">
-        <h3>Select Upgrade</h3>
-        <select id="upgradeSelector">
-        </select>
-      </div> -->
+          <h3>Select Upgrade</h3>
+          <select id="upgradeSelector">
+          </select>
+        </div> -->
 
       <button id="saveSelections">Save</button>
     </div>
@@ -258,11 +262,11 @@
           </td>
           <!-- <td>
 
-            <button id="coopButton" onclick="initializeGame(GameModes.COOP)">Co-op </button>
+              <button id="coopButton" onclick="initializeGame(GameModes.COOP)">Co-op </button>
 
 
-          </td>
- -->
+            </td>
+  -->
         </tr>
 
         </tr>
@@ -280,7 +284,7 @@
 
 
       <!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
-      <button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button> -->
+        <button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button> -->
       <!-- <p>Tap lower left for store.</p> -->
       <!-- <p>Tap with two fingers to fire.</p> -->
       <!-- <button onclick="startGame()">Start Game</button> -->
@@ -875,10 +879,10 @@
         const weaponDiv = document.createElement('div');
         weaponDiv.className = 'weapon';
         weaponDiv.innerHTML = `
-            <div class="weapon-icon ${weapon.icon}"></div>
-            <p><strong>${weapon.name}</strong></p>
-            <p>${weapon.description}</p>
-        `;
+              <div class="weapon-icon ${weapon.icon}"></div>
+              <p><strong>${weapon.name}</strong></p>
+              <p>${weapon.description}</p>
+          `;
         weaponsContainer.appendChild(weaponDiv);
       });
     }
@@ -1387,14 +1391,14 @@
 
 
   <!-- <div id="auth" class="hidden">
-    <h1>Infinite Games</h1>
-    <h2>Login</h2>
-    <form id="login-form">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-  </div> -->
+      <h1>Infinite Games</h1>
+      <h2>Login</h2>
+      <form id="login-form">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+    </div> -->
 
 
 

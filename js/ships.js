@@ -397,7 +397,42 @@ function handleSelections() {
 
     // Close the modal and start the game
     document.getElementById('shipSelectionModal').style.display = 'none';
+    updateShipTypeDisplay(); // Add this line
+
 }
+
+function updateMiniShipPreview() {
+    const canvas = document.getElementById('miniShipPreview');
+    const miniCtx = canvas.getContext('2d');
+
+    // Clear the canvas
+    miniCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Set up the context for drawing
+    miniCtx.save();
+    miniCtx.translate(canvas.width / 2, canvas.height / 2);
+    miniCtx.scale(1, 1); // Adjust scale if needed
+
+    // Temporarily replace the global ctx with our mini context
+    const originalCtx = ctx;
+    ctx = miniCtx;
+
+    // Draw the current ship
+    ships[currentShip].draw();
+
+    // Restore the original context
+    ctx = originalCtx;
+
+    miniCtx.restore();
+}
+
+// Call this function whenever the ship changes or when the game starts
+function updateShipTypeDisplay() {
+    const shipTypeElement = document.getElementById('shipType');
+    shipTypeElement.textContent = `Ship: ${ships[currentShip].name}`;
+    updateMiniShipPreview();
+}
+
 
 // Event listener for the save button
 document.getElementById('saveSelections').addEventListener('click', handleSelections);
