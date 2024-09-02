@@ -1227,7 +1227,7 @@ function drawScore() {
 
     if (!isMobile()) {
         // document.getElementById('controlsInfo').textContent = "[m]usic sou[n]d [v]olume [p]ause [i]nfo";
-        document.getElementById('controlsInfo').textContent = "[m]usic sou[n]d [p]ause [i]nfo";
+        document.getElementById('controlsInfo').textContent = "s[e]condary [m]usic sou[n]d [p]ause [i]nfo";
 
     } else {
         document.getElementById('controlsInfo').textContent = '';
@@ -1348,7 +1348,7 @@ function handleKeyDown(event) {
             document.getElementById('rouletteContainer').style.display = 'block';
         } else if (event.key === 'v' || event.key === 'V') {
             if (!loginFormOpen) toggleVolumeScreen();
-        } else if (event.key === 'x' || event.key === 'X') {
+        } else if (event.key === 'e' || event.key === 'E') {
             // Trigger the secondary weapon action here
             fireSecondaryWeapon(); // Use the selected secondary weapon
         }
