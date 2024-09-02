@@ -1397,6 +1397,9 @@ function countTechnologies() {
     if (Achievements.drone_damage.reached) count++;
     if (Achievements.laser_damage.reached) count++;
     if (Achievements.alien_megaboss_killed.reached) count++;
+    if (Achievements.wave_60_endless.reached) count++;
+    if (Achievements.million_score.reached) count++;
+
     // if (Achievements.alien_supermegaboss_killed.reached) count++;
 
 
@@ -1428,7 +1431,7 @@ function populateAchievements() {
     document.getElementById('planetEasyButton').disabled = !Achievements.complete_meteor_normal_mode.reached;
     document.getElementById('planetNormalButton').disabled = !Achievements.complete_planet_easy_mode.reached;
     document.getElementById('planetHardButton').disabled = !Achievements.complete_planet_normal_mode.reached;
-    document.getElementById('planetHeroButton').disabled = !Achievements.complete_planet_hero_mode.reached;
+    document.getElementById('planetHeroButton').disabled = !Achievements.complete_planet_hard_mode.reached;
 
     console.log(Achievements);
     // console.log("pop");
