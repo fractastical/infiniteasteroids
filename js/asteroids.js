@@ -612,12 +612,12 @@ function triggerLightningStorm() {
         }
     }
     // Add screen flash effect
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    setTimeout(() => {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }, 100);
+    // ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    // ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // setTimeout(() => {
+    //     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    //     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // }, 100);
 
     // playSound('thunder');
 }
