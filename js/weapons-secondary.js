@@ -166,10 +166,19 @@ function unlockWeapons() {
 
 
 
-function displayWeaponInfo() {
+function displayWeaponInfo(startX, startY) {
+    const spacing = 5;     // Space between life rectangles
+
     const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
     if (activeWeapon) {
         document.getElementById('weaponInfo').innerText = `${activeWeapon.name}: ${activeWeapon.uses} uses left`;
+        ctx.fillStyle = 'blue';
+
+        for (let i = 0; i < activeWeapon.uses; i++) {
+            const x = startX + (lifeWidth + spacing) * i;
+            ctx.fillRect(x + 10, startY, lifeWidth, lifeHeight);
+        }
+
     }
 }
 

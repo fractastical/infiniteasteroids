@@ -2392,9 +2392,10 @@ function selectGemType(hitpoints) {
     return 'epic';
 }
 
+const lifeWidth = 10;  // Width of each life rectangle
+const lifeHeight = 30; // Height of each life rectangle (3 times the width)
+
 function drawLives() {
-    const lifeWidth = 10;  // Width of each life rectangle
-    const lifeHeight = 30; // Height of each life rectangle (3 times the width)
     const spacing = 5;     // Space between life rectangles
     const startX = document.getElementById('livesDisplay').getBoundingClientRect().right + 30;     // Starting X position for the first life
     const startY = canvas.height - 40; // Y position for lives, 40 pixels from the bottom
@@ -2424,6 +2425,8 @@ function drawLives() {
             const x = startX + (lifeWidth + spacing) * i;
             ctx.fillRect(x, startY, lifeWidth, lifeHeight);
         }
+
+        displayWeaponInfo(x + lifeWidth, startY);
 
         // Update HTML display
         document.getElementById('livesDisplay').textContent = `Health: ${lives}`;
