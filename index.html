@@ -393,7 +393,7 @@
       for (let mode in allScores) {
         const leaderboardDiv = document.createElement('div');
         leaderboardDiv.className = 'leaderboard-mode';
-        leaderboardDiv.innerHTML = `<h3>${mode}</h3>`;
+        leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3>${mode}</h3>`;
 
         allScores[mode].forEach((entry, index) => {
           const formattedScore = entry.score.toLocaleString('en-US', {
