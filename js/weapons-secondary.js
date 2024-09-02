@@ -5,7 +5,7 @@ const secondaryWeapons = {
         cooldown: 600, // cooldown in frames (e.g., 10 seconds at 60 FPS)
         uses: 3,
         isActive: false,
-        isAvailable: () => Achievements.invincibilityShieldUnlocked.reached,
+        isAvailable: () => Achievements.million_score.reached,
         activate: function () {
             this.isActive = true;
         },
@@ -54,7 +54,7 @@ const secondaryWeapons = {
         cooldown: 400,
         uses: 5,
         isActive: false,
-        isAvailable: () => Achievements.piercingLaserUnlocked.reached,
+        isAvailable: () => Achievements.wave_60_endless.reached,
         activate: function () {
             this.isActive = true;
         },

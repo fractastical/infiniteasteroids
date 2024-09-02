@@ -213,8 +213,8 @@ const Achievements = {
     alien_megaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien Megaboss. Mega unlock.' },
     alien_supermegaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien SuperMegaBoss. Super Secret unlock.' },
     alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. Super Mega Secret unlock.' },
-    invincibilityShieldUnlocked: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Invincibility Shield.' },
-    piercingLaserUnlocked: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Piercing Laser.' },
+    million_score: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Get a million points. Invincibility Shield.' },
+    wave_60_endless: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Reach wave 60 on Endless. Piercing Laser.' },
 
 
 };
@@ -1485,6 +1485,8 @@ function updateAchievementsAtEnd() {
     if (wave >= 5) addAchievement('reach_wave_5');
     if (wave >= 10) addAchievement('reach_wave_10');
     if (wave >= 20) addAchievement('reach_wave_20');
+    if (score >= 1000000) addAchievement('million_score');
+
     if (damageReport.acid >= Achievements.acid_bomb_damage.required) addAchievement('acid_bomb_damage');
     if (damageReport.explosive >= Achievements.explosive_laser_damage.required) addAchievement('explosive_laser_damage');
     if (asteroidsKilled >= 100) addAchievement('destroy_100_asteroids');
@@ -1508,6 +1510,9 @@ function updateAchievementsAtEnd() {
     gameModeAchievements.forEach(({ key, mode }) => {
         if (currentMode === mode && wave >= 30) addAchievement(key);
     });
+    if (currentMode == GameModes.ENDLESS_SLOW && wave >= 60)
+        addAchievement('wave_60_endless');
+
 
     if (damageReport.deathRay >= Achievements.death_ray_damage.required) addAchievement('death_ray_damage');
     if (damageReport.drones >= Achievements.drone_damage.required) addAchievement('drone_damage');
@@ -1580,6 +1585,8 @@ function levelUp() {
     if (fourthUpgradeUnlocked) {
         document.getElementById('upgrade4').style.display = `block`;
         document.getElementById('upgrade4').textContent = `4. ${upgrades[3]} `;
+    } else {
+        document.getElementById('upgrade4').style.display = `none`;
     }
 
     mostRecentUpgradeApplied = false;
