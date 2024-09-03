@@ -164,6 +164,8 @@
     <!-- Right Control Panel -->
     <div class="control-panel right">
         <h3>Game Controls</h3>
+
+        <button onclick="spawnFloatingIsland()">Spawn Island</button>
         <button onclick="spawnAsteroids(10)">Spawn 10 Asteroids</button>
         <button onclick="spawnAliens(27)">Spawn aliens</button>
         <button onclick="spawnBossAlien()">Spawn Boss Alien</button>
@@ -222,7 +224,19 @@
 
     <div id="xpBarContainer">
         <div id="xpBar"></div>
+        <!-- <div id="bossHpBar"></div> -->
     </div>
+    <div id="weaponInfo">
+        <h2>Weapon Information</h2>
+        <div id="weaponsContainer">
+            <!-- Weapon entries will be dynamically added here -->
+        </div>
+        <div id="secondaryWeaponInfo"></div>
+
+
+        <button id="closeButton" onclick="toggleWeaponInfo()">Close</button>
+    </div>
+
 
     <div id="levelUpModal" class="modal">
         <div class="modal-content">
@@ -276,6 +290,8 @@
     <script src="js/asteroids.js"></script>
     <script src="js/weapons.js"></script>
     <script src="js/weapons-optimized.js"></script>
+    <script src="js/weapons-secondary.js"></script>
+
     <script src="js/upgrade-menu.js"></script>
     <script src="js/upgrades-functions.js"></script>
     <script src="js/upgrades-main.js"></script>
@@ -396,7 +412,12 @@
             updateCoinsDisplay();
             console.log(`Added ${amount} coins. Total coins: ${coins}`);
         }
+        function spawnFloatingIsland() {
+            lastActivatedWave = wave;
+            floatingIsland.active = true;
+            floatingIsland.x = -100;
 
+        }
         function toggleFreezeEffect() {
             freezeEffect.active = !freezeEffect.active;
             console.log(`Freeze effect ${freezeEffect.active ? 'enabled' : 'disabled'}`);

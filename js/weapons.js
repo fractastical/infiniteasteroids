@@ -2436,7 +2436,7 @@ function drawLives() {
     // console.log(document.getElementById('bottomContent').getBoundingClientRect().bottom);
     // console.log("s" + startY);
     // const startY = canvas.height - 40    // console.log(startX);
-    console.log(canvas.height + 40);
+    // console.log(canvas.height + 40);
 
     ctx.fillStyle = 'green';
 

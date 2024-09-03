@@ -5,7 +5,7 @@ bossAlienImage.src = 'icons/alien_boss_ship_green.png';
 const superBossAlienImage = new Image();
 superBossAlienImage.src = 'icons/cool_evil_alien_22.png';
 const megaBossAlienImage = new Image();
-megaBossAlienImage.src = 'icons/cool_evil_alien_22.png';
+megaBossAlienImage.src = 'icons/alien_boss_ship_6.png';
 
 
 // Load swarming alien images
@@ -48,9 +48,9 @@ function spawnAliens(wave) {
 
     }
 
-    if (wave % 5 == 0) {  // Spawn blinking aliens every 5 waves, for example
-        spawnBlinkingAliens(Math.floor(wave / 5));  // Increase number of blinking aliens as waves progress
-    }
+    // if (wave % 5 == 0) {  // Spawn blinking aliens every 5 waves, for example
+    //     spawnBlinkingAliens(Math.floor(wave / 5));  // Increase number of blinking aliens as waves progress
+    // }
 
     if (octoMode) {
 
@@ -396,6 +396,8 @@ function drawSuperBossAlien() {
 }
 
 function spawnMegaBossAlien() {
+    const laughSound = new Audio('sounds/alien_laugh3.mp3');
+
     if (!toggleMusicOff) {
         backgroundMusic.pause();
     }
@@ -410,7 +412,7 @@ function spawnMegaBossAlien() {
     megaBossAlien = {
         x: canvas.width / 2,
         y: 2,
-        size: 140,
+        size: 240,
         speed: 0.2,
         direction: Math.random() * Math.PI * 2,
         shootTimer: 0,
@@ -477,7 +479,7 @@ function drawMegaBossAlien() {
     if (!megaBossAlien) return;
     ctx.save();
     ctx.translate(megaBossAlien.x, megaBossAlien.y);
-    ctx.drawImage(bossAlienImage, -megaBossAlien.size / 2, -megaBossAlien.size / 2, megaBossAlien.size, megaBossAlien.size);
+    ctx.drawImage(megaBossAlienImage, -megaBossAlien.size / 2, -megaBossAlien.size / 2, megaBossAlien.size, megaBossAlien.size);
     ctx.restore();
     drawMegaBossHitpointBar();
 }
@@ -564,7 +566,7 @@ function drawSuperBossHitpointBar() {
     if (!superbossAlien) return;
 
     const xpBar = document.getElementById('xpBar');
-    const hpPercentage = superbossAlien.hitpoints / superbossAlien.maxHitpoints;
+    const hpPercentage = Math.round(100 * (megaBossAlien.hitpoints / megaBossAlien.maxHitpoints));
     xpBar.style.backgroundColor = 'red';
     xpBar.style.width = hpPercentage + '%';
 
@@ -575,7 +577,10 @@ function drawMegaBossHitpointBar() {
     if (!megaBossAlien) return;
 
     const xpBar = document.getElementById('xpBar');
-    const hpPercentage = megaBossAlien.hitpoints / megaBossAlien.maxHitpoints;
+    const hpPercentage = Math.round(100 * (megaBossAlien.hitpoints / megaBossAlien.maxHitpoints));
+    // console.log(megaBossAlien.maxHitpoints);
+    // console.log(megaBossAlien.hitpoints);
+    // console.log(hpPercentage);
     xpBar.style.backgroundColor = 'red';
     xpBar.style.width = hpPercentage + '%';
 

@@ -226,7 +226,7 @@
 
   <div id="startScreen">
     <div>
-      <h2>Welcome to Infinite Asteroids!</h2>
+      <img src="icons/ia-logo.png" /> <!--<h2>Welcome to Infinite Asteroids!</h2> -->
       <p>Unlock next level when you reach wave 30.</p>
       <table>
 
@@ -968,21 +968,6 @@
       measurementId: "G-9LE6E1BKZ7"
     };
 
-    function pauseGame() {
-      if (!isPaused) {
-        clearInterval(gameLoop);
-        isPaused = true;
-      }
-    }
-
-    function resumeGame() {
-
-      if (isPaused && document.getElementById('levelUpModal') != 'block') {
-        clearInterval(gameLoop);
-        gameLoop = setInterval(update, 1000 / 60);
-        isPaused = false;
-      }
-    }
 
   </script>
   <script type="module">

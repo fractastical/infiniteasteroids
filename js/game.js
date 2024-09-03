@@ -1240,6 +1240,21 @@ function drawScore() {
     }
 }
 
+function pauseGame() {
+    if (!isPaused) {
+        clearInterval(gameLoop);
+        isPaused = true;
+    }
+}
+
+function resumeGame() {
+
+    if (isPaused && document.getElementById('levelUpModal') != 'block') {
+        clearInterval(gameLoop);
+        gameLoop = setInterval(update, 1000 / 60);
+        isPaused = false;
+    }
+}
 
 
 // Draw wave message
