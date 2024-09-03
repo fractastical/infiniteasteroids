@@ -964,7 +964,8 @@
     }
 
     function resumeGame() {
-      if (isPaused) {
+
+      if (isPaused && document.getElementById('levelUpModal') != 'block') {
         clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
