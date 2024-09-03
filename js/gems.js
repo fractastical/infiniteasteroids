@@ -54,10 +54,7 @@ const upgradeIcons = {
     'Damage Booster': 'damagebooster'
 };
 
-const icons = [
-    'explosive', 'turret', 'drone', 'bomberdrone', 'sonic', 'deathray',
-    'acid', 'boomerang', 'freeze', 'chainlightning', 'flamethrower', 'explosiverocket'
-];
+const icons = ['icon-laser', 'icon-turret', 'icon-drone', 'icon-freeze', 'icon-acid', 'icon-sonic'];
 
 const gemImages = {
     common: new Image(),
@@ -85,13 +82,13 @@ const planetx = {
 
 function createIconElement(iconClass) {
     const icon = document.createElement('div');
-    icon.classList.add('icon', `icon-${iconClass}`);
-    icon.style.backgroundColor = 'white'; // Set white background for visibility
-    icon.style.borderRadius = '50%'; // Make the icon round for better appearance
+    icon.classList.add('upgrade-icon', iconClass);
     icon.style.position = 'absolute';
     icon.style.width = '30px';
     icon.style.height = '30px';
-
+    icon.style.backgroundSize = 'contain';
+    icon.style.backgroundRepeat = 'no-repeat';
+    icon.style.backgroundPosition = 'center';
     return icon;
 }
 
