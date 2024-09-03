@@ -410,11 +410,12 @@ function startGame() {
     isMusicPlaying = true;
 }
 
-
+// TEMP:(?) disable resize
 const resizeCanvas = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    resetShip();
+
+    // canvas.width = window.innerWidth;
+    // canvas.height = window.innerHeight;
+    // resetShip();
     // Scale the canvas to handle high DPI screens
     // ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
