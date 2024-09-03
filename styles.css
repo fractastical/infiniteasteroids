@@ -1101,4 +1101,65 @@ select {
     background-color: #45a049;
 }
 
-Improve
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.overlay-content {
+    text-align: center;
+    color: white;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 10px;
+}
+
+.instructions {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.instruction-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.instruction-image {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+
+.arrow-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.arrow-image {
+    width: 50px;
+    height: 50px;
+    transform: rotate(90deg);
+    /* Rotate arrow to point right */
+}
+
+#startGameButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background-color: #ff4500;
+    color: white;
+    border-radius: 5px;
+}

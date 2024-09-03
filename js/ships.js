@@ -179,7 +179,7 @@ function drawShieldShip() {
 
 function drawBasicShip() {
     // Draw outer white line
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 5;
     ctx.beginPath();
     ctx.moveTo(0, -15);
     ctx.lineTo(10, 10);
@@ -189,7 +189,7 @@ function drawBasicShip() {
     ctx.stroke();
 
     // Draw inner magenta line
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(0, -13);
     ctx.lineTo(8, 8);
@@ -201,13 +201,77 @@ function drawBasicShip() {
 
 
 function drawStarHawk() {
+    ctx.save();
+
+    // Main body
     ctx.beginPath();
-    ctx.moveTo(0, -15);
-    ctx.lineTo(10, 10);
-    ctx.lineTo(-10, 10);
+    ctx.moveTo(0, -20);
+    ctx.lineTo(15, 10);
+    ctx.lineTo(-15, 10);
     ctx.closePath();
-    ctx.strokeStyle = 'red';
+
+    // Create gradient for the body
+    let gradient = ctx.createLinearGradient(0, -20, 0, 10);
+    gradient.addColorStop(0, '#FF4500');  // OrangeRed at the top
+    gradient.addColorStop(1, '#8B0000');  // DarkRed at the bottom
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Outline
+    ctx.strokeStyle = '#FFA500';  // Orange outline
+    ctx.lineWidth = 2;
     ctx.stroke();
+
+    // Wings
+    ctx.beginPath();
+    ctx.moveTo(15, 0);
+    ctx.lineTo(25, -5);
+    ctx.lineTo(20, 15);
+    ctx.lineTo(15, 10);
+    ctx.moveTo(-15, 0);
+    ctx.lineTo(-25, -5);
+    ctx.lineTo(-20, 15);
+    ctx.lineTo(-15, 10);
+    ctx.fillStyle = '#B22222';  // FireBrick red for wings
+    ctx.fill();
+    ctx.strokeStyle = '#FFD700';  // Gold outline for wings
+    ctx.stroke();
+
+    // Cockpit
+    ctx.beginPath();
+    ctx.ellipse(0, -5, 5, 10, 0, 0, Math.PI * 2);
+    gradient = ctx.createRadialGradient(0, -5, 0, 0, -5, 10);
+    gradient.addColorStop(0, 'rgba(135, 206, 250, 0.8)');  // Light sky blue
+    gradient.addColorStop(1, 'rgba(30, 144, 255, 0.4)');  // Dodger blue
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.strokeStyle = '#4169E1';  // Royal Blue
+    ctx.stroke();
+
+    // Thrusters
+    ctx.beginPath();
+    ctx.rect(-8, 10, 5, 5);
+    ctx.rect(3, 10, 5, 5);
+    ctx.fillStyle = '#1E90FF';  // Dodger Blue
+    ctx.fill();
+    ctx.strokeStyle = '#00BFFF';  // Deep Sky Blue
+    ctx.stroke();
+
+    // Thruster glow
+    ctx.beginPath();
+    gradient = ctx.createLinearGradient(0, 15, 0, 20);
+    gradient.addColorStop(0, 'rgba(255, 255, 0, 0.8)');  // Yellow
+    gradient.addColorStop(1, 'rgba(255, 69, 0, 0)');  // Fade to transparent
+    ctx.fillStyle = gradient;
+    ctx.moveTo(-8, 15);
+    ctx.lineTo(-3, 15);
+    ctx.lineTo(-5.5, 20);
+    ctx.moveTo(8, 15);
+    ctx.lineTo(3, 15);
+    ctx.lineTo(5.5, 20);
+    ctx.fill();
+
+    ctx.restore();
 }
 
 function drawVoidWarden() {
