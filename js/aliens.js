@@ -176,7 +176,7 @@ function updateAliens() {
     if (!freezeEffect.active) {
         let dropHorizontalSwarm = false;
 
-        aliens.forEach(alien => {
+        aliens.forEach((alien, index) => {
             switch (alien.type) {
                 case SwarmingAlienTypes.HUNTING:
                     // Hunting aliens follow the player
