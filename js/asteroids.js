@@ -480,7 +480,7 @@ function updateAsteroids() {
 
 
 function createExplosion(x, y, hitpoints = 1, sizeMultiplier = 1) {
-    const baseSize = 15 * sizeMultiplier; // Base size for explosions
+    const baseSize = 8 * sizeMultiplier; // Base size for explosions
     const sizeReductionFactor = 1.5; // Size reduction per hitpoint
     const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
     const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015

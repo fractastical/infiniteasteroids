@@ -996,32 +996,30 @@ function updateFlamethrower() {
     if (flamethrower.active) {
         // Define the area of effect for the flamethrower
         let flameRange = flamethrower.range;
-        let flameWidth = 20; // Increase this to match the visual width
+        let flameWidth = 40; // Increase this to provide a wider cone effect
 
-        // Calculate the endpoint of the flamethrower from the front of the ship
+        // Calculate the front of the ship
         let shipFrontX = ship.x + ship.size * Math.sin(ship.rotation * Math.PI / 180);
         let shipFrontY = ship.y - ship.size * Math.cos(ship.rotation * Math.PI / 180);
-        let endX = shipFrontX + flameRange * Math.sin(ship.rotation * Math.PI / 180);
-        let endY = shipFrontY - flameRange * Math.cos(ship.rotation * Math.PI / 180);
 
-        // Generate flame particles
-        generateFlameParticles(shipFrontX, shipFrontY, endX, endY, flameWidth);
+        // Calculate the endpoints for the left and right boundaries of the flame cone
+        let leftBoundaryX = shipFrontX + flameRange * Math.sin((ship.rotation - flameWidth / 2) * Math.PI / 180);
+        let leftBoundaryY = shipFrontY - flameRange * Math.cos((ship.rotation - flameWidth / 2) * Math.PI / 180);
+        let rightBoundaryX = shipFrontX + flameRange * Math.sin((ship.rotation + flameWidth / 2) * Math.PI / 180);
+        let rightBoundaryY = shipFrontY - flameRange * Math.cos((ship.rotation + flameWidth / 2) * Math.PI / 180);
 
-        // Draw the flame cone (for debugging)
+        // Generate flame particles (optional visual effect)
+        generateFlameParticles(shipFrontX, shipFrontY, leftBoundaryX, leftBoundaryY, flameWidth);
+        generateFlameParticles(shipFrontX, shipFrontY, rightBoundaryX, rightBoundaryY, flameWidth);
+
+        // Draw the flame cone (for debugging or visualization)
         ctx.save();
         ctx.globalAlpha = 0.3;
         ctx.fillStyle = 'cyan';
         ctx.beginPath();
         ctx.moveTo(shipFrontX, shipFrontY);
-        ctx.lineTo(
-            shipFrontX + Math.cos(ship.rotation * Math.PI / 180 - Math.PI / 2) * flameWidth / 2,
-            shipFrontY + Math.sin(ship.rotation * Math.PI / 180 - Math.PI / 2) * flameWidth / 2
-        );
-        ctx.lineTo(endX, endY);
-        ctx.lineTo(
-            shipFrontX + Math.cos(ship.rotation * Math.PI / 180 + Math.PI / 2) * flameWidth / 2,
-            shipFrontY + Math.sin(ship.rotation * Math.PI / 180 + Math.PI / 2) * flameWidth / 2
-        );
+        ctx.lineTo(leftBoundaryX, leftBoundaryY);
+        ctx.lineTo(rightBoundaryX, rightBoundaryY);
         ctx.closePath();
         ctx.fill();
         ctx.restore();
@@ -1029,11 +1027,18 @@ function updateFlamethrower() {
         // Check for collisions with asteroids
         for (let i = asteroids.length - 1; i >= 0; i--) {
             let asteroid = asteroids[i];
+
+            // Calculate the relative position of the asteroid to the ship's front
             let dx = asteroid.x - shipFrontX;
             let dy = asteroid.y - shipFrontY;
             let distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < flameRange && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < flameWidth / 2) {
+            // Calculate the angle between the ship's front direction and the asteroid
+            let angleToAsteroid = Math.atan2(dy, dx) * 180 / Math.PI;
+            let relativeAngle = (angleToAsteroid - ship.rotation + 360) % 360;
+
+            // Check if the asteroid is within the flame cone
+            if (distance < flameRange && relativeAngle > 360 - flameWidth / 2 || relativeAngle < flameWidth / 2) {
                 asteroid.isOnFire = true; // Set the asteroid on fire
                 asteroid.fireTimer = 0; // Reset the fire timer
                 asteroid.distanceFromCenter = distance; // Track the distance from the center of the flame
@@ -2421,12 +2426,14 @@ function drawLives() {
         document.getElementById('livesDisplay').textContent = `P1 Health: ${ship.lives} | P2 Health: ${ship2.lives}`;
     } else {
         // Single player mode
+        let finalX = 0;
         for (let i = 0; i < lives; i++) {
             const x = startX + (lifeWidth + spacing) * i;
+            finalX = x;
             ctx.fillRect(x, startY, lifeWidth, lifeHeight);
         }
 
-        displayWeaponInfo(x + lifeWidth, startY);
+        displayWeaponInfo(finalX + lifeWidth, startY);
 
         // Update HTML display
         document.getElementById('livesDisplay').textContent = `Health: ${lives}`;
