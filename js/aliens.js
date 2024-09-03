@@ -21,7 +21,9 @@ const SwarmingAlienTypes = {
     BOTTOM: { hitpoints: 1, color: 'red', speed: 0.3, direction: -1 },  // direction -1 means upward
     HORIZONTAL: { hitpoints: 2, color: 'green', speed: 0.4, shootInterval: 250 },
     HUNTING: { hitpoints: 1, color: 'yellow', speed: 0.15 },  // New type for the original following aliens
-    LITTLE: { hitpoints: 15, color: 'purple', speed: 0.5, shootInterval: 180 }  // New type for little aliens around boss
+    LITTLE: { hitpoints: 15, color: 'purple', speed: 0.5, shootInterval: 180 },  // New type for little aliens around boss
+    BLINKING: { hitpoints: 2, color: 'cyan', speed: 0.3, blinkCount: 5, blinkInterval: 60 }
+
 };
 
 let alien = null;
@@ -44,6 +46,10 @@ function spawnAliens(wave) {
         // spawnSuperBossAlien();
         spawnHuntingAliens(10);
 
+    }
+
+    if (wave % 5 == 0) {  // Spawn blinking aliens every 5 waves, for example
+        spawnBlinkingAliens(Math.floor(wave / 5));  // Increase number of blinking aliens as waves progress
     }
 
     if (octoMode) {
@@ -230,6 +236,33 @@ function updateAliens() {
                     }
                     break;
 
+                case SwarmingAlienTypes.BLINKING:
+                    // Move randomly
+                    alien.x += alien.dx * alien.speed;
+                    alien.y += alien.dy * alien.speed;
+
+                    // Bounce off screen edges
+                    if (alien.x <= 0 || alien.x >= canvas.width) alien.dx *= -1;
+                    if (alien.y <= 0 || alien.y >= canvas.height) alien.dy *= -1;
+
+                    // Blink logic
+                    if (alien.blinkCount < SwarmingAlienTypes.BLINKING.blinkCount) {
+                        alien.blinkTimer++;
+                        if (alien.blinkTimer >= SwarmingAlienTypes.BLINKING.blinkInterval) {
+                            alien.blinkState = !alien.blinkState;
+                            alien.blinkTimer = 0;
+                            if (alien.blinkState) alien.blinkCount++;
+                        }
+                    } else {
+                        // Start exploding
+                        alien.explodeTimer++;
+                        if (alien.explodeTimer >= 60) {  // Explode after 1 second
+                            createExplosion(alien.x, alien.y);
+                            aliens.splice(index, 1);
+                        }
+                    }
+                    break;
+
                 case SwarmingAlienTypes.LITTLE:
                     // Little aliens around bosses
                     const dxLittle = ship.x - alien.x;
@@ -408,6 +441,28 @@ function shootMegaBossAlienLaser() {
     }
 }
 
+function spawnBlinkingAliens(count) {
+    for (let i = 0; i < count; i++) {
+        let newBlinkingAlien = {
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: 25,
+            speed: SwarmingAlienTypes.BLINKING.speed,
+            hitpoints: SwarmingAlienTypes.BLINKING.hitpoints,
+            type: SwarmingAlienTypes.BLINKING,
+            image: alienImage,  // You might want to use a different image for this type
+            blinkCount: 0,
+            blinkTimer: 0,
+            blinkState: true,
+            explodeTimer: 0,
+            dx: (Math.random() - 0.5) * 2,  // Random horizontal direction
+            dy: (Math.random() - 0.5) * 2   // Random vertical direction
+        };
+        aliens.push(newBlinkingAlien);
+    }
+}
+
+
 
 function drawBossAlien() {
     if (!alien) return;
@@ -458,13 +513,17 @@ function drawAliens() {
     aliens.forEach(alien => {
         ctx.save();
         ctx.translate(alien.x, alien.y);
-        if (alien.image)
+        if (alien.type === SwarmingAlienTypes.BLINKING && !alien.blinkState) {
+            // Don't draw the alien when it's in the "off" blink state
+        } else if (alien.image) {
             ctx.drawImage(alien.image, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
-        else
+        } else {
             ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+        }
         ctx.restore();
     });
 }
+
 
 function updateMegaBossAlien() {
     if (!megaBossAlien) return;
