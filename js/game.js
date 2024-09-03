@@ -1227,7 +1227,7 @@ function drawScore() {
 
     if (!isMobile()) {
         // document.getElementById('controlsInfo').textContent = "[m]usic sou[n]d [v]olume [p]ause [i]nfo";
-        document.getElementById('controlsInfo').textContent = "s[e]condary [m]usic sou[n]d [p]ause [i]nfo";
+        document.getElementById('controlsInfo').textContent = "s[e]c [m]usic sou[n]d [p]ause [i]nfo";
 
     } else {
         document.getElementById('controlsInfo').textContent = '';

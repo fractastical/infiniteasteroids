@@ -2398,7 +2398,8 @@ const lifeHeight = 30; // Height of each life rectangle (3 times the width)
 
 function drawLives() {
     const spacing = 5;     // Space between life rectangles
-    const startX = document.getElementById('livesDisplay').getBoundingClientRect().right + 30;     // Starting X position for the first life
+    document.getElementById('livesDisplay').textContent = `Health:`;
+    const startX = document.getElementById('livesDisplay').getBoundingClientRect().right + 5;     // Starting X position for the first life
     const startY = canvas.height - 40; // Y position for lives, 40 pixels from the bottom
     // console.log(startX);
 
@@ -2432,7 +2433,8 @@ function drawLives() {
         displayWeaponInfo(finalX + lifeWidth, startY);
 
         // Update HTML display
-        document.getElementById('livesDisplay').textContent = `Health: ${lives}`;
+        // document.getElementById('livesDisplay').textContent = `Health: ${lives}`;
+
     }
 }
 

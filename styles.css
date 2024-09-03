@@ -902,7 +902,7 @@ td {
     align-items: center;
     padding: 10px;
     font-family: 'Press Start 2P', cursive;
-    font-size: 16px;
+    font-size: 13px;
     color: white;
     background-color: rgba(0, 0, 0, 0.5);
 }
@@ -916,7 +916,7 @@ td {
 }
 
 #livesDisplay {
-    margin-right: 20px;
+    margin-right: 90px;
 }
 
 #controlsInfo {
@@ -971,8 +971,8 @@ margin-bottom: 20px;
 }
 
 .upgrade-icon {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
