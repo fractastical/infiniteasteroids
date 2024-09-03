@@ -13,7 +13,7 @@ const secondaryWeapons = {
             this.isActive = false;
         },
         useWeapon: function () {
-            if (this.uses > 0 && this.cooldown === 0) {
+            if (this.uses > 0) {
                 this.uses--;
                 activateInvincibility(this.duration);
                 this.cooldown = 600; // Reset cooldown after use
@@ -62,7 +62,7 @@ const secondaryWeapons = {
             this.isActive = false;
         },
         useWeapon: function () {
-            if (this.uses > 0 && this.cooldown === 0) {
+            if (this.uses > 0) {
                 this.uses--;
                 shootPiercingLaser(ship.x, ship.y, ship.rotation, this.damage);
                 this.cooldown = 400; // Reset cooldown after use
@@ -169,6 +169,7 @@ function unlockWeapons() {
 function displayWeaponInfo(startX, startY) {
     const spacing = 5;     // Space between life rectangles
 
+    let finalX = 0;
     const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
     if (activeWeapon) {
         document.getElementById('secondaryWeaponInfo').innerText = `${activeWeapon.name}: ${activeWeapon.uses} uses left`;
@@ -176,10 +177,21 @@ function displayWeaponInfo(startX, startY) {
 
         for (let i = 0; i < activeWeapon.uses; i++) {
             const x = startX + (lifeWidth + spacing) * i;
+            finalX = x;
             ctx.fillRect(x + 10, startY, lifeWidth, lifeHeight);
         }
 
     }
+
+    if (waitAndClaimMode) {
+        ctx.fillStyle = 'yellow';
+
+        for (let i = 0; i < unclaimedLevelUps; i++) {
+            const x = finalX + (lifeWidth + spacing) * i;
+            ctx.fillRect(x + 10, startY, lifeWidth, lifeHeight);
+        }
+    }
+
 }
 
 

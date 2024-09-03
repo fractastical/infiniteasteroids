@@ -2,10 +2,10 @@ function getRandomUpgrades(count) {
 
 
     const upgradeDefinitions = {
-        'Increase Laser Level': { icon: 'icon-laser', description: 'Enhances your main laser weapon' },
-        'Decrease Laser Cooldown': { icon: 'icon-cooldown', description: 'Fire lasers more frequently' },
-        'Increase Max Speed': { icon: 'icon-speed', description: 'Boost your ship\'s top speed' },
-        'Increase Rotation Speed': { icon: 'icon-rotation', description: 'Improve ship maneuverability' },
+        'Increase Laser Level': { icon: 'icon-basiclaser', description: 'Enhances your main laser weapon' },
+        'Decrease Laser Cooldown': { icon: 'icon-basiclaser', description: 'Fire lasers more frequently' },
+        'Increase Max Speed': { icon: 'icon-ship', description: 'Boost your ship\'s top speed' },
+        'Increase Rotation Speed': { icon: 'icon-ship', description: 'Improve ship maneuverability' },
         'Activate Turret': { icon: 'icon-turret', description: 'Deploy a powerful defensive turret' },
         'Increase Turret Firerate': { icon: 'icon-turret', description: 'Enhance turret attack speed' },
         'Increase Turret Damage': { icon: 'icon-turret', description: 'Boost turret damage output' },

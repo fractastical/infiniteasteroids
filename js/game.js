@@ -1319,7 +1319,7 @@ function handleKeyDown(event) {
 
                 const okButton = document.querySelector('#upgradeDisplay button');
                 if (okButton) {
-                    okButton.click();
+                    activateGemUpgrades();
                 } else {
                     startRoulette();
                 }
@@ -1352,6 +1352,9 @@ function handleKeyDown(event) {
         } else if (event.key === 'e' || event.key === 'E') {
             // Trigger the secondary weapon action here
             fireSecondaryWeapon(); // Use the selected secondary weapon
+        } else if (event.key === 'r' || event.key === 'R') {
+            // Trigger the secondary weapon action here
+            claimLevelUps(); // Use the selected secondary weapon
         }
 
         if (document.getElementById('levelUpModal').style.display === 'block') {
@@ -1571,23 +1574,11 @@ function createUpgradeOptionsHTML(upgrades) {
     `).join('');
 }
 
-function levelUp() {
-    level++;
-    let prevLevelUp = lastLevelUp;
-    lastLevelUp = Date.now();
-    console.log(lastLevelUp - prevLevelUp);
-    xp = 0;  // Reset XP
+let unclaimedLevelUps = 0;
+let waitAndClaimMode = true;
 
-    if (wave > 75) {
-        bonuslevelUpXPMultiplier = 1.5;
-    } else if (wave > 50) {
-        bonuslevelUpXPMultiplier = 1.2;
-    }
+function claimLevelUps() {
 
-    xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier * bonuslevelUpXPMultiplier);
-    updateXPBar();
-
-    // Determine number of upgrades to show
     let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
 
     // Get random upgrades
@@ -1603,7 +1594,6 @@ function levelUp() {
 
     // Store upgrades in a global variable for later use
     window.levelUpgrades = upgrades;
-
     // Pause the game
     clearInterval(gameLoop);
     isPaused = true;
@@ -1611,6 +1601,55 @@ function levelUp() {
     // Activate temporary invincibility
     invincible = true;
     invincibilityTimer = invincibilityDuration;
+
+
+}
+
+function levelUp() {
+
+    level++;
+    unclaimedLevelUps++;
+    let prevLevelUp = lastLevelUp;
+    lastLevelUp = Date.now();
+    console.log(lastLevelUp - prevLevelUp);
+    xp = 0;  // Reset XP
+
+    if (wave > 75) {
+        bonuslevelUpXPMultiplier = 1.5;
+    } else if (wave > 50) {
+        bonuslevelUpXPMultiplier = 1.2;
+    }
+
+    xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier * bonuslevelUpXPMultiplier);
+    updateXPBar();
+
+    // Determine number of upgrades to show
+    if (!waitAndClaimMode) {
+
+        let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
+
+        // Get random upgrades
+        const upgrades = getRandomUpgrades(upgradesToRetrieve);
+
+        // Display the level-up modal
+        const levelUpModal = document.getElementById('levelUpModal');
+        const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
+        document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
+
+        // Show the modal
+        levelUpModal.style.display = 'block';
+
+        // Store upgrades in a global variable for later use
+        window.levelUpgrades = upgrades;
+        // Pause the game
+        clearInterval(gameLoop);
+        isPaused = true;
+
+        // Activate temporary invincibility
+        invincible = true;
+        invincibilityTimer = invincibilityDuration;
+
+    }
 
     // Play level up sound (if you have one)
     // playSound('levelUpSound');

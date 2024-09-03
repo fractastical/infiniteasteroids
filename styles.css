@@ -644,7 +644,7 @@ button {
 }
 
 .icon-sonic {
-    background-image: url('icons/Sonicray.svg');
+    background-image: url('icons/sonic-icon.png');
 }
 
 .icon-deathray {
@@ -656,9 +656,8 @@ button {
 }
 
 .icon-boomerang {
-    background-image: url('icons/yellow_boomerang_22.png');
+    background-image: url('icons/boomerang-icon-2.png');
 }
-
 
 .icon-freeze {
     background-image: url('icons/freeze_22.png');
@@ -693,9 +692,16 @@ button {
     background-image: url('icons/gravity_blast.png');
 }
 
+.icon-ship {
+    background-image: url('icons/ship-icon.png');
+}
+
+.icon-basiclaser {
+    background-image: url('icons/basic-laser-icon.png');
+}
 
 .icon- {
-    background-image: url('icons/Basiclaser.svg');
+    background-image: url('icons/basic-laser-icon.png');
 }
 
 .iconContainer {

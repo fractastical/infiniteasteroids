@@ -1,58 +1,58 @@
-const upgradeIcons = {
-    'Increase Laser Level': 'laser',
-    'Decrease Laser Cooldown': 'laser',
-    'Increase Rotation Speed': 'rotation',
-    'Increase Turret Range': 'turret',
-    'Increase Turret Firerate': 'turret',
-    'Increase Turret Damage': 'turret',
-    'Activate Turret': 'turret',
-    'Increase Bomber Drone Bomb Radius': 'bomberdrone',
-    'Increase Bomber Drone Bomb Damage': 'bomberdrone',
-    'Activate Bomber Drone': 'bomberdrone',
-    'Increase Freeze Duration': 'freeze',
-    'Decrease Freeze Cooldown': 'freeze',
-    'Activate Freeze Effect': 'freeze',
-    'Increase Explosive Laser Level': 'explosive',
-    'Activate Explosive Laser': 'explosive',
-    'Increase Sonic Blast Range': 'sonic',
-    'Increase Sonic Blast Damage': 'sonic',
-    'Decrease Sonic Blast Cooldown': 'sonic',
-    'Activate Sonic Blast': 'sonic',
-    'Increase Boomerang Speed': 'boomerang',
-    'Increase Boomerang Damage': 'boomerang',
-    'Activate Boomerang': 'boomerang',
-    'Increase Acid Bomb Duration': 'acid',
-    'Decrease Acid Bomb Cooldown': 'acid',
-    'Increase Acid Bomb Size': 'acid',
-    'Activate Acid Bomb': 'acid',
-    'Increase Drone Firerate': 'drone',
-    'Activate Drone': 'drone',
-    'Increase Death Ray Length': 'deathray',
-    'Increase Death Ray Width': 'deathray',
-    'Decrease Death Ray Cooldown': 'deathray',
-    'Activate Death Ray': 'deathray',
-    'Increase Explosive Rocket Damage': 'explosiverocket',
-    'Increase Explosive Rocket Radius': 'explosiverocket',
-    'Decrease Explosive Rocket Cooldown': 'explosiverocket',
-    'Activate Explosive Rocket': 'explosiverocket',
-    'Increase Chain Lightning Range': 'chainlightning',
-    'Increase Chain Lightning Damage': 'chainlightning',
-    'Increase Chain Lightning Bounces': 'chainlightning',
-    'Decrease Chain Lightning Cooldown': 'chainlightning',
-    'Activate Chain Lightning': 'chainlightning',
-    'Boost Nano Swarm': 'nanoswarm',
-    'Decrease Nano Swarm Cooldown': 'nanoswarm',
-    'Activate Nano Swarm': 'nanoswarm',
-    'Increase Flamethrower Range': 'flamethrower',
-    'Increase Flamethrower Damage': 'flamethrower',
-    'Decrease Flamethrower Cooldown': 'flamethrower',
-    'Activate Flamethrower': 'flamethrower',
-    'Extra Upgrade Choice': 'extra',
-    'Drone Army': 'dronearmy',
-    'Double Turret': 'doubleturret',
-    'Triple Turret': 'tripleturret',
-    'Damage Booster': 'damagebooster'
-};
+// const upgradeIcons = {
+//     'Increase Laser Level': 'laser',
+//     'Decrease Laser Cooldown': 'laser',
+//     'Increase Rotation Speed': 'rotation',
+//     'Increase Turret Range': 'turret',
+//     'Increase Turret Firerate': 'turret',
+//     'Increase Turret Damage': 'turret',
+//     'Activate Turret': 'turret',
+//     'Increase Bomber Drone Bomb Radius': 'bomberdrone',
+//     'Increase Bomber Drone Bomb Damage': 'bomberdrone',
+//     'Activate Bomber Drone': 'bomberdrone',
+//     'Increase Freeze Duration': 'freeze',
+//     'Decrease Freeze Cooldown': 'freeze',
+//     'Activate Freeze Effect': 'freeze',
+//     'Increase Explosive Laser Level': 'explosive',
+//     'Activate Explosive Laser': 'explosive',
+//     'Increase Sonic Blast Range': 'sonic',
+//     'Increase Sonic Blast Damage': 'sonic',
+//     'Decrease Sonic Blast Cooldown': 'sonic',
+//     'Activate Sonic Blast': 'sonic',
+//     'Increase Boomerang Speed': 'boomerang',
+//     'Increase Boomerang Damage': 'boomerang',
+//     'Activate Boomerang': 'boomerang',
+//     'Increase Acid Bomb Duration': 'acid',
+//     'Decrease Acid Bomb Cooldown': 'acid',
+//     'Increase Acid Bomb Size': 'acid',
+//     'Activate Acid Bomb': 'acid',
+//     'Increase Drone Firerate': 'drone',
+//     'Activate Drone': 'drone',
+//     'Increase Death Ray Length': 'deathray',
+//     'Increase Death Ray Width': 'deathray',
+//     'Decrease Death Ray Cooldown': 'deathray',
+//     'Activate Death Ray': 'deathray',
+//     'Increase Explosive Rocket Damage': 'explosiverocket',
+//     'Increase Explosive Rocket Radius': 'explosiverocket',
+//     'Decrease Explosive Rocket Cooldown': 'explosiverocket',
+//     'Activate Explosive Rocket': 'explosiverocket',
+//     'Increase Chain Lightning Range': 'chainlightning',
+//     'Increase Chain Lightning Damage': 'chainlightning',
+//     'Increase Chain Lightning Bounces': 'chainlightning',
+//     'Decrease Chain Lightning Cooldown': 'chainlightning',
+//     'Activate Chain Lightning': 'chainlightning',
+//     'Boost Nano Swarm': 'nanoswarm',
+//     'Decrease Nano Swarm Cooldown': 'nanoswarm',
+//     'Activate Nano Swarm': 'nanoswarm',
+//     'Increase Flamethrower Range': 'flamethrower',
+//     'Increase Flamethrower Damage': 'flamethrower',
+//     'Decrease Flamethrower Cooldown': 'flamethrower',
+//     'Activate Flamethrower': 'flamethrower',
+//     'Extra Upgrade Choice': 'extra',
+//     'Drone Army': 'dronearmy',
+//     'Double Turret': 'doubleturret',
+//     'Triple Turret': 'tripleturret',
+//     'Damage Booster': 'damagebooster'
+// };
 
 const icons = ['icon-laser', 'icon-turret', 'icon-drone', 'icon-freeze', 'icon-acid', 'icon-sonic'];
 
@@ -239,14 +239,14 @@ function startRoulette() {
 
                 const upgradeText = document.createElement('div');
                 upgradeText.classList.add('upgrade-text');
-                upgradeText.textContent = upgrade;
+                upgradeText.textContent = upgrade.name;
                 upgradeItem.appendChild(upgradeText);
 
                 upgradeDisplay.appendChild(upgradeItem);
             });
 
             const okButton = document.createElement('button');
-            okButton.textContent = 'Activate';
+            okButton.textContent = 'Activate [ENTER]';
             okButton.onclick = () => {
 
                 activateGemUpgrades();

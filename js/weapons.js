@@ -1751,16 +1751,43 @@ function findNearestAsteroidInRange() {
 let mostRecentUpgradeApplied = false;
 
 function selectUpgrade(index) {
-    const selectedUpgrade = window.levelUpgrades[index];
-    if (selectedUpgrade && selectedUpgrade.name)
+    const selectedUpgrade = window.levelUpgrades[index - 1];
+    if (selectedUpgrade && selectedUpgrade.name) {
         applyUpgrades([selectedUpgrade.name]); // Pass the upgrade name as an array
+        unclaimedLevelUps--;
+
+    }
 
     // Close the modal
-    document.getElementById('levelUpModal').style.display = 'none';
 
-    // Resume the game
-    isPaused = false;
-    gameLoop = setInterval(update, 1000 / 60);
+    if (unclaimedLevelUps > 0 && waitAndClaimMode) {
+
+        let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
+
+        document.getElementById('upgradeOptions').innerHTML = '';
+        const upgrades = getRandomUpgrades(upgradesToRetrieve);
+
+        // Display the level-up modal
+        // const levelUpModal = document.getElementById('levelUpModal');
+        const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
+        document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
+
+        // Show the modal
+        // levelUpModal.style.display = 'block';
+
+        // Store upgrades in a global variable for later use
+        window.levelUpgrades = upgrades;
+
+    } else {
+
+        document.getElementById('levelUpModal').style.display = 'none';
+
+        // Resume the game
+        isPaused = false;
+        gameLoop = setInterval(update, 1000 / 60);
+
+    }
+
 
 }
 
@@ -2399,12 +2426,15 @@ const lifeHeight = 30; // Height of each life rectangle (3 times the width)
 
 function drawLives() {
     const spacing = 5;     // Space between life rectangles
-    document.getElementById('livesDisplay').textContent = `Health:`;
-    const startX = document.getElementById('livesDisplay').getBoundingClientRect().right + 5;     // Starting X position for the first life
-    const startY = document.getElementById('bottomContent').getBoundingClientRect().top;     // Starting X position for the first life
-    console.log(document.getElementById('bottomContent').getBoundingClientRect().top);
-    console.log(document.getElementById('bottomContent').getBoundingClientRect().bottom);
-    console.log("s" + startY);
+    // document.getElementById('livesDisplay').textContent = `Health:`;
+    const startX = 55;     // Starting X position for the first life
+    const startY = 5;     // Starting X position for the first life
+
+    // const startX = document.getElementById('livesDisplay').getBoundingClientRect().right + 5;     // Starting X position for the first life
+    // const startY = document.getElementById('bottomContent').getBoundingClientRect().top;     // Starting X position for the first life
+    // console.log(document.getElementById('xpBar').getBoundingClientRect().right);
+    // console.log(document.getElementById('bottomContent').getBoundingClientRect().bottom);
+    // console.log("s" + startY);
     // const startY = canvas.height - 40    // console.log(startX);
     console.log(canvas.height + 40);
 
@@ -2435,7 +2465,7 @@ function drawLives() {
             ctx.fillRect(x, startY, lifeWidth, lifeHeight);
         }
 
-        displayWeaponInfo(finalX + lifeWidth, startY);
+        displayWeaponInfo(finalX + 10, 5);
 
         // Update HTML display
         // document.getElementById('livesDisplay').textContent = `Health: ${lives}`;
