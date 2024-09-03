@@ -227,11 +227,11 @@ document.getElementById('volumeSlider').addEventListener('input', function () {
 });
 
 // Event listener for 'v' key to toggle volume screen
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'v' || e.key === 'V') {
-        toggleVolumeScreen();
-    }
-});
+// document.addEventListener('keydown', function (e) {
+//     if (e.key === 'v' || e.key === 'V') {
+//         toggleVolumeScreen();
+//     }
+// });
 
 // Function to initialize sounds and set their volume to the current volume
 function initializeSounds() {
