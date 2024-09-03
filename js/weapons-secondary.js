@@ -41,7 +41,7 @@ const secondaryWeapons = {
             if (this.uses > 0) {
                 this.uses--;
                 createAreaDamage(ship.x, ship.y, this.radius, this.damage);
-                createExplosion(ship.x, ship.y);
+                createExplosion(ship.x, ship.y, 50, 15);
                 this.cooldown = 500; // Reset cooldown after use
             } else {
                 console.log('Cannot use Explosive Burst right now.');
