@@ -1750,20 +1750,16 @@ function findNearestAsteroidInRange() {
 
 let mostRecentUpgradeApplied = false;
 
-function selectUpgrade(choice) {
-    console.log(choice);
-    const upgrades = window.levelUpgrades;
-    console.log(upgrades);
+function selectUpgrade(index) {
+    const selectedUpgrade = window.levelUpgrades[index];
+    applyUpgrades([selectedUpgrade.name]); // Pass the upgrade name as an array
 
-    if (!mostRecentUpgradeApplied)
-        applyUpgrade(upgrades[choice - 1]);
-    mostRecentUpgradeApplied = true;
-
+    // Close the modal
     document.getElementById('levelUpModal').style.display = 'none';
-    isPaused = false;
+
     // Resume the game
-    clearInterval(gameLoop);
-    gameLoop = setInterval(update, 1000 / 60); // 60 FPS
+    isPaused = false;
+    gameLoop = setInterval(update, 1000 / 60);
 
 }
 

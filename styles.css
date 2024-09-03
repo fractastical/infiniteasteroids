@@ -495,7 +495,7 @@ canvas {
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 70%;
+    width: 50%;
     height: 20px;
     background-color: #333;
     border: 2px solid #fff;
@@ -562,6 +562,13 @@ button {
     font-family: 'Press Start 2P', cursive;
     font-size: 16px;
 }
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 
 .modal-content button:hover {
     background-color: #333;
@@ -922,6 +929,14 @@ gap: 10px;
 margin-bottom: 20px;
 }
 
+#upgradeOptions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+
 .upgrade-item {
     background-color: #f0f0f0;
     border: 1px solid #ddd;
@@ -937,11 +952,46 @@ margin-bottom: 20px;
     background-color: #e0e0e0;
 }
 
+.upgrade-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.upgrade-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #8B008B;
+    margin-right: 10px;
+    min-width: 30px;
+    text-align: center;
+}
+
 .upgrade-icon {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-    margin-bottom: 10px;
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 15px;
+}
+
+.upgrade-details {
+    flex-grow: 1;
+}
+
+.upgrade-name {
+    font-size: 18px;
+    color: #00FF00;
+    margin-bottom: 5px;
+}
+
+.upgrade-description {
+    font-size: 14px;
+    color: #ADFF2F;
 }
 
 .upgrade-info h3 {
@@ -977,6 +1027,8 @@ margin-bottom: 20px;
 
 .mega-upgrade-option:hover {
     background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+
 }
 
 /* @keyframes flash {

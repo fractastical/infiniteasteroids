@@ -1557,42 +1557,47 @@ function updateAchievementsAtEnd() {
     return { newlyUnlockedAchievements, newlyUnlockedWeapons };
 }
 
+function createUpgradeOptionsHTML(upgrades) {
+    return upgrades.map((upgrade, index) => `
+        <div class="upgrade-option" onclick="selectUpgrade(${index})">
+            <div class="upgrade-number">${index + 1}</div>
+            <div class="upgrade-icon ${upgrade.icon}"></div>
+            <div class="upgrade-details">
+                <p class="upgrade-name">${upgrade.name}</p>
+                <p class="upgrade-description">${upgrade.description}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
 function levelUp() {
     level++;
-    console.log()
     let prevLevelUp = lastLevelUp;
     lastLevelUp = Date.now();
-
     console.log(lastLevelUp - prevLevelUp);
     xp = 0;  // Reset XP
+
     if (wave > 75) {
         bonuslevelUpXPMultiplier = 1.5;
-    }
-    else if (wave > 50)
+    } else if (wave > 50) {
         bonuslevelUpXPMultiplier = 1.2;
+    }
 
-    xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier * bonuslevelUpXPMultiplier); // Increase XP required for next level
+    xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier * bonuslevelUpXPMultiplier);
     updateXPBar();
 
-    // Generate three random upgrades
-    let upgradesToRetrieve = 3;
-    if (fourthUpgradeUnlocked)
-        upgradesToRetrieve++;
+    // Determine number of upgrades to show
+    let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
 
+    // Get random upgrades
     const upgrades = getRandomUpgrades(upgradesToRetrieve);
 
     // Display the level-up modal
-    document.getElementById('upgrade1').textContent = `1. ${upgrades[0]} `;
-    document.getElementById('upgrade2').textContent = `2. ${upgrades[1]} `;
-    document.getElementById('upgrade3').textContent = `3. ${upgrades[2]} `;
-    if (fourthUpgradeUnlocked) {
-        document.getElementById('upgrade4').style.display = `block`;
-        document.getElementById('upgrade4').textContent = `4. ${upgrades[3]} `;
-    } else {
-        document.getElementById('upgrade4').style.display = `none`;
-    }
+    const levelUpModal = document.getElementById('levelUpModal');
+    const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
+    document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
 
-    mostRecentUpgradeApplied = false;
+    // Show the modal
     levelUpModal.style.display = 'block';
 
     // Store upgrades in a global variable for later use
@@ -1602,12 +1607,19 @@ function levelUp() {
     clearInterval(gameLoop);
     isPaused = true;
 
+    // Activate temporary invincibility
     invincible = true;
     invincibilityTimer = invincibilityDuration;
+
+    // Play level up sound (if you have one)
+    // playSound('levelUpSound');
+
+    // Update UI to reflect new level
+    // updateLevelDisplay();
+
+    // Reset flag for upgrade application
+    mostRecentUpgradeApplied = false;
 }
-
-
-
 
 
 function drawCooldownIndicator(x, y, radius, cooldown, maxCooldown) {

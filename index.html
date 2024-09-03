@@ -113,11 +113,24 @@
     <div class="modal-content">
       <h2>Level Up!</h2>
       <p>Choose an upgrade:</p>
-      <button id="upgrade1" onclick="selectUpgrade(1)"></button>
-      <button id="upgrade2" onclick="selectUpgrade(2)"></button>
-      <button id="upgrade3" onclick="selectUpgrade(3)"></button>
-      <button id="upgrade4" style="display:none" onclick="selectUpgrade(4)"></button>
-
+      <div id="upgradeOptions">
+        <div class="upgrade-option" onclick="selectUpgrade(0)">
+          <div id="upgradeIcon1" class="upgrade-icon"></div>
+          <button id="upgrade1"></button>
+        </div>
+        <div class="upgrade-option" onclick="selectUpgrade(1)">
+          <div id="upgradeIcon2" class="upgrade-icon"></div>
+          <button id="upgrade2"></button>
+        </div>
+        <div class="upgrade-option" onclick="selectUpgrade(2)">
+          <div id="upgradeIcon3" class="upgrade-icon"></div>
+          <button id="upgrade3"></button>
+        </div>
+        <div class="upgrade-option" style="display:none" onclick="selectUpgrade(3)">
+          <div id="upgradeIcon4" class="upgrade-icon"></div>
+          <button id="upgrade4"></button>
+        </div>
+      </div>
     </div>
   </div>
 
