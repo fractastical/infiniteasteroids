@@ -1132,9 +1132,14 @@ function increaseXP(amount) {
 }
 
 function updateXPBar() {
-    const xpBar = document.getElementById('xpBar');
-    const xpPercentage = (xp / xpToNextLevel) * 100;
-    xpBar.style.width = xpPercentage + '%';
+    if (!megaBossAlien && !superbossAlien) {
+        const xpBar = document.getElementById('xpBar');
+        xpBar.style.backgroundColor = '#0f0';
+        const xpPercentage = (xp / xpToNextLevel) * 100;
+        xpBar.style.width = xpPercentage + '%';
+
+    }
+
 }
 
 
@@ -1228,7 +1233,7 @@ function drawScore() {
 
     if (!isMobile()) {
         // document.getElementById('controlsInfo').textContent = "[m]usic sou[n]d [v]olume [p]ause [i]nfo";
-        document.getElementById('controlsInfo').textContent = "s[e]c [m]usic sou[n]d [p]ause [i]nfo";
+        document.getElementById('controlsInfo').textContent = "[r]edeem s[e]c [m]usic sou[n]d [p]ause [i]nfo";
 
     } else {
         document.getElementById('controlsInfo').textContent = '';

@@ -563,44 +563,22 @@ function updateMegaBossAlien() {
 function drawSuperBossHitpointBar() {
     if (!superbossAlien) return;
 
-    const barWidth = canvas.width * 0.8;
-    const barHeight = 20;
-    const barX = (canvas.width - barWidth) / 2;
-    const barY = canvas.height - barHeight - 10;
+    const xpBar = document.getElementById('xpBar');
+    const hpPercentage = superbossAlien.hitpoints / superbossAlien.maxHitpoints;
+    xpBar.style.backgroundColor = 'red';
+    xpBar.style.width = hpPercentage + '%';
 
-    const hpRatio = superbossAlien.hitpoints / superbossAlien.maxHitpoints;
-    const filledBarWidth = barWidth * hpRatio;
-
-    ctx.fillStyle = 'grey';
-    ctx.fillRect(barX, barY, barWidth, barHeight);
-
-    ctx.fillStyle = 'red';
-    ctx.fillRect(barX, barY, filledBarWidth, barHeight);
-
-    ctx.strokeStyle = 'black';
-    ctx.strokeRect(barX, barY, barWidth, barHeight);
 }
 
 
 function drawMegaBossHitpointBar() {
     if (!megaBossAlien) return;
 
-    const barWidth = canvas.width * 0.8;
-    const barHeight = 20;
-    const barX = (canvas.width - barWidth) / 2;
-    const barY = canvas.height - barHeight - 10;
+    const xpBar = document.getElementById('xpBar');
+    const hpPercentage = megaBossAlien.hitpoints / megaBossAlien.maxHitpoints;
+    xpBar.style.backgroundColor = 'red';
+    xpBar.style.width = hpPercentage + '%';
 
-    const hpRatio = megaBossAlien.hitpoints / megaBossAlien.maxHitpoints;
-    const filledBarWidth = barWidth * hpRatio;
-
-    ctx.fillStyle = 'grey';
-    ctx.fillRect(barX, barY, barWidth, barHeight);
-
-    ctx.fillStyle = 'red';
-    ctx.fillRect(barX, barY, filledBarWidth, barHeight);
-
-    ctx.strokeStyle = 'black';
-    ctx.strokeRect(barX, barY, barWidth, barHeight);
 }
 
 
