@@ -365,6 +365,74 @@ function drawNebulaGhost() {
 }
 
 function drawQuantumStriker() {
+    ctx.save();
+
+    // Main body
+    ctx.beginPath();
+    ctx.moveTo(0, -25);
+    ctx.lineTo(15, 15);
+    ctx.lineTo(-15, 15);
+    ctx.closePath();
+
+    // Gradient for the body
+    let gradient = ctx.createLinearGradient(0, -25, 0, 15);
+    gradient.addColorStop(0, '#4B0082');  // Indigo
+    gradient.addColorStop(0.5, '#8A2BE2');  // Blue Violet
+    gradient.addColorStop(1, '#9400D3');  // Dark Violet
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Outline
+    ctx.strokeStyle = '#E6E8FA';  // Platinum
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Quantum field effect
+    for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 20 - i * 5, 30 - i * 7, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(0, 255, 255, ${0.1 + i * 0.1})`;  // Cyan with increasing opacity
+        ctx.stroke();
+    }
+
+    // Energy core
+    ctx.beginPath();
+    gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 10);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');  // White core
+    gradient.addColorStop(0.5, 'rgba(0, 255, 255, 0.5)');  // Cyan middle
+    gradient.addColorStop(1, 'rgba(0, 0, 255, 0)');  // Fade to transparent blue
+    ctx.fillStyle = gradient;
+    ctx.arc(0, 0, 10, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Quantum particles
+    for (let i = 0; i < 5; i++) {
+        let angle = Math.random() * Math.PI * 2;
+        let distance = Math.random() * 20;
+        let x = Math.cos(angle) * distance;
+        let y = Math.sin(angle) * distance;
+
+        ctx.beginPath();
+        ctx.arc(x, y, 1, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 255, 255, 0.8)';  // Cyan particles
+        ctx.fill();
+    }
+
+    // Wing accents
+    ctx.beginPath();
+    ctx.moveTo(-15, 15);
+    ctx.lineTo(-5, 0);
+    ctx.moveTo(15, 15);
+    ctx.lineTo(5, 0);
+    ctx.strokeStyle = '#00FFFF';  // Cyan
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+
+function drawOldQuantumStriker() {
     ctx.beginPath();
     ctx.moveTo(0, -20);
     ctx.lineTo(12, 15);
