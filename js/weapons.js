@@ -1752,7 +1752,8 @@ let mostRecentUpgradeApplied = false;
 
 function selectUpgrade(index) {
     const selectedUpgrade = window.levelUpgrades[index];
-    applyUpgrades([selectedUpgrade.name]); // Pass the upgrade name as an array
+    if (selectedUpgrade && selectedUpgrade.name)
+        applyUpgrades([selectedUpgrade.name]); // Pass the upgrade name as an array
 
     // Close the modal
     document.getElementById('levelUpModal').style.display = 'none';
@@ -2400,8 +2401,12 @@ function drawLives() {
     const spacing = 5;     // Space between life rectangles
     document.getElementById('livesDisplay').textContent = `Health:`;
     const startX = document.getElementById('livesDisplay').getBoundingClientRect().right + 5;     // Starting X position for the first life
-    const startY = canvas.height - 40; // Y position for lives, 40 pixels from the bottom
-    // console.log(startX);
+    const startY = document.getElementById('bottomContent').getBoundingClientRect().top;     // Starting X position for the first life
+    console.log(document.getElementById('bottomContent').getBoundingClientRect().top);
+    console.log(document.getElementById('bottomContent').getBoundingClientRect().bottom);
+    console.log("s" + startY);
+    // const startY = canvas.height - 40    // console.log(startX);
+    console.log(canvas.height + 40);
 
     ctx.fillStyle = 'green';
 

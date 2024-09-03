@@ -761,6 +761,13 @@ text-align: left;
     /* Adjust the font size as needed */
 }
 
+.weapon-icon {
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
 .achievement img {
     width: 30px;
@@ -793,6 +800,21 @@ text-align: left;
     text-align: center;
     color: rgb(255, 255, 255);
 }
+
+.weapon-details {
+    margin-left: 10px;
+}
+
+.weapon-name {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.weapon-description {
+    font-size: 14px;
+    color: #888;
+}
+
 
 .weapon img {
     width: 40px;

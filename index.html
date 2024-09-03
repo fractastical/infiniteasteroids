@@ -314,6 +314,9 @@
     <div id="weaponsContainer">
       <!-- Weapon entries will be dynamically added here -->
     </div>
+    <div id="secondaryWeaponInfo"></div>
+
+
     <button id="closeButton" onclick="toggleWeaponInfo()">Close</button>
   </div>
 
@@ -891,14 +894,22 @@
       weapons.forEach(weapon => {
         const weaponDiv = document.createElement('div');
         weaponDiv.className = 'weapon';
+
+        // Use the correct icon class format
+        const iconClass = `${weapon.icon.toLowerCase().replace(/\s+/g, '')}`;
+
         weaponDiv.innerHTML = `
-              <div class="weapon-icon ${weapon.icon}"></div>
-              <p><strong>${weapon.name}</strong></p>
-              <p>${weapon.description}</p>
-          `;
+            <div class="weapon-icon ${iconClass}"></div>
+            <div class="weapon-details">
+                <p class="weapon-name"><strong>${weapon.name}</strong></p>
+                <p class="weapon-description">${weapon.description}</p>
+            </div>
+        `;
         weaponsContainer.appendChild(weaponDiv);
+        console.log(weaponDiv);
       });
     }
+
     function populateUpgrades() {
       const upgradesList = document.getElementById('upgradesList');
       upgradesList.innerHTML = '';

@@ -413,9 +413,9 @@ function startGame() {
 // TEMP:(?) disable resize
 const resizeCanvas = () => {
 
-    // canvas.width = window.innerWidth;
-    // canvas.height = window.innerHeight;
-    // resetShip();
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    resetShip();
     // Scale the canvas to handle high DPI screens
     // ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
@@ -425,7 +425,7 @@ const resizeCanvas = () => {
 };
 resizeCanvas();
 
-window.addEventListener('resize', resizeCanvas);
+// window.addEventListener('resize', resizeCanvas);
 
 
 function toggleMusic() {
@@ -1274,20 +1274,20 @@ document.addEventListener('fullscreenchange', () => {
     }
 });
 
-window.addEventListener('resize', () => {
-    if (document.fullscreenElement) {
-        // Store ship's position relative to canvas size
-        shipRelativeX = ship.x / canvas.width;
-        shipRelativeY = ship.y / canvas.height;
+// window.addEventListener('resize', () => {
+//     if (document.fullscreenElement) {
+//         // Store ship's position relative to canvas size
+//         shipRelativeX = ship.x / canvas.width;
+//         shipRelativeY = ship.y / canvas.height;
 
-        // Adjust canvas size
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+//         // Adjust canvas size
+//         canvas.width = window.innerWidth;
+//         canvas.height = window.innerHeight;
 
-        // Update ship's position based on new canvas size
-        updateShipPositionAfterResize();
-    }
-});
+//         // Update ship's position based on new canvas size
+//         updateShipPositionAfterResize();
+//     }
+// });
 
 
 canvas.addEventListener('touchstart', handleTouch);
