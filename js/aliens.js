@@ -196,8 +196,11 @@ function updateAliens() {
                     // Wrap around vertically
                     if (alien.y > canvas.height) {
                         alien.y = -alien.size;
+                        alien.x += 10;
                     } else if (alien.y < -alien.size) {
                         alien.y = canvas.height;
+                        alien.x += 10;
+
                     }
 
                     // Shooting logic
