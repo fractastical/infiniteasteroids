@@ -639,7 +639,10 @@ function spawnLittleAliensAroundMegaBoss() {
 }
 
 function updateAlienLasers() {
+    // console.log("l");
+
     for (let i = alienLasers.length - 1; i >= 0; i--) {
+        console.log(i);
         const laser = alienLasers[i];
         laser.x += laser.dx;
         laser.y += laser.dy;
@@ -656,13 +659,21 @@ function updateAlienLasers() {
 
 function drawAlienLasers() {
     alienLasers.forEach(laser => {
-        ctx.fillStyle = 'pink';
-        ctx.beginPath();
-        ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
-        ctx.fill();
+        if (Math.abs(laser.dx) > alienLaserSpeed * 2 || Math.abs(laser.dy) > alienLaserSpeed * 2) {
+            // This is a fast eye laser
+            ctx.fillStyle = 'red'; // or any other color to distinguish it
+            ctx.beginPath();
+            ctx.arc(laser.x, laser.y, alienLaserSize * 1.3, 0, Math.PI * 2); // Make it slightly larger
+            ctx.fill();
+        } else {
+            // Regular laser
+            ctx.fillStyle = 'pink';
+            ctx.beginPath();
+            ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
+            ctx.fill();
+        }
     });
 }
-
 function shootAlienLaser(alien) {
     let laserSpeed = alienLaserSpeed;
     let laserDx = 0;
@@ -884,8 +895,8 @@ function spawnOctoBoss() {
 
     octoBoss = {
         x: canvas.width / 2,
-        y: canvas.height / 2,
-        size: 200,
+        y: 5,
+        size: 360,
         speed: 0.1,
         hitpoints: 20000,
         maxHitpoints: 20000,
@@ -906,26 +917,26 @@ function spawnOctoBoss() {
                 {
                     angle: baseAngle,
                     length: 150,
-                    maxLength: 150,
+                    maxLength: 350,
                     state: OctoBossArmState.GROWING,
                     hitpoints: 500,
-                    growthRate: 2
+                    growthRate: 0.01
                 },
                 {
                     angle: baseAngle + Math.PI / 6,
                     length: 120,
-                    maxLength: 120,
+                    maxLength: 300,
                     state: OctoBossArmState.GROWING,
                     hitpoints: 500,
-                    growthRate: 1.5
+                    growthRate: 0.01
                 },
                 {
                     angle: baseAngle - Math.PI / 6,
                     length: 100,
-                    maxLength: 100,
+                    maxLength: 200,
                     state: OctoBossArmState.GROWING,
                     hitpoints: 500,
-                    growthRate: 1
+                    growthRate: 0.004
                 }
             ]
         });
@@ -938,7 +949,6 @@ function updateOctoBoss() {
     if (!octoBoss) return;
     if (freezeEffect.active) return;
 
-    // Move towards the player
     const dx = ship.x - octoBoss.x;
     const dy = ship.y - octoBoss.y;
     const angle = Math.atan2(dy, dx);
@@ -955,6 +965,7 @@ function updateOctoBoss() {
     }
 
     if (octoBoss.isSpecialAttacking) {
+        console.log("special attack");
         performSpecialAttack();
         octoBoss.specialAttackDuration--;
         if (octoBoss.specialAttackDuration <= 0) {
@@ -964,10 +975,12 @@ function updateOctoBoss() {
         // Normal shooting logic
         octoBoss.shootTimer++;
         if (octoBoss.shootTimer >= octoBoss.shootInterval) {
+            console.log("normal attack");
             octoBoss.shootTimer = 0;
             shootOctoBossLaser();
         }
     }
+
 
     // Update arm segment angles and lengths
     const targetAngle = Math.atan2(ship.y - octoBoss.y, ship.x - octoBoss.x);
@@ -1004,17 +1017,19 @@ function performSpecialAttack() {
     const targetAngle = Math.atan2(ship.y - octoBoss.y, ship.x - octoBoss.x);
 
     octoBoss.arms.forEach(arm => {
-        const activeSegments = arm.segments.filter(seg => seg.state === OctoBossArmState.ACTIVE);
-        if (activeSegments.length > 0) {
+        const activeOrGrowingSegments = arm.segments.filter(seg =>
+            seg.state === OctoBossArmState.ACTIVE || seg.state === OctoBossArmState.GROWING
+        );
+        if (activeOrGrowingSegments.length > 0) {
             let laserStartX = octoBoss.x;
             let laserStartY = octoBoss.y;
-            activeSegments.forEach(segment => {
+            activeOrGrowingSegments.forEach(segment => {
                 laserStartX += Math.cos(segment.angle) * segment.length;
                 laserStartY += Math.sin(segment.angle) * segment.length;
             });
 
             // Add slight randomness to the laser direction
-            const randomAngle = targetAngle + (Math.random() - 0.5) * Math.PI / 10; // +/- 10% randomness
+            const randomAngle = targetAngle + (Math.random() - 0.5) * Math.PI / 30; // +/- 3.3% randomness
 
             alienLasers.push({
                 x: laserStartX,
@@ -1064,18 +1079,24 @@ function drawOctoBoss() {
 }
 
 function shootOctoBossLaser() {
+    console.log("shoot");
+    let activeCount = 0;
+    // Shoot from arms
     octoBoss.arms.forEach(arm => {
-        const activeSegments = arm.segments.filter(seg => seg.state === OctoBossArmState.ACTIVE);
-        if (activeSegments.length > 0) {
+        const activeOrGrowingSegments = arm.segments.filter(seg =>
+            seg.state === OctoBossArmState.ACTIVE || seg.state === OctoBossArmState.GROWING
+        );
+        if (activeOrGrowingSegments.length > 0) {
             let laserStartX = octoBoss.x;
             let laserStartY = octoBoss.y;
             let lastAngle = 0;
-            activeSegments.forEach(segment => {
+            activeOrGrowingSegments.forEach(segment => {
                 laserStartX += Math.cos(segment.angle) * segment.length;
                 laserStartY += Math.sin(segment.angle) * segment.length;
                 lastAngle = segment.angle;
+                activeCount++;
             });
-
+            console.log("push arm laser");
             alienLasers.push({
                 x: laserStartX,
                 y: laserStartY,
@@ -1084,9 +1105,50 @@ function shootOctoBossLaser() {
             });
         }
     });
+
+    // Shoot from eyes
+    const eyeSpread = 65; // 30px apart
+    const eyeY = octoBoss.y - 25; // Assuming the eyes are at the top of the boss
+    const leftEyeX = octoBoss.x - eyeSpread;
+    const rightEyeX = octoBoss.x + eyeSpread;
+    const middleEyeX = octoBoss.x;
+    let armSpeedBooster = 1;
+    if (activeCount < 16)
+        armSpeedBooster *= 1.2;
+    if (activeCount < 8)
+        armSpeedBooster *= 1.2;
+
+    const targetAngle = Math.atan2(ship.y - eyeY, ship.x - octoBoss.x);
+
+    // Left eye laser
+    console.log("push left eye laser");
+    alienLasers.push({
+        x: leftEyeX,
+        y: eyeY,
+        dx: Math.cos(targetAngle) * alienLaserSpeed * 2.5 * armSpeedBooster, // 4x speed
+        dy: Math.sin(targetAngle) * alienLaserSpeed * 2.5 * armSpeedBooster
+    });
+
+
+    alienLasers.push({
+        x: middleEyeX,
+        y: eyeY - 20,
+        dx: Math.cos(targetAngle) * alienLaserSpeed * 2.5 * armSpeedBooster, // 4x speed
+        dy: Math.sin(targetAngle) * alienLaserSpeed * 2.5 * armSpeedBooster
+    });
+
+
+    // Right eye laser
+    console.log("push right eye laser");
+    alienLasers.push({
+        x: rightEyeX,
+        y: eyeY,
+        dx: Math.cos(targetAngle) * alienLaserSpeed * 2.5 * armSpeedBooster, // 4x speed
+        dy: Math.sin(targetAngle) * alienLaserSpeed * 2.5 * armSpeedBooster
+    });
+
     playAlienLaserSound();
 }
-
 // function performSpecialAttack() {
 //     octoBoss.arms.forEach(arm => {
 //         const activeSegments = arm.segments.filter(seg => seg.state === OctoBossArmState.ACTIVE);

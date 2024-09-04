@@ -725,7 +725,6 @@ function update() {
     // updateSwarmingAliens();
     // drawSwarmingAliens();
     drawAliens();
-    drawAlienLasers();
     updateBossAlien();
     drawBossAlien();
     updateBossAlienLaser();
@@ -738,6 +737,7 @@ function update() {
     drawOctoBoss();
     updateAndDrawParticles();
     updateAndDrawShockwaves();
+    drawAlienLasers();
 
 
 
@@ -1380,6 +1380,7 @@ function handleKeyDown(event) {
             claimLevelUps(); // Claim level ups
         }
 
+        // Upgrade selection during level up
         if (document.getElementById('levelUpModal').style.display === 'block') {
             if (event.key === '1') {
                 selectUpgrade(1);
@@ -1392,12 +1393,15 @@ function handleKeyDown(event) {
             }
         }
 
-        // Handle upgrade menu keyboard shortcuts
+        // Handle mega upgrade selection
         if (document.getElementById('upgradeModal')) {
-            if (event.key === '1') {
-                selectMegaUpgrade();
-            } else if (event.key === '2') {
-                restoreHealth();
+            const megaUpgradeOptions = document.querySelectorAll('.mega-upgrade-option');
+            if (event.key === '1' && megaUpgradeOptions[0]) {
+                megaUpgradeOptions[0].click(); // Select the first upgrade
+            } else if (event.key === '2' && megaUpgradeOptions[1]) {
+                megaUpgradeOptions[1].click(); // Select the second upgrade
+            } else if (event.key === '3' && megaUpgradeOptions[2]) {
+                megaUpgradeOptions[2].click(); // Select the third upgrade
             }
         }
     }

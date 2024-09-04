@@ -276,6 +276,7 @@ function selectMegaUpgrade() {
     }
 }
 
+
 function getRandomMegaUpgrades(upgrades, count) {
     const shuffled = upgrades.sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
@@ -285,17 +286,31 @@ function displayMegaUpgradeOptions(megaUpgradeOptions) {
     const upgradeModal = document.getElementById('upgradeModal');
     upgradeModal.innerHTML = '<h2>Choose a Mega Upgrade</h2>';
 
-    megaUpgradeOptions.forEach(upgrade => {
+    // Add numbered mega upgrade options
+    megaUpgradeOptions.forEach((upgrade, index) => {
         const upgradeElement = document.createElement('div');
         upgradeElement.className = 'mega-upgrade-option';
         upgradeElement.innerHTML = `
         <img src="${upgrade.icon}" alt="${upgrade.name}" class="upgrade-icon">
-        <h3>${upgrade.name}</h3>
+        <h3>${index + 1}: ${upgrade.name}</h3>
         <p>${upgrade.description}</p>
       `;
-        upgradeElement.addEventListener('click', () => applyMegaUpgrade(upgrade));
+        upgradeElement.addEventListener('click', () => applyMegaUpgrade(upgrade));  // Click selection still works
         upgradeModal.appendChild(upgradeElement);
     });
+}
+
+function applyMegaUpgrade(upgrade) {
+    const newUpgrade = { ...upgrade, cooldownTimer: 0 };
+    activeMegaUpgrades.push(newUpgrade);
+    newUpgrade.effect();
+    closeUpgradeModal();
+}
+
+function closeUpgradeModal() {
+    floatingIsland.active = false;
+    document.getElementById('upgradeModal').remove();
+    resumeGame();
 }
 
 function applyMegaUpgrade(upgrade) {
