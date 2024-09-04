@@ -945,6 +945,8 @@ function initializeGame(mode) {
             asteroidDifficultySpeedMultiplier = 1.8;
             levelUpXPMultiplier = 1.2;
             modeScoreMultiplier = 4.2;
+            invincibilityDuration = 150;
+
             meteorBooster = 7;
             meteorMode = true;
             break;
@@ -953,6 +955,7 @@ function initializeGame(mode) {
             levelUpXPMultiplier = 1.3;
             meteorBooster = 14;
             modeScoreMultiplier = 6.2;
+            invincibilityDuration = 140;
             meteorMode = true;
             break;
         case GameModes.METEORSHOWERHERO:
@@ -961,6 +964,7 @@ function initializeGame(mode) {
             meteorBooster = 21;
             modeScoreMultiplier = 8.2;
             meteorMode = true;
+            invincibilityDuration = 120;
             break;
         case GameModes.PLANETEASY:
             asteroidDifficultySpeedMultiplier = 1.3;
@@ -985,6 +989,8 @@ function initializeGame(mode) {
             meteorBooster = 15;
             gravityStrength = 120;
             planetMode = true;
+            invincibilityDuration = 140;
+
             modeScoreMultiplier = 5.4;
             break;
         case GameModes.PLANETHERO:
@@ -993,6 +999,8 @@ function initializeGame(mode) {
             meteorBooster = 25;
             gravityStrength = 140;
             planetMode = true;
+            invincibilityDuration = 130;
+
             modeScoreMultiplier = 7.2;
             break;
         case GameModes.ENDLESS_SLOW:
@@ -1753,10 +1761,11 @@ function claimLevelUps() {
         pauseGame();
 
         // Activate temporary invincibility
-        invincible = true;
-        invincibilityTimer = invincibilityDuration;
 
     }
+    invincible = true;
+    invincibilityTimer = invincibilityDuration;
+    resumeGame();
 
 
 }
