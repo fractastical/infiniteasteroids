@@ -1,26 +1,54 @@
 function drawAcidBombs() {
+    const time = Date.now() * 0.001; // Current time in seconds for animation
+
+    ctx.save();
+
     if (fps >= 45) {
-        // Cooler effect when FPS is above 45
-        ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
-        ctx.fillStyle = 'green';
+        // High-performance effect
         ctx.shadowBlur = 10;
-        for (let i = 0; i < acidBomb.activeBombs.length; i++) {
-            let bomb = acidBomb.activeBombs[i];
+        ctx.shadowColor = 'rgba(0, 255, 0, 0.5)';
+
+        acidBomb.activeBombs.forEach(bomb => {
+            // Create a gradient for each bomb
+            const gradient = ctx.createRadialGradient(bomb.x, bomb.y, 0, bomb.x, bomb.y, 8);
+            gradient.addColorStop(0, 'rgba(0, 255, 0, 0.8)');
+            gradient.addColorStop(0.6, 'rgba(0, 200, 0, 0.6)');
+            gradient.addColorStop(1, 'rgba(0, 150, 0, 0.2)');
+
+            ctx.fillStyle = gradient;
+
+            // Draw main bubble
             ctx.beginPath();
-            ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
+            ctx.arc(bomb.x, bomb.y, 6 + Math.sin(time * 5 + bomb.x) * 2, 0, Math.PI * 2);
             ctx.fill();
-        }
-        ctx.shadowBlur = 0; // Reset shadow blur to avoid affecting other drawings
+
+            // Draw highlight
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.arc(bomb.x - 2, bomb.y - 2, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw small bubbles around
+            for (let i = 0; i < 3; i++) {
+                const angle = time * 3 + i * (Math.PI * 2 / 3);
+                const x = bomb.x + Math.cos(angle) * 8;
+                const y = bomb.y + Math.sin(angle) * 8;
+                ctx.beginPath();
+                ctx.arc(x, y, 1 + Math.sin(time * 10 + i) * 0.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        });
     } else {
-        // Less sexy effect when FPS is below 45
-        ctx.fillStyle = 'green';
-        for (let i = 0; i < acidBomb.activeBombs.length; i++) {
-            let bomb = acidBomb.activeBombs[i];
+        // Low-performance effect
+        ctx.fillStyle = 'rgba(0, 200, 0, 0.8)';
+        acidBomb.activeBombs.forEach(bomb => {
             ctx.beginPath();
-            ctx.arc(bomb.x, bomb.y, 5, 0, Math.PI * 2);
+            ctx.arc(bomb.x, bomb.y, 5 + Math.sin(time * 3 + bomb.x) * 1.5, 0, Math.PI * 2);
             ctx.fill();
-        }
+        });
     }
+
+    ctx.restore();
 }
 
 
