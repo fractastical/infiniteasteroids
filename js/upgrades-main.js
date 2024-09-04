@@ -241,13 +241,28 @@ function openUpgradeOptions() {
     upgradeModal.id = 'upgradeModal';
     upgradeModal.innerHTML = `
       <h2>Choose Your Upgrade</h2>
-      <button id="megaUpgrade">Mega Upgrade</button>
-      <button id="restoreHealth">Restore Health</button>
+      <button id="megaUpgrade">Mega Upgrade [1]</button>
+      <button id="restoreHealth">Restore Health [2]</button>
     `;
     document.body.appendChild(upgradeModal);
 
+    // Add event listeners for mouse click
     document.getElementById('megaUpgrade').addEventListener('click', selectMegaUpgrade);
     document.getElementById('restoreHealth').addEventListener('click', restoreHealth);
+
+    // Add keyboard support for 1 and 2
+    document.addEventListener('keydown', handleUpgradeKeydown);
+
+    // Clean up when the modal is closed or an option is selected
+    function closeUpgradeOptions() {
+        const upgradeModal = document.getElementById('upgradeModal');
+        if (upgradeModal) {
+            document.body.removeChild(upgradeModal);
+        }
+        document.removeEventListener('keydown', handleUpgradeKeydown);
+        resumeGame();
+    }
+
 }
 
 function selectMegaUpgrade() {

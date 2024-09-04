@@ -83,15 +83,15 @@ function selectSecondaryWeapon(weaponName) {
 }
 
 // Example of binding to keypress (assuming keys '1', '2', '3' are used to select)
-document.addEventListener('keydown', (event) => {
-    if (event.key === '1') {
-        selectSecondaryWeapon('invincibilityShield');
-    } else if (event.key === '2') {
-        selectSecondaryWeapon('explosiveBurst');
-    } else if (event.key === '3') {
-        selectSecondaryWeapon('piercingLaser');
-    }
-});
+// document.addEventListener('keydown', (event) => {
+//     if (event.key === '1') {
+//         selectSecondaryWeapon('invincibilityShield');
+//     } else if (event.key === '2') {
+//         selectSecondaryWeapon('explosiveBurst');
+//     } else if (event.key === '3') {
+//         selectSecondaryWeapon('piercingLaser');
+//     }
+// });
 
 function fireSecondaryWeapon() {
     console.log("firing secondary");

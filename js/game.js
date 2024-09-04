@@ -1339,9 +1339,7 @@ function handleKeyDown(event) {
         }
 
         if (event.key === 'Enter') {
-
             if (document.getElementById('rouletteContainer').style.display == 'block') {
-
                 const okButton = document.querySelector('#upgradeDisplay button');
                 if (okButton) {
                     activateGemUpgrades();
@@ -1375,11 +1373,9 @@ function handleKeyDown(event) {
         } else if (event.key === 't' || event.key === 'T') {
             if (!loginFormOpen) toggleVolumeScreen();
         } else if (event.key === 'e' || event.key === 'E') {
-            // Trigger the secondary weapon action here
             fireSecondaryWeapon(); // Use the selected secondary weapon
         } else if (event.key === 'r' || event.key === 'R') {
-            // Trigger the secondary weapon action here
-            claimLevelUps(); // Use the selected secondary weapon
+            claimLevelUps(); // Claim level ups
         }
 
         if (document.getElementById('levelUpModal').style.display === 'block') {
@@ -1391,6 +1387,15 @@ function handleKeyDown(event) {
                 selectUpgrade(3);
             } else if (fourthUpgradeUnlocked && event.key === '4') {
                 selectUpgrade(4);
+            }
+        }
+
+        // Handle upgrade menu keyboard shortcuts
+        if (document.getElementById('upgradeModal')) {
+            if (event.key === '1') {
+                selectMegaUpgrade();
+            } else if (event.key === '2') {
+                restoreHealth();
             }
         }
     }
@@ -1604,30 +1609,34 @@ let waitAndClaimMode = true;
 
 function claimLevelUps() {
 
-    let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
+    if (unclaimedLevelUps > 0) {
 
-    // Get random upgrades
-    const upgrades = getRandomUpgrades(upgradesToRetrieve);
+        let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
 
-    document.getElementById('leveluptitle').innerHTML = 'Claim ' + unclaimedLevelUps + ' upgrades';
+        // Get random upgrades
+        const upgrades = getRandomUpgrades(upgradesToRetrieve);
+
+        document.getElementById('leveluptitle').innerHTML = 'Claim ' + unclaimedLevelUps + ' upgrades';
 
 
-    // Display the level-up modal
-    const levelUpModal = document.getElementById('levelUpModal');
-    const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
-    document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
+        // Display the level-up modal
+        const levelUpModal = document.getElementById('levelUpModal');
+        const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
+        document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
 
-    // Show the modal
-    levelUpModal.style.display = 'block';
-    // Store upgrades in a global variable for later use
-    window.levelUpgrades = upgrades;
-    // Pause the game
-    clearInterval(gameLoop);
-    isPaused = true;
+        // Show the modal
+        levelUpModal.style.display = 'block';
+        // Store upgrades in a global variable for later use
+        window.levelUpgrades = upgrades;
+        // Pause the game
+        clearInterval(gameLoop);
+        isPaused = true;
 
-    // Activate temporary invincibility
-    invincible = true;
-    invincibilityTimer = invincibilityDuration;
+        // Activate temporary invincibility
+        invincible = true;
+        invincibilityTimer = invincibilityDuration;
+
+    }
 
 
 }

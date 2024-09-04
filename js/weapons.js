@@ -2316,6 +2316,16 @@ function checkLaserCollisions(lasers, isShip) {
         }
 
 
+        if (octoBoss && checkLaserOctoBossCollision(laser)) {
+            let damage = isShip ? ship.laserLevel : 1;
+            damageOctoBoss(damage + damageBooster);
+            createExplosion(laser.x, laser.y);
+            lasers.splice(i, 1);
+            console.log("removing laser collided with OctoBoss");
+            continue; // Move to next laser
+        }
+
+
         if (megaBossAlien && isColliding(laser, megaBossAlien)) {
 
             let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
