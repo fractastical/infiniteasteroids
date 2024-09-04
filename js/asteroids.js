@@ -849,7 +849,7 @@ function fireChainLightningFromAsteroid(asteroid) {
     let target = findNearestAsteroidInRange(asteroid, lightningRange);
     if (target) {
         drawChainLightning(asteroid, target);
-        fireChainLightning(target, 3);
+        fireChainLightning(target, 3, true);
     }
 }
 

@@ -83,7 +83,12 @@ let damageReport = {
     nano: 0,
     explosiverocket: 0,
     flamethrower: 0,
-    chainlightning: 0
+    chainlightning: 0,
+    fireAsteroid: 0,
+    acidAsteroid: 0,
+    lightningAsteroid: 0,
+    iceAsteroid: 0
+
 
 };
 
@@ -1115,13 +1120,16 @@ function activateChainLightning() {
 
 }
 
-function fireChainLightning(target, bounces) {
+function fireChainLightning(target, bounces, roid = false) {
     if (bounces <= 0 || !target) return;
 
     let damage = chainLightning.damage;
     let actualDamage = Math.min(damage + damageBooster, target.hitpoints);
     target.hitpoints -= actualDamage;
-    damageReport.chainlightning += actualDamage;
+    if (roid)
+        damageReport.lightningAsteroid += actualDamage;
+    else
+        damageReport.chainlightning += actualDamage;
 
 
     if (target.hitpoints <= 0) {
