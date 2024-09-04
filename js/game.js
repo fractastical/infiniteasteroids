@@ -458,12 +458,123 @@ function isMobile() {
 }
 
 
+function drawGridBackground() {
+    const gridSize = 50;
+    const lineColor = '#00ffff'; // Cyan color for grid lines
+    const backgroundColor = 'black';
+
+    // Fill the background with black
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw vertical grid lines
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= canvas.width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+    }
+
+    // Draw horizontal grid lines
+    for (let y = 0; y <= canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+    }
+}
+
+
+
+function drawGridWithPerspective() {
+    const gridColor = '#00ffff'; // Cyan color for grid lines
+    const backgroundColor = 'black';
+    const horizonY = canvas.height * 0.6; // Y position of the horizon (adjust for more or less perspective)
+    const numLines = 30; // Number of vertical and horizontal lines
+    const spacing = 40; // Spacing between grid lines at the bottom
+
+    // Fill the background with black
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 1;
+
+    // Draw vertical lines with perspective
+    for (let i = -numLines; i <= numLines; i++) {
+        const x = i * spacing;
+        const perspectiveX = canvas.width / 2 + (x / (canvas.height - horizonY)) * (canvas.height - horizonY);
+        ctx.beginPath();
+        ctx.moveTo(perspectiveX, horizonY);
+        ctx.lineTo(canvas.width / 2 + x, canvas.height);
+        ctx.stroke();
+    }
+
+    // Draw horizontal lines with perspective
+    for (let j = 0; j < numLines; j++) {
+        const y = horizonY + (j * spacing);
+        const scale = (y - horizonY) / (canvas.height - horizonY);
+        const startX = canvas.width / 2 - (canvas.width * scale) / 2;
+        const endX = canvas.width / 2 + (canvas.width * scale) / 2;
+
+        ctx.beginPath();
+        ctx.moveTo(startX, y);
+        ctx.lineTo(endX, y);
+        ctx.stroke();
+    }
+}
+
+function drawWarpedGrid() {
+    const gridSize = 20; // Adjust this to change the density of the grid
+    const warpFactor = 0.2; // Adjust this to change the intensity of the warping
+
+    ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)'; // Cyan with very low opacity
+    ctx.lineWidth = 1;
+
+    for (let x = 0; x <= canvas.width; x += gridSize) {
+        ctx.beginPath();
+        for (let y = 0; y <= canvas.height; y += 5) {
+            const distX = x - canvas.width / 2;
+            const distY = y - canvas.height / 2;
+            const distance = Math.sqrt(distX * distX + distY * distY);
+            const warp = Math.sin(distance * warpFactor) * gridSize / 2;
+
+            if (y === 0) {
+                ctx.moveTo(x + warp, y);
+            } else {
+                ctx.lineTo(x + warp, y);
+            }
+        }
+        ctx.stroke();
+    }
+
+    for (let y = 0; y <= canvas.height; y += gridSize) {
+        ctx.beginPath();
+        for (let x = 0; x <= canvas.width; x += 5) {
+            const distX = x - canvas.width / 2;
+            const distY = y - canvas.height / 2;
+            const distance = Math.sqrt(distX * distX + distY * distY);
+            const warp = Math.sin(distance * warpFactor) * gridSize / 2;
+
+            if (x === 0) {
+                ctx.moveTo(x, y + warp);
+            } else {
+                ctx.lineTo(x, y + warp);
+            }
+        }
+        ctx.stroke();
+    }
+}
 
 function update() {
 
     calculateAndAdjustFPS(); //optimize.js
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawWarpedGrid();
+
     // document.getElementById('leaderboard-container').style.display = 'none';
     if (currentBackgroundImage) {
         ctx.drawImage(currentBackgroundImage, 0, 0, canvas.width, canvas.height);
