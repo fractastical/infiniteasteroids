@@ -2496,7 +2496,7 @@ function drawLives() {
         document.getElementById('livesDisplay').textContent = `P1 Health: ${ship.lives} | P2 Health: ${ship2.lives}`;
     } else {
         // Single player mode
-        let finalX = 0;
+        let finalX = startX;
         for (let i = 0; i < lives; i++) {
             const x = startX + (lifeWidth + spacing) * i;
             finalX = x;
