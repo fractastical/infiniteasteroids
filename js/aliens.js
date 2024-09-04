@@ -8,6 +8,9 @@ const megaBossAlienImage = new Image();
 megaBossAlienImage.src = 'icons/alien_boss_ship_6.png';
 
 
+const octoBossImage = new Image();
+octoBossImage.src = 'icons/alien_boss_ship_17.png';
+
 // Load swarming alien images
 const swarmingAlienImages = [];
 for (let i = 1; i <= 9; i++) {
@@ -82,6 +85,11 @@ function spawnAliens(wave) {
     if (wave == 75) {
         spawnMegaBossAlien();
     }
+
+
+    if (wave == 100)
+        spawnOctoBoss();
+
 
     const aliensToSpawn = getAliensToSpawn(wave);
     if (aliensToSpawn > 0)
@@ -855,3 +863,186 @@ function drawSwarmingAliens() {
         ctx.restore();
     });
 }
+
+const OctoBossArmState = {
+    ACTIVE: 'active',
+    DESTROYED: 'destroyed'
+};
+
+let octoBoss = null;
+
+function spawnOctoBoss() {
+    const laughSound = new Audio('sounds/alien_laugh3.mp3');
+    if (!toggleMusicOff) {
+        backgroundMusic.pause();
+        octoBossBackgroundMusic.play();
+    }
+    if (!toggleSoundOff) {
+        laughSound.play();
+    }
+
+    octoBoss = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: 200,
+        speed: 0.1,
+        hitpoints: 20000,
+        maxHitpoints: 20000,
+        shootTimer: 0,
+        shootInterval: 150,
+        arms: []
+    };
+
+    // Create 8 arms with 3 segments each
+    for (let i = 0; i < 8; i++) {
+        const baseAngle = (i * Math.PI) / 4;
+        octoBoss.arms.push({
+            segments: [
+                {
+                    angle: baseAngle,
+                    length: 100,
+                    state: OctoBossArmState.ACTIVE,
+                    hitpoints: 500
+                },
+                {
+                    angle: baseAngle + Math.PI / 6,
+                    length: 80,
+                    state: OctoBossArmState.ACTIVE,
+                    hitpoints: 500
+                },
+                {
+                    angle: baseAngle - Math.PI / 6,
+                    length: 60,
+                    state: OctoBossArmState.ACTIVE,
+                    hitpoints: 500
+                }
+            ]
+        });
+    }
+
+    aliens.push(octoBoss);
+}
+
+function updateOctoBoss() {
+    if (!octoBoss) return;
+    if (freezeEffect.active) return;
+
+    // Move towards the player
+    const dx = ship.x - octoBoss.x;
+    const dy = ship.y - octoBoss.y;
+    const angle = Math.atan2(dy, dx);
+    octoBoss.x += Math.cos(angle) * octoBoss.speed;
+    octoBoss.y += Math.sin(angle) * octoBoss.speed;
+
+    // Shooting logic
+    octoBoss.shootTimer++;
+    if (octoBoss.shootTimer >= octoBoss.shootInterval) {
+        octoBoss.shootTimer = 0;
+        shootOctoBossLaser();
+    }
+
+    // Update arm segment angles
+    octoBoss.arms.forEach((arm, index) => {
+        const baseAngle = (index * Math.PI) / 4 + Date.now() * 0.001; // Rotate arms slowly
+        arm.segments.forEach((segment, segIndex) => {
+            if (segment.state === OctoBossArmState.ACTIVE) {
+                segment.angle = baseAngle + (segIndex - 1) * Math.PI / 6 * Math.sin(Date.now() * 0.002);
+            }
+        });
+    });
+
+    // Check for collision with player
+    if (!invincible && isColliding(octoBoss, ship)) {
+        processPlayerDeath();
+    }
+}
+
+function drawOctoBoss() {
+    if (!octoBoss) return;
+
+    // Draw body
+    ctx.save();
+    ctx.translate(octoBoss.x, octoBoss.y);
+    ctx.drawImage(octoBossImage, -octoBoss.size / 2, -octoBoss.size / 2, octoBoss.size, octoBoss.size);
+
+    // Draw arms
+    octoBoss.arms.forEach(arm => {
+        let startX = 0;
+        let startY = 0;
+        arm.segments.forEach(segment => {
+            if (segment.state === OctoBossArmState.ACTIVE) {
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                const endX = startX + Math.cos(segment.angle) * segment.length;
+                const endY = startY + Math.sin(segment.angle) * segment.length;
+                ctx.lineTo(endX, endY);
+                ctx.lineWidth = 10;
+                ctx.strokeStyle = 'green';
+                ctx.stroke();
+                startX = endX;
+                startY = endY;
+            }
+        });
+    });
+
+    ctx.restore();
+    drawOctoBossHitpointBar();
+}
+
+function shootOctoBossLaser() {
+    octoBoss.arms.forEach(arm => {
+        const lastActiveSegment = arm.segments.filter(seg => seg.state === OctoBossArmState.ACTIVE).pop();
+        if (lastActiveSegment) {
+            let laserStartX = octoBoss.x;
+            let laserStartY = octoBoss.y;
+            arm.segments.forEach(segment => {
+                if (segment.state === OctoBossArmState.ACTIVE) {
+                    laserStartX += Math.cos(segment.angle) * segment.length;
+                    laserStartY += Math.sin(segment.angle) * segment.length;
+                }
+            });
+
+            alienLasers.push({
+                x: laserStartX,
+                y: laserStartY,
+                dx: Math.cos(lastActiveSegment.angle) * alienLaserSpeed,
+                dy: Math.sin(lastActiveSegment.angle) * alienLaserSpeed
+            });
+        }
+    });
+    playAlienLaserSound();
+}
+
+function damageOctoBoss(damage) {
+    // First, try to damage an active arm segment
+    const activeArms = octoBoss.arms.filter(arm => arm.segments.some(seg => seg.state === OctoBossArmState.ACTIVE));
+    if (activeArms.length > 0) {
+        const armToDamage = activeArms[Math.floor(Math.random() * activeArms.length)];
+        const activeSegments = armToDamage.segments.filter(seg => seg.state === OctoBossArmState.ACTIVE);
+        const segmentToDamage = activeSegments[activeSegments.length - 1]; // Damage the outermost active segment
+
+        segmentToDamage.hitpoints -= damage;
+        if (segmentToDamage.hitpoints <= 0) {
+            segmentToDamage.state = OctoBossArmState.DESTROYED;
+            let segmentEndX = octoBoss.x;
+            let segmentEndY = octoBoss.y;
+            armToDamage.segments.forEach(seg => {
+                if (seg.state === OctoBossArmState.ACTIVE) {
+                    segmentEndX += Math.cos(seg.angle) * seg.length;
+                    segmentEndY += Math.sin(seg.angle) * seg.length;
+                }
+            });
+            createExplosion(segmentEndX, segmentEndY);
+        }
+    } else {
+        // If all arm segments are destroyed, damage the body
+        octoBoss.hitpoints -= damage;
+        if (octoBoss.hitpoints <= 0) {
+            destroyOctoBoss();
+        }
+    }
+}
+
+// The destroyOctoBoss function remains the same as in the previous implementation
+
+// Don't forget to call updateOctoBoss() and drawOctoBoss() in your main game loop

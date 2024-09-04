@@ -12,7 +12,7 @@ const restartButton = document.getElementById('restartButton');
 const backgroundMusic = document.getElementById('background-music');
 const megabossBackgroundMusic = document.getElementById('megaboss-background-music');
 const superMegabossBackgroundMusic = document.getElementById('supermegaboss-background-music');
-//const octoboss BackgroundMusic = document.getElementById('octoboss-background-music');
+const octoBossBackgroundMusic = document.getElementById('octoboss-background-music');
 
 let isTouchingJoystick = false;
 let joystickStartX, joystickStartY;
@@ -734,6 +734,8 @@ function update() {
     drawSuperBossAlien();
     updateMegaBossAlien();
     drawMegaBossAlien();
+    updateOctoBoss();
+    drawOctoBoss();
     updateAndDrawParticles();
     updateAndDrawShockwaves();
 
