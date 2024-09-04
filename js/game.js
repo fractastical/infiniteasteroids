@@ -1375,7 +1375,14 @@ function pauseGame() {
 }
 
 function resumeGame() {
-    const openModals = document.querySelectorAll('.modal:not([style*="display: none"])');
+
+    const modals = document.querySelectorAll('.modal');
+    const openModals = Array.from(modals).filter(modal => {
+        return window.getComputedStyle(modal).display !== 'none';
+    });
+
+    // const openModals = document.querySelectorAll('.modal:not([style*="display: none"])');
+    console.log(openModals.length);
 
     if (openModals.length === 0) {
         clearInterval(gameLoop);
