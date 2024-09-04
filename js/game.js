@@ -1468,13 +1468,10 @@ function handleKeyDown(event) {
             toggleWeaponInfo();
         } else if (event.key === 'p' || event.key === 'P') {
             if (isPaused) {
-                clearInterval(gameLoop);
-                gameLoop = setInterval(update, 1000 / 60); // Resume game loop
-                isPaused = false;
+                resumeGame();
             } else {
                 if (document.getElementById('rouletteContainer').style.display == 'none' && document.getElementById('endScreen').style.display == 'none') {
-                    clearInterval(gameLoop);
-                    isPaused = true;
+                    pauseGame();
                 }
             }
         } else if (event.key === 'm' || event.key === 'M') {
