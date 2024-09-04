@@ -569,3 +569,9 @@ function updateShipTypeDisplay() {
 // Event listener for the save button
 document.getElementById('saveSelections').addEventListener('click', handleSelections);
 document.getElementById('shipSelector').addEventListener('change', updateShipPreview);
+document.getElementById('cancelSelections').addEventListener('click', closeModalWithoutSaving);
+
+function closeModalWithoutSaving() {
+    const modal = document.getElementById('shipSelectionModal');
+    modal.style.display = 'none'; // Hide the modal
+}

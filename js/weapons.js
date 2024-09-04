@@ -2233,7 +2233,7 @@ function checkAlienDamage(weapon) {
             megaBossAlien = null; // Destroy alien
             createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
             aliensKilled++;
-            Achievements.alien_supermegaboss_killed.reached = true;
+            Achievements.alien_megaboss_killed.reached = true;
             increaseXP(30 * 20);
             score += 100000;
         }
@@ -2310,7 +2310,7 @@ function checkLaserCollisions(lasers, isShip) {
                 createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
                 superbossAlien = null; // Destroy alien
                 aliensKilled++;
-                Achievements.alien_megaboss_killed.reached = true;
+                Achievements.alien_supermegaboss_killed.reached = true;
                 increaseXP(30 * 20);
                 score += 100000;
             }
@@ -2325,6 +2325,16 @@ function checkLaserCollisions(lasers, isShip) {
             let damage = isShip ? ship.laserLevel : 1;
             damageOctoBoss(damage + damageBooster);
             createExplosion(laser.x, laser.y);
+            if (octoBoss.hitpoints <= 0) {
+                createExplosion(octoBoss.x, octoBoss.y, 50, 40);
+                createBossExplosion(octoBoss.x, octoBoss.y, 150);
+                octoBoss = null; // Destroy alien
+                aliensKilled++;
+                Achievements.alien_octopus_killed.reached = true;
+                increaseXP(30 * 40);
+                score += 200000;
+            }
+
             lasers.splice(i, 1);
             console.log("removing laser collided with OctoBoss");
             continue; // Move to next laser

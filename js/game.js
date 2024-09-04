@@ -1367,14 +1367,14 @@ function pauseGame() {
 }
 
 function resumeGame() {
+    const openModals = document.querySelectorAll('.modal:not([style*="display: none"])');
 
-    if (isPaused && document.getElementById('levelUpModal') != 'block') {
+    if (isPaused && openModals.length === 0) {
         clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
     }
 }
-
 
 // Draw wave message
 function drawWaveMessage() {
@@ -1553,8 +1553,12 @@ function countTechnologies() {
     if (Achievements.wave_60_endless.reached) count++;
     if (Achievements.million_score.reached) count++;
 
-    // if (Achievements.alien_supermegaboss_killed.reached) count++;
+    if (Achievements.space_potato.reached) count++;
+    if (Achievements.space_pizza.reached) count++;
 
+    if (Achievements.alien_supermegaboss_killed.reached) count++;
+    if (Achievements.alien_octopus_killed.reached) count++;
+    if (Achievements.alien_megaboss_killed.reached) count++;
 
     // Check the conditions of each ship
     for (const ship in ships) {
@@ -1666,8 +1670,14 @@ function updateAchievementsAtEnd() {
     gameModeAchievements.forEach(({ key, mode }) => {
         if (currentMode === mode && wave >= 30) addAchievement(key);
     });
+    if (currentMode == GameModes.ENDLESS_SLOW && wave >= 30)
+        addAchievement('space_pizza');
+
+
     if (currentMode == GameModes.ENDLESS_SLOW && wave >= 60)
         addAchievement('wave_60_endless');
+
+    // addAchievement('space_potato')
 
 
     if (damageReport.deathRay >= Achievements.death_ray_damage.required) addAchievement('death_ray_damage');
