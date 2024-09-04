@@ -779,13 +779,14 @@ function update() {
 
 function processPlayerDeath() {
 
-    createExplosion(ship.x, ship.y);
     resetShip(false);
 
     if (!invincible) {
         lives--;
         // clear area after death
         createAreaDamage(ship.x, ship.y, 200, 10);
+        createExplosion(ship.x, ship.y, 10, 15);
+
     }
 
     playShipDestroyedSound();
