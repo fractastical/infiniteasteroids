@@ -1369,7 +1369,7 @@ function pauseGame() {
 function resumeGame() {
     const openModals = document.querySelectorAll('.modal:not([style*="display: none"])');
 
-    if (isPaused && openModals.length === 0) {
+    if (openModals.length === 0) {
         clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
@@ -1454,17 +1454,12 @@ function handleKeyDown(event) {
 
         if (event.key === 'Enter') {
             if (document.getElementById('rouletteContainer').style.display == 'block') {
-                const okButton = document.querySelector('#upgradeDisplay button');
+                startRoulette();
 
-                if (okButton) {
-                    activateGemUpgrades();
-                } else {
-                    startRoulette();
-                }
             }
-        }
-
-        if (event.key === 'i' || event.key === 'I') {
+        } else if (event.key === 'a' || event.key === 'A') {
+            activateGemUpgrades();
+        } else if (event.key === 'i' || event.key === 'I') {
             toggleWeaponInfo();
         } else if (event.key === 'p' || event.key === 'P') {
             if (isPaused) {
@@ -2116,7 +2111,11 @@ function drawDamageReport() {
 
     const weaponDPM = {};
     const endTime = Date.now();
+
     damageReportStartTimes.lasers = gameStartTime;
+    damageReportStartTimes.fireAsteroid = gameStartTime;
+    damageReportStartTimes.lightningAsteroid = gameStartTime;
+    damageReportStartTimes.acidAsteroid = gameStartTime;
 
     Object.keys(damageReport).forEach(weapon => {
         const activeTime = (endTime - damageReportStartTimes[weapon]) / 60000; // Time in minutes

@@ -246,7 +246,7 @@ function startRoulette() {
             });
 
             const okButton = document.createElement('button');
-            okButton.textContent = 'Activate [ENTER]';
+            okButton.textContent = '[A]ctivate';
             okButton.onclick = () => {
 
                 activateGemUpgrades();
@@ -263,6 +263,7 @@ let displayGems = [];
 
 function activateGemUpgrades() {
 
+    const rouletteContainer = document.getElementById('rouletteContainer');
     rouletteContainer.style.display = 'none';
     spinButton.disabled = false;
     spinButton.style.display = 'block';

@@ -1293,14 +1293,15 @@ function updateAcidBombs() {
     }
 }
 
-function createAcidExplosion(x, y, radius, duration) {
+function createAcidExplosion(x, y, radius, duration, roid = false) {
     createExplosion(x, y, 10); // Create visual explosion effect
     playRandomAcidBombSound();
     let acidArea = {
         x: x,
         y: y,
         radius: radius,
-        duration: duration
+        duration: duration,
+        roid: roid
     };
     acidBomb.activeAreas.push(acidArea);
 }
@@ -1323,7 +1324,10 @@ function updateAcidAreas() {
             if (distance < area.radius) {
                 let actualDamage = Math.min(acidBomb.damagePerSecond + damageBooster, asteroid.hitpoints);
                 asteroid.hitpoints -= actualDamage;
-                damageReport.acid += actualDamage;
+                if (area.roid)
+                    damageReport.acidAsteroid += actualDamage;
+                else
+                    damageReport.acid += actualDamage;
 
                 if (asteroid.hitpoints <= 0) {
                     processAsteroidDeath(asteroid);

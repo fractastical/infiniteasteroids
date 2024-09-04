@@ -532,7 +532,7 @@ function processAsteroidDeath(asteroid) {
             addRareAsteroidToDisplay(asteroid.type, '#FFFF00');  // Yellow
             break;
         case 'acid':
-            createAcidExplosion(asteroid.x, asteroid.y, 100, 1000);
+            createAcidExplosion(asteroid.x, asteroid.y, 100, 1000, true);
             addRareAsteroidToDisplay(asteroid.type, '#00FF00');  // Green
             break;
     }
@@ -602,17 +602,21 @@ function addRareAsteroidToDisplay(type, color) {
     }
 }
 
+let lightningStormPower = 5;
+
 function triggerLightningStorm() {
     console.log("Lightning Storm Triggered!");
     // Create multiple chain lightning effects across the screen
     playLightningSound();
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < lightningStormPower; i++) {
         let randomAsteroid = asteroids[Math.floor(Math.random() * asteroids.length)];
         if (randomAsteroid) {
             fireChainLightningFromAsteroid(randomAsteroid);
         }
     }
+    // increase effect each time it triggers
+    lightningStormPower++;
 
     screenShake(10, 500);
     playLightningSound();
