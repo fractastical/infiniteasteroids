@@ -1478,10 +1478,10 @@ function handleKeyDown(event) {
             toggleMusic();
         } else if (event.key === 'n' || event.key === 'N') {
             toggleSound();
-        } else if (event.key === 'u' || event.key === 'U') {
-            clearInterval(gameLoop);
-            isPaused = true;
-            document.getElementById('rouletteContainer').style.display = 'block';
+            // } else if (event.key === 'u' || event.key === 'U') {
+            //     clearInterval(gameLoop);
+            //     isPaused = true;
+            //     document.getElementById('rouletteContainer').style.display = 'block';
         } else if (event.key === 't' || event.key === 'T') {
             if (!loginFormOpen) toggleVolumeScreen();
         } else if (event.key === 'e' || event.key === 'E') {
@@ -1755,8 +1755,7 @@ function claimLevelUps() {
         // Store upgrades in a global variable for later use
         window.levelUpgrades = upgrades;
         // Pause the game
-        clearInterval(gameLoop);
-        isPaused = true;
+        pauseGame();
 
         // Activate temporary invincibility
         invincible = true;
@@ -1822,8 +1821,7 @@ function levelUp() {
         // Store upgrades in a global variable for later use
         window.levelUpgrades = upgrades;
         // Pause the game
-        clearInterval(gameLoop);
-        isPaused = true;
+        pauseGame();
 
         // Activate temporary invincibility
         invincible = true;

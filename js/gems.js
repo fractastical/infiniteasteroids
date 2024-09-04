@@ -187,7 +187,7 @@ function startRoulette() {
 
 
     //doublecheck that it didn't unpause
-    isPaused = true;
+    pauseGame();
 
     let angle = 0;
     const spinDuration = 2500; // Total spin duration
@@ -272,11 +272,9 @@ function activateGemUpgrades() {
     activeGemUpgrades = null;
     // keyboardHint.remove(); // Remove the keyboard hint
 
-    isPaused = false;
+    resumeGame();
     // unlockSound.play();
     displayGems = [];
-    clearInterval(gameLoop);
-    gameLoop = setInterval(update, 1000 / 60);
 
 }
 

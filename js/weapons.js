@@ -1834,9 +1834,7 @@ function selectUpgrade(index) {
         document.getElementById('levelUpModal').style.display = 'none';
 
         // Resume the game
-        isPaused = false;
-        gameLoop = setInterval(update, 1000 / 60);
-
+        resumeGame();
     }
 
 

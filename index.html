@@ -885,25 +885,11 @@
       weaponInfoDiv.style.display = weaponInfoDiv.style.display === 'none' ? 'block' : 'none';
       // console.log("toggle2");
       if (weaponInfoDiv.style.display === 'none') {
-        clearInterval(gameLoop);
-        gameLoop = setInterval(update, 1000 / 60);
+        resumeGame();
       } else {
-        clearInterval(gameLoop);
+        pauseGame();
 
       }
-
-      // Won't place nicely together with above
-      // if (isPaused) {
-
-      //   gameLoop = setInterval(update, 1000 / 60); // Resume game loop
-      //   isPaused = false;
-
-      // } else {
-
-      //   clearInterval(gameLoop);
-      //   isPaused = true;
-
-      // }
 
 
     }
