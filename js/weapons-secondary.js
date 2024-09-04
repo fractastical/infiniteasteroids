@@ -170,7 +170,7 @@ function displayWeaponInfo(startX, startY) {
     // console.log("updating weapon info and upgrades");
     const spacing = 5;     // Space between life rectangles
 
-    let finalX = 0;
+    let finalX = startX;
     const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
     if (activeWeapon) {
         document.getElementById('secondaryWeaponInfo').innerText = `${activeWeapon.name}: ${activeWeapon.uses} uses left`;
