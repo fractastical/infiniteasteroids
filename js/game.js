@@ -222,6 +222,12 @@ const Achievements = {
     alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. Super Mega Secret unlock.' },
     million_score: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Get a million points. Invincibility Shield.' },
     wave_60_endless: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Reach wave 60 on Endless. Piercing Laser.' },
+    space_pizza: { reached: false, icon: 'icons/upgrades/pizza.png', description: 'Find the Space Pizza.' },
+    space_pickle: { reached: false, icon: 'icons/upgrades/pickle.png', description: 'Find the deep space pickle.' },
+    space_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the pixie.' },
+    space_monkey: { reached: false, icon: 'icons/upgrades/monkey.png', description: 'Find the space monkey.' },
+    space_potato: { reached: false, icon: 'icons/upgrades/potato.png', description: 'Find the space potato.' },
+    dark_side: { reached: false, icon: 'icons/upgrades/darkside.png', description: 'Make a deal with Dark Side.' },
 
 
 };
@@ -1450,6 +1456,8 @@ function countTechnologies() {
     if (Achievements.reach_wave_10.reached) count++;
     if (Achievements.reach_wave_20.reached) count++;
     if (Achievements.complete_normal_mode.reached) count++;
+    if (Achievements.complete_hard_mode.reached) count++;
+    if (Achievements.complete_hero_mode.reached) count++;
     if (Achievements.acid_bomb_damage.reached) count++;
     if (Achievements.destroy_100_asteroids.reached) count++;
     if (Achievements.kill_5_aliens.reached) count++;
@@ -1459,10 +1467,10 @@ function countTechnologies() {
     if (Achievements.death_ray_damage.reached) count++;
     if (Achievements.complete_meteor_normal_mode.reached) count++;
     if (Achievements.complete_meteor_hard_mode.reached) count++;
+    if (Achievements.complete_meteor_hero_mode.reached) count++;
+
     if (Achievements.complete_planet_normal_mode.reached) count++;
     if (Achievements.complete_planet_hard_mode.reached) count++;
-    if (Achievements.complete_hard_mode.reached) count++;
-    if (Achievements.complete_hero_mode.reached) count++;
     if (Achievements.drone_damage.reached) count++;
     if (Achievements.laser_damage.reached) count++;
     if (Achievements.alien_megaboss_killed.reached) count++;
@@ -1471,10 +1479,16 @@ function countTechnologies() {
 
     if (Achievements.space_potato.reached) count++;
     if (Achievements.space_pizza.reached) count++;
+    if (Achievements.space_monkey.reached) count++;
+    if (Achievements.space_pixie.reached) count++;
+    if (Achievements.space_pickle.reached) count++;
+    if (Achievements.dark_side.reached) count++;
 
     if (Achievements.alien_supermegaboss_killed.reached) count++;
     if (Achievements.alien_octopus_killed.reached) count++;
     if (Achievements.alien_megaboss_killed.reached) count++;
+
+    // 4 ship types to be unlocked + basic ship.
 
     // Check the conditions of each ship
     for (const ship in ships) {
@@ -1482,7 +1496,7 @@ function countTechnologies() {
             if (ships[ship].condition()) count++;
         }
     }
-
+    // think we are at 38
     return count;
 }
 
