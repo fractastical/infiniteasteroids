@@ -889,22 +889,24 @@ function update() {
 }
 
 function processPlayerDeath() {
-
     resetShip(false);
 
     if (!invincible) {
         lives--;
-        // clear area after death
-        createAreaDamage(ship.x, ship.y, 200, 10);
+
+        // Trigger the explosion immediately
         createExplosion(ship.x, ship.y, 10, 15);
 
+        // Delay the area damage after the explosion (e.g., 1 second delay = 1000 milliseconds)
+        setTimeout(() => {
+            createAreaDamage(ship.x, ship.y, 170, 10);
+        }, 1000); // 1000 milliseconds = 1 second delay
     }
 
     playShipDestroyedSound();
     invincible = true;
     invincibilityTimer = invincibilityDuration;
     if (lives === 0) gameOver = true;
-
 }
 
 function initializeGame(mode) {
