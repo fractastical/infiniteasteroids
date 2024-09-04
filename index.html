@@ -94,7 +94,7 @@
   <!-- ver version -->
   <div id="shipTypeContainer">
     <canvas id="miniShipPreview" width="40" height="40"></canvas>
-    <span id="shipType">Customize ship v 0.9575
+    <span id="shipType">Customize ship v 0.9585
     </span>
   </div>
   <!-- <div id="shipType">
@@ -906,23 +906,28 @@
     function loadWeaponInfo() {
       const weaponsContainer = document.getElementById('weaponsContainer');
       weaponsContainer.innerHTML = '';
-      weapons.forEach(weapon => {
-        const weaponDiv = document.createElement('div');
-        weaponDiv.className = 'weapon';
+      for (let i = 0; i < weapons.length; i += 2) {
+        const row = document.createElement('div');
+        row.className = 'weapon-row';
 
-        // Use the correct icon class format
-        const iconClass = `${weapon.icon.toLowerCase().replace(/\s+/g, '')}`;
+        for (let j = i; j < i + 2 && j < weapons.length; j++) {
+          const weapon = weapons[j];
+          const weaponDiv = document.createElement('div');
+          weaponDiv.className = 'weapon';
 
-        weaponDiv.innerHTML = `
-            <div class="weapon-icon ${iconClass}"></div>
-            <div class="weapon-details">
-                <p class="weapon-name"><strong>${weapon.name}</strong></p>
-                <p class="weapon-description">${weapon.description}</p>
-            </div>
-        `;
-        weaponsContainer.appendChild(weaponDiv);
-        console.log(weaponDiv);
-      });
+          weaponDiv.innerHTML = `
+                <div class="weapon-icon ${weapon.icon}"></div>
+                <div class="weapon-info">
+                    <h3>${weapon.name}</h3>
+                    <p>${weapon.description}</p>
+                </div>
+            `;
+
+          row.appendChild(weaponDiv);
+        }
+
+        weaponsContainer.appendChild(row);
+      }
     }
 
     function populateUpgrades() {
