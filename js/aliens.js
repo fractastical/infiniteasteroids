@@ -951,6 +951,7 @@ function updateOctoBoss() {
         octoBoss.isSpecialAttacking = true;
         octoBoss.specialAttackTimer = 0;
         octoBoss.specialAttackInterval = Math.random() * 5000 + 5000; // Set next interval
+        octoBoss.specialAttackDuration = 60; // Reset duration
     }
 
     if (octoBoss.isSpecialAttacking) {
@@ -958,7 +959,6 @@ function updateOctoBoss() {
         octoBoss.specialAttackDuration--;
         if (octoBoss.specialAttackDuration <= 0) {
             octoBoss.isSpecialAttacking = false;
-            octoBoss.specialAttackDuration = 60; // Reset duration
         }
     } else {
         // Normal shooting logic
@@ -970,15 +970,16 @@ function updateOctoBoss() {
     }
 
     // Update arm segment angles and lengths
+    const targetAngle = Math.atan2(ship.y - octoBoss.y, ship.x - octoBoss.x);
     octoBoss.arms.forEach((arm, index) => {
         const baseAngle = octoBoss.isSpecialAttacking
-            ? Math.atan2(ship.y - octoBoss.y, ship.x - octoBoss.x)
+            ? targetAngle
             : (index * Math.PI) / 4 + Date.now() * 0.001;
 
         arm.segments.forEach((segment, segIndex) => {
             if (segment.state !== OctoBossArmState.DESTROYED) {
                 if (octoBoss.isSpecialAttacking) {
-                    segment.angle = baseAngle + (Math.random() - 0.5) * Math.PI / 5; // Add some randomness
+                    segment.angle = baseAngle + (Math.random() - 0.5) * Math.PI / 10; // Less randomness during special attack
                 } else {
                     segment.angle = baseAngle + (segIndex - 1) * Math.PI / 6 * Math.sin(Date.now() * 0.002);
                 }
@@ -999,6 +1000,32 @@ function updateOctoBoss() {
     }
 }
 
+function performSpecialAttack() {
+    const targetAngle = Math.atan2(ship.y - octoBoss.y, ship.x - octoBoss.x);
+
+    octoBoss.arms.forEach(arm => {
+        const activeSegments = arm.segments.filter(seg => seg.state === OctoBossArmState.ACTIVE);
+        if (activeSegments.length > 0) {
+            let laserStartX = octoBoss.x;
+            let laserStartY = octoBoss.y;
+            activeSegments.forEach(segment => {
+                laserStartX += Math.cos(segment.angle) * segment.length;
+                laserStartY += Math.sin(segment.angle) * segment.length;
+            });
+
+            // Add slight randomness to the laser direction
+            const randomAngle = targetAngle + (Math.random() - 0.5) * Math.PI / 10; // +/- 10% randomness
+
+            alienLasers.push({
+                x: laserStartX,
+                y: laserStartY,
+                dx: Math.cos(randomAngle) * alienLaserSpeed * 1.5, // Faster special attack lasers
+                dy: Math.sin(randomAngle) * alienLaserSpeed * 1.5
+            });
+        }
+    });
+    playAlienLaserSound();
+}
 function drawOctoBoss() {
     if (!octoBoss) return;
 
@@ -1060,32 +1087,32 @@ function shootOctoBossLaser() {
     playAlienLaserSound();
 }
 
-function performSpecialAttack() {
-    octoBoss.arms.forEach(arm => {
-        const activeSegments = arm.segments.filter(seg => seg.state === OctoBossArmState.ACTIVE);
-        if (activeSegments.length > 0) {
-            let laserStartX = octoBoss.x;
-            let laserStartY = octoBoss.y;
-            let lastAngle = 0;
-            activeSegments.forEach(segment => {
-                laserStartX += Math.cos(segment.angle) * segment.length;
-                laserStartY += Math.sin(segment.angle) * segment.length;
-                lastAngle = segment.angle;
-            });
+// function performSpecialAttack() {
+//     octoBoss.arms.forEach(arm => {
+//         const activeSegments = arm.segments.filter(seg => seg.state === OctoBossArmState.ACTIVE);
+//         if (activeSegments.length > 0) {
+//             let laserStartX = octoBoss.x;
+//             let laserStartY = octoBoss.y;
+//             let lastAngle = 0;
+//             activeSegments.forEach(segment => {
+//                 laserStartX += Math.cos(segment.angle) * segment.length;
+//                 laserStartY += Math.sin(segment.angle) * segment.length;
+//                 lastAngle = segment.angle;
+//             });
 
-            // Add randomness to the laser direction
-            const randomAngle = lastAngle + (Math.random() - 0.5) * Math.PI / 5; // +/- 20% randomness
+//             // Add randomness to the laser direction
+//             const randomAngle = lastAngle + (Math.random() - 0.5) * Math.PI / 5; // +/- 20% randomness
 
-            alienLasers.push({
-                x: laserStartX,
-                y: laserStartY,
-                dx: Math.cos(randomAngle) * alienLaserSpeed,
-                dy: Math.sin(randomAngle) * alienLaserSpeed
-            });
-        }
-    });
-    playAlienLaserSound();
-}
+//             alienLasers.push({
+//                 x: laserStartX,
+//                 y: laserStartY,
+//                 dx: Math.cos(randomAngle) * alienLaserSpeed,
+//                 dy: Math.sin(randomAngle) * alienLaserSpeed
+//             });
+//         }
+//     });
+//     playAlienLaserSound();
+// }
 
 function damageOctoBoss(damage) {
     // First, try to damage an active arm segment

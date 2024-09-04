@@ -14,7 +14,7 @@ let octo = null;
 function spawnOcto() {
     octo = {
         x: canvas.width / 2,
-        y: canvas.height / 2,
+        y: 5,
         size: 100,
         speed: 0.5,
         hitpoints: 300,
