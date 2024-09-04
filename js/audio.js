@@ -208,6 +208,10 @@ function toggleVolumeScreen() {
     console.log("vol");
     const volumeScreen = document.getElementById('volumeScreen');
     volumeScreen.style.display = volumeScreen.style.display === 'none' ? 'block' : 'none';
+    if (volumeScreen.style.display === 'block')
+        pauseGame();
+    else
+        resumeGame();
     console.log(volumeScreen.style.display);
 }
 
