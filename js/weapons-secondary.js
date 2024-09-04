@@ -167,6 +167,7 @@ function unlockWeapons() {
 
 
 function displayWeaponInfo(startX, startY) {
+    console.log("updating weapon info and upgrades");
     const spacing = 5;     // Space between life rectangles
 
     let finalX = 0;

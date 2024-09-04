@@ -605,12 +605,18 @@ function addRareAsteroidToDisplay(type, color) {
 function triggerLightningStorm() {
     console.log("Lightning Storm Triggered!");
     // Create multiple chain lightning effects across the screen
+    playLightningSound();
+
     for (let i = 0; i < 5; i++) {
         let randomAsteroid = asteroids[Math.floor(Math.random() * asteroids.length)];
         if (randomAsteroid) {
             fireChainLightningFromAsteroid(randomAsteroid);
         }
     }
+
+    screenShake(10, 500);
+    playLightningSound();
+
     // Add screen flash effect
     // ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
     // ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -678,7 +684,7 @@ function triggerMegaExplosion() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const megaExplosionRadius = Math.min(canvas.width, canvas.height) / 2;
-    const megaExplosionDamage = 100; // Adjust this value as needed
+    const megaExplosionDamage = 300; // Adjust this value as needed
 
     // Create visual effect for mega explosion
     createMegaExplosionEffect(centerX, centerY, megaExplosionRadius);

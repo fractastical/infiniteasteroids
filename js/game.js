@@ -1233,7 +1233,10 @@ function drawScore() {
 
     if (!isMobile()) {
         // document.getElementById('controlsInfo').textContent = "[m]usic sou[n]d [v]olume [p]ause [i]nfo";
-        document.getElementById('controlsInfo').textContent = "[r]edeem s[e]c [m]usic sou[n]d [p]ause [i]nfo";
+        if (waitAndClaimMode)
+            document.getElementById('controlsInfo').textContent = "[r]edeem s[e]c se[t]tings [p]ause [i]nfo";
+        else
+            document.getElementById('controlsInfo').textContent = "s[e]c se[t]tings [p]ause [i]nfo";
 
     } else {
         document.getElementById('controlsInfo').textContent = '';
@@ -1359,15 +1362,15 @@ function handleKeyDown(event) {
                     isPaused = true;
                 }
             }
-        } else if (event.key === 'm') {
+        } else if (event.key === 'm' || event.key === 'M') {
             toggleMusic();
-        } else if (event.key === 'n') {
+        } else if (event.key === 'n' || event.key === 'N') {
             toggleSound();
         } else if (event.key === 'u' || event.key === 'U') {
             clearInterval(gameLoop);
             isPaused = true;
             document.getElementById('rouletteContainer').style.display = 'block';
-        } else if (event.key === 'v' || event.key === 'V') {
+        } else if (event.key === 't' || event.key === 'T') {
             if (!loginFormOpen) toggleVolumeScreen();
         } else if (event.key === 'e' || event.key === 'E') {
             // Trigger the secondary weapon action here
@@ -1583,7 +1586,7 @@ function updateAchievementsAtEnd() {
 
 function createUpgradeOptionsHTML(upgrades) {
     return upgrades.map((upgrade, index) => `
-        <div class="upgrade-option" onclick="selectUpgrade(${index})">
+        <div class="upgrade-option" onclick="selectUpgrade(${index + 1})">
             <div class="upgrade-number">${index + 1}</div>
             <div class="upgrade-icon ${upgrade.icon}"></div>
             <div class="upgrade-details">
@@ -1604,6 +1607,9 @@ function claimLevelUps() {
     // Get random upgrades
     const upgrades = getRandomUpgrades(upgradesToRetrieve);
 
+    document.getElementById('leveluptitle').innerHTML = 'Claim ' + unclaimedLevelUps + ' upgrades';
+
+
     // Display the level-up modal
     const levelUpModal = document.getElementById('levelUpModal');
     const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
@@ -1611,7 +1617,6 @@ function claimLevelUps() {
 
     // Show the modal
     levelUpModal.style.display = 'block';
-
     // Store upgrades in a global variable for later use
     window.levelUpgrades = upgrades;
     // Pause the game
@@ -1624,6 +1629,22 @@ function claimLevelUps() {
 
 
 }
+
+function toggleRedeemMode() {
+
+    if (waitAndClaimMode)
+        waitAndClaimMode = false;
+    else
+        waitAndClaimMode = true;
+
+    let redeemText = "on"
+    if (!waitAndClaimMode)
+        redeemText = "off"
+    document.getElementById('redeemModeStatus').innerHTML = redeemText;
+
+}
+
+
 
 function levelUp() {
 
@@ -1645,6 +1666,8 @@ function levelUp() {
 
     // Determine number of upgrades to show
     if (!waitAndClaimMode) {
+
+        document.getElementById('leveluptitle').innerHTML = 'Level Up!';
 
         let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
 

@@ -111,7 +111,7 @@
   -->
   <div id="levelUpModal" class="modal">
     <div class="modal-content">
-      <h2>Level Up!</h2>
+      <h2 id="leveluptitle">Level Up!</h2>
       <p>Choose an upgrade:</p>
       <div id="upgradeOptions">
         <div class="upgrade-option" onclick="selectUpgrade(0)">
@@ -321,9 +321,23 @@
   </div>
 
   <div id="volumeScreen" style="display:none;">
-    <h2>Volume Control</h2>
+
+    <h2>Settings</h2>
+
+    <h3>Volume Control</h3>
     <input type="range" id="volumeSlider" min="1" max="10" value="5">
     <p>Volume: <span id="volumeValue">5</span></p>
+    <h3>Toggle redeem mode</h3>
+    <p>In redeem mode you push "r" to use your upgrade credits instead of them appearing automatically</p>
+    <p>Status: <span id="redeemModeStatus">Off</span></p>
+
+    <button id="toggleReedem" onClick="toggleRedeemMode()">Toggle</button>
+    <p>
+      <button id="toggleMusic" onClick="toggleMusic()">Toggle Music (or push "M")</button>
+
+      <button id="toggleSound" onClick="toggleSound()">Toggle Sound (or push "N")</button>
+    </p>
+
     <button onclick="toggleVolumeScreen()">Close</button>
   </div>
 

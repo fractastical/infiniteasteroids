@@ -1752,9 +1752,14 @@ let mostRecentUpgradeApplied = false;
 
 function selectUpgrade(index) {
     const selectedUpgrade = window.levelUpgrades[index - 1];
+    console.log(selectedUpgrade);
     if (selectedUpgrade && selectedUpgrade.name) {
         applyUpgrades([selectedUpgrade.name]); // Pass the upgrade name as an array
         unclaimedLevelUps--;
+        document.getElementById('leveluptitle').innerHTML = 'Claim ' + unclaimedLevelUps + ' upgrades';
+
+        // drawLives();
+
 
     }
 
