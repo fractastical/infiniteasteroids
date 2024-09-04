@@ -996,52 +996,28 @@ function updateFlamethrower() {
     if (flamethrower.active) {
         // Define the area of effect for the flamethrower
         let flameRange = flamethrower.range;
-        let flameWidth = 40; // Increase this to provide a wider cone effect
+        let flameWidth = flamethrower.width || 30; // Narrower width, similar to death ray
 
-        // Calculate the front of the ship
-        let shipFrontX = ship.x + ship.size * Math.sin(ship.rotation * Math.PI / 180);
-        let shipFrontY = ship.y - ship.size * Math.cos(ship.rotation * Math.PI / 180);
+        // Calculate the angle for the endpoints to create a fan effect
+        let spreadAngle = Math.PI / 20; // Adjust for desired spread
 
-        // Calculate the endpoints for the left and right boundaries of the flame cone
-        let leftBoundaryX = shipFrontX + flameRange * Math.sin((ship.rotation - flameWidth / 2) * Math.PI / 180);
-        let leftBoundaryY = shipFrontY - flameRange * Math.cos((ship.rotation - flameWidth / 2) * Math.PI / 180);
-        let rightBoundaryX = shipFrontX + flameRange * Math.sin((ship.rotation + flameWidth / 2) * Math.PI / 180);
-        let rightBoundaryY = shipFrontY - flameRange * Math.cos((ship.rotation + flameWidth / 2) * Math.PI / 180);
+        let leftEndX = ship.x + flameRange * Math.sin((ship.rotation * Math.PI / 180) - spreadAngle);
+        let leftEndY = ship.y - flameRange * Math.cos((ship.rotation * Math.PI / 180) - spreadAngle);
 
-        // Generate flame particles (optional visual effect)
-        generateFlameParticles(shipFrontX, shipFrontY, leftBoundaryX, leftBoundaryY, flameWidth);
-        generateFlameParticles(shipFrontX, shipFrontY, rightBoundaryX, rightBoundaryY, flameWidth);
-
-        // Draw the flame cone (for debugging or visualization)
-        ctx.save();
-        ctx.globalAlpha = 0.3;
-        ctx.fillStyle = 'cyan';
-        ctx.beginPath();
-        ctx.moveTo(shipFrontX, shipFrontY);
-        ctx.lineTo(leftBoundaryX, leftBoundaryY);
-        ctx.lineTo(rightBoundaryX, rightBoundaryY);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
+        let rightEndX = ship.x + flameRange * Math.sin((ship.rotation * Math.PI / 180) + spreadAngle);
+        let rightEndY = ship.y - flameRange * Math.cos((ship.rotation * Math.PI / 180) + spreadAngle);
 
         // Check for collisions with asteroids
         for (let i = asteroids.length - 1; i >= 0; i--) {
             let asteroid = asteroids[i];
-
-            // Calculate the relative position of the asteroid to the ship's front
-            let dx = asteroid.x - shipFrontX;
-            let dy = asteroid.y - shipFrontY;
+            let dx = asteroid.x - ship.x;
+            let dy = asteroid.y - ship.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
 
-            // Calculate the angle between the ship's front direction and the asteroid
-            let angleToAsteroid = Math.atan2(dy, dx) * 180 / Math.PI;
-            let relativeAngle = (angleToAsteroid - ship.rotation + 360) % 360;
-
-            // Check if the asteroid is within the flame cone
-            if (distance < flameRange && relativeAngle > 360 - flameWidth / 2 || relativeAngle < flameWidth / 2) {
-                asteroid.isOnFire = true; // Set the asteroid on fire
-                asteroid.fireTimer = 0; // Reset the fire timer
-                asteroid.distanceFromCenter = distance; // Track the distance from the center of the flame
+            if (distance < flameRange && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < flameWidth / 2) {
+                asteroid.isOnFire = true;
+                asteroid.fireTimer = 0;
+                asteroid.distanceFromCenter = distance;
 
                 // Trigger chain lightning if combo is active
                 if (comboFlameChainLightningActive) {
@@ -1049,10 +1025,39 @@ function updateFlamethrower() {
                 }
             }
         }
+
+        // Draw the flamethrower effect
+        ctx.save();
+        let gradient = ctx.createRadialGradient(ship.x, ship.y, 0, ship.x, ship.y, flameRange);
+        gradient.addColorStop(0, 'rgba(255, 165, 0, 0.8)');
+        gradient.addColorStop(0.6, 'rgba(255, 69, 0, 0.5)');
+        gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.moveTo(ship.x, ship.y);
+        ctx.lineTo(leftEndX, leftEndY);
+        ctx.lineTo(rightEndX, rightEndY);
+        ctx.closePath();
+        ctx.fill();
+
+        // Add some particle effects for a more dynamic look
+        for (let i = 0; i < 10; i++) {
+            let particleAngle = ship.rotation * Math.PI / 180 + (Math.random() - 0.5) * spreadAngle * 2;
+            let particleDistance = Math.random() * flameRange;
+            let particleX = ship.x + particleDistance * Math.sin(particleAngle);
+            let particleY = ship.y - particleDistance * Math.cos(particleAngle);
+
+            ctx.fillStyle = `rgba(255, ${Math.random() * 165}, 0, ${Math.random() * 0.7 + 0.3})`;
+            ctx.beginPath();
+            ctx.arc(particleX, particleY, Math.random() * 3 + 1, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.restore();
         flamethrower.active = false;
     }
 }
-
 
 function setAsteroidOnFire(asteroid) {
     asteroid.isOnFire = true; // Set the asteroid on fire
