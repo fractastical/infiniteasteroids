@@ -195,7 +195,7 @@ function drawBasicShip() {
     ctx.lineTo(8, 8);
     ctx.lineTo(-8, 8);
     ctx.closePath();
-    ctx.strokeStyle = 'magenta';
+    ctx.strokeStyle = 'yellow';
     ctx.stroke();
 }
 
