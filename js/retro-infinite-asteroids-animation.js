@@ -134,7 +134,7 @@ const InfiniteAsteroidsAnimation = (function () {
         ctx.fillStyle = '#FFFFFF';
         const instruction = instructions[instructionPhase];
         const textWidth = ctx.measureText(instruction).width;
-        ctx.fillText(instruction, ship.x - ship.width - 390, ship.y + 2);
+        ctx.fillText(instruction, ship.x - ship.width - 480, ship.y + 2);
 
         // Change instruction when ship resets
         if (ship.x <= -50) {
@@ -310,7 +310,9 @@ const InfiniteAsteroidsAnimation = (function () {
     let instructionPhase = 0;
     const instructions = [
         "Press SPACE to fire",
-        "Press E for bomb"
+        "Press E for bomb",
+        "Beat wave 30 to advance",
+        "Final boss on wave 100"
     ];
     let explosions = [];
 
