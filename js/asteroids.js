@@ -48,13 +48,15 @@ function createAsteroids(side) {
             numberOfAsteroids += 35;
         }
         if (wave > 49 && wave < 53)
-            numberOfAsteroids *= 0.3;
+            numberOfAsteroids *= 0.2;
         else if (wave >= 53 && wave < 56)
-            numberOfAsteroids *= 0.55;
+            numberOfAsteroids *= 0.45;
         if (wave > 74 && wave < 78)
-            numberOfAsteroids *= 0.3;
+            numberOfAsteroids *= 0.2;
         else if (wave >= 78 && wave < 82)
-            numberOfAsteroids *= 0.55;
+            numberOfAsteroids *= 0.45;
+        else if (wave >= 97 && wave < 106)
+            numberOfAsteroids *= 0.3;
 
         for (let i = 0; i < numberOfAsteroids; i++) {
             let isLargeAsteroid = Math.random() < 0.1; // 10% chance for a large asteroid
