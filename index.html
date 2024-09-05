@@ -221,7 +221,15 @@
 
   <div id="startScreen">
     <div>
-      <img src="icons/ia-logo.png" /> <!--<h2>Welcome to Infinite Asteroids!</h2> -->
+      <!-- <img src="icons/ia-logo.png" /> <h2>Welcome to Infinite Asteroids!</h2> -->
+      <canvas id="animationCanvas"></canvas>
+      <script src="js/retro-infinite-asteroids-animation.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          InfiniteAsteroidsAnimation.init('animationCanvas');
+        });
+      </script>
+
       <p>Unlock next level when you reach wave 30.</p>
       <p>Final boss on wave 100.</p>
 
