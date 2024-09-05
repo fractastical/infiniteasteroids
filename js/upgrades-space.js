@@ -1,195 +1,179 @@
-// Achievements and Upgrade Data
 const floatingUpgrades = [
     {
-        name: "Space Pizza",
-        description: "Find the Space Pizza.",
-        icon: "icons/upgrades/pizza.png",
-        reached: false,
-        mode: "deep_space", // Only appears in Deep Space
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        velocityX: (Math.random() - 0.5) * 0.5,
-        velocityY: (Math.random() - 0.5) * 0.5,
-        angle: 0,
-        rotationSpeed: Math.random() * 0.05,
-        scale: 1,
-        scaleDirection: 1
+        name: 'Space Pizza',
+        icon: 'icons/upgrades/pizza.png',
+        description: 'Find the Space Pizza.',
+        achievedKey: 'space_pizza',
+        mode: ['ENDLESS_SLOW', 'PLANET'],
     },
     {
-        name: "Space Pickle",
-        description: "Find the Deep Space Pickle.",
-        icon: "icons/upgrades/pickle.png",
-        reached: false,
-        mode: "planet", // Only appears in Planet mode
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        velocityX: (Math.random() - 0.5) * 0.5,
-        velocityY: (Math.random() - 0.5) * 0.5,
-        angle: 0,
-        rotationSpeed: Math.random() * 0.05,
-        scale: 1,
-        scaleDirection: 1
+        name: 'Space Pickle',
+        icon: 'icons/upgrades/pickle.png',
+        description: 'Find the deep space pickle.',
+        achievedKey: 'space_pickle',
+        mode: ['DEEP_SPACE', 'METEOR'],
     },
     {
-        name: "Space Pixie",
-        description: "Find the Pixie.",
-        icon: "icons/upgrades/pixie.png",
-        reached: false,
-        mode: "meteor_mode", // Only appears in Meteor mode
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        velocityX: (Math.random() - 0.5) * 0.5,
-        velocityY: (Math.random() - 0.5) * 0.5,
-        angle: 0,
-        rotationSpeed: Math.random() * 0.05,
-        scale: 1,
-        scaleDirection: 1
+        name: 'Space Pixie',
+        icon: 'icons/upgrades/pixie.png',
+        description: 'Find the pixie.',
+        achievedKey: 'space_pixie',
+        mode: ['DEEP_SPACE', 'METEOR'],
     },
     {
-        name: "Space Monkey",
-        description: "Find the Space Monkey.",
-        icon: "icons/upgrades/monkey.png",
-        reached: false,
-        mode: "deep_space",
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        velocityX: (Math.random() - 0.5) * 0.5,
-        velocityY: (Math.random() - 0.5) * 0.5,
-        angle: 0,
-        rotationSpeed: Math.random() * 0.05,
-        scale: 1,
-        scaleDirection: 1
+        name: 'Space Monkey',
+        icon: 'icons/upgrades/monkey.png',
+        description: 'Find the space monkey.',
+        achievedKey: 'space_monkey',
+        mode: ['PLANET', 'METEOR'],
     },
     {
-        name: "Space Potato",
-        description: "Find the Space Potato.",
-        icon: "icons/upgrades/potato.png",
-        reached: false,
-        mode: "planet",
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        velocityX: (Math.random() - 0.5) * 0.5,
-        velocityY: (Math.random() - 0.5) * 0.5,
-        angle: 0,
-        rotationSpeed: Math.random() * 0.05,
-        scale: 1,
-        scaleDirection: 1
+        name: 'Space Potato',
+        icon: 'icons/upgrades/potato.png',
+        description: 'Find the space potato.',
+        achievedKey: 'space_potato',
+        mode: ['PLANET', 'DEEP_SPACE'],
     },
     {
-        name: "Dark Side",
-        description: "Make a deal with Dark Side.",
-        icon: "icons/upgrades/darkside.png",
-        reached: false,
-        mode: "meteor_mode",
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        velocityX: (Math.random() - 0.5) * 0.5,
-        velocityY: (Math.random() - 0.5) * 0.5,
-        angle: 0,
-        rotationSpeed: Math.random() * 0.05,
-        scale: 1,
-        scaleDirection: 1
-    }
+        name: 'Dark Side',
+        icon: 'icons/upgrades/darkside.png',
+        description: 'Make a deal with Dark Side.',
+        achievedKey: 'dark_side',
+        mode: ['METEOR', 'DEEP_SPACE'],
+    },
 ];
 
-// Load each upgrade's icon
-floatingUpgrades.forEach(upgrade => {
-    upgrade.sprite = new Image();
-    upgrade.sprite.src = upgrade.icon;
-});
+// Chance to spawn upgrades per wave based on difficulty
+const spawnChances = {
+    EASY: 0.005, // 0.5% chance per wave
+    NORMAL: 0.01, // 1% chance per wave
+    HARD: 0.02, // 2% chance per wave
+    HERO: 0.04, // 4% chance per wave
+};
 
-// Update floating upgrades
-function updateFloatingUpgrades() {
-    floatingUpgrades.forEach(upgrade => {
-        // Move the upgrade
-        upgrade.x += upgrade.velocityX;
-        upgrade.y += upgrade.velocityY;
+let activeFloatingUpgrades = [];
 
-        // Keep upgrades within the canvas bounds (bounce off edges)
-        if (upgrade.x < 0 || upgrade.x > canvas.width) upgrade.velocityX *= -1;
-        if (upgrade.y < 0 || upgrade.y > canvas.height) upgrade.velocityY *= -1;
+function spawnRandomUpgrade() {
+    const currentGameMode = currentMode;
+    const waveNumber = wave;
 
-        // Rotate the upgrade
-        upgrade.angle += upgrade.rotationSpeed;
+    // Determine spawn probability based on the current difficulty
+    let spawnChance = 0;
+    switch (currentGameMode) {
 
-        // Apply scaling effect (wobble effect)
-        if (upgrade.scaleDirection === 1) {
-            upgrade.scale += 0.005;
-            if (upgrade.scale >= 1.2) {
-                upgrade.scaleDirection = -1;
-            }
-        } else {
-            upgrade.scale -= 0.005;
-            if (upgrade.scale <= 0.8) {
-                upgrade.scaleDirection = 1;
-            }
-        }
-    });
-}
+        case GameModes.EASY:
+            spawnChance = spawnChances.EASY;
+            break;
+        case GameModes.METEORSHOWEREASY:
+            spawnChance = spawnChances.EASY;
+            break;
+        case GameModes.PLANETEASY:
+            spawnChance = spawnChances.EASY;
+            break;
+        case GameModes.NORMAL:
+            spawnChance = spawnChances.NORMAL;
+            break;
+        case GameModes.METEORSHOWERNORMAL:
+            spawnChance = spawnChances.NORMAL;
+            break;
+        case GameModes.PLANETNORMAL:
+            spawnChance = spawnChances.NORMAL;
+            break;
+        case GameModes.HARD:
+            spawnChance = spawnChances.HARD;
+            break;
+        case GameModes.METEORSHOWERHARD:
+            spawnChance = spawnChances.HARD;
+            break;
+        case GameModes.PLANETHARD:
+            spawnChance = spawnChances.HARD;
+            break;
+        case GameModes.HERO:
+            spawnChance = spawnChances.HERO;
+            break;
+        case GameModes.METEORSHOWERHERO:
+            spawnChance = spawnChances.HERO;
+            break;
+        case GameModes.PLANETHERO:
+            spawnChance = spawnChances.HERO;
+            break;
+        default:
+            return;
+    }
 
-// Draw floating upgrades on the canvas
-function drawFloatingUpgrades() {
-    floatingUpgrades.forEach(upgrade => {
-        // Save canvas state before transformation
-        ctx.save();
+    // Random chance to spawn an upgrade
+    if (Math.random() < spawnChance) {
+        const availableUpgrades = floatingUpgrades.filter(upgrade =>
+            !Achievements[upgrade.achievedKey].reached && // Only spawn if not achieved
+            upgrade.mode.includes(currentGameMode) // Only spawn in applicable game modes
+        );
 
-        // Translate to the upgrade's position
-        ctx.translate(upgrade.x, upgrade.y);
-
-        // Rotate and scale the sprite
-        ctx.rotate(upgrade.angle);
-        ctx.scale(upgrade.scale, upgrade.scale);
-
-        // Draw the sprite centered at its position
-        ctx.drawImage(upgrade.sprite, -upgrade.sprite.width / 2, -upgrade.sprite.height / 2, 40, 40);
-
-        // Restore canvas state after transformation
-        ctx.restore();
-    });
-}
-
-// Check for collision with ship
-function checkUpgradeCollision() {
-    floatingUpgrades.forEach((upgrade, index) => {
-        const distance = Math.hypot(ship.x - upgrade.x, ship.y - upgrade.y);
-
-        if (distance < 30) { // Collision detection radius
-            // Mark achievement as reached
-            upgrade.reached = true;
-
-            // Add achievement logic or unlock bonus
-            unlockAchievement(upgrade);
-
-            // Remove upgrade from the array
-            floatingUpgrades.splice(index, 1);
-        }
-    });
-}
-
-// Unlock achievements or bonuses
-function unlockAchievement(upgrade) {
-    // Add any logic for tracking unlocked achievements
-    console.log(`Achievement unlocked: ${upgrade.name}`);
-}
-
-// Spawn floating upgrades based on wave number and game mode
-function spawnFloatingUpgrade() {
-    if (wave >= 55 && Math.random() < 0.01) { // 1% chance after wave 55
-        const availableUpgrades = floatingUpgrades.filter(upgrade => upgrade.mode === currentMode && !upgrade.reached);
         if (availableUpgrades.length > 0) {
+            // Select a random upgrade from the available pool
             const randomUpgrade = availableUpgrades[Math.floor(Math.random() * availableUpgrades.length)];
-            randomUpgrade.x = Math.random() * canvas.width;
-            randomUpgrade.y = Math.random() * canvas.height;
-            randomUpgrade.velocityX = (Math.random() - 0.5) * 1.5;
-            randomUpgrade.velocityY = (Math.random() - 0.5) * 1.5;
-            floatingUpgrades.push(randomUpgrade);
+            activeFloatingUpgrades.push(createFloatingUpgrade(randomUpgrade));
         }
     }
 }
 
-// Integrate into game loop
-function updateGame() {
-    updateFloatingUpgrades(); // Update positions and effects of floating upgrades
-    checkUpgradeCollision(); // Check for player collisions with upgrades
-    drawFloatingUpgrades();  // Render floating upgrades
+function createFloatingUpgrade(upgrade) {
+    return {
+        ...upgrade,
+        x: Math.random() * canvas.width,  // Random x position
+        y: Math.random() * canvas.height, // Random y position
+        size: 50,
+        collected: false,
+    };
+}
+
+function updateFloatingUpgrades() {
+    for (let i = activeFloatingUpgrades.length - 1; i >= 0; i--) {
+        const upgrade = activeFloatingUpgrades[i];
+
+        // Check for collision with the ship (simple box collision)
+        if (
+            ship.x < upgrade.x + upgrade.size &&
+            ship.x + ship.size > upgrade.x &&
+            ship.y < upgrade.y + upgrade.size &&
+            ship.y + ship.size > upgrade.y
+        ) {
+            collectFloatingUpgrade(upgrade);
+            activeFloatingUpgrades.splice(i, 1); // Remove from active list
+        }
+    }
+}
+
+function collectFloatingUpgrade(upgrade) {
+    addAchievement(upgrade.achievedKey);
+    // Apply any specific effect from collecting the upgrade (optional)
+    console.log(`${upgrade.name} collected!`);
+}
+
+function drawFloatingUpgrades() {
+    activeFloatingUpgrades.forEach(upgrade => {
+        const img = new Image();
+        img.src = upgrade.icon;
+        ctx.drawImage(img, upgrade.x, upgrade.y, upgrade.size, upgrade.size);
+    });
+}
+
+// Call this function at the start of each wave
+function checkForUpgradeSpawn() {
+    if (wave >= 35) {  // Start spawning after wave 30
+        spawnRandomUpgrade();
+    }
+}
+
+// Call these functions in the game loop
+function updateAndDrawFloatingUpgrades() {
+    updateFloatingUpgrades();
+    drawFloatingUpgrades();
+}
+
+// Add achievements for collected upgrades
+function addAchievement(key) {
+    if (!Achievements[key].reached) {
+        Achievements[key].reached = true;
+        console.log(`Achievement unlocked: ${Achievements[key].description}`);
+    }
 }

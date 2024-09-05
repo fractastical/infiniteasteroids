@@ -784,6 +784,8 @@ function update() {
 
     }
 
+    updateAndDrawFloatingUpgrades();
+
     if (gameOver) endGame();
     if (wave == 10 && currentMode == GameModes.EASY)
         updateAchievementsAtEnd();
@@ -793,10 +795,10 @@ function update() {
     // Update and draw particles
     updateParticles();
     drawParticles();
-
     // drawEdgeOverlay();
     drawLives();
     drawScore();
+
     // if (gameOver) drawDamageReport();
     drawShip();
 
