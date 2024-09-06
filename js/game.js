@@ -1970,6 +1970,8 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     const newAchievementsList = document.getElementById('newAchievementsList');
     const achievementSound = unlockSound;
     // document.getElementById('achievementSound');
+    const container = document.getElementById('activeWeaponClassesContainer');
+    container.innerHTML = ''; // Clear previous content
 
     // Set game stats
     if (currentMode === GameModes.ENDLESS_SLOW) {

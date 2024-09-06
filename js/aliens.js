@@ -904,7 +904,7 @@ function spawnOctoBoss() {
         shootInterval: 150,
         arms: [],
         specialAttackTimer: 0,
-        specialAttackInterval: Math.random() * 5000 + 5000, // Random interval between 5-10 seconds
+        specialAttackInterval: Math.random() * 2000 + 2000, // Random interval between 5-10 seconds
         isSpecialAttacking: false,
         specialAttackDuration: 60, // Duration in frames (1 second at 60 FPS)
     };
