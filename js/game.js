@@ -233,9 +233,9 @@ const Achievements = {
     complete_planet_normal_mode: { reached: false, icon: 'achievements/storm_medium.png', description: 'Planet Normal Mode. Unlock Triple Turret.' },
     complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode. Unlock Explosive Rocket.' },
     complete_planet_hero_mode: { reached: false, icon: 'achievements/planet_huge.png', description: 'Planet Hero Mode' },
-    alien_megaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien Megaboss. Mega unlock.' },
-    alien_supermegaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien SuperMegaBoss. Super Secret unlock.' },
-    alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. Super Mega Secret unlock.' },
+    alien_megaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien Boss. Laser level 2.' },
+    alien_supermegaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien SuperMegaBoss. Sonic level 2.' },
+    alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. Laser level 2.' },
     million_score: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Get a million points. Invincibility Shield.' },
     wave_60_endless: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Reach wave 60 on Endless. Piercing Laser.' },
     space_pizza: { reached: false, icon: 'icons/upgrades/pizza.png', description: 'Find the Space Pizza.' },
@@ -1066,7 +1066,9 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
         ship.velocityY *= ratio;
     }
 
-    if (keys[shootKey] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
+    // if (keys[shootKey] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
+
+    if (keys[shootKey] && ship.laserTimer === 0) {
         shootLasers(ship);
     }
 
