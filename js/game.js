@@ -1764,9 +1764,10 @@ function claimLevelUps() {
 
         // Activate temporary invincibility
 
+        invincible = true;
+        invincibilityTimer = invincibilityDuration;
+
     }
-    invincible = true;
-    invincibilityTimer = invincibilityDuration;
     resumeGame();
 
 
