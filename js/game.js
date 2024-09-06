@@ -1776,6 +1776,13 @@ function populateAchievements() {
             achievementElement.classList.add('achievement');
             achievementElement.style.opacity = achieved ? '1' : '0.5';
 
+            // Add icon to the full description
+            const iconImg = document.createElement('img');
+            iconImg.src = achievement.icon;
+            iconImg.alt = achievement.description;
+            iconImg.classList.add('achievement-icon-small');
+            achievementElement.appendChild(iconImg);
+
             const description = document.createElement('span');
             description.textContent = achievement.description;
             achievementElement.appendChild(description);
