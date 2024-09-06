@@ -237,62 +237,43 @@
         <tr>
           <td rowspan="2">
             <div id="shipCustomizationSection">
-              <!-- <h3>Customize Your Ship</h3> -->
               <div class="ship-preview">
                 <canvas id="shipPreviewCanvas" width="100" height="100"></canvas>
               </div>
               <div class="selection-section">
                 <h4>Select Your Ship</h4>
-                <select id="shipSelector">
-                  <!-- Options will be populated dynamically -->
-                </select>
+                <div class="selector">
+                  <span id="selectedShip">Basic</span>
+                  <button id="shipSelectorButton">></button>
+                </div>
               </div>
               <div class="selection-section">
                 <h4>Select Secondary Weapon</h4>
-                <select id="secondaryWeaponSelector">
-                  <!-- Options will be populated dynamically -->
-                </select>
+                <div class="selector">
+                  <span id="selectedSecondaryWeapon">Bomb</span>
+                  <button id="secondaryWeaponSelectorButton">></button>
+                </div>
               </div>
-              <!-- <button id="saveSelections">Save</button> -->
             </div>
 
             <div id="gameModeSection">
-              <h4>Select Secondary Weapon</h4>
+              <h4>Select Game Mode</h4>
               <div class="selector">
                 <span id="selectedGameMode">Deep Space</span>
                 <button id="gameModeButton">></button>
               </div>
             </div>
           </td>
-          <!-- <th>Planet</th> -->
         </tr>
         <tr>
           <td>
             <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
             <BR /><button id="settings" onclick="toggleVolumeScreen()">Settings</button><BR />
-            <button id="viewAllLeaderboardsButton"> Leaderboards</button>
-
-            <!-- <button id="normalButton" onclick="initializeGame
-            <button id="easyButton" onclick="initializeGame(GameModes.EASY)">Easy</button>
-            <button id="normalButton" onclick="initializeGame(GameModes.NORMAL)">Normal</button>
-            <button id="hardButton" onclick="initializeGame(GameModes.HARD)" disabled>Hard</button>
-            <button id="heroButton" onclick="initializeGame(GameModes.HERO)" disabled>Hero</button> -->
+            <button id="viewAllLeaderboardsButton">Leaderboards</button>
           </td>
           <td>
-            <h3>Achievements</h3>
             <div id="achievementIconsList"></div>
-            <!-- <button id="meteorEasyButton" onclick="initializeGame(GameModes.METEORSHOWEREASY)" disabled>Easy</button>
-            <button id="meteorNormalButton" onclick="initializeGame(GameModes.METEORSHOWERNORMAL)"
-              disabled>Normal</button>
-            <button id="meteorHardButton" onclick="initializeGame(GameModes.METEORSHOWERHARD)" disabled>Hard</button>
-            <button id="meteorHeroButton" onclick="initializeGame(GameModes.METEORSHOWERHERO)" disabled>Hero</button> -->
           </td>
-          <!-- <td>
-            <button id="planetEasyButton" onclick="initializeGame(GameModes.PLANETEASY)" disabled>Easy</button>
-            <button id="planetNormalButton" onclick="initializeGame(GameModes.PLANETNORMAL)" disabled>Normal</button>
-            <button id="planetHardButton" onclick="initializeGame(GameModes.PLANETHARD)" disabled>Hard</button>
-            <button id="planetHeroButton" onclick="initializeGame(GameModes.PLANETHERO)" disabled>Hero</button>
-          </td> -->
         </tr>
       </table>
 
@@ -332,7 +313,7 @@
   <div id="volumeScreen" style="display:none;">
 
     <h2>Settings</h2>
-    <p><!--VERSION--> v 0.9707</p>
+    <p><!--VERSION--> v 0.9711</p>
 
     <h3>Volume Control</h3>
     <input type="range" id="volumeSlider" min="1" max="10" value="5">

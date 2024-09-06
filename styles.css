@@ -1187,19 +1187,45 @@ select {
     margin-bottom: 10px;
 }
 
-.achievement-icon {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
 
 .achievement-description {
     font-size: 14px;
 }
 
-#achievementsList {
-    max-height: 300px;
-    overflow-y: auto;
+#achievementIconsList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
+    /* Adjust this value as needed */
+    margin: 10px auto;
+}
+
+.icons-section {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.icons-section h4 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #0f0;
+    /* Matching your green text color */
+}
+
+.achievement-icon {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.achievement-icon.unachieved {
+    filter: grayscale(100%) opacity(0.5);
 }
 
 .selector {
@@ -1208,11 +1234,42 @@ select {
     margin-bottom: 10px;
 }
 
-.selector span {
-    margin-right: 10px;
-}
-
 #gameModeButton {
     padding: 5px 10px;
     cursor: pointer;
+}
+
+.achievement-icon.unachieved {
+    filter: grayscale(100%) opacity(0.5);
+}
+
+
+selector span {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.selector button {
+    width: 30px;
+    height: 30px;
+    background-color: #purple;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.selection-section h4 {
+    margin-bottom: 5px;
+}
+
+
+h4 {
+    color: white;
+}
+
+
+#shipCustomizationSection,
+#gameModeSection {
+    margin-bottom: 20px;
 }

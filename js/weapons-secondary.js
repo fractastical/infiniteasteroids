@@ -22,7 +22,7 @@ const secondaryWeapons = {
             }
         }
     },
-    explosiveBurst: {
+    bomb: {
         name: 'Bomb',
         damage: 50,
         radius: 400, // radius of explosion
@@ -77,7 +77,8 @@ function selectSecondaryWeapon(weaponName) {
     Object.keys(secondaryWeapons).forEach(weapon => {
         secondaryWeapons[weapon].deactivate(); // Deactivate all weapons
     });
-
+    console.log(weaponName);
+    console.log(secondaryWeapons);
     secondaryWeapons[weaponName].isActive = true; // Activate the selected weapon
     console.log(`${secondaryWeapons[weaponName].name} selected as secondary weapon.`);
 }

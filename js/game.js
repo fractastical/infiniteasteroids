@@ -1538,31 +1538,109 @@ function countTechnologies() {
 }
 
 
+function getAvailableWeaponIcons() {
+    const upgradeDefinitions = {
+        'Activate Turret': { icon: 'icon-turret' },
+        'Activate Bomber Drone': { icon: 'icon-bomberdrone' },
+        'Activate Freeze Effect': { icon: 'icon-freeze' },
+        'Activate Explosive Laser': { icon: 'icon-explosive' },
+        'Activate Sonic Blast': { icon: 'icon-sonic' },
+        'Activate Boomerang': { icon: 'icon-boomerang' },
+        'Activate Acid Bomb': { icon: 'icon-acid' },
+        'Activate Drone': { icon: 'icon-drone' },
+        'Activate Death Ray': { icon: 'icon-deathray' },
+        'Activate Explosive Rocket': { icon: 'icon-explosiverocket' },
+        'Activate Chain Lightning': { icon: 'icon-chainlightning' },
+        'Activate Nano Swarm': { icon: 'icon-nanoswarm' },
+        'Activate Flamethrower': { icon: 'icon-flamethrower' }
+    };
+
+    const availableIcons = [];
+
+    // Always include the basic laser icon
+    availableIcons.push('icon-basiclaser');
+
+    if (activeWeaponClasses.includes('turret') || Achievements.reach_wave_2.reached) availableIcons.push(upgradeDefinitions['Activate Turret'].icon);
+    if (activeWeaponClasses.includes('bomberdrone') || Achievements.reach_wave_2.reached) availableIcons.push(upgradeDefinitions['Activate Bomber Drone'].icon);
+    if (activeWeaponClasses.includes('freeze') || (Achievements.reach_wave_5.reached && currentMode != GameModes.ENDLESS_SLOW)) availableIcons.push(upgradeDefinitions['Activate Freeze Effect'].icon);
+    if (activeWeaponClasses.includes('explosive') || Achievements.laser_damage.reached) availableIcons.push(upgradeDefinitions['Activate Explosive Laser'].icon);
+    if (activeWeaponClasses.includes('sonic') || Achievements.reach_wave_10.reached) availableIcons.push(upgradeDefinitions['Activate Sonic Blast'].icon);
+    if (activeWeaponClasses.includes('boomerang') || Achievements.reach_wave_20.reached) availableIcons.push(upgradeDefinitions['Activate Boomerang'].icon);
+    if (activeWeaponClasses.includes('acid') || Achievements.complete_normal_mode.reached) availableIcons.push(upgradeDefinitions['Activate Acid Bomb'].icon);
+    if (activeWeaponClasses.includes('drone') || Achievements.destroy_100_asteroids.reached) availableIcons.push(upgradeDefinitions['Activate Drone'].icon);
+    if (activeWeaponClasses.includes('deathray') || Achievements.kill_5_aliens.reached) availableIcons.push(upgradeDefinitions['Activate Death Ray'].icon);
+    if (activeWeaponClasses.includes('explosiverocket') || Achievements.complete_hard_mode.reached) availableIcons.push(upgradeDefinitions['Activate Explosive Rocket'].icon);
+    if (activeWeaponClasses.includes('chainlightning') || Achievements.kill_50_aliens.reached) availableIcons.push(upgradeDefinitions['Activate Chain Lightning'].icon);
+    if (activeWeaponClasses.includes('nanoswarm') || Achievements.no_lives_lost.reached) availableIcons.push(upgradeDefinitions['Activate Nano Swarm'].icon);
+    if (activeWeaponClasses.includes('flamethrower') || Achievements.acid_bomb_damage.reached) availableIcons.push(upgradeDefinitions['Activate Flamethrower'].icon);
+
+    return availableIcons;
+}
+
+
 function populateAchievementIcons() {
     const achievementIconsList = document.getElementById('achievementIconsList');
     achievementIconsList.innerHTML = '';
 
+    // Create containers for weapons and achievements
+    const weaponsContainer = document.createElement('div');
+    weaponsContainer.classList.add('icons-section', 'weapons-icons');
+    const achievementsContainer = document.createElement('div');
+    achievementsContainer.classList.add('icons-section', 'achievement-icons');
+
+    // Add weapon icons
+    const weaponIcons = getAvailableWeaponIcons();
+    const totalWeapons = 16; // Adjust this number to match your total number of weapons
+
+    const weaponsHeader = document.createElement('h4');
+    weaponsHeader.textContent = `Weapons (${weaponIcons.length} / ${totalWeapons})`;
+    weaponsContainer.appendChild(weaponsHeader);
+
+    weaponIcons.forEach(icon => {
+        const iconElement = document.createElement('div');
+        iconElement.classList.add('achievement-icon', icon);
+        weaponsContainer.appendChild(iconElement);
+    });
+
+    // Add achievement icons
+    let achievedCount = 0;
+    let totalAchievements = 0;
+
     for (const key in Achievements) {
         if (Achievements.hasOwnProperty(key)) {
+            totalAchievements++;
             const achievement = Achievements[key];
             const achieved = achievement.reached || (achievement.damage && achievement.damage >= achievement.required);
 
-            const iconElement = document.createElement('img');
-            iconElement.src = achievement.icon;
-            iconElement.alt = achievement.description;
+            if (achieved) achievedCount++;
+
+            const iconElement = document.createElement('div');
             iconElement.classList.add('achievement-icon');
+            if (achievement.icon) {
+                iconElement.classList.add(achievement.icon);
+            } else {
+                iconElement.classList.add('icon-generic-achievement');
+            }
+
             if (!achieved) {
-                iconElement.style.filter = 'brightness(50%)'; // Make unachieved icons darker
+                iconElement.classList.add('unachieved');
             }
 
             // Add tooltip for the icon
             iconElement.title = achievement.description;
 
-            achievementIconsList.appendChild(iconElement);
+            achievementsContainer.appendChild(iconElement);
         }
     }
-}
 
+    const achievementsHeader = document.createElement('h4');
+    achievementsHeader.textContent = `Achievements (${achievedCount} / ${totalAchievements})`;
+    achievementsContainer.insertBefore(achievementsHeader, achievementsContainer.firstChild);
+
+    // Append containers to the achievementIconsList
+    achievementIconsList.appendChild(weaponsContainer);
+    achievementIconsList.appendChild(achievementsContainer);
+}
 let currentGameModeIndex = 0;
 
 function populateGameModes() {
@@ -1738,7 +1816,7 @@ function createUpgradeOptionsHTML(upgrades) {
 }
 
 let unclaimedLevelUps = 0;
-let waitAndClaimMode = true;
+let waitAndClaimMode = false;
 
 function claimLevelUps() {
 
@@ -1782,9 +1860,9 @@ function toggleRedeemMode() {
     else
         waitAndClaimMode = true;
 
-    let redeemText = "on"
+    let redeemText = "On"
     if (!waitAndClaimMode)
-        redeemText = "off"
+        redeemText = "Off"
     document.getElementById('redeemModeStatus').innerHTML = redeemText;
 
 }
