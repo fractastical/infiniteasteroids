@@ -801,43 +801,44 @@ function updateExplosiveRockets() {
         rocket.y -= Math.cos(rocket.angle) * rocket.speed;
         rocket.distance += rocket.speed; // Update the rocket's travel distance
 
+        let collided = false;
+
         // Check for collision with asteroids
         for (let j = 0; j < asteroids.length; j++) {
             const asteroid = asteroids[j];
             const dx = rocket.x - asteroid.x;
             const dy = rocket.y - asteroid.y;
-            const distance = Math.sqrt(dx * dy + dy * dy);
+            const distance = Math.sqrt(dx * dx + dy * dy); // Fixed this line
 
             if (distance < rocket.size + asteroid.size) {
                 // Collision detected with asteroid
-                createExplosion(rocket.x, rocket.y, 0); // Create explosion effect at rocket's position
-                applyExplosiveDamage(rocket); // Apply area damage
-                explosiveRockets.splice(i, 1); // Remove the rocket
-                return; // Exit the loop after handling collision
+                collided = true;
+                break;
             }
         }
 
-        // Check for collision with aliens
-        for (let j = 0; j < aliens.length; j++) {
-            const alien = aliens[j];
-            const dx = rocket.x - alien.x;
-            const dy = rocket.y - alien.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+        // Check for collision with aliens if no asteroid collision
+        if (!collided) {
+            for (let j = 0; j < aliens.length; j++) {
+                const alien = aliens[j];
+                const dx = rocket.x - alien.x;
+                const dy = rocket.y - alien.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < rocket.size + alien.size) {
-                // Collision detected with alien
-                createExplosion(rocket.x, rocket.y, 0); // Create explosion effect at rocket's position
-                applyExplosiveDamage(rocket); // Apply area damage
-                explosiveRockets.splice(i, 1); // Remove the rocket
-                return; // Exit the loop after handling collision
+                if (distance < rocket.size + alien.size) {
+                    // Collision detected with alien
+                    collided = true;
+                    break;
+                }
             }
         }
 
-        // If the rocket has traveled a certain distance, explode
-        if (rocket.distance >= 200) {
+        // Handle collision or distance-based explosion
+        if (collided || rocket.distance >= 200) {
             createExplosion(rocket.x, rocket.y, 0); // Create explosion effect at rocket's position
             applyExplosiveDamage(rocket); // Apply area damage
             explosiveRockets.splice(i, 1); // Remove the rocket
+            continue; // Move to the next rocket
         }
 
         // Remove the rocket if it goes off the canvas
