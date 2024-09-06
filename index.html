@@ -318,11 +318,7 @@
     <h3>Volume Control</h3>
     <input type="range" id="volumeSlider" min="1" max="10" value="5">
     <p>Volume: <span id="volumeValue">5</span></p>
-    <h3>Toggle redeem mode</h3>
-    <p>In redeem mode you push "r" to use your upgrade credits instead of them appearing automatically</p>
-    <p>Status: <span id="redeemModeStatus">Off</span></p>
 
-    <button id="toggleReedem" onClick="toggleRedeemMode()">Toggle</button>
     <p>
       <button id="toggleMusic" onClick="toggleMusic()">Toggle Music (or push "M")</button>
 
@@ -331,8 +327,14 @@
       <button id="toggleBackground" onClick="toggleBackground()">Toggle Background</button>
 
 
+
     </p>
 
+    <h3>Toggle redeem mode</h3>
+    <p>In redeem mode you push "r" to use your upgrade credits instead of them appearing automatically</p>
+    <p>Status: <span id="redeemModeStatus">Off</span></p>
+
+    <button id="toggleReedem" onClick="toggleRedeemMode()">Toggle Redeem</button>
 
 
     <button onclick="toggleVolumeScreen()">Close</button>
@@ -400,7 +402,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
 
-      updateMiniShipPreview();
+      // updateMiniShipPreview();
       // loadAchievements();
       // populateAchievements();
       if (isMobile()) {
@@ -1120,6 +1122,7 @@
           // Object.assign(megaUpgrades, gameUpgrades);
 
           populateAchievements();
+          populateSelectors();
           // populateUpgrades();
         } else {
           console.log("No such document!");

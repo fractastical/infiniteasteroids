@@ -118,7 +118,7 @@ const ships = {
         draw: drawBasicShip,
         condition: () => true // Always available
     },
-    StarHawk: {
+    Starhawk: {
         name: 'Starhawk',
         lives: 3,
         laserLevel: 5,
@@ -127,7 +127,7 @@ const ships = {
         draw: drawStarHawk,
         condition: () => Achievements.complete_meteor_easy_mode.reached
     },
-    voidWarden: {
+    VoidWarden: {
         name: 'Void Warden',
         lives: 4,
         laserLevel: 4,
@@ -136,7 +136,7 @@ const ships = {
         draw: drawVoidWarden,
         condition: () => Achievements.complete_meteor_hero_mode.reached
     },
-    solarPhoenix: {
+    SolarPhoenix: {
         name: 'Solar Phoenix',
         lives: 5,
         laserLevel: 3,
@@ -145,7 +145,7 @@ const ships = {
         draw: drawSolarPhoenix,
         condition: () => Achievements.complete_planet_hard_mode.reached
     },
-    quantumStriker: {
+    QuantumStriker: {
         name: 'Quantum Striker',
         lives: 2,
         laserLevel: 6,
@@ -448,32 +448,56 @@ function drawOldQuantumStriker() {
 }
 
 
-function updateShipPreview() {
-    const selectedShip = document.getElementById('selectedShip').innerHTML;
-    // selectedShip = selectedShip.toLowerCase();
+function updateShipPreview(shipName = "Basic") {
+    console.log(`Attempting to update ship preview for: ${shipName}`);
+
     const canvas = document.getElementById('shipPreviewCanvas');
+    if (!canvas) {
+        console.error("Ship preview canvas not found");
+        return;
+    }
+
+    console.log(`Canvas dimensions: ${canvas.width}x${canvas.height}`);
+
     const previewCtx = canvas.getContext('2d');
+    let oldContext = ctx;
+    ctx = canvas.getContext('2d');
 
     // Clear the canvas
-    previewCtx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Set up the context for drawing
-    previewCtx.save();
-    previewCtx.translate(canvas.width / 2, canvas.height / 2);
-    previewCtx.scale(2, 2); // Scale up the ship for better visibility
+    // // Set up the context for drawing
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
 
-    // Temporarily replace the global ctx with our preview context
-    const originalCtx = ctx;
-    ctx = previewCtx;
+    // // Draw a background to ensure the canvas is visible
+    // previewCtx.fillStyle = 'rgba(0, 0, 255, 0.1)'; // Light blue background
+    // previewCtx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
 
-    console.log(selectedShip);
     // Draw the selected ship
-    ships[selectedShip].draw();
+    if (ships[shipName] && typeof ships[shipName].draw === 'function') {
+        console.log(`Drawing ship: ${shipName}`);
+        try {
+            // Draw the ship at the center of the canvas
+            ships[shipName].draw();
+            console.log(`Ship draw function called successfully`);
+        } catch (error) {
+            console.error(`Error drawing ship "${shipName}":`, error);
+        }
+    } else {
+        console.error(`Unable to draw ship "${shipName}". Ship not found or draw function not available.`);
+    }
 
-    // Restore the original context
-    ctx = originalCtx;
+    ctx.restore();
+    ctx = oldContext;
 
-    previewCtx.restore();
+    // Update the ship name display
+    const shipNameElement = document.getElementById('selectedShip');
+    if (shipNameElement) {
+        shipNameElement.textContent = shipName;
+    } else {
+        console.warn("Ship name display element not found");
+    }
 }
 
 // Function to populate the selectors with unlocked options
@@ -496,7 +520,7 @@ function populateSelectors() {
     });
 
     console.log("availableShips");
-
+    console.log(availableShips.length);
     console.log(availableShips);
 
     // Populate available secondary weapons

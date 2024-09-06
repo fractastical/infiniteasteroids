@@ -323,6 +323,7 @@ let droneUpgrades = {
 
 // Game loop
 function startGame() {
+    updateMiniShipPreview();
     gameStartTime = Date.now();
     if (document.getElementById('endScreen'))
         document.getElementById('endScreen').style.display = 'none';
@@ -1676,13 +1677,101 @@ function getSelectedGameMode() {
 
 function populateAchievements() {
     const achievementsList = document.getElementById('achievementsList');
+    const achievementIconsList = document.getElementById('achievementIconsList');
     achievementsList.innerHTML = '';
+    achievementIconsList.innerHTML = '';
+
+    // Create containers for ships, weapons, secondary weapons, and achievements icons
+    const shipsContainer = document.createElement('div');
+    shipsContainer.classList.add('icons-section', 'ships-icons');
+    const weaponsContainer = document.createElement('div');
+    weaponsContainer.classList.add('icons-section', 'weapons-icons');
+    const secondaryWeaponsContainer = document.createElement('div');
+    secondaryWeaponsContainer.classList.add('icons-section', 'secondary-weapons-icons');
+    const achievementsIconsContainer = document.createElement('div');
+    achievementsIconsContainer.classList.add('icons-section', 'achievement-icons');
+
+    // Add ship icons
+    let availableShips = [];
+    Object.keys(ships).forEach(shipKey => {
+        if (ships[shipKey].condition()) {
+            availableShips.push({ key: shipKey, name: ships[shipKey].name });
+        }
+    });
+    const totalShips = Object.keys(ships).length;
+
+    const shipsHeader = document.createElement('h4');
+    shipsHeader.textContent = `Ships (${availableShips.length} / ${totalShips})`;
+    shipsContainer.appendChild(shipsHeader);
+
+    availableShips.forEach(ship => {
+        const iconElement = document.createElement('div');
+        iconElement.classList.add('achievement-icon', `icon-ship-${ship.key}`);
+        iconElement.title = ship.name;
+        shipsContainer.appendChild(iconElement);
+    });
+
+    // Add weapon icons
+    const weaponIcons = getAvailableWeaponIcons();
+    const totalWeapons = 17; // Adjust this number to match your total number of weapons
+
+    const weaponsHeader = document.createElement('h4');
+    weaponsHeader.textContent = `Weapons (${weaponIcons.length} / ${totalWeapons})`;
+    weaponsContainer.appendChild(weaponsHeader);
+
+    weaponIcons.forEach(icon => {
+        const iconElement = document.createElement('div');
+        iconElement.classList.add('achievement-icon', icon);
+        weaponsContainer.appendChild(iconElement);
+    });
+
+    // Add secondary weapon icons
+    let availableSecondaryWeapons = [];
+    Object.keys(secondaryWeapons).forEach(weaponKey => {
+        if (secondaryWeapons[weaponKey].isAvailable()) {
+            availableSecondaryWeapons.push({ key: weaponKey, name: secondaryWeapons[weaponKey].name });
+        }
+    });
+    const totalSecondaryWeapons = Object.keys(secondaryWeapons).length;
+
+    const secondaryWeaponsHeader = document.createElement('h4');
+    secondaryWeaponsHeader.textContent = `Secondary Weapons (${availableSecondaryWeapons.length} / ${totalSecondaryWeapons})`;
+    secondaryWeaponsContainer.appendChild(secondaryWeaponsHeader);
+
+    availableSecondaryWeapons.forEach(weapon => {
+        const iconElement = document.createElement('div');
+        iconElement.classList.add('achievement-icon', `icon-secondary-weapon-${weapon.key}`);
+        iconElement.title = weapon.name;
+        secondaryWeaponsContainer.appendChild(iconElement);
+    });
+
+    // Add achievement icons and full list
+    let achievedCount = 0;
+    let totalAchievements = 0;
 
     for (const key in Achievements) {
         if (Achievements.hasOwnProperty(key)) {
+            totalAchievements++;
             const achievement = Achievements[key];
             const achieved = achievement.reached || (achievement.damage && achievement.damage >= achievement.required);
 
+            if (achieved) achievedCount++;
+
+            // Create icon
+            const iconElement = document.createElement('div');
+            iconElement.classList.add('achievement-icon');
+            if (achievement.icon) {
+                iconElement.classList.add(achievement.icon);
+            } else {
+                iconElement.classList.add('icon-generic-achievement');
+            }
+            if (!achieved) {
+                iconElement.classList.add('unachieved');
+            }
+            iconElement.title = achievement.description;
+            achievementsIconsContainer.appendChild(iconElement);
+
+            // Create full description element
             const achievementElement = document.createElement('div');
             achievementElement.classList.add('achievement');
             achievementElement.style.opacity = achieved ? '1' : '0.5';
@@ -1695,20 +1784,26 @@ function populateAchievements() {
         }
     }
 
+    const achievementsHeader = document.createElement('h4');
+    achievementsHeader.textContent = `Achievements (${achievedCount} / ${totalAchievements})`;
+    achievementsIconsContainer.insertBefore(achievementsHeader, achievementsIconsContainer.firstChild);
+
+    // Append containers to the achievementIconsList
+    achievementIconsList.appendChild(weaponsContainer);
+    achievementIconsList.appendChild(secondaryWeaponsContainer);
+    achievementIconsList.appendChild(shipsContainer);
+
+    // achievementIconsList.appendChild(achievementsIconsContainer);
+
     // Update technologies count
     let count = countTechnologies();
     const technologiesCountElement = document.getElementById('technologiesCount');
     let totalTechnologyCount = 42; // 5 ships + 13 weapons + 7 boosters + 17 upgrades
     technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked`;
 
-    // Populate the achievement icons
-    populateAchievementIcons();
-
     // Populate game modes
     populateGameModes();
 }
-
-
 
 function updateAchievementsAtEnd() {
 

@@ -74,13 +74,16 @@ const secondaryWeapons = {
 };
 
 function selectSecondaryWeapon(weaponName) {
-    Object.keys(secondaryWeapons).forEach(weapon => {
-        secondaryWeapons[weapon].deactivate(); // Deactivate all weapons
-    });
-    console.log(weaponName);
-    console.log(secondaryWeapons);
-    secondaryWeapons[weaponName].isActive = true; // Activate the selected weapon
-    console.log(`${secondaryWeapons[weaponName].name} selected as secondary weapon.`);
+    const weaponKey = findObjectByName(secondaryWeapons, weaponName);
+    if (weaponKey) {
+        // Deactivate all weapons
+        Object.values(secondaryWeapons).forEach(weapon => weapon.deactivate());
+        // Activate the selected weapon
+        secondaryWeapons[weaponKey].isActive = true;
+        console.log(`${secondaryWeapons[weaponKey].name} selected as secondary weapon.`);
+    } else {
+        console.error(`Secondary weapon "${weaponName}" not found.`);
+    }
 }
 
 // Example of binding to keypress (assuming keys '1', '2', '3' are used to select)
@@ -194,6 +197,48 @@ function displayWeaponInfo(startX, startY) {
         }
     }
 
+}
+
+function selectShip(shipName) {
+    console.log(`Attempting to select ship: ${shipName}`);
+
+    // Check if the shipName is valid
+    if (!ships.hasOwnProperty(shipName)) {
+        console.error(`Ship "${shipName}" not found.`);
+        return null;
+    }
+
+    const selectedShip = ships[shipName];
+
+    // Check if the ship is available
+    if (!selectedShip.condition()) {
+        console.error(`Ship "${shipName}" is not available yet.`);
+        return null;
+    }
+
+    console.log(`${selectedShip.name} selected as ship.`);
+
+    // Update ship properties
+    Object.assign(ship, {
+        name: selectedShip.name,
+        lives: selectedShip.lives,
+        laserLevel: selectedShip.laserLevel,
+        weaponSlots: selectedShip.weaponSlots,
+        upgradeSlots: selectedShip.upgradeSlots,
+        draw: selectedShip.draw,
+        shoot: selectedShip.shoot || ship.shoot // Keep existing shoot function if not specified
+    });
+
+    // Update the ship preview
+    updateShipPreview(shipName);
+
+    return selectedShip;
+}
+
+function findObjectByName(objectCollection, name) {
+    return Object.keys(objectCollection).find(key =>
+        objectCollection[key].name.toLowerCase() === name.toLowerCase()
+    );
 }
 
 
