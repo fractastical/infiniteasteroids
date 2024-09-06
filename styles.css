@@ -1180,3 +1180,39 @@ select {
     color: white;
     border-radius: 5px;
 }
+
+.achievement {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.achievement-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.achievement-description {
+    font-size: 14px;
+}
+
+#achievementsList {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.selector {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.selector span {
+    margin-right: 10px;
+}
+
+#gameModeButton {
+    padding: 5px 10px;
+    cursor: pointer;
+}

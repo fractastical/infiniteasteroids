@@ -92,7 +92,7 @@
   </div>
 
   <!-- ver version -->
-  <div id="shipTypeContainer">
+  <div id="shipTypeContainer" hidden style="display:none">
     <canvas id="miniShipPreview" width="40" height="40"></canvas>
     <span id="shipType">Customize ship
     </span>
@@ -102,7 +102,7 @@
   </div> -->
 
 
-  <div id="technologiesCount">
+  <div id="technologiesCount" class="top-left">
   </div>
   <!-- 
     <div id="result">
@@ -191,7 +191,7 @@
   </div>
 
 
-  <div id="shipSelectionModal" class="modal">
+  <!-- <div id="shipSelectionModal" class="modal">
     <div class="modal-content">
       <h2>Customize Your Ship</h2>
 
@@ -202,21 +202,19 @@
       <div class="selection-section">
         <h3>Select Your Ship</h3>
         <select id="shipSelector">
-          <!-- Options will be populated dynamically -->
         </select>
       </div>
 
       <div class="selection-section">
         <h3>Select Secondary Weapon</h3>
         <select id="secondaryWeaponSelector">
-          <!-- Options will be populated dynamically -->
         </select>
       </div>
 
       <button id="saveSelections">Save</button>
-      <button id="cancelSelections">Cancel</button> <!-- Cancel button added -->
-    </div>
+      <button id="cancelSelections">Cancel</button>
   </div>
+  </div> -->
 
 
   <div id="startScreen">
@@ -227,66 +225,75 @@
       <script>
         document.addEventListener('DOMContentLoaded', function () {
           InfiniteAsteroidsAnimation.init('animationCanvas');
+          populateSelectors();
+          handleSelections();
+          updateShipPreview();
+
         });
       </script>
 
 
       <table>
-
         <tr>
-          <th>
-            <p>Deep Space</p>
-          </th>
-          <th>
-            <p>Meteor Shower</p>
-          </th>
-          <th>
-            <p>Planet</p>
-          </th>
+          <td rowspan="2">
+            <div id="shipCustomizationSection">
+              <!-- <h3>Customize Your Ship</h3> -->
+              <div class="ship-preview">
+                <canvas id="shipPreviewCanvas" width="100" height="100"></canvas>
+              </div>
+              <div class="selection-section">
+                <h4>Select Your Ship</h4>
+                <select id="shipSelector">
+                  <!-- Options will be populated dynamically -->
+                </select>
+              </div>
+              <div class="selection-section">
+                <h4>Select Secondary Weapon</h4>
+                <select id="secondaryWeaponSelector">
+                  <!-- Options will be populated dynamically -->
+                </select>
+              </div>
+              <!-- <button id="saveSelections">Save</button> -->
+            </div>
+
+            <div id="gameModeSection">
+              <h4>Select Secondary Weapon</h4>
+              <div class="selector">
+                <span id="selectedGameMode">Deep Space</span>
+                <button id="gameModeButton">></button>
+              </div>
+            </div>
+          </td>
+          <!-- <th>Planet</th> -->
         </tr>
         <tr>
           <td>
+            <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
+            <BR /><button id="settings" onclick="toggleVolumeScreen()">Settings</button><BR />
+            <button id="viewAllLeaderboardsButton"> Leaderboards</button>
 
+            <!-- <button id="normalButton" onclick="initializeGame
             <button id="easyButton" onclick="initializeGame(GameModes.EASY)">Easy</button>
             <button id="normalButton" onclick="initializeGame(GameModes.NORMAL)">Normal</button>
             <button id="hardButton" onclick="initializeGame(GameModes.HARD)" disabled>Hard</button>
-            <button id="heroButton" onclick="initializeGame(GameModes.HERO)" disabled>Hero</button>
+            <button id="heroButton" onclick="initializeGame(GameModes.HERO)" disabled>Hero</button> -->
           </td>
           <td>
-
-            <button id="meteorEasyButton" onclick="initializeGame(GameModes.METEORSHOWEREASY)" disabled>Easy</button>
+            <h3>Achievements</h3>
+            <div id="achievementIconsList"></div>
+            <!-- <button id="meteorEasyButton" onclick="initializeGame(GameModes.METEORSHOWEREASY)" disabled>Easy</button>
             <button id="meteorNormalButton" onclick="initializeGame(GameModes.METEORSHOWERNORMAL)"
               disabled>Normal</button>
             <button id="meteorHardButton" onclick="initializeGame(GameModes.METEORSHOWERHARD)" disabled>Hard</button>
-            <button id="meteorHeroButton" onclick="initializeGame(GameModes.METEORSHOWERHERO)" disabled>Hero</button>
+            <button id="meteorHeroButton" onclick="initializeGame(GameModes.METEORSHOWERHERO)" disabled>Hero</button> -->
           </td>
-          <td>
-
-
-            <button id="planetEasyButton" onclick="initializeGame(GameModes.PLANETEASY)" disabled>Easy </button>
+          <!-- <td>
+            <button id="planetEasyButton" onclick="initializeGame(GameModes.PLANETEASY)" disabled>Easy</button>
             <button id="planetNormalButton" onclick="initializeGame(GameModes.PLANETNORMAL)" disabled>Normal</button>
             <button id="planetHardButton" onclick="initializeGame(GameModes.PLANETHARD)" disabled>Hard</button>
             <button id="planetHeroButton" onclick="initializeGame(GameModes.PLANETHERO)" disabled>Hero</button>
-          </td>
+          </td> -->
         </tr>
-        <tr>
-          <td>
-
-            <button id="endlessSlowButton" onclick="initializeGame(GameModes.ENDLESS_SLOW)">Endless </button>
-
-
-          </td>
-          <!-- <td>
-
-              <button id="coopButton" onclick="initializeGame(GameModes.COOP)">Co-op </button>
-
-
-            </td>
-  -->
-        </tr>
-
-        </tr>
-
       </table>
 
       <div id="achievementsContainer">
@@ -296,7 +303,6 @@
       </div>
       <!-- <h3>Your Upgrades</h3> -->
       <div id="upgradesList"></div>
-      <button id="viewAllLeaderboardsButton">View All Leaderboards</button>
 
 
       <!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
@@ -326,7 +332,7 @@
   <div id="volumeScreen" style="display:none;">
 
     <h2>Settings</h2>
-    <p><!--VERSION--> v 0.9701</p>
+    <p><!--VERSION--> v 0.9707</p>
 
     <h3>Volume Control</h3>
     <input type="range" id="volumeSlider" min="1" max="10" value="5">
@@ -1273,26 +1279,13 @@
       document.getElementById('leaderboard-container').appendChild(leaderboard);
     }
 
+
+
+
     async function loadAllLeaderboards(gameName) {
       const db = getFirestore();
       const usersSnapshot = await getDocs(collection(db, 'users'));
       const allScores = {};
-
-      const gameModes = [
-        { id: GameModes.EASY, name: "Deep Space Easy" },
-        { id: GameModes.NORMAL, name: "Deep Space Normal" },
-        { id: GameModes.HARD, name: "Deep Space Hard" },
-        { id: GameModes.HERO, name: "Deep Space Hero" },
-        { id: GameModes.METEORSHOWEREASY, name: "Meteor Shower Easy" },
-        { id: GameModes.METEORSHOWERNORMAL, name: "Meteor Shower Normal" },
-        { id: GameModes.METEORSHOWERHARD, name: "Meteor Shower Hard" },
-        { id: GameModes.METEORSHOWERHERO, name: "Meteor Shower Hero" },
-        { id: GameModes.PLANETEASY, name: "Planet Easy" },
-        { id: GameModes.PLANETNORMAL, name: "Planet Normal" },
-        { id: GameModes.PLANETHARD, name: "Planet Hard" },
-        { id: GameModes.PLANETHERO, name: "Planet Hero" },
-        { id: GameModes.ENDLESS_SLOW, name: "Endless Slow" }
-      ];
 
       usersSnapshot.forEach(doc => {
         const userData = doc.data();

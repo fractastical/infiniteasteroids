@@ -48,6 +48,22 @@ const GameModes = {
 
 };
 
+const gameModes = [
+    { id: GameModes.EASY, name: "Deep Space Easy" },
+    { id: GameModes.NORMAL, name: "Deep Space Normal" },
+    { id: GameModes.HARD, name: "Deep Space Hard" },
+    { id: GameModes.HERO, name: "Deep Space Hero" },
+    { id: GameModes.METEORSHOWEREASY, name: "Meteor Shower Easy" },
+    { id: GameModes.METEORSHOWERNORMAL, name: "Meteor Shower Normal" },
+    { id: GameModes.METEORSHOWERHARD, name: "Meteor Shower Hard" },
+    { id: GameModes.METEORSHOWERHERO, name: "Meteor Shower Hero" },
+    { id: GameModes.PLANETEASY, name: "Planet Easy" },
+    { id: GameModes.PLANETNORMAL, name: "Planet Normal" },
+    { id: GameModes.PLANETHARD, name: "Planet Hard" },
+    { id: GameModes.PLANETHERO, name: "Planet Hero" },
+    { id: GameModes.ENDLESS_SLOW, name: "Endless Slow" }
+];
+
 let currentMode = GameModes.EASY; // Start with Easy mode by default
 let modesUnlocked = {
     easy: true,
@@ -843,6 +859,7 @@ function processPlayerDeath() {
 }
 
 function initializeGame(mode) {
+    handleSelections();
     switch (mode) {
         case GameModes.EASY:
             asteroidDifficultySpeedMultiplier = 0.7;
@@ -1519,31 +1536,70 @@ function countTechnologies() {
 }
 
 
+function populateAchievementIcons() {
+    const achievementIconsList = document.getElementById('achievementIconsList');
+    achievementIconsList.innerHTML = '';
+
+    for (const key in Achievements) {
+        if (Achievements.hasOwnProperty(key)) {
+            const achievement = Achievements[key];
+            const achieved = achievement.reached || (achievement.damage && achievement.damage >= achievement.required);
+
+            const iconElement = document.createElement('img');
+            iconElement.src = achievement.icon;
+            iconElement.alt = achievement.description;
+            iconElement.classList.add('achievement-icon');
+            if (!achieved) {
+                iconElement.style.filter = 'brightness(50%)'; // Make unachieved icons darker
+            }
+
+            // Add tooltip for the icon
+            iconElement.title = achievement.description;
+
+            achievementIconsList.appendChild(iconElement);
+        }
+    }
+}
+
+let currentGameModeIndex = 0;
+
+function populateGameModes() {
+    const gameModeSection = document.getElementById('gameModeSection');
+    gameModeSection.innerHTML = `
+        <h4>Select Game Mode</h4>
+        <div class="selector">
+            <span id="selectedGameMode">${gameModes[currentGameModeIndex].name}</span>
+            <button id="gameModeButton">></button>
+        </div>
+    `;
+
+    document.getElementById('gameModeButton').addEventListener('click', () => {
+        currentGameModeIndex = (currentGameModeIndex + 1) % gameModes.length;
+        updateGameModeDisplay();
+    });
+
+    updateGameModeDisplay();
+}
+
+function updateGameModeDisplay() {
+    document.getElementById('selectedGameMode').textContent = gameModes[currentGameModeIndex].name;
+
+    // Update the "Play now" button to use the correct game mode
+    const playNowButton = document.getElementById('playNow');
+    playNowButton.onclick = () => initializeGame(gameModes[currentGameModeIndex].id);
+}
+
+function getSelectedGameMode() {
+    return gameModes[currentGameModeIndex].id;
+}
+
+
 function populateAchievements() {
     const achievementsList = document.getElementById('achievementsList');
     achievementsList.innerHTML = '';
 
-    // document.getElementById('normalButton').disabled = !Achievements.complete_easy_mode.reached;
-    document.getElementById('hardButton').disabled = !Achievements.complete_normal_mode.reached;
-    document.getElementById('heroButton').disabled = !Achievements.complete_hard_mode.reached;
-
-
-    document.getElementById('meteorEasyButton').disabled = !Achievements.complete_normal_mode.reached;
-    document.getElementById('meteorNormalButton').disabled = !Achievements.complete_meteor_easy_mode.reached;
-    document.getElementById('meteorHardButton').disabled = !Achievements.complete_meteor_normal_mode.reached;
-    document.getElementById('meteorHeroButton').disabled = !Achievements.complete_meteor_hard_mode.reached;
-
-    document.getElementById('planetEasyButton').disabled = !Achievements.complete_meteor_normal_mode.reached;
-    document.getElementById('planetNormalButton').disabled = !Achievements.complete_planet_easy_mode.reached;
-    document.getElementById('planetHardButton').disabled = !Achievements.complete_planet_normal_mode.reached;
-    document.getElementById('planetHeroButton').disabled = !Achievements.complete_planet_hard_mode.reached;
-
-    console.log(Achievements);
-    // console.log("pop");
     for (const key in Achievements) {
         if (Achievements.hasOwnProperty(key)) {
-            // console.log("pop" + key);
-
             const achievement = Achievements[key];
             const achieved = achievement.reached || (achievement.damage && achievement.damage >= achievement.required);
 
@@ -1551,10 +1607,6 @@ function populateAchievements() {
             achievementElement.classList.add('achievement');
             achievementElement.style.opacity = achieved ? '1' : '0.5';
 
-            const icon = document.createElement('img');
-            icon.src = achievement.icon;
-            icon.alt = achievement.description;
-            achievementElement.appendChild(icon);
             const description = document.createElement('span');
             description.textContent = achievement.description;
             achievementElement.appendChild(description);
@@ -1563,15 +1615,17 @@ function populateAchievements() {
         }
     }
 
+    // Update technologies count
     let count = countTechnologies();
     const technologiesCountElement = document.getElementById('technologiesCount');
-    let totalTechnologyCount = 0;
-    totalTechnologyCount += 5; //ships
-    totalTechnologyCount += 13; //weapons
-    totalTechnologyCount += 7; //boosters
-    totalTechnologyCount += 17; //upgrades
-    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount}  technologies unlocked`;
+    let totalTechnologyCount = 42; // 5 ships + 13 weapons + 7 boosters + 17 upgrades
+    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked`;
 
+    // Populate the achievement icons
+    populateAchievementIcons();
+
+    // Populate game modes
+    populateGameModes();
 }
 
 

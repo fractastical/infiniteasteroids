@@ -459,7 +459,7 @@ function updateShipPreview() {
     // Set up the context for drawing
     previewCtx.save();
     previewCtx.translate(canvas.width / 2, canvas.height / 2);
-    previewCtx.scale(3, 3); // Scale up the ship for better visibility
+    previewCtx.scale(2, 2); // Scale up the ship for better visibility
 
     // Temporarily replace the global ctx with our preview context
     const originalCtx = ctx;
@@ -526,9 +526,8 @@ function handleSelections() {
     currentShip = selectedShip;
     selectSecondaryWeapon(selectedWeapon);
     // applyUpgrade(selectedUpgrade);
-
     // Close the modal and start the game
-    document.getElementById('shipSelectionModal').style.display = 'none';
+    // document.getElementById('shipSelectionModal').style.display = 'none';
     updateShipTypeDisplay(); // Add this line
 
 }
@@ -569,7 +568,7 @@ function updateShipTypeDisplay() {
 // Event listener for the save button
 document.getElementById('saveSelections').addEventListener('click', handleSelections);
 document.getElementById('shipSelector').addEventListener('change', updateShipPreview);
-document.getElementById('cancelSelections').addEventListener('click', closeModalWithoutSaving);
+// document.getElementById('cancelSelections').addEventListener('click', closeModalWithoutSaving);
 
 function closeModalWithoutSaving() {
     const modal = document.getElementById('shipSelectionModal');
