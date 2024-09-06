@@ -821,6 +821,9 @@ function update() {
 function processPlayerDeath() {
     resetShip(false);
 
+    xpToNextLevel = 0;
+    updateXPBar();
+
     if (!invincible) {
         lives--;
 
