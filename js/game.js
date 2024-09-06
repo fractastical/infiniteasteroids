@@ -462,6 +462,16 @@ function toggleSound() {
 
 }
 
+let toggleBackgroundOff = false;
+
+function toggleBackground() {
+    if (!toggleBackgroundOff)
+        toggleBackgroundOff = true;
+    else
+        toggleBackgroundOff = false;
+
+}
+
 
 
 
@@ -478,14 +488,17 @@ function update() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (currentMode == GameModes.EASY || currentMode == GameModes.NORMAL || currentMode == GameModes.HARD || currentMode == GameModes.HERO)
-        drawSubtleGridBackground(ctx, canvas.width, canvas.height);
-    else if (currentMode == GameModes.METEORSHOWEREASY || currentMode == GameModes.METEORSHOWERNORMAL || currentMode == GameModes.METEORSHOWERHARD || currentMode == GameModes.METEORSHOWERHERO)
-        drawZigzagGridBackground(ctx, canvas.width, canvas.height);
-    else if (currentMode == GameModes.PLANETEASY || currentMode == GameModes.PLANETNORMAL || currentMode == GameModes.PLANETHARD || currentMode == GameModes.PLANETHERO)
-        drawGravityWellBackground(ctx, canvas.width, canvas.height);
-    else if (currentMode == GameModes.ENDLESS_SLOW)
-        drawWarpedBackground(ctx, canvas.width, canvas.height);
+    if (!toggleBackgroundOff) {
+
+        if (currentMode == GameModes.EASY || currentMode == GameModes.NORMAL || currentMode == GameModes.HARD || currentMode == GameModes.HERO)
+            drawSubtleGridBackground(ctx, canvas.width, canvas.height);
+        else if (currentMode == GameModes.METEORSHOWEREASY || currentMode == GameModes.METEORSHOWERNORMAL || currentMode == GameModes.METEORSHOWERHARD || currentMode == GameModes.METEORSHOWERHERO)
+            drawZigzagGridBackground(ctx, canvas.width, canvas.height);
+        else if (currentMode == GameModes.PLANETEASY || currentMode == GameModes.PLANETNORMAL || currentMode == GameModes.PLANETHARD || currentMode == GameModes.PLANETHERO)
+            drawGravityWellBackground(ctx, canvas.width, canvas.height);
+        else if (currentMode == GameModes.ENDLESS_SLOW)
+            drawWarpedBackground(ctx, canvas.width, canvas.height);
+    }
 
     // drawWarpedGrid();
 
