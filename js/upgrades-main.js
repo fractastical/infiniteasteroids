@@ -196,12 +196,16 @@ function checkFloatingIslandSpawn() {
 
         lastActivatedWave = wave;
         floatingIsland.active = true;
-        floatingIsland.x = -100;
+
+        floatingIsland.x = 0;
+        floatingIsland.y = 0;
+
     }
     if (testMode && !floatingIsland.active) {
 
         floatingIsland.active = true;
-        floatingIsland.x = -5;
+        floatingIsland.x = 0;
+        floatingIsland.y = 0;
     }
 
 }
@@ -228,7 +232,7 @@ function updateFloatingIsland() {
 
         // Check if the island has reached the center
         if (floatingIsland.spiralProgress >= 1 || floatingIsland.radius < 10) {
-            floatingIsland.active = false;
+            // floatingIsland.active = false;
             // You might want to trigger an event or reward here
         }
     }
@@ -282,6 +286,8 @@ function checkIslandCollision() {
 function openUpgradeOptions() {
     pauseGame();
     floatingIsland.active = false;
+    // floatingIsland.x = 0;
+    // floatingIsland.y = 0;
 
     const upgradeModal = document.createElement('div');
     upgradeModal.id = 'upgradeModal';
