@@ -294,7 +294,7 @@ let asteroids = [];
 let gameLoop;
 let explosions = [];
 let lives = 3;
-let testMode = true;
+let testMode = false;
 
 if (testMode)
     lives = 1;
@@ -1835,7 +1835,7 @@ function populateAchievements() {
     const technologiesCountElement = document.getElementById('technologiesCount');
     let totalTechnologyCount = 42; // 5 ships + 13 weapons + 7 boosters + 17 upgrades 
     // VERSION VERSION VERSION
-    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v 0.9713`;
+    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v 0.9717`;
 
     // Populate game modes
     populateGameModes();
