@@ -1753,13 +1753,19 @@ function shootLasers() {
         ships.quantumStriker.shoot();
     } else {
         const laserSize = ship.laserLevel + 1; // Laser size depends on the ship's laser level
-        const laserOffset = laserSize / 2; // Calculate offset to align the center of the laser
 
-        // Calculate the position where the center of the laser square should be
-        const laserX = ship.x + Math.cos(ship.rotation * Math.PI / 180) * ship.size / 2 - laserOffset;
-        const laserY = ship.y + Math.sin(ship.rotation * Math.PI / 180) * ship.size / 2 - laserOffset;
+        // Convert rotation to radians
+        const rotationRad = ship.rotation * Math.PI / 180;
 
-        // Push the new laser to the array, with its adjusted position, size, and rotation
+        // Calculate the position at the front of the ship
+        const frontX = ship.x + Math.sin(rotationRad) * ship.size / 2;
+        const frontY = ship.y - Math.cos(rotationRad) * ship.size / 2;
+
+        // Calculate the laser's starting position
+        const laserX = frontX - laserSize / 2;
+        const laserY = frontY - laserSize / 2;
+
+        // Push the new laser to the array, with its position, size, and rotation
         ship.lasers.push({
             x: laserX,
             y: laserY,
@@ -1773,7 +1779,6 @@ function shootLasers() {
 
     playRandomShotSound(); // Play shooting sound
 }
-
 
 
 
