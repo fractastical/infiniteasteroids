@@ -240,25 +240,33 @@
               <div class="ship-preview">
                 <canvas id="shipPreviewCanvas" width="100" height="100"></canvas>
               </div>
-              <div class="selection-section">
-                <h4>Select Your Ship</h4>
+              <div class="option-group">
+                <p>Select Ship:</p>
                 <div class="selector">
+                  <button id="prevShipButton">&#60;</button>
                   <span id="selectedShip">Basic</span>
-                  <button id="shipSelectorButton">></button>
+                  <button id="nextShipButton">></button>
                 </div>
               </div>
-              <div class="selection-section">
-                <h4>Select Secondary Weapon</h4>
+
+              <div class="option-group">
+                <p>Select Secondary Weapon:</p>
                 <div class="selector">
+                  <button id="prevSecondaryWeaponButton">&#60;</button>
                   <span id="selectedSecondaryWeapon">Bomb</span>
-                  <button id="secondaryWeaponSelectorButton">></button>
+                  <button id="nextSecondaryWeaponButton">></button>
                 </div>
               </div>
             </div>
 
             <div id="gameModeSection">
+              <button>&#60;</button>
+
               <h4>Select Game Mode</h4>
+
               <div class="selector">
+                <button>&#60;</button>
+
                 <span id="selectedGameMode">Deep Space</span>
                 <button id="gameModeButton">></button>
               </div>
@@ -313,7 +321,7 @@
   <div id="volumeScreen" style="display:none;">
 
     <h2>Settings</h2>
-    <p><!--VERSION--> v 0.9711</p>
+    <p><!--VERSION--> v 0.9713</p>
 
     <h3>Volume Control</h3>
     <input type="range" id="volumeSlider" min="1" max="10" value="5">

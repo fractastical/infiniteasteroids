@@ -1649,27 +1649,37 @@ function populateGameModes() {
     gameModeSection.innerHTML = `
         <h4>Select Game Mode</h4>
         <div class="selector">
+            <button id="prevGameModeButton">&#60;</button>
             <span id="selectedGameMode">${gameModes[currentGameModeIndex].name}</span>
-            <button id="gameModeButton">></button>
+            <button id="nextGameModeButton">></button>
         </div>
     `;
 
-    document.getElementById('gameModeButton').addEventListener('click', () => {
-        currentGameModeIndex = (currentGameModeIndex + 1) % gameModes.length;
+    function cycleGameMode(direction) {
+        if (direction === 'next') {
+            currentGameModeIndex = (currentGameModeIndex + 1) % gameModes.length;
+        } else {
+            currentGameModeIndex = (currentGameModeIndex - 1 + gameModes.length) % gameModes.length;
+        }
         updateGameModeDisplay();
-    });
+    }
+
+    document.getElementById('nextGameModeButton').addEventListener('click', () => cycleGameMode('next'));
+    document.getElementById('prevGameModeButton').addEventListener('click', () => cycleGameMode('prev'));
 
     updateGameModeDisplay();
 }
 
 function updateGameModeDisplay() {
-    document.getElementById('selectedGameMode').textContent = gameModes[currentGameModeIndex].name;
+    const selectedGameModeSpan = document.getElementById('selectedGameMode');
+    selectedGameModeSpan.textContent = gameModes[currentGameModeIndex].name;
 
-    // Update the "Play now" button to use the correct game mode
+    // Update the play button or any other elements that depend on the game mode
     const playNowButton = document.getElementById('playNow');
-    playNowButton.onclick = () => initializeGame(gameModes[currentGameModeIndex].id);
+    if (playNowButton) {
+        playNowButton.onclick = () => initializeGame(gameModes[currentGameModeIndex].id);
+    }
 }
-
 function getSelectedGameMode() {
     return gameModes[currentGameModeIndex].id;
 }
@@ -1805,8 +1815,9 @@ function populateAchievements() {
     // Update technologies count
     let count = countTechnologies();
     const technologiesCountElement = document.getElementById('technologiesCount');
-    let totalTechnologyCount = 42; // 5 ships + 13 weapons + 7 boosters + 17 upgrades
-    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked`;
+    let totalTechnologyCount = 42; // 5 ships + 13 weapons + 7 boosters + 17 upgrades 
+    // VERSION VERSION VERSION
+    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v 0.9713`;
 
     // Populate game modes
     populateGameModes();
