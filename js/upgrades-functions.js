@@ -47,8 +47,9 @@ const gravityBomb = {
                     if (distance < this.radius) {
                         const corner = this.getNearestCorner(asteroids[i]);
                         const angle = Math.atan2(corner.y - asteroids[i].y, corner.x - asteroids[i].x);
-                        asteroids[i].dx -= Math.cos(angle);
-                        asteroids[i].dy -= Math.sin(angle);
+                        asteroids.speed *= 0.5;
+                        asteroids[i].dx += Math.cos(angle);
+                        asteroids[i].dy += Math.sin(angle);
                     }
                 }
             }

@@ -1467,14 +1467,29 @@ function handleKeyDown(event) {
         }
 
         // Handle mega upgrade selection
-        if (document.getElementById('upgradeModal')) {
-            const megaUpgradeOptions = document.querySelectorAll('.mega-upgrade-option');
-            if (event.key === '1' && megaUpgradeOptions[0]) {
-                megaUpgradeOptions[0].click(); // Select the first upgrade
-            } else if (event.key === '2' && megaUpgradeOptions[1]) {
-                megaUpgradeOptions[1].click(); // Select the second upgrade
-            } else if (event.key === '3' && megaUpgradeOptions[2]) {
-                megaUpgradeOptions[2].click(); // Select the third upgrade
+        const upgradeModal = document.getElementById('upgradeModal');
+        if (upgradeModal) {
+            if (upgradeModal.querySelector('.mega-upgrade-option')) {
+                // If mega upgrade options are displayed
+                if (event.key >= '1' && event.key <= '3') {
+                    event.preventDefault();
+                    const index = parseInt(event.key) - 1;
+                    const megaUpgradeOptions = upgradeModal.querySelectorAll('.mega-upgrade-option');
+                    if (megaUpgradeOptions[index]) {
+                        megaUpgradeOptions[index].click();
+                        closeUpgradeOptions();
+                    }
+                }
+            } else {
+                // Initial upgrade choice
+                if (event.key === '1') {
+                    event.preventDefault();
+                    selectMegaUpgrade();
+                } else if (event.key === '2') {
+                    event.preventDefault();
+                    restoreHealth();
+                    closeUpgradeOptions();
+                }
             }
         }
     }
