@@ -311,9 +311,44 @@ function drawDisplayGems() {
 
 
 function drawGems() {
+    const time = Date.now() * 0.001; // Current time in seconds
+
     for (let i = 0; i < droppedGems.length; i++) {
         let gem = droppedGems[i];
+        ctx.save();
+
+        // Pulsating effect
+        const pulseFactor = Math.sin(time * 3 + i) * 0.2 + 0.8; // Pulsate between 0.6 and 1.0
+
+        // Set glow color based on gem type
+        let glowColor;
+        switch (gem.type) {
+            case 'red': glowColor = 'rgba(255, 0, 0, 0.5)'; break;
+            case 'green': glowColor = 'rgba(0, 255, 0, 0.5)'; break;
+            case 'blue': glowColor = 'rgba(0, 100, 255, 0.5)'; break;
+            case 'yellow': glowColor = 'rgba(255, 255, 0, 0.5)'; break;
+            default: glowColor = 'rgba(255, 255, 255, 0.5)'; // White glow for unknown types
+        }
+
+        // Create and draw the glow
+        const gradient = ctx.createRadialGradient(
+            gem.x, gem.y, 0,
+            gem.x, gem.y, gem.size
+        );
+        gradient.addColorStop(0, glowColor);
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+        ctx.globalAlpha = 0.7 * pulseFactor;
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(gem.x, gem.y, gem.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw the gem image
+        ctx.globalAlpha = 1;
         ctx.drawImage(gemImages[gem.type], gem.x - gem.size / 2, gem.y - gem.size / 2, gem.size, gem.size);
+
+        ctx.restore();
     }
 }
 

@@ -526,17 +526,31 @@ function drawAliens() {
     aliens.forEach(alien => {
         ctx.save();
         ctx.translate(alien.x, alien.y);
+
         if (alien.type === SwarmingAlienTypes.BLINKING && !alien.blinkState) {
             // Don't draw the alien when it's in the "off" blink state
-        } else if (alien.image) {
-            ctx.drawImage(alien.image, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
         } else {
-            ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+            // Calculate angle to face the player's ship
+
+            if (alien.image) {
+                const dx = ship.x - alien.x;
+                const dy = ship.y - alien.y;
+                const angle = Math.atan2(dy, dx) + Math.PI / 2; // Add 90 degrees
+
+                // Rotate the context
+                ctx.rotate(angle);
+
+                // Draw the rotated custom alien image
+                ctx.drawImage(alien.image, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+            } else {
+                // Draw the rotated default alien image
+                ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+            }
         }
+
         ctx.restore();
     });
 }
-
 
 function updateMegaBossAlien() {
     if (!megaBossAlien) return;

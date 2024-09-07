@@ -45,11 +45,40 @@ const gravityBomb = {
                     const dy = ship.y - asteroids[i].y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
                     if (distance < this.radius) {
-                        const corner = this.getNearestCorner(asteroids[i]);
-                        const angle = Math.atan2(corner.y - asteroids[i].y, corner.x - asteroids[i].x);
-                        asteroids.speed *= 0.5;
-                        asteroids[i].dx += Math.cos(angle);
-                        asteroids[i].dy += Math.sin(angle);
+
+
+                        const currentSpeed = Math.sqrt(asteroids[i].dx * asteroids[i].dx + asteroids[i].dy * asteroids[i].dy);
+
+                        // Calculate gravitational pull (stronger for closer asteroids)
+                        const pullStrength = 0.05 * (1 - distance / this.radius);
+                        const pullX = dx / distance * pullStrength;
+                        const pullY = dy / distance * pullStrength;
+
+                        // Apply gravitational pull
+                        asteroids[i].dx += pullX;
+                        asteroids[i].dy += pullY;
+
+                        // Reduce speed
+                        const speedReduction = 0.95; // Reduce speed by 5%
+                        const newSpeed = currentSpeed * speedReduction;
+
+                        // Calculate new velocity components
+                        const newVelocityMagnitude = Math.sqrt(asteroids[i].dx * asteroids[i].dx + asteroids[i].dy * asteroids[i].dy);
+                        asteroids[i].dx = (asteroids[i].dx / newVelocityMagnitude) * newSpeed;
+                        asteroids[i].dy = (asteroids[i].dy / newVelocityMagnitude) * newSpeed;
+
+                        // Optional: Add minimum speed to prevent asteroids from stopping
+                        const minSpeed = 0.1;
+                        if (newSpeed < minSpeed) {
+                            const angle = Math.atan2(asteroids[i].dy, asteroids[i].dx);
+                            asteroids[i].dx = Math.cos(angle) * minSpeed;
+                            asteroids[i].dy = Math.sin(angle) * minSpeed;
+                        }
+
+
+
+
+
                     }
                 }
             }

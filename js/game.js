@@ -4,6 +4,8 @@
 let gameId = "InfiniteSpaceWar";
 
 
+let activeMegaUpgrades = [];
+let lastActivatedWave = 0;
 
 const joystick = document.getElementById('joystick');
 const joystickInner = document.getElementById('joystick-inner');
@@ -1501,7 +1503,7 @@ function handleKeyUp(event) {
 
 
 function countTechnologies() {
-    let count = 0;
+    let count = 2; // laser + bomb
 
     // These are all the achievements that have a specific weapon unlock assigned
     if (Achievements.reach_wave_2.reached) count++;
@@ -1549,7 +1551,7 @@ function countTechnologies() {
             if (ships[ship].condition()) count++;
         }
     }
-    // think we are at 38
+    // think we are at 40
     return count;
 }
 

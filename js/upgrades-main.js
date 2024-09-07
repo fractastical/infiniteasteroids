@@ -2,15 +2,15 @@
 const floatingIsland = {
     x: -100,
     y: canvas.height / 2,
-    width: 150,
-    height: 100,
+    width: 70,
+    height: 70,
     speed: 0.3,
     active: false,
     image: null
 };
 
 floatingIsland.image = new Image();
-floatingIsland.image.src = 'icons/sparkle_island_1.png';
+floatingIsland.image.src = 'icons/gold-ore.png';
 
 // Mega Upgrades
 const megaUpgrades = [
@@ -155,6 +155,7 @@ const megaUpgrades = [
 
 
 function updateMegaUpgrades() {
+
     activeMegaUpgrades.forEach(upgrade => {
         if (typeof upgrade.update === 'function') {
             upgrade.update();
@@ -188,9 +189,6 @@ function drawActiveMegaUpgrades() {
         }
     });
 }
-// ... rest of the code remains the same
-let activeMegaUpgrades = [];
-let lastActivatedWave = 0;
 
 function checkFloatingIslandSpawn() {
     // prevent island from being activated multiple times in same wave
@@ -210,16 +208,64 @@ function checkFloatingIslandSpawn() {
 
 function updateFloatingIsland() {
     if (floatingIsland.active) {
-        floatingIsland.x += floatingIsland.speed;
-        if (floatingIsland.x > canvas.width) {
+        // If these properties don't exist, initialize them
+        if (typeof floatingIsland.angle === 'undefined') {
+            floatingIsland.angle = 0;
+            floatingIsland.radius = Math.min(canvas.width, canvas.height) * 0.4; // Start from 40% of screen size
+            floatingIsland.centerX = canvas.width / 2;
+            floatingIsland.centerY = canvas.height / 2;
+            floatingIsland.spiralProgress = 0;
+        }
+
+        // Update the angle and radius
+        floatingIsland.angle += 0.002; // Adjust for faster/slower rotation
+        floatingIsland.radius *= 0.9999; // Gradually decrease radius
+        floatingIsland.spiralProgress += 0.0001; // Progress towards center
+
+        // Calculate new position
+        floatingIsland.x = floatingIsland.centerX + floatingIsland.radius * Math.cos(floatingIsland.angle);
+        floatingIsland.y = floatingIsland.centerY + floatingIsland.radius * Math.sin(floatingIsland.angle);
+
+        // Check if the island has reached the center
+        if (floatingIsland.spiralProgress >= 1 || floatingIsland.radius < 10) {
             floatingIsland.active = false;
+            // You might want to trigger an event or reward here
         }
     }
 }
 
 function drawFloatingIsland() {
     if (floatingIsland.active) {
+        ctx.save();
+
+        // Create a pulsating effect for the glow
+        const time = Date.now() * 0.001; // Current time in seconds
+        const pulseFactor = Math.sin(time * 2) * 0.2 + 0.8; // Pulsate between 0.6 and 1.0
+
+        // Increase glow size
+        const glowSize = floatingIsland.width * 1.2; // 20% larger than the island
+
+        // Create a radial gradient for the glow
+        const gradient = ctx.createRadialGradient(
+            floatingIsland.x + floatingIsland.width / 2, floatingIsland.y + floatingIsland.height / 2, 0,
+            floatingIsland.x + floatingIsland.width / 2, floatingIsland.y + floatingIsland.height / 2, glowSize
+        );
+        gradient.addColorStop(0, 'rgba(0, 150, 255, 0.8)'); // More intense blue
+        gradient.addColorStop(1, 'rgba(0, 150, 255, 0)');
+
+        // Draw the glow
+        ctx.globalAlpha = 0.9 * pulseFactor; // Increased base opacity
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(floatingIsland.x + floatingIsland.width / 2, floatingIsland.y + floatingIsland.height / 2,
+            glowSize, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Reset global alpha and draw the island image
+        ctx.globalAlpha = 1;
         ctx.drawImage(floatingIsland.image, floatingIsland.x, floatingIsland.y, floatingIsland.width, floatingIsland.height);
+
+        ctx.restore();
     }
 }
 
@@ -269,6 +315,7 @@ function selectMegaUpgrade() {
     } else {
         alert("No more mega upgrades available!");
         closeUpgradeModal();
+        resumeGame();
     }
 }
 
@@ -330,13 +377,13 @@ function closeUpgradeModal() {
     document.getElementById('upgradeModal').remove();
 }
 
-function updateMegaUpgrades() {
-    activeMegaUpgrades.forEach(upgrade => {
-        if (typeof upgrade.update === 'function') {
-            upgrade.update();
-        }
-    });
-}
+// function updateMegaUpgrades() {
+//     activeMegaUpgrades.forEach(upgrade => {
+//         if (typeof upgrade.update === 'function') {
+//             upgrade.update();
+//         }
+//     });
+// }
 
 
 function handleMegaUpgradeClick(event) {
