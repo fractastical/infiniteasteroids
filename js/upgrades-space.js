@@ -126,43 +126,43 @@ function createFloatingUpgrade(upgrade) {
     };
 }
 
-const time = Date.now() * 0.001; // Current time in seconds
+function drawFloatingUpgrades() {
+    const time = Date.now() * 0.001; // Current time in seconds
 
-activeFloatingUpgrades.forEach(upgrade => {
-    ctx.save();
+    activeFloatingUpgrades.forEach(upgrade => {
+        ctx.save();
 
-    // Create a pulsating effect for the glow
-    const pulseFactor = Math.sin(time * 2) * 0.2 + 0.8; // Pulsate between 0.6 and 1.0
+        // Create a pulsating effect for the glow
+        const pulseFactor = Math.sin(time * 2) * 0.2 + 0.8; // Pulsate between 0.6 and 1.0
 
-    // Increase glow size
-    const glowSize = upgrade.size * 1.5; // 50% larger than the upgrade icon
+        // Increase glow size
+        const glowSize = upgrade.size * 1.5; // 50% larger than the upgrade icon
 
-    // Create a radial gradient for the glow
-    const gradient = ctx.createRadialGradient(
-        upgrade.x + upgrade.size / 2, upgrade.y + upgrade.size / 2, 0,
-        upgrade.x + upgrade.size / 2, upgrade.y + upgrade.size / 2, glowSize
-    );
-    gradient.addColorStop(0, 'rgba(0, 150, 255, 0.8)'); // Intense blue
-    gradient.addColorStop(1, 'rgba(0, 150, 255, 0)');
+        // Create a radial gradient for the glow
+        const gradient = ctx.createRadialGradient(
+            upgrade.x + upgrade.size / 2, upgrade.y + upgrade.size / 2, 0,
+            upgrade.x + upgrade.size / 2, upgrade.y + upgrade.size / 2, glowSize
+        );
+        gradient.addColorStop(0, 'rgba(0, 150, 255, 0.8)'); // Intense blue
+        gradient.addColorStop(1, 'rgba(0, 150, 255, 0)');
 
-    // Draw the glow
-    ctx.globalAlpha = 0.9 * pulseFactor;
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(upgrade.x + upgrade.size / 2, upgrade.y + upgrade.size / 2,
-        glowSize, 0, Math.PI * 2);
-    ctx.fill();
+        // Draw the glow
+        ctx.globalAlpha = 0.9 * pulseFactor;
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(upgrade.x + upgrade.size / 2, upgrade.y + upgrade.size / 2,
+            glowSize, 0, Math.PI * 2);
+        ctx.fill();
 
-    // Reset global alpha and draw the upgrade icon
-    ctx.globalAlpha = 1;
-    const img = new Image();
-    img.src = upgrade.icon;
-    ctx.drawImage(img, upgrade.x, upgrade.y, upgrade.size, upgrade.size);
+        // Reset global alpha and draw the upgrade icon
+        ctx.globalAlpha = 1;
+        const img = new Image();
+        img.src = upgrade.icon;
+        ctx.drawImage(img, upgrade.x, upgrade.y, upgrade.size, upgrade.size);
 
-    ctx.restore();
-});
+        ctx.restore();
+    });
 }
-
 function collectFloatingUpgrade(upgrade) {
     addAchievement(upgrade.achievedKey);
     // Apply any specific effect from collecting the upgrade (optional)

@@ -1749,17 +1749,29 @@ function shootLasers() {
     // Use the custom shoot function if it exists, otherwise use default shooting
     if (currentShip === 'solarPhoenix') {
         shootTripleLaser();
-
     } else if (currentShip === 'quantumStriker' && ships.quantumStriker.shoot) {
         ships.quantumStriker.shoot();
     } else {
-        const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
-        const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
-        ship.lasers.push({ x: laserX, y: laserY, rotation: ship.rotation, size: ship.laserLevel + 1 });
+        const laserSize = ship.laserLevel + 1; // Laser size depends on the ship's laser level
+        const laserOffset = laserSize / 2; // Calculate offset to align the center of the laser
+
+        // Calculate the position where the center of the laser square should be
+        const laserX = ship.x + Math.cos(ship.rotation * Math.PI / 180) * ship.size / 2 - laserOffset;
+        const laserY = ship.y + Math.sin(ship.rotation * Math.PI / 180) * ship.size / 2 - laserOffset;
+
+        // Push the new laser to the array, with its adjusted position, size, and rotation
+        ship.lasers.push({
+            x: laserX,
+            y: laserY,
+            rotation: ship.rotation,
+            size: laserSize
+        });
+
+        // Reset the laser cooldown timer
         ship.laserTimer = ship.laserCooldown;
     }
 
-    playRandomShotSound();
+    playRandomShotSound(); // Play shooting sound
 }
 
 
