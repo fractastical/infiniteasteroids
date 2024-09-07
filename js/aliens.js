@@ -1,7 +1,10 @@
 const alienImage = new Image();
-alienImage.src = 'icons/little_alien_ship_green.png';
+alienImage.src = 'icons/alien-bullet-ship.png';
+// const alienBulletImage = new Image();
+// alienBulletImage.src = 'icons/alien_bullet_ship2.png';
+
 const bossAlienImage = new Image();
-bossAlienImage.src = 'icons/alien_boss_ship_green.png';
+bossAlienImage.src = 'icons/alien_boss_ship_2.png';
 const superBossAlienImage = new Image();
 superBossAlienImage.src = 'icons/cool_evil_alien_22.png';
 const megaBossAlienImage = new Image();

@@ -292,7 +292,7 @@ let asteroids = [];
 let gameLoop;
 let explosions = [];
 let lives = 3;
-let testMode = false;
+let testMode = true;
 
 if (testMode)
     lives = 1;
