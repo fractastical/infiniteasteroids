@@ -215,7 +215,7 @@ const Achievements = {
     destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game. Unlock Drone.' },
     // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
     complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
-    complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Normal Mode. Unlock Acid Bomb.' },
+    complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 30 in Normal Mode. Unlock Acid Bomb.' },
     acid_bomb_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/acid.png', description: 'Deal 2,500 Damage with Acid Bomb. Unlock Flamethrower.' },
     laser_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/deathray2.png', description: 'Deal 2,500 Damage with Laser. Unlock Explosive Laser.' },
     drone_damage: { reached: false, damage: 0, required: 1500, icon: 'achievements/storm_drone.png', description: 'Deal 1,500 Damage with Drone. Unlock Drone Army.' },
@@ -240,7 +240,7 @@ const Achievements = {
     alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. Laser level 2.' },
     million_score: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Get a million points. Invincibility Shield.' },
     wave_60_endless: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Reach wave 60 on Endless. Piercing Laser.' },
-    space_pizza: { reached: false, icon: 'icons/upgrades/pizza.png', description: 'Find the Space Pizza.' },
+    space_pizza: { reached: false, icon: 'icons/upgrades/pizza.png', description: 'Find the space pizza.' },
     space_pickle: { reached: false, icon: 'icons/upgrades/pickle.png', description: 'Find the deep space pickle.' },
     space_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the pixie.' },
     space_monkey: { reached: false, icon: 'icons/upgrades/monkey.png', description: 'Find the space monkey.' },
@@ -1759,10 +1759,11 @@ function populateAchievements() {
             availableSecondaryWeapons.push({ key: weaponKey, name: secondaryWeapons[weaponKey].name });
         }
     });
-    const totalSecondaryWeapons = Object.keys(secondaryWeapons).length;
+    let totalSecondaryWeapons = Object.keys(secondaryWeapons).length;
+    totalSecondaryWeapons += 5; // space passives
 
     const secondaryWeaponsHeader = document.createElement('h4');
-    secondaryWeaponsHeader.textContent = `Secondary Weapons (${availableSecondaryWeapons.length} / ${totalSecondaryWeapons})`;
+    secondaryWeaponsHeader.textContent = `Secondary Weapons and Passives (${availableSecondaryWeapons.length} / ${totalSecondaryWeapons})`;
     secondaryWeaponsContainer.appendChild(secondaryWeaponsHeader);
 
     availableSecondaryWeapons.forEach(weapon => {

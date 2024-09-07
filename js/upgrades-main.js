@@ -203,6 +203,7 @@ function checkFloatingIslandSpawn() {
     }
     if (testMode && !floatingIsland.active) {
 
+        console.log("reset");
         floatingIsland.active = true;
         floatingIsland.x = 0;
         floatingIsland.y = 0;
@@ -212,34 +213,67 @@ function checkFloatingIslandSpawn() {
 
 function updateFloatingIsland() {
     if (floatingIsland.active) {
-        // If these properties don't exist, initialize them
+        // Initialize properties if they don't exist
         if (typeof floatingIsland.angle === 'undefined') {
             floatingIsland.angle = 0;
-            floatingIsland.radius = Math.min(canvas.width, canvas.height) * 0.4; // Start from 40% of screen size
+            floatingIsland.radius = Math.min(canvas.width, canvas.height) * 0.4; // Start at 40% of screen size
             floatingIsland.centerX = canvas.width / 2;
             floatingIsland.centerY = canvas.height / 2;
             floatingIsland.spiralProgress = 0;
         }
 
-        // Update the angle and radius
-        floatingIsland.angle += 0.002; // Adjust for faster/slower rotation
-        floatingIsland.radius *= 0.9999; // Gradually decrease radius
-        floatingIsland.spiralProgress += 0.0001; // Progress towards center
+        // Check if radius and angle are finite
+        if (!isFinite(floatingIsland.radius) || !isFinite(floatingIsland.angle)) {
+            console.error('Invalid radius or angle:', floatingIsland.radius, floatingIsland.angle);
+            floatingIsland.radius = Math.min(canvas.width, canvas.height) * 0.4; // Reset to a valid radius
+            floatingIsland.angle = 0; // Reset angle
+        }
 
-        // Calculate new position
+        // Update the angle and radius
+        floatingIsland.angle += 0.002; // Adjust for rotation speed
+        floatingIsland.radius *= 0.9999; // Gradually decrease radius
+        floatingIsland.spiralProgress += 0.0001; // Move towards center
+
+        // Validate radius
+        if (floatingIsland.radius < 10) {
+            floatingIsland.radius = Math.min(canvas.width, canvas.height) * 0.4; // Reset radius when too small
+        }
+
+        // Calculate new position based on angle and radius
         floatingIsland.x = floatingIsland.centerX + floatingIsland.radius * Math.cos(floatingIsland.angle);
         floatingIsland.y = floatingIsland.centerY + floatingIsland.radius * Math.sin(floatingIsland.angle);
 
-        // Check if the island has reached the center
+        // If x or y is NaN, log error
+        if (!isFinite(floatingIsland.x) || !isFinite(floatingIsland.y)) {
+            console.error('Invalid position for floatingIsland:', floatingIsland.x, floatingIsland.y);
+            floatingIsland.x = floatingIsland.centerX; // Reset to center
+            floatingIsland.y = floatingIsland.centerY;
+        }
+
+        // Optionally: trigger an event when the island reaches the center
         if (floatingIsland.spiralProgress >= 1 || floatingIsland.radius < 10) {
-            // floatingIsland.active = false;
-            // You might want to trigger an event or reward here
+            console.log('Island has reached the center.');
+            // You can reset the island here, trigger an event, or reward
         }
     }
 }
+function resetFloatingIsland() {
+    floatingIsland.angle = Math.random() * Math.PI * 2; // Randomize starting angle
+    floatingIsland.radius = Math.min(canvas.width, canvas.height) * 0.4; // Reset radius to 40% of screen size
+    floatingIsland.spiralProgress = 0; // Reset spiral progress
+    floatingIsland.active = true; // Ensure the island is active again
+}
+
+
 
 function drawFloatingIsland() {
     if (floatingIsland.active) {
+        // Ensure the floatingIsland has valid properties
+        if (!isFinite(floatingIsland.x) || !isFinite(floatingIsland.y) || !isFinite(floatingIsland.width) || !isFinite(floatingIsland.height)) {
+            console.error('Invalid floatingIsland properties:', floatingIsland);
+            return; // Exit the function if the properties are invalid
+        }
+
         ctx.save();
 
         // Create a pulsating effect for the glow
@@ -248,6 +282,12 @@ function drawFloatingIsland() {
 
         // Increase glow size
         const glowSize = floatingIsland.width * 1.2; // 20% larger than the island
+
+        // Ensure the glow size is valid before creating the gradient
+        if (!isFinite(glowSize)) {
+            console.error('Invalid glowSize:', glowSize);
+            return; // Exit the function if the glowSize is invalid
+        }
 
         // Create a radial gradient for the glow
         const gradient = ctx.createRadialGradient(
@@ -280,42 +320,48 @@ function checkIslandCollision() {
         ship.y < floatingIsland.y + floatingIsland.height &&
         ship.y + ship.size > floatingIsland.y) {
         openUpgradeOptions();
+        // Respawn the island after collision
+        resetFloatingIsland();
     }
 }
 
 function openUpgradeOptions() {
-    pauseGame();
-    floatingIsland.active = false;
-    // floatingIsland.x = 0;
-    // floatingIsland.y = 0;
+    if (floatingIsland.active) {
+        floatingIsland.active = false;
+        pauseGame();
+        // floatingIsland.active = false;
+        // floatingIsland.x = 0;
+        // floatingIsland.y = 0;
 
-    const upgradeModal = document.createElement('div');
-    upgradeModal.id = 'upgradeModal';
-    upgradeModal.innerHTML = `
-      <h2>Choose Your Upgrade</h2>
-      <button id="megaUpgrade" class="upgrade-option">Mega Upgrade [1]</button>
-      <button id="restoreHealth" class="upgrade-option">Restore Health [2]</button>
-    `;
-    document.body.appendChild(upgradeModal);
+        const upgradeModal = document.createElement('div');
+        upgradeModal.id = 'upgradeModal';
+        upgradeModal.innerHTML = `
+          <h2>Choose Your Upgrade</h2>
+          <button id="megaUpgrade" class="upgrade-option">Mega Upgrade [1]</button>
+          <button id="restoreHealth" class="upgrade-option">Restore Health [2]</button>
+        `;
+        document.body.appendChild(upgradeModal);
 
-    // Add event listeners for mouse click
-    document.getElementById('megaUpgrade').addEventListener('click', selectMegaUpgrade);
-    document.getElementById('restoreHealth').addEventListener('click', restoreHealth);
+        // Add event listeners for mouse click
+        document.getElementById('megaUpgrade').addEventListener('click', selectMegaUpgrade);
+        document.getElementById('restoreHealth').addEventListener('click', restoreHealth);
 
-    // Clean up function
-    window.closeUpgradeOptions = function () {
-        const upgradeModal = document.getElementById('upgradeModal');
-        if (upgradeModal) {
-            document.body.removeChild(upgradeModal);
-        }
-        resumeGame();
-    };
+        // Clean up function
+        window.closeUpgradeOptions = function () {
+            const upgradeModal = document.getElementById('upgradeModal');
+            if (upgradeModal) {
+                document.body.removeChild(upgradeModal);
+            }
+            resumeGame();
+        };
+
+    }
 }
 
 
 function selectMegaUpgrade() {
     const availableMegaUpgrades = megaUpgrades.filter(upgrade => !activeMegaUpgrades.some(active => active.name === upgrade.name));
-    if (availableMegaUpgrades.length > 0) {
+    if (floatingIsland.active && availableMegaUpgrades.length > 0) {
         const megaUpgradeOptions = getRandomMegaUpgrades(availableMegaUpgrades, 3);
         displayMegaUpgradeOptions(megaUpgradeOptions);
     } else {

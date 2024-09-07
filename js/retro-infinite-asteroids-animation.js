@@ -9,10 +9,10 @@ const InfiniteAsteroidsAnimation = (function () {
         constructor(canvas) {
             this.canvas = canvas;
             this.x = -50; // Start off-screen
-            this.y = canvas.height / 2 + 40;
+            this.y = canvas.height / 2;
             this.width = 20;
             this.height = 20;
-            this.speed = 1.5;
+            this.speed = 3;
             this.lasers = [];
             this.laserLevel = 8;
             this.lastFireTime = 0;
@@ -403,12 +403,12 @@ const InfiniteAsteroidsAnimation = (function () {
             ctx = canvas.getContext('2d');
 
             canvas.width = 840;
-            canvas.height = 200;
+            canvas.height = 80;
 
             console.log(`Canvas size: ${canvas.width}x${canvas.height}`);
 
             await loadAlienImages();
-            createTextPath();
+            // createTextPath();
 
             // Initialize ship
             ship = new Ship(canvas);
