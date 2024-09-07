@@ -12,7 +12,7 @@ const InfiniteAsteroidsAnimation = (function () {
             this.y = canvas.height / 2;
             this.width = 20;
             this.height = 20;
-            this.speed = 3;
+            this.speed = 2;
             this.lasers = [];
             this.laserLevel = 8;
             this.lastFireTime = 0;
@@ -21,7 +21,7 @@ const InfiniteAsteroidsAnimation = (function () {
 
         update(currentTime) {
             this.x += this.speed;
-            if (this.x > this.canvas.width + 50) {
+            if (this.x > this.canvas.width + 550) {
                 this.x = -50; // Reset position when it goes off-screen
             }
 
