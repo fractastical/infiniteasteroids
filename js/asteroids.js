@@ -660,8 +660,9 @@ function triggerMegaFreeze() {
     applyMegaFreezeEffect(centerX, centerY, megaFreezeRadius, freezeDuration);
 
     // Add a blue tint to the screen
-    ctx.fillStyle = 'rgba(0, 191, 255, 0.2)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // looks green
+    // ctx.fillStyle = 'rgba(0, 191, 255, 0.2)';
+    // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Create a visual freeze effect
     // createFreezeVisualEffect(centerX, centerY, megaFreezeRadius);
