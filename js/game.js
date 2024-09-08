@@ -1451,7 +1451,7 @@ function handleKeyDown(event) {
             if (!loginFormOpen) toggleVolumeScreen();
         } else if (event.key === 'e' || event.key === 'E') {
             fireSecondaryWeapon(); // Use the selected secondary weapon
-        } else if (event.key === 'r' || event.key === 'R') {
+        } else if ((event.key === 'r' || event.key === 'R') && document.getElementById('levelUpModal' == 'none') {
             claimLevelUps(); // Claim level ups
         }
 
