@@ -516,29 +516,32 @@ function processAsteroidDeath(asteroid, fromArea = false) {
     createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints);
     asteroidsKilled++;
 
-    // Handle rare asteroid effects
-    switch (asteroid.type) {
-        case 'exploding':
-            const explosionRadius = 100;
-            const explosionDamage = asteroid.initialHitpoints;
-            if (!fromArea) {
+    //No special effects from area damage to prevent call stack overflow
+    if (!fromArea) {
+
+        // Handle rare asteroid effects
+        switch (asteroid.type) {
+            case 'exploding':
+                const explosionRadius = 100;
+                const explosionDamage = asteroid.initialHitpoints;
                 createAreaDamage(asteroid.x, asteroid.y, explosionRadius, explosionDamage);
                 createExplosion(asteroid.x, asteroid.y, 7, 2.5);
-            }
-            addRareAsteroidToDisplay(asteroid.type, '#FF0000');  // Red
-            break;
-        case 'freezing':
-            applyFreezeEffect(asteroid.x, asteroid.y);
-            addRareAsteroidToDisplay(asteroid.type, '#00BFFF');  // Blue
-            break;
-        case 'chainLightning':
-            fireChainLightningFromAsteroid(asteroid);
-            addRareAsteroidToDisplay(asteroid.type, '#FFFF00');  // Yellow
-            break;
-        case 'acid':
-            createAcidExplosion(asteroid.x, asteroid.y, 100, 1000, true);
-            addRareAsteroidToDisplay(asteroid.type, '#00FF00');  // Green
-            break;
+                addRareAsteroidToDisplay(asteroid.type, '#FF0000');  // Red
+                break;
+            case 'freezing':
+                applyFreezeEffect(asteroid.x, asteroid.y);
+                addRareAsteroidToDisplay(asteroid.type, '#00BFFF');  // Blue
+                break;
+            case 'chainLightning':
+                fireChainLightningFromAsteroid(asteroid);
+                addRareAsteroidToDisplay(asteroid.type, '#FFFF00');  // Yellow
+                break;
+            case 'acid':
+                createAcidExplosion(asteroid.x, asteroid.y, 100, 1000, true);
+                addRareAsteroidToDisplay(asteroid.type, '#00FF00');  // Green
+                break;
+        }
+
     }
 
 
