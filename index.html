@@ -91,6 +91,15 @@
     <div id="xpBar"></div>
   </div>
 
+  <div id="pastScoresModal" class="modal">
+    <div class="modal-content">
+      <h2>Past Scores</h2>
+      <ul id="pastScoresList"></ul>
+      <button id="closePastScoresModal">Close</button>
+    </div>
+  </div>
+
+
   <!-- ver version -->
   <div id="shipTypeContainer">
     <canvas id="miniShipPreview" width="40" height="40"></canvas>
@@ -281,6 +290,7 @@
             <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
             <BR /><button id="settings" onclick="toggleVolumeScreen()">Settings</button><BR />
             <button id="viewAllLeaderboardsButton">Leaderboards</button>
+            <button id="viewPastScoresButton">View Stats</button>
           </td>
           <td style="min-width: 250px;">
             <div id="achievementIconsList"></div>
@@ -1130,8 +1140,12 @@
           const gameAchievements = userData.games?.[gameId]?.achievements || {};
           Object.assign(Achievements, gameAchievements);
 
+          const userScores = userData.games?.[gameId]?.scores || [];
+          const last10Scores = userScores.slice(-10).reverse(); // Get the last 10 scores
+
           populateAchievements();
           populateSelectors();
+          // populateUserScores(last10Scores);
 
           // const gameUpgrades = userData.games?.[gameId]?.megaUpgrades || {};
           // Object.assign(megaUpgrades, gameUpgrades);
@@ -1381,7 +1395,81 @@
       return Achievements;
     }
 
+
+
     window.loadAchievements = loadAchievements;
+
+    function populateUserScores(scores) {
+      const pastScoresList = document.getElementById('pastScoresList');
+      pastScoresList.innerHTML = ''; // Clear previous content
+
+      scores.forEach(scoreData => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '20px';
+
+        // Display score, game mode, and session length
+        li.innerHTML = `
+      <h3>Score: ${scoreData.score}</h3>
+      <p>Mode: ${getGameModeName(scoreData.gameMode)}</p>
+      <p>Session Length: ${formatSessionLength(scoreData.sessionLength)}</p>
+    `;
+
+        // Add a detailed damage report
+        const damageReport = document.createElement('ul');
+        damageReport.classList.add('damage-report');  // Add a class for custom styling
+
+        scoreData.topWeapons.forEach(weaponData => {
+          const weapon = weaponData.weapon;
+          const damage = weaponData.damage;
+
+          // Find weapon info based on weapon name
+          const weaponInfo = weapons.find(w => w.name === weapon);
+
+          if (weaponInfo) {
+            const weaponLi = document.createElement('li');
+            weaponLi.style.display = 'flex';
+            weaponLi.style.alignItems = 'center';
+
+            // Display weapon icon
+            const icon = document.createElement('div');
+            icon.classList.add('weaponClassIcon', weaponInfo.icon);  // Use the class or image for the icon
+            icon.style.width = '24px';
+            icon.style.height = '24px';
+            icon.style.marginRight = '10px';
+
+            // Display weapon name and damage
+            const text = document.createElement('span');
+            text.textContent = `${weaponInfo.name}: ${damage}`;
+
+            weaponLi.appendChild(icon);
+            weaponLi.appendChild(text);
+            damageReport.appendChild(weaponLi);
+          }
+        });
+
+        li.appendChild(damageReport);
+        pastScoresList.appendChild(li);
+      });
+    }
+    // Helper function to format session length
+    function formatSessionLength(sessionLength) {
+      const minutes = Math.floor(sessionLength / 60000);
+      const seconds = ((sessionLength % 60000) / 1000).toFixed(0);
+      return `${minutes} min ${seconds < 10 ? '0' : ''}${seconds} sec`;
+    }
+
+    window.populateAchievements = populateAchievements;
+
+    document.getElementById('viewPastScoresButton').addEventListener('click', () => {
+      const pastScoresModal = document.getElementById('pastScoresModal');
+      pastScoresModal.style.display = 'block';
+    });
+
+    // Close the modal
+    document.getElementById('closePastScoresModal').addEventListener('click', () => {
+      const pastScoresModal = document.getElementById('pastScoresModal');
+      pastScoresModal.style.display = 'none';
+    });
 
   </script>
 

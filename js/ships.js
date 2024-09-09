@@ -43,43 +43,43 @@ function shootShotgunStyle() {
     ship.laserTimer = ship.laserCooldown * 2; // Slow down fire interval by half
 }
 
-shipSwitcher.addEventListener('click', (event) => {
+// shipSwitcher.addEventListener('click', (event) => {
 
-    showShipSelectionModal();
-    // console.log("switch");
-    // const shipNames = Object.keys(ships);
-    // let nextIndex = (shipNames.indexOf(currentShip) + 1) % shipNames.length;
-    // console.log(ships[shipNames[nextIndex]]);
+//     showShipSelectionModal();
+// console.log("switch");
+// const shipNames = Object.keys(ships);
+// let nextIndex = (shipNames.indexOf(currentShip) + 1) % shipNames.length;
+// console.log(ships[shipNames[nextIndex]]);
 
-    // console.log(shipNames);
-    // console.log(nextIndex);
+// console.log(shipNames);
+// console.log(nextIndex);
 
-    // // Find the next available ship based on the conditions
-    // while (!ships[shipNames[nextIndex]].condition()) {
-    //     console.log(ships[shipNames[nextIndex]]);
+// // Find the next available ship based on the conditions
+// while (!ships[shipNames[nextIndex]].condition()) {
+//     console.log(ships[shipNames[nextIndex]]);
 
-    //     nextIndex = (nextIndex + 1) % shipNames.length;
-    // }
-    // console.log(nextIndex);
+//     nextIndex = (nextIndex + 1) % shipNames.length;
+// }
+// console.log(nextIndex);
 
-    // currentShip = shipNames[nextIndex];
-    // console.log(currentShip);
+// currentShip = shipNames[nextIndex];
+// console.log(currentShip);
 
-    // const shipData = ships[currentShip];
-    // console.log(shipData);
+// const shipData = ships[currentShip];
+// console.log(shipData);
 
 
-    // shipSwitcher.innerHTML = `Ship type: ${shipData.name}`;
+// shipSwitcher.innerHTML = `Ship type: ${shipData.name}`;
 
-    // console.log(shipSwitcher);
+// console.log(shipSwitcher);
 
-    // // Update ship properties
-    // lives = shipData.lives;
-    // ship.laserLevel = shipData.laserLevel;
-    // ship.weaponSlots = shipData.weaponSlots;
-    // ship.upgradeSlots = shipData.upgradeSlots;
+// // Update ship properties
+// lives = shipData.lives;
+// ship.laserLevel = shipData.laserLevel;
+// ship.weaponSlots = shipData.weaponSlots;
+// ship.upgradeSlots = shipData.upgradeSlots;
 
-});
+// });
 
 
 
@@ -632,7 +632,7 @@ function updateShipTypeDisplay() {
     const shipTypeElement = document.getElementById('shipType');
     console.log(currentShip);
 
-    shipTypeElement.textContent = `Ship: ${ships[currentShip].name}`;
+    // shipTypeElement.textContent = `Ship: ${ships[currentShip].name}`;
     updateMiniShipPreview();
 }
 

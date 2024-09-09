@@ -1759,8 +1759,27 @@ function populateAchievements() {
             availableSecondaryWeapons.push({ key: weaponKey, name: secondaryWeapons[weaponKey].name });
         }
     });
-    let totalSecondaryWeapons = Object.keys(secondaryWeapons).length;
-    totalSecondaryWeapons += 5; // space passives
+
+
+    const spaceWeapons = [
+        { key: 'space_potato', name: 'Space Potato' },
+        { key: 'space_pizza', name: 'Space Pizza' },
+        { key: 'space_monkey', name: 'Space Monkey' },
+        { key: 'space_pixie', name: 'Space Pixie' },
+        { key: 'space_pickle', name: 'Space Pickle' }
+    ];
+
+    spaceWeapons.forEach(weapon => {
+        if (Achievements[weapon.key].reached) {
+            availableSecondaryWeapons.push({
+                key: weapon.key,
+                name: weapon.name,
+                icon: Achievements[weapon.key].icon
+            });
+        }
+    });
+
+    let totalSecondaryWeapons = Object.keys(secondaryWeapons).length + spaceWeapons.length;
 
     const secondaryWeaponsHeader = document.createElement('h4');
     secondaryWeaponsHeader.textContent = `Secondary Weapons and Passives (${availableSecondaryWeapons.length} / ${totalSecondaryWeapons})`;
@@ -1768,7 +1787,16 @@ function populateAchievements() {
 
     availableSecondaryWeapons.forEach(weapon => {
         const iconElement = document.createElement('div');
-        iconElement.classList.add('achievement-icon', `icon-secondary-weapon-${weapon.key}`);
+        iconElement.classList.add('achievement-icon');
+
+        if (weapon.icon) {
+            // Use the weapon's icon if available
+            iconElement.style.backgroundImage = `url('${weapon.icon}')`;
+        } else {
+            // Fallback to a generic icon class if no specific icon is available
+            iconElement.classList.add(`icon-secondary-weapon-${weapon.key}`);
+        }
+
         iconElement.title = weapon.name;
         secondaryWeaponsContainer.appendChild(iconElement);
     });
