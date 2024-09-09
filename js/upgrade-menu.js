@@ -111,15 +111,15 @@ function getRandomUpgrades(count) {
 
     //TODO: add achievements
     const comboWeapons = canActivateComboWeapons();
-    if (comboWeapons.flameChainLightning) {
-        availableUpgrades.push('Activate Flame Chain Lightning');
-    }
-    if (comboWeapons.explosiveDrone) {
-        availableUpgrades.push('Activate Explosive Drone');
-    }
-    if (comboWeapons.sonicBoomerang && Achievements.kill_50_aliens.reached) {
-        availableUpgrades.push('Activate Sonic Boomerang');
-    }
+    // if (comboWeapons.flameChainLightning) {
+    //     availableUpgrades.push('Activate Flame Chain Lightning');
+    // }
+    // if (comboWeapons.explosiveDrone) {
+    //     availableUpgrades.push('Activate Explosive Drone');
+    // }
+    // if (comboWeapons.sonicBoomerang && Achievements.kill_50_aliens.reached) {
+    //     availableUpgrades.push('Activate Sonic Boomerang');
+    // }
 
 
     const upgrades = [];
