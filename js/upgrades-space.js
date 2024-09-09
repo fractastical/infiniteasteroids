@@ -1,7 +1,7 @@
 const floatingUpgrades = [
     {
         name: 'Space Pizza',
-        icon: 'icons/upgrades/pizza.png',
+        icon: 'icons/upgrades/orbs/pizza_space_orb.png',
         description: 'Find the Space Pizza.',
         achievedKey: 'space_pizza',
         mode: ['ENDLESS_SLOW', 'PLANET'],
@@ -15,28 +15,28 @@ const floatingUpgrades = [
     },
     {
         name: 'Space Pixie',
-        icon: 'icons/upgrades/pixie.png',
+        icon: 'icons/upgrades/orbs/pink_pixie_orb2.png',
         description: 'Find the pixie.',
         achievedKey: 'space_pixie',
         mode: ['DEEP_SPACE', 'METEOR'],
     },
     {
         name: 'Space Monkey',
-        icon: 'icons/upgrades/monkey.png',
+        icon: 'icons/upgrades/orbs/space_monkey_orb.png',
         description: 'Find the space monkey.',
         achievedKey: 'space_monkey',
         mode: ['PLANET', 'METEOR'],
     },
     {
         name: 'Space Potato',
-        icon: 'icons/upgrades/potato.png',
+        icon: 'icons/upgrades/orbs/potato_orb.png',
         description: 'Find the space potato.',
         achievedKey: 'space_potato',
         mode: ['PLANET', 'DEEP_SPACE'],
     },
     {
         name: 'Dark Side',
-        icon: 'icons/upgrades/darkside.png',
+        icon: 'icons/upgrades/darkerdarkside_orb3.png',
         description: 'Make a deal with Dark Side.',
         achievedKey: 'dark_side',
         mode: ['METEOR', 'DEEP_SPACE'],

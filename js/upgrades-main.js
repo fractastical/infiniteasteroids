@@ -54,7 +54,7 @@ const megaUpgrades = [
     {
         name: 'Space Potato',
         description: 'Summons a space potato that orbits the ship, slowing down nearby objects.',
-        icon: 'icons/upgrades/potato.png',
+        icon: 'icons/upgrades/orbs/potato.png',
         cooldown: 60 * 60, // 60 seconds at 60 FPS
         cooldownTimer: 0,
         effect: function () {
@@ -140,7 +140,7 @@ const megaUpgrades = [
     {
         name: 'Damage Pickle',
         description: 'Increases all weapon damage by 5.',
-        icon: 'icons/upgrades/pickle.png', // Replace with appropriate icon
+        icon: 'icons/upgrades//orbs/pickle.png', // Replace with appropriate icon
         effect: function () {
             // damagePickle.active = true;
             damageBooster += 5; // Increase damage by 10
