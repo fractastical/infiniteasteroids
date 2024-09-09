@@ -173,7 +173,7 @@
         <button onclick="spawnMegaBossAlien()">Spawn Mega Boss Alien</button>
         <button onclick="spawnOctoBoss()">Spawn Octoboss</button>
 
-        <button onclick="spawnRandomUpgrade()">Spawn Octoboss</button>
+        <button onclick="spawnRandomUpgrade()">Space Upgrade</button>
 
 
         <button onclick="toggleInvincibility()">Toggle Invincibility</button>
@@ -242,6 +242,11 @@
         <button id="closeButton" onclick="toggleWeaponInfo()">Close</button>
     </div>
 
+    <div id="shipTypeContainer">
+        <canvas id="miniShipPreview" width="40" height="40"></canvas>
+        </span>
+    </div>
+
 
     <div id="levelUpModal" class="modal">
         <div class="modal-content">
@@ -278,7 +283,7 @@
     <script>
 
         const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+        let ctx = canvas.getContext('2d');
 
     </script>
 

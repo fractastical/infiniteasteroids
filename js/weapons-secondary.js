@@ -52,7 +52,7 @@ const secondaryWeapons = {
         name: 'Piercing Laser',
         damage: 100,
         cooldown: 400,
-        uses: 5,
+        uses: 3,
         isActive: false,
         isAvailable: () => Achievements.wave_60_endless.reached,
         activate: function () {

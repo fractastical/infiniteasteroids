@@ -169,7 +169,7 @@ let ship2 = {
     laserLevel: 2,
     accelerationLevel: 1,
     rotationSpeedLevel: 1,
-    maxBulletsLevel: 1,
+    maxBulletsLevel: 70,
     explosiveLaserLevel: 0,
     laserCooldown: 30,
     laserTimer: 0,
@@ -852,7 +852,7 @@ function processPlayerDeath() {
         // Delay the area damage after the explosion (e.g., 1 second delay = 1000 milliseconds)
         setTimeout(() => {
             createAreaDamage(ship.x, ship.y, 170, 10);
-        }, 1000); // 1000 milliseconds = 1 second delay
+        }, 200); // 1000 milliseconds = 1 second delay
     }
 
     playShipDestroyedSound();

@@ -101,8 +101,12 @@ function spawnRandomUpgrade() {
             return;
     }
 
+    console.log(spawnChance);
+
     // Random chance to spawn an upgrade
     if (Math.random() < spawnChance) {
+        console.log("spawning");
+
         const availableUpgrades = floatingUpgrades.filter(upgrade =>
             !Achievements[upgrade.achievedKey].reached && // Only spawn if not achieved
             upgrade.mode.includes(currentGameMode) // Only spawn in applicable game modes
