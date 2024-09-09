@@ -253,7 +253,7 @@
                 <canvas id="shipPreviewCanvas" width="100" height="100"></canvas>
               </div>
               <div class="option-group">
-                <p>Select Ship:</p>
+                <h4>Select Ship:</h4>
                 <div class="selector">
                   <button id="prevShipButton">&#60;</button>
                   <span id="selectedShip">Basic</span>
@@ -262,7 +262,7 @@
               </div>
 
               <div class="option-group">
-                <p>Select Secondary Weapon:</p>
+                <h4>Select Secondary Weapon:</h4>
                 <div class="selector">
                   <button id="prevSecondaryWeaponButton">&#60;</button>
                   <span id="selectedSecondaryWeapon">Bomb</span>
@@ -290,7 +290,7 @@
             <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
             <BR /><button id="settings" onclick="toggleVolumeScreen()">Settings</button><BR />
             <button id="viewAllLeaderboardsButton">Leaderboards</button>
-            <button id="viewPastScoresButton">View Stats</button>
+            <!-- <button id="viewPastScoresButton">View Stats</button> -->
           </td>
           <td style="min-width: 250px;">
             <div id="achievementIconsList"></div>
@@ -1145,7 +1145,7 @@
 
           populateAchievements();
           populateSelectors();
-          // populateUserScores(last10Scores);
+          populateUserScores(last10Scores);
 
           // const gameUpgrades = userData.games?.[gameId]?.megaUpgrades || {};
           // Object.assign(megaUpgrades, gameUpgrades);
@@ -1460,10 +1460,10 @@
 
     window.populateAchievements = populateAchievements;
 
-    document.getElementById('viewPastScoresButton').addEventListener('click', () => {
-      const pastScoresModal = document.getElementById('pastScoresModal');
-      pastScoresModal.style.display = 'block';
-    });
+    // document.getElementById('viewPastScoresButton').addEventListener('click', () => {
+    //   const pastScoresModal = document.getElementById('pastScoresModal');
+    //   pastScoresModal.style.display = 'block';
+    // });
 
     // Close the modal
     document.getElementById('closePastScoresModal').addEventListener('click', () => {

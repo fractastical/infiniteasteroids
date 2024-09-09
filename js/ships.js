@@ -1,6 +1,6 @@
 let starHawk = false;
-let currentShip = 'Basic';
-let currentShipType = 'Basic';
+let currentShip = 'basic';
+let currentShipType = 'basic';
 
 const shipSwitcher = document.getElementById('shipType');
 
@@ -109,7 +109,7 @@ let basicShip = {
 
 
 const ships = {
-    Basic: {
+    basic: {
         name: 'Basic',
         lives: 3,
         laserLevel: 1,
@@ -118,7 +118,7 @@ const ships = {
         draw: drawBasicShip,
         condition: () => true // Always available
     },
-    Starhawk: {
+    starhawk: {
         name: 'Starhawk',
         lives: 3,
         laserLevel: 5,
@@ -127,7 +127,7 @@ const ships = {
         draw: drawStarHawk,
         condition: () => Achievements.complete_meteor_easy_mode.reached
     },
-    VoidWarden: {
+    VvidWarden: {
         name: 'Void Warden',
         lives: 4,
         laserLevel: 4,
@@ -136,7 +136,7 @@ const ships = {
         draw: drawVoidWarden,
         condition: () => Achievements.complete_meteor_hero_mode.reached
     },
-    SolarPhoenix: {
+    solarPhoenix: {
         name: 'Solar Phoenix',
         lives: 5,
         laserLevel: 3,
@@ -145,7 +145,7 @@ const ships = {
         draw: drawSolarPhoenix,
         condition: () => Achievements.complete_planet_hard_mode.reached
     },
-    QuantumStriker: {
+    quantumStriker: {
         name: 'Quantum Striker',
         lives: 2,
         laserLevel: 6,
@@ -448,8 +448,8 @@ function drawOldQuantumStriker() {
 }
 
 
-function updateShipPreview(shipName = "Basic") {
-    console.log(`Attempting to update ship preview for: ${shipName}`);
+function updateShipPreview(shipKey = "basic") {
+    console.log(`Attempting to update ship preview for: ${shipKey}`);
 
     const canvas = document.getElementById('shipPreviewCanvas');
     if (!canvas) {
@@ -475,17 +475,17 @@ function updateShipPreview(shipName = "Basic") {
     // previewCtx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
 
     // Draw the selected ship
-    if (ships[shipName] && typeof ships[shipName].draw === 'function') {
-        console.log(`Drawing ship: ${shipName}`);
+    if (ships[shipKey] && typeof ships[shipKey].draw === 'function') {
+        console.log(`Drawing ship: ${shipKey}`);
         try {
             // Draw the ship at the center of the canvas
-            ships[shipName].draw();
+            ships[shipKey].draw();
             console.log(`Ship draw function called successfully`);
         } catch (error) {
-            console.error(`Error drawing ship "${shipName}":`, error);
+            console.error(`Error drawing ship "${shipKey}":`, error);
         }
     } else {
-        console.error(`Unable to draw ship "${shipName}". Ship not found or draw function not available.`);
+        console.error(`Unable to draw ship "${shipKey}". Ship not found or draw function not available.`);
     }
 
     ctx.restore();
@@ -494,10 +494,12 @@ function updateShipPreview(shipName = "Basic") {
     // Update the ship name display
     const shipNameElement = document.getElementById('selectedShip');
     if (shipNameElement) {
-        shipNameElement.textContent = shipName;
+        shipNameElement.textContent = ships[shipKey].name;
     } else {
         console.warn("Ship name display element not found");
     }
+    currentShip = shipKey;
+    updateMiniShipPreview(shipKey);
 }
 
 // Function to populate the selectors with unlocked options
@@ -592,7 +594,7 @@ function handleSelections() {
     // const selectedUpgrade = document.getElementById('upgradeSelector').value;
 
     // Apply selections to the game
-    currentShip = selectedShip;
+    // currentShip = selectedShip;
 
     selectSecondaryWeapon(selectedWeapon.toLowerCase());
     // applyUpgrade(selectedUpgrade);
@@ -602,7 +604,8 @@ function handleSelections() {
 
 }
 
-function updateMiniShipPreview() {
+function updateMiniShipPreview(shipKey = "basic") {
+    currentShip = shipKey;
     const canvas = document.getElementById('miniShipPreview');
     const miniCtx = canvas.getContext('2d');
 
@@ -612,14 +615,15 @@ function updateMiniShipPreview() {
     // Set up the context for drawing
     miniCtx.save();
     miniCtx.translate(canvas.width / 2, canvas.height / 2);
-    miniCtx.scale(1, 1); // Adjust scale if needed
+    miniCtx.scale(.7, .7); // Adjust scale if needed
 
     // Temporarily replace the global ctx with our mini context
     const originalCtx = ctx;
     ctx = miniCtx;
 
+    console.log(shipKey);
     // Draw the current ship
-    ships[currentShip].draw();
+    ships[shipKey].draw();
 
     // Restore the original context
     ctx = originalCtx;

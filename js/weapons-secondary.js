@@ -230,7 +230,7 @@ function selectShip(shipName) {
     });
 
     // Update the ship preview
-    updateShipPreview(shipName);
+    updateShipPreview(selectedShip.name);
 
     return selectedShip;
 }

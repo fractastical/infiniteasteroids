@@ -325,7 +325,8 @@ let droneUpgrades = {
 
 // Game loop
 function startGame() {
-    updateMiniShipPreview();
+    // updateMiniShipPreview();
+
     gameStartTime = Date.now();
     if (document.getElementById('endScreen'))
         document.getElementById('endScreen').style.display = 'none';
@@ -1315,7 +1316,7 @@ function drawScore() {
         if (waitAndClaimMode)
             document.getElementById('controlsInfo').textContent = "[r]edeem s[e]c se[t]tings [p]ause [i]nfo";
         else
-            document.getElementById('controlsInfo').textContent = "s[e]c se[t]tings [p]ause [i]nfo";
+            document.getElementById('controlsInfo').textContent = "s[e]condary se[t]tings [p]ause [i]nfo";
 
     } else {
         document.getElementById('controlsInfo').textContent = '';
@@ -1453,7 +1454,13 @@ function handleKeyDown(event) {
             fireSecondaryWeapon(); // Use the selected secondary weapon
         } else if ((event.key === 'r' || event.key === 'R') && document.getElementById('levelUpModal' == 'none')) {
             claimLevelUps(); // Claim level ups
+        } else if (event.key === 'o' || event.key === 'O') {
+
+            const pastScoresModal = document.getElementById('pastScoresModal');
+            pastScoresModal.style.display = 'block';
+
         }
+
 
         // Upgrade selection during level up
         if (document.getElementById('levelUpModal').style.display === 'block') {
