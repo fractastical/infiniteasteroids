@@ -512,7 +512,7 @@ let lastRareAsteroids = [];
 const maxRareAsteroidsDisplayed = 3;
 
 
-function processAsteroidDeath(asteroid) {
+function processAsteroidDeath(asteroid, fromArea = false) {
     createExplosion(asteroid.x, asteroid.y, asteroid.hitpoints);
     asteroidsKilled++;
 
@@ -521,8 +521,10 @@ function processAsteroidDeath(asteroid) {
         case 'exploding':
             const explosionRadius = 100;
             const explosionDamage = asteroid.initialHitpoints;
-            createAreaDamage(asteroid.x, asteroid.y, explosionRadius, explosionDamage);
-            createExplosion(asteroid.x, asteroid.y, 7, 2.5);
+            if (!fromArea) {
+                createAreaDamage(asteroid.x, asteroid.y, explosionRadius, explosionDamage);
+                createExplosion(asteroid.x, asteroid.y, 7, 2.5);
+            }
             addRareAsteroidToDisplay(asteroid.type, '#FF0000');  // Red
             break;
         case 'freezing':

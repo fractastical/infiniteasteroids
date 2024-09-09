@@ -227,9 +227,11 @@
       <script>
         document.addEventListener('DOMContentLoaded', function () {
           InfiniteAsteroidsAnimation.init('animationCanvas');
+          populateAchievements();
           populateSelectors();
           handleSelections();
           updateShipPreview();
+
 
         });
       </script>
@@ -281,7 +283,7 @@
             <BR /><button id="settings" onclick="toggleVolumeScreen()">Settings</button><BR />
             <button id="viewAllLeaderboardsButton">Leaderboards</button>
           </td>
-          <td>
+          <td style="min-width: 250px;">
             <div id="achievementIconsList"></div>
           </td>
         </tr>
@@ -1128,11 +1130,12 @@
           const gameAchievements = userData.games?.[gameId]?.achievements || {};
           Object.assign(Achievements, gameAchievements);
 
+          populateAchievements();
+          populateSelectors();
+
           // const gameUpgrades = userData.games?.[gameId]?.megaUpgrades || {};
           // Object.assign(megaUpgrades, gameUpgrades);
 
-          populateAchievements();
-          populateSelectors();
           // populateUpgrades();
         } else {
           console.log("No such document!");
@@ -1140,6 +1143,8 @@
       } catch (error) {
         console.error("Error getting user data:", error);
       }
+
+
     }
 
 

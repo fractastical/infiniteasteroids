@@ -1174,7 +1174,7 @@ function createAreaDamage(x, y, radius, damage = 1) {
             totalDamage += actualDamage;
 
             if (asteroid.hitpoints <= 0) {
-                // processAsteroidDeath(asteroid);
+                processAsteroidDeath(asteroid, true);
                 asteroids.splice(i, 1);
             }
 
@@ -1451,7 +1451,7 @@ function handleKeyDown(event) {
             if (!loginFormOpen) toggleVolumeScreen();
         } else if (event.key === 'e' || event.key === 'E') {
             fireSecondaryWeapon(); // Use the selected secondary weapon
-        } else if ((event.key === 'r' || event.key === 'R') && document.getElementById('levelUpModal' == 'none') {
+        } else if ((event.key === 'r' || event.key === 'R') && document.getElementById('levelUpModal' == 'none')) {
             claimLevelUps(); // Claim level ups
         }
 
@@ -1835,7 +1835,7 @@ function populateAchievements() {
     const technologiesCountElement = document.getElementById('technologiesCount');
     let totalTechnologyCount = 42; // 5 ships + 13 weapons + 7 boosters + 17 upgrades 
     // VERSION VERSION VERSION
-    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v 0.9717`;
+    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v 0.9719`;
 
     // Populate game modes
     populateGameModes();
