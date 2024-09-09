@@ -99,7 +99,7 @@ let basicShip = {
     laserLevel: 1,
     accelerationLevel: 1,
     rotationSpeedLevel: 1,
-    maxBulletsLevel: 1,
+    maxBulletsLevel: 70,
     explosiveLaserLevel: 0,
     laserCooldown: 30,
     laserTimer: 0,
