@@ -604,8 +604,8 @@ function handleSelections() {
 
 }
 
-function updateMiniShipPreview(shipKey = "basic") {
-    currentShip = shipKey;
+function updateMiniShipPreview() {
+    // currentShip = shipKey;
     const canvas = document.getElementById('miniShipPreview');
     const miniCtx = canvas.getContext('2d');
 
@@ -621,9 +621,9 @@ function updateMiniShipPreview(shipKey = "basic") {
     const originalCtx = ctx;
     ctx = miniCtx;
 
-    console.log(shipKey);
+    console.log(currentShip);
     // Draw the current ship
-    ships[shipKey].draw();
+    ships[currentShip].draw();
 
     // Restore the original context
     ctx = originalCtx;
