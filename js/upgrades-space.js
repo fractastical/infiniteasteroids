@@ -36,7 +36,7 @@ const floatingUpgrades = [
     },
     {
         name: 'Dark Side',
-        icon: 'icons/upgrades/darkerdarkside_orb3.png',
+        icon: 'icons/upgrades/orbs/darkerdarkside_orb3.png',
         description: 'Make a deal with Dark Side.',
         achievedKey: 'dark_side',
         mode: ['METEOR', 'DEEP_SPACE'],
@@ -52,6 +52,11 @@ const spawnChances = {
 };
 
 let activeFloatingUpgrades = [];
+
+function spawnRandomUpgrade100x() {
+    for (i = 0; i < 100; i++)
+        spawnRandomUpgrade();
+}
 
 function spawnRandomUpgrade() {
     const currentGameMode = currentMode;
@@ -108,8 +113,7 @@ function spawnRandomUpgrade() {
         console.log("spawning");
 
         const availableUpgrades = floatingUpgrades.filter(upgrade =>
-            !Achievements[upgrade.achievedKey].reached && // Only spawn if not achieved
-            upgrade.mode.includes(currentGameMode) // Only spawn in applicable game modes
+            !Achievements[upgrade.achievedKey].reached  // Only spawn if not achieved
         );
 
         if (availableUpgrades.length > 0) {
@@ -131,55 +135,58 @@ function createFloatingUpgrade(upgrade) {
 }
 
 function drawFloatingUpgrades() {
-    const time = Date.now() * 0.001; // Current time in seconds
-
-    activeFloatingUpgrades.forEach(upgrade => {
+    console.log("Drawing upgrades. Count:", activeFloatingUpgrades.length);
+    activeFloatingUpgrades.forEach((upgrade, index) => {
         ctx.save();
 
-        // Create a pulsating effect for the glow
-        const pulseFactor = Math.sin(time * 2) * 0.2 + 0.8; // Pulsate between 0.6 and 1.0
-
-        // Increase glow size
-        const glowSize = upgrade.size * 1.5; // 50% larger than the upgrade icon
-
-        // Create a radial gradient for the glow
+        // Draw glow
+        const glowSize = upgrade.size * 1.5;
         const gradient = ctx.createRadialGradient(
             upgrade.x + upgrade.size / 2, upgrade.y + upgrade.size / 2, 0,
             upgrade.x + upgrade.size / 2, upgrade.y + upgrade.size / 2, glowSize
         );
-        gradient.addColorStop(0, 'rgba(0, 150, 255, 0.8)'); // Intense blue
+        gradient.addColorStop(0, `rgba(0, 150, 255, ${upgrade.glowIntensity})`);
         gradient.addColorStop(1, 'rgba(0, 150, 255, 0)');
 
-        // Draw the glow
-        ctx.globalAlpha = 0.9 * pulseFactor;
         ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.arc(upgrade.x + upgrade.size / 2, upgrade.y + upgrade.size / 2,
             glowSize, 0, Math.PI * 2);
         ctx.fill();
 
-        // Reset global alpha and draw the upgrade icon
-        ctx.globalAlpha = 1;
+        // Draw upgrade icon
         const img = new Image();
         img.src = upgrade.icon;
-        ctx.drawImage(img, upgrade.x, upgrade.y, upgrade.size, upgrade.size);
+        img.onload = () => {
+            ctx.drawImage(img, upgrade.x, upgrade.y, upgrade.size, upgrade.size);
+            console.log(`Drew upgrade ${index} at:`, upgrade.x, upgrade.y);
+        };
+        img.onerror = () => {
+            console.error(`Failed to load image for upgrade ${index}:`, upgrade.icon);
+            // Draw a placeholder
+            ctx.fillStyle = 'red';
+            ctx.fillRect(upgrade.x, upgrade.y, upgrade.size, upgrade.size);
+        };
 
         ctx.restore();
     });
 }
+
+
+
 function collectFloatingUpgrade(upgrade) {
     addAchievement(upgrade.achievedKey);
     // Apply any specific effect from collecting the upgrade (optional)
     console.log(`${upgrade.name} collected!`);
 }
 
-function drawFloatingUpgrades() {
-    activeFloatingUpgrades.forEach(upgrade => {
-        const img = new Image();
-        img.src = upgrade.icon;
-        ctx.drawImage(img, upgrade.x, upgrade.y, upgrade.size, upgrade.size);
-    });
-}
+// function drawFloatingUpgrades() {
+//     activeFloatingUpgrades.forEach(upgrade => {
+//         const img = new Image();
+//         img.src = upgrade.icon;
+//         ctx.drawImage(img, upgrade.x, upgrade.y, upgrade.size, upgrade.size);
+//     });
+// }
 
 // Call this function at the start of each wave
 function checkForUpgradeSpawn() {
@@ -190,7 +197,7 @@ function checkForUpgradeSpawn() {
 
 // Call these functions in the game loop
 function updateAndDrawFloatingUpgrades() {
-    // updateFloatingUpgrades();
+    updateFloatingUpgrades();
     drawFloatingUpgrades();
 }
 
@@ -200,4 +207,57 @@ function addAchievement(key) {
         Achievements[key].reached = true;
         console.log(`Achievement unlocked: ${Achievements[key].description}`);
     }
+}
+
+function updateFloatingUpgrades() {
+    activeFloatingUpgrades.forEach(upgrade => {
+        // Initialize properties if they don't exist
+        if (typeof upgrade.angle === 'undefined') {
+            upgrade.angle = Math.random() * Math.PI * 2; // Random start angle
+            upgrade.radius = Math.min(canvas.width, canvas.height) * 0.4; // Start at 40% of screen size
+            upgrade.centerX = canvas.width / 2;
+            upgrade.centerY = canvas.height / 2;
+            upgrade.spiralProgress = 0;
+            upgrade.glowIntensity = 0.8; // Initial glow intensity
+        }
+
+        // Update the angle, radius, and spiral progress
+        upgrade.angle += 0.0002; // Adjust for rotation speed
+        upgrade.radius *= 0.99999; // Gradually decrease radius
+        upgrade.spiralProgress += 0.00001; // Move towards center
+
+        // Ensure radius doesn't get too small
+        if (upgrade.radius < 10) {
+            upgrade.radius = Math.min(canvas.width, canvas.height) * 0.4; // Reset radius when too small
+        }
+
+        // Calculate new position based on angle and radius
+        upgrade.x = upgrade.centerX + upgrade.radius * Math.cos(upgrade.angle);
+        upgrade.y = upgrade.centerY + upgrade.radius * Math.sin(upgrade.angle);
+
+        // Update glow effect
+        upgrade.glowIntensity = 0.6 + Math.sin(Date.now() * 0.005) * 0.2; // Pulsate between 0.4 and 0.8
+
+        // Check for collision with player
+        const dx = ship.x - upgrade.x;
+        const dy = ship.y - upgrade.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < ship.size / 2 + upgrade.size / 2) {
+            collectFloatingUpgrade(upgrade);
+            // Remove the collected upgrade from activeFloatingUpgrades
+            const index = activeFloatingUpgrades.indexOf(upgrade);
+            if (index > -1) {
+                activeFloatingUpgrades.splice(index, 1);
+            }
+        }
+
+        // Optionally: remove upgrade if it spirals too close to center
+        if (upgrade.spiralProgress >= 1 || upgrade.radius < 5) {
+            const index = activeFloatingUpgrades.indexOf(upgrade);
+            if (index > -1) {
+                activeFloatingUpgrades.splice(index, 1);
+            }
+        }
+    });
 }
