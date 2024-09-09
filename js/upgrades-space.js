@@ -135,7 +135,7 @@ function createFloatingUpgrade(upgrade) {
 }
 
 function drawFloatingUpgrades() {
-    console.log("Drawing upgrades. Count:", activeFloatingUpgrades.length);
+    // console.log("Drawing upgrades. Count:", activeFloatingUpgrades.length);
     activeFloatingUpgrades.forEach((upgrade, index) => {
         ctx.save();
 
