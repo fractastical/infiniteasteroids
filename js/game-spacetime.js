@@ -1,31 +1,42 @@
 function drawGravityWellBackground(ctx, canvasWidth, canvasHeight) {
     const centerX = canvasWidth / 2;
     const centerY = canvasHeight / 2;
-    const gridSize = 20;
+    const baseGridSize = 20;
     const holeRadius = 50;
     const distortionRadius = 150;
+    const distortionRadiusSquared = distortionRadius * distortionRadius;
+    const holeRadiusSquared = holeRadius * holeRadius;
+
+    // Adjust grid size based on FPS
+    const gridSize = fps < 30 ? baseGridSize * (30 / fps) : baseGridSize;
 
     ctx.save();
     ctx.strokeStyle = 'rgba(0, 100, 255, 0.5)';
     ctx.lineWidth = 1;
 
+    // Pre-calculate constants
+    const distortionFactor = 1 / (distortionRadius - holeRadius);
+    const distortionFactor2 = distortionFactor * distortionFactor;
+
     // Draw horizontal lines
     for (let y = 0; y < canvasHeight; y += gridSize) {
         ctx.beginPath();
-        for (let x = 0; x < canvasWidth; x += 2) {
+        const dy = y - centerY;
+        const dy2 = dy * dy;
+        for (let x = 0; x < canvasWidth; x += gridSize / 10) {
             const dx = x - centerX;
-            const dy = y - centerY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const distanceSquared = dx * dx + dy2;
 
-            if (distance < holeRadius) {
-                if (x === 0 || x === canvasWidth - 2) ctx.moveTo(x, y);
+            if (distanceSquared < holeRadiusSquared) {
+                if (x === 0 || x >= canvasWidth - gridSize / 10) ctx.moveTo(x, y);
                 continue;
             }
 
             let distortedY = y;
-            if (distance < distortionRadius) {
-                const distortionFactor = 1 - Math.pow((distance - holeRadius) / (distortionRadius - holeRadius), 2);
-                distortedY = y + (centerY - y) * distortionFactor * 0.5;
+            if (distanceSquared < distortionRadiusSquared) {
+                const distance = Math.sqrt(distanceSquared);
+                const distortionAmount = 1 - Math.pow((distance - holeRadius) * distortionFactor, 2);
+                distortedY = y + (centerY - y) * distortionAmount * 0.5;
             }
 
             if (x === 0) ctx.moveTo(x, distortedY);
@@ -37,20 +48,22 @@ function drawGravityWellBackground(ctx, canvasWidth, canvasHeight) {
     // Draw vertical lines
     for (let x = 0; x < canvasWidth; x += gridSize) {
         ctx.beginPath();
-        for (let y = 0; y < canvasHeight; y += 2) {
-            const dx = x - centerX;
+        const dx = x - centerX;
+        const dx2 = dx * dx;
+        for (let y = 0; y < canvasHeight; y += gridSize / 10) {
             const dy = y - centerY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const distanceSquared = dx2 + dy * dy;
 
-            if (distance < holeRadius) {
-                if (y === 0 || y === canvasHeight - 2) ctx.moveTo(x, y);
+            if (distanceSquared < holeRadiusSquared) {
+                if (y === 0 || y >= canvasHeight - gridSize / 10) ctx.moveTo(x, y);
                 continue;
             }
 
             let distortedX = x;
-            if (distance < distortionRadius) {
-                const distortionFactor = 1 - Math.pow((distance - holeRadius) / (distortionRadius - holeRadius), 2);
-                distortedX = x + (centerX - x) * distortionFactor * 0.5;
+            if (distanceSquared < distortionRadiusSquared) {
+                const distance = Math.sqrt(distanceSquared);
+                const distortionAmount = 1 - Math.pow((distance - holeRadius) * distortionFactor, 2);
+                distortedX = x + (centerX - x) * distortionAmount * 0.5;
             }
 
             if (y === 0) ctx.moveTo(distortedX, y);
@@ -76,7 +89,6 @@ function drawGravityWellBackground(ctx, canvasWidth, canvasHeight) {
 
     ctx.restore();
 }
-
 
 function drawGridBackground() {
     const gridSize = 50;
@@ -239,7 +251,8 @@ function drawWarpedBackground(ctx, canvasWidth, canvasHeight) {
 }
 
 function drawZigzagGridBackground(ctx, canvasWidth, canvasHeight) {
-    const gridSize = 40; // Size of each grid cell
+    const baseGridSize = 40; // Base size of each grid cell
+    const gridSize = fps < 30 ? baseGridSize * (30 / fps) : baseGridSize;
     const zigzagOffset = 10; // How far the zigzag deviates from straight line
     const lineColor = 'rgb(128, 0, 128)'; // Purple color
 
@@ -247,25 +260,34 @@ function drawZigzagGridBackground(ctx, canvasWidth, canvasHeight) {
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = 1;
 
-    // Function to draw a zigzag line
+    // Optimized function to draw a zigzag line
     function drawZigzagLine(startX, startY, endX, endY, zigzagFrequency) {
         ctx.beginPath();
         ctx.moveTo(startX, startY);
 
-        const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
         const steps = Math.floor(distance / zigzagFrequency);
 
+        if (steps === 0) {
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+            return;
+        }
+
+        const stepX = dx / steps;
+        const stepY = dy / steps;
+        const angle = Math.atan2(dy, dx) + Math.PI / 2;
+        const offsetX = zigzagOffset * Math.cos(angle);
+        const offsetY = zigzagOffset * Math.sin(angle);
+
         for (let i = 1; i <= steps; i++) {
-            const t = i / steps;
-            const x = startX + (endX - startX) * t;
-            const y = startY + (endY - startY) * t;
-            const offset = zigzagOffset * (i % 2 === 0 ? 1 : -1);
+            const x = startX + stepX * i;
+            const y = startY + stepY * i;
+            const offset = i % 2 === 0 ? 1 : -1;
 
-            const angle = Math.atan2(endY - startY, endX - startX) + Math.PI / 2;
-            const offsetX = offset * Math.cos(angle);
-            const offsetY = offset * Math.sin(angle);
-
-            ctx.lineTo(x + offsetX, y + offsetY);
+            ctx.lineTo(x + offsetX * offset, y + offsetY * offset);
         }
 
         ctx.lineTo(endX, endY);
@@ -287,7 +309,8 @@ function drawZigzagGridBackground(ctx, canvasWidth, canvasHeight) {
 
 
 function drawSubtleGridBackground(ctx, canvasWidth, canvasHeight) {
-    const gridSize = 40; // Size of each grid cell
+    const baseGridSize = 40; // Base size of each grid cell
+    const gridSize = fps < 30 ? baseGridSize * (30 / fps) : baseGridSize;
     const zigzagOffset = 3; // Reduced zigzag effect
     const lineColor = 'rgba(128, 0, 128, 0.3)'; // More transparent purple color
 
@@ -299,20 +322,29 @@ function drawSubtleGridBackground(ctx, canvasWidth, canvasHeight) {
         ctx.beginPath();
         ctx.moveTo(startX, startY);
 
-        const distance = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
         const steps = Math.floor(distance / zigzagFrequency);
 
+        if (steps === 0) {
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+            return;
+        }
+
+        const stepX = dx / steps;
+        const stepY = dy / steps;
+        const angle = Math.atan2(dy, dx) + Math.PI / 2;
+        const offsetX = zigzagOffset * Math.cos(angle);
+        const offsetY = zigzagOffset * Math.sin(angle);
+
         for (let i = 1; i <= steps; i++) {
-            const t = i / steps;
-            const x = startX + (endX - startX) * t;
-            const y = startY + (endY - startY) * t;
-            const offset = zigzagOffset * Math.sin(i * Math.PI); // Smoother zigzag
+            const x = startX + stepX * i;
+            const y = startY + stepY * i;
+            const offset = Math.sin(i * Math.PI); // Smoother zigzag
 
-            const angle = Math.atan2(endY - startY, endX - startX) + Math.PI / 2;
-            const offsetX = offset * Math.cos(angle);
-            const offsetY = offset * Math.sin(angle);
-
-            ctx.lineTo(x + offsetX, y + offsetY);
+            ctx.lineTo(x + offsetX * offset, y + offsetY * offset);
         }
 
         ctx.lineTo(endX, endY);
