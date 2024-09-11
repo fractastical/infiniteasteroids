@@ -1459,7 +1459,7 @@ function handleKeyDown(event) {
             if (!loginFormOpen) toggleVolumeScreen();
         } else if (event.key === 'e' || event.key === 'E') {
             fireSecondaryWeapon(); // Use the selected secondary weapon
-        } else if ((event.key === 'r' || event.key === 'R') && document.getElementById('levelUpModal' == 'none')) {
+        } else if ((event.key === 'r' || event.key === 'R')) {
             claimLevelUps(); // Claim level ups
         } else if (event.key === 'o' || event.key === 'O') {
 
@@ -1992,7 +1992,10 @@ let waitAndClaimMode = false;
 
 function claimLevelUps() {
 
+    console.log("r");
     if (unclaimedLevelUps > 0) {
+
+        console.log("p");
 
         let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
 
@@ -2004,6 +2007,8 @@ function claimLevelUps() {
 
         // Display the level-up modal
         const levelUpModal = document.getElementById('levelUpModal');
+        console.log(levelUpModal);
+
         const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
         document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
 
