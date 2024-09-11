@@ -2096,8 +2096,8 @@ function updateAchievementsAtEnd() {
             newlyUnlockedWeapons.push(achievementToWeaponMap[achievement]);
         }
     });
-    console.log(newlyUnlockedAchievements);
-    console.log(newlyUnlockedWeapons);
+    // console.log(newlyUnlockedAchievements);
+    // console.log(newlyUnlockedWeapons);
 
     return { newlyUnlockedAchievements, newlyUnlockedWeapons };
 }
