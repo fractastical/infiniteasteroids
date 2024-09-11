@@ -95,8 +95,8 @@ function spawnAliens(wave) {
 
 
     const aliensToSpawn = getAliensToSpawn(wave);
-    if (aliensToSpawn > 0)
-        playAlienEnteringSound();
+    // if (aliensToSpawn > 0)
+    //     playAlienEnteringSound();
 
     const cornerOffset = 50; // Adjust the offset value as needed
     const corners = [

@@ -258,6 +258,26 @@ function updatePlasmaShots() {
     }
 }
 
+function laser5x() {
+
+    for (i = 0; i < 5; i++) {
+        applyUpgrade('Increase Laser Level');
+        applyUpgrade('Decrease Laser Cooldown');
+    }
+}
+
+function sonic5x() {
+
+    for (i = 0; i < 5; i++) {
+        applyUpgrade('Increase Sonic Blast Range');
+        applyUpgrade('Decrease Sonic Blast Cooldown');
+        applyUpgrade('Increase Sonic Blast Damage');
+
+    }
+
+}
+
+
 function applyUpgrade(upgrade) {
     const now = Date.now();
 
@@ -440,9 +460,9 @@ function applyUpgrade(upgrade) {
             tripleTurret = true;
             break;
         case 'Drone Army':
+            droneArmy = true;
             buyDrone();
             buyBomberDrone();
-            droneArmy = true;
             break;
         case 'Damage Booster':
             damageBooster++;
@@ -497,6 +517,13 @@ function applyUpgrade(upgrade) {
         case 'Sonic Boom':
             activateComboSonicBoomerang();
             break;
+        case 'CryoBomb':
+            activateComboCryoBomb();
+            break;
+        case 'GravityBlast':
+            activateComboGravityBlast();
+            break;
+
     }
 
 }

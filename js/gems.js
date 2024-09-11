@@ -333,7 +333,7 @@ function drawGems() {
         // Create and draw the glow
         const gradient = ctx.createRadialGradient(
             gem.x, gem.y, 0,
-            gem.x, gem.y, gem.size
+            gem.x, gem.y, gem.size * 2
         );
         gradient.addColorStop(0, glowColor);
         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
