@@ -188,7 +188,7 @@
 
     <!-- <h3>Used Upgrades</h3>
       <ul id="upgradesList"></ul> -->
-    <p><button id="restartButton">Restart</button></p>
+    <p><button id="restartButton">Main Menu</button></p>
 
     <div id="leaderboard-container">
       <div id="leaderboard">
@@ -607,7 +607,8 @@
       activeMegaUpgrades = [];
       ship.lasers = [];
       lastRareAsteroids = [];
-
+      floatingIsland.active = false;
+      explosiveRockets = [];
       flamethrower = {
         cooldown: 10, // Cooldown time in frames
         timer: 0, // Current cooldown timer
@@ -665,6 +666,7 @@
       superbossAlien = null;
       megaBossAlien = null;
       octoBoss = null;
+
 
       alienLasers = [];
       droppedGems = [];
