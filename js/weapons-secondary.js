@@ -80,7 +80,7 @@ function selectSecondaryWeapon(weaponName) {
         Object.values(secondaryWeapons).forEach(weapon => weapon.deactivate());
         // Activate the selected weapon
         secondaryWeapons[weaponKey].isActive = true;
-        console.log(`${secondaryWeapons[weaponKey].name} selected as secondary weapon.`);
+        // console.log(`${secondaryWeapons[weaponKey].name} selected as secondary weapon.`);
     } else {
         console.error(`Secondary weapon "${weaponName}" not found.`);
     }

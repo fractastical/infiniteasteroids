@@ -395,7 +395,7 @@ const InfiniteAsteroidsAnimation = (function () {
 
     async function init(canvasId) {
         try {
-            console.log("Initializing animation");
+            // console.log("Initializing animation");
             canvas = document.getElementById(canvasId);
             if (!canvas) {
                 throw new Error(`Canvas with id '${canvasId}' not found`);
@@ -405,7 +405,7 @@ const InfiniteAsteroidsAnimation = (function () {
             canvas.width = 840;
             canvas.height = 80;
 
-            console.log(`Canvas size: ${canvas.width}x${canvas.height}`);
+            // console.log(`Canvas size: ${canvas.width}x${canvas.height}`);
 
             await loadAlienImages();
             // createTextPath();

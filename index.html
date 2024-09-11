@@ -432,9 +432,10 @@
       } else {
         // startGame();
       }
+      // await window.CrazyGames.SDK.init();
+
     });
 
-    await window.CrazyGames.SDK.init();
 
     document.getElementById('viewAllLeaderboardsButton').addEventListener('click', async () => {
       const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
@@ -591,6 +592,8 @@
 
     restartButton.addEventListener('click', () => {
       // restartButton.style.display = 'none';
+      console.log("restart click");
+
       document.getElementById('endScreen').style.display = 'none';
       startScreen.style.display = 'block';
 
@@ -643,7 +646,7 @@
       const technologiesCountElement = document.getElementById('technologiesCount');
       technologiesCountElement.textContent = `You have unlocked ${count} of 42 technologies`;
       document.getElementById('technologiesCount').style.display = 'block';
-      document.getElementById('shipType').style.display = 'block';
+      // document.getElementById('shipType').style.display = 'block';
 
       lives = 3;
       score = 0;

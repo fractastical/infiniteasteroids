@@ -154,9 +154,12 @@
 
         <div class="weapon-section">
             <h4>Combo Weapons</h4>
-            <button onclick="modifyWeapon('flameChainLightning.active', 1)">Activate Flame Chain Lightning</button>
-            <button onclick="modifyWeapon('explosiveDrone.active', 1)">Activate Explosive Drone</button>
-            <button onclick="modifyWeapon('sonicBoomerang.active', 1)">Activate Sonic Boomerang</button>
+            <button onclick="modifyWeapon('flameChainLightning.active', 1)">Chain of Flame</button>
+            <button onclick="modifyWeapon('explosiveDrone.active', 1)">Explo Drone</button>
+            <button onclick="modifyWeapon('sonicBoomerang.active', 1)">Sonic Boom</button>
+            <button onclick="activateComboCryoBomb()">Cryo Bomb</button>
+            <button onclick="activateComboGravityBlast()">Gravity Blast</button>
+
         </div>
 
     </div>
@@ -175,6 +178,8 @@
 
         <button onclick="spawnRandomUpgrade()">Space Upgrade</button>
         <button onclick="spawnRandomUpgrade100x()">Space Upgrade 100x</button>
+
+        <button onclick="MaxSonic()">Spawn Octoboss</button>
 
 
         <button onclick="toggleInvincibility()">Toggle Invincibility</button>
@@ -347,6 +352,7 @@
                     case 'sonicBoomerang':
                         activateComboSonicBoomerang();
                         break;
+
                 }
             } else {
                 if (obj[lastPart] === undefined) {

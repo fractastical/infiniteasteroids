@@ -449,7 +449,7 @@ function drawOldQuantumStriker() {
 
 
 function updateShipPreview(shipKey = "basic") {
-    console.log(`Attempting to update ship preview for: ${shipKey}`);
+    // console.log(`Attempting to update ship preview for: ${shipKey}`);
 
     const canvas = document.getElementById('shipPreviewCanvas');
     if (!canvas) {
@@ -457,7 +457,7 @@ function updateShipPreview(shipKey = "basic") {
         return;
     }
 
-    console.log(`Canvas dimensions: ${canvas.width}x${canvas.height}`);
+    // console.log(`Canvas dimensions: ${canvas.width}x${canvas.height}`);
 
     const previewCtx = canvas.getContext('2d');
     let oldContext = ctx;
@@ -476,11 +476,11 @@ function updateShipPreview(shipKey = "basic") {
 
     // Draw the selected ship
     if (ships[shipKey] && typeof ships[shipKey].draw === 'function') {
-        console.log(`Drawing ship: ${shipKey}`);
+        // console.log(`Drawing ship: ${shipKey}`);
         try {
             // Draw the ship at the center of the canvas
             ships[shipKey].draw();
-            console.log(`Ship draw function called successfully`);
+            // console.log(`Ship draw function called successfully`);
         } catch (error) {
             console.error(`Error drawing ship "${shipKey}":`, error);
         }
@@ -523,9 +523,9 @@ function populateSelectors() {
         }
     });
 
-    console.log("availableShips");
-    console.log(availableShips.length);
-    console.log(availableShips);
+    // console.log("availableShips");
+    // console.log(availableShips.length);
+    // console.log(availableShips);
 
     // Populate available secondary weapons
     Object.keys(secondaryWeapons).forEach(weaponKey => {
@@ -621,7 +621,7 @@ function updateMiniShipPreview() {
     const originalCtx = ctx;
     ctx = miniCtx;
 
-    console.log(currentShip);
+    // console.log(currentShip);
     // Draw the current ship
     ships[currentShip].draw();
 
@@ -634,7 +634,7 @@ function updateMiniShipPreview() {
 // Call this function whenever the ship changes or when the game starts
 function updateShipTypeDisplay() {
     const shipTypeElement = document.getElementById('shipType');
-    console.log(currentShip);
+    // console.log(currentShip);
 
     // shipTypeElement.textContent = `Ship: ${ships[currentShip].name}`;
     updateMiniShipPreview();

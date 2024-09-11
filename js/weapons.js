@@ -488,13 +488,13 @@ function applyUpgrade(upgrade) {
             chainLightningUpgrades.cooldown++;
             chainLightning.cooldown = Math.max(60, 300 - 30 * chainLightningUpgrades.cooldown);
             break;
-        case 'Activate Flame Chain Lightning':
+        case 'Chain of Flame':
             activateComboFlameChainLightning();
             break;
-        case 'Activate Explosive Drone':
+        case 'Explo Drone':
             activateComboExplosiveDrone();
             break;
-        case 'Activate Sonic Boomerang':
+        case 'Sonic Boom':
             activateComboSonicBoomerang();
             break;
     }
@@ -960,7 +960,7 @@ function handleLaserAlienCollision(laser, alien) {
     createExplosion(alien.x, alien.y);
     aliens.splice(aliens.indexOf(alien), 1);
     ship.lasers.splice(ship.lasers.indexOf(laser), 1);
-    console.log("removing laser collided in handleLaserAlienCollision");
+    // console.log("removing laser collided in handleLaserAlienCollision");
     increaseXP(300);
     aliensKilled++;
     score += 300; // Adjust the score as needed
@@ -978,7 +978,7 @@ function updateLasers() {
         // Remove lasers that are off-screen
         if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
             ship.lasers.splice(i, 1);
-            console.log("removing laser went off screen");
+            // console.log("removing laser went off screen");
             i--;
         }
     }
@@ -2318,7 +2318,7 @@ function checkLaserCollisions(lasers, isShip) {
                 score += 40;
                 createExplosion(swarmingalien.x, swarmingalien.y, 1);
                 lasers.splice(i, 1); // Remove laser
-                console.log("removing laser collided with swarming alien");
+                // console.log("removing laser collided with swarming alien");
 
                 break;
             }
@@ -2331,7 +2331,7 @@ function checkLaserCollisions(lasers, isShip) {
             const alien = aliens[j];
             if (isColliding(laser, alien)) {
                 handleLaserAlienCollision(laser, alien);
-                console.log("removing laser collided with  alien");
+                // console.log("removing laser collided with  alien");
                 break;
             }
         }
@@ -2352,7 +2352,7 @@ function checkLaserCollisions(lasers, isShip) {
                 score += 1000;
             }
             lasers.splice(i, 1); // Remove laser
-            console.log("removing laser collided with basic boss alien");
+            // console.log("removing laser collided with basic boss alien");
 
             break;
         }
@@ -2376,7 +2376,7 @@ function checkLaserCollisions(lasers, isShip) {
                 score += 100000;
             }
             lasers.splice(i, 1); // Remove laser
-            console.log("removing laser collided with super boss alien");
+            // console.log("removing laser collided with super boss alien");
 
             break;
         }
@@ -2420,7 +2420,7 @@ function checkLaserCollisions(lasers, isShip) {
                 score += 100000;
             }
             lasers.splice(i, 1); // Remove laser
-            console.log("removing laser collided with mega boss alien");
+            // console.log("removing laser collided with mega boss alien");
 
             break;
         }
@@ -2450,7 +2450,7 @@ function checkLaserCollisions(lasers, isShip) {
                 }
 
                 lasers.splice(i, 1);
-                console.log("removing laser collided with asteroid");
+                // console.log("removing laser collided with asteroid");
 
                 score += actualDamage * 50; // Increase score based on actual damage
 

@@ -226,7 +226,7 @@ const Achievements = {
     complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Hero Mode. Unlock Extra Life.' },
     kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
     kill_50_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 50 Aliens. Unlock Chain Lightning.' },
-    kill_500_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 500 Aliens. Unlock Sonic Boomerang.' },
+    kill_500_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 500 Aliens. Unlock Sonic Boom.' },
     complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Shower Easy Mode. Unlock Starhawk' },
     complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Shower Normal Mode. Unlock Double Turret.' },
     complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode. Unlock Solar Phoenix .' },
@@ -235,9 +235,9 @@ const Achievements = {
     complete_planet_normal_mode: { reached: false, icon: 'achievements/storm_medium.png', description: 'Planet Normal Mode. Unlock Triple Turret.' },
     complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode. Unlock Explosive Rocket.' },
     complete_planet_hero_mode: { reached: false, icon: 'achievements/planet_huge.png', description: 'Planet Hero Mode' },
-    alien_megaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien Boss. Laser level 2.' },
-    alien_supermegaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien SuperMegaBoss. Sonic level 2.' },
-    alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. Laser level 2.' },
+    alien_megaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien Boss. Chain of Flame.' },
+    alien_supermegaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien SuperMegaBoss. Explo Drone.' },
+    alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. CryoBomb.' },
     million_score: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Get a million points. Invincibility Shield.' },
     wave_60_endless: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Reach wave 60 on Endless. Piercing Laser.' },
     space_pizza: { reached: false, icon: 'icons/upgrades/pizza.png', description: 'Find the space pizza.' },
@@ -1539,7 +1539,6 @@ function countTechnologies() {
     if (Achievements.complete_planet_hard_mode.reached) count++;
     if (Achievements.drone_damage.reached) count++;
     if (Achievements.laser_damage.reached) count++;
-    if (Achievements.alien_megaboss_killed.reached) count++;
     if (Achievements.wave_60_endless.reached) count++;
     if (Achievements.million_score.reached) count++;
 

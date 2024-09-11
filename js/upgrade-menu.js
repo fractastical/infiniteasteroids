@@ -55,9 +55,9 @@ function getRandomUpgrades(count) {
         'Drone Army': { icon: 'icon-droneArmy', description: 'Multiply your drone force' },
         'Double Turret': { icon: 'icon-doubleTurret', description: 'Add a second defensive turret' },
         'Triple Turret': { icon: 'icon-tripleTurret', description: 'Deploy a third turret' },
-        'Activate Flame Chain Lightning': { icon: 'icon-flameChainLightning', description: 'Combine flame and lightning powers' },
-        'Activate Explosive Drone': { icon: 'icon-explosiveDrone', description: 'Equip drones with explosives' },
-        'Activate Sonic Boomerang': { icon: 'icon-sonicBoomerang', description: 'Launch sonic-powered boomerangs' }
+        'Chain of Flame': { icon: 'icon-flameChainLightning', description: 'Combine flame and lightning powers' },
+        'Explo Drone': { icon: 'icon-explosiveDrone', description: 'Equip drones with explosives' },
+        'Sonic Boom': { icon: 'icon-sonicBoomerang', description: 'Launch sonic-powered boomerangs' }
     };
 
 
@@ -111,15 +111,18 @@ function getRandomUpgrades(count) {
 
     //TODO: add achievements
     const comboWeapons = canActivateComboWeapons();
-    // if (comboWeapons.flameChainLightning) {
-    //     availableUpgrades.push('Activate Flame Chain Lightning');
-    // }
-    // if (comboWeapons.explosiveDrone) {
-    //     availableUpgrades.push('Activate Explosive Drone');
-    // }
-    // if (comboWeapons.sonicBoomerang && Achievements.kill_50_aliens.reached) {
-    //     availableUpgrades.push('Activate Sonic Boomerang');
-    // }
+    if (!comboFlameChainLightningActive && comboWeapons.flameChainLightning && Achievements.alien_supermegaboss_killed) {
+        availableUpgrades.push('Chain of Flame');
+    }
+    if (!comboExplosiveDroneActive && comboWeapons.explosiveDrone && Achievements.alien_megaboss_killed) {
+        availableUpgrades.push('Explo Drone');
+    }
+    if (!comboSonicBoomerangActive && comboWeapons.sonicBoomerang && Achievements.kill_500_aliens.reached) {
+        availableUpgrades.push('Sonic Boom');
+    }
+    if (!comboCryoBombActive && comboWeapons.cryoBomb && Achievements.alien_octopus_killed.reached) {
+        availableUpgrades.push('CryoBomb');
+    }
 
 
     const upgrades = [];
