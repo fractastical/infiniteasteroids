@@ -659,7 +659,7 @@ function updateAlienLasers() {
     // console.log("l");
 
     for (let i = alienLasers.length - 1; i >= 0; i--) {
-        console.log(i);
+        // console.log(i);
         const laser = alienLasers[i];
         laser.x += laser.dx;
         laser.y += laser.dy;

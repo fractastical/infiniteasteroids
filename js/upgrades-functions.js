@@ -28,6 +28,155 @@ const timeDilation = {
     }
 };
 
+const spacePizza = {
+    active: false,
+    collectedWave: 0,
+    wavesPerExtraLife: 10,
+    activate: function () {
+        this.active = true;
+        this.collectedWave = wave;
+        console.log("Space Pizza collected on wave: " + this.collectedWave);
+    },
+    update: function () {
+        if (this.active) {
+            this.checkForExtraLife();
+        }
+    },
+    checkForExtraLife: function () {
+        const wavesSinceCollection = wave - this.collectedWave;
+        if (wavesSinceCollection > 0 && wavesSinceCollection % this.wavesPerExtraLife === 0) {
+            this.grantExtraLife();
+        }
+    },
+    grantExtraLife: function () {
+        lives++;
+        console.log("Extra life granted! Current lives: " + lives);
+    }
+};
+
+// const spacePickle = {
+//     active: false,
+//     duration: 300,
+//     timer: 0,
+//     shieldStrength: 2,
+//     activate: function() {
+//         this.active = true;
+//         this.timer = this.duration;
+//         ship.shieldStrength *= this.shieldStrength;
+//     },
+//     update: function() {
+//         if (this.active) {
+//             this.timer--;
+//             if (this.timer <= 0) {
+//                 this.deactivate();
+//             }
+//         }
+//     },
+//     deactivate: function() {
+//         this.active = false;
+//         ship.shieldStrength /= this.shieldStrength;
+//     }
+// };
+
+
+
+const spacePixie = {
+    active: false,
+    duration: 450,
+    timer: 0,
+    fireRateBoost: 2,
+    activate: function () {
+        this.active = true;
+        this.timer = this.duration;
+        ship.fireRate *= this.fireRateBoost;
+    },
+    update: function () {
+        if (this.active) {
+            this.timer--;
+            if (this.timer <= 0) {
+                this.deactivate();
+            }
+        }
+    },
+    deactivate: function () {
+        this.active = false;
+        ship.fireRate /= this.fireRateBoost;
+    }
+};
+
+
+const spaceMonkey = {
+    active: false,
+    duration: 900,
+    timer: 0,
+    monkeyAsteroids: [],
+    activate: function () {
+        this.active = true;
+        this.timer = this.duration;
+        this.spawnMonkeyAsteroids();
+    },
+    update: function () {
+        if (this.active) {
+            this.timer--;
+            this.updateMonkeyAsteroids();
+            if (this.timer <= 0) {
+                this.deactivate();
+            }
+        }
+    },
+    spawnMonkeyAsteroids: function () {
+        for (let i = 0; i < 5; i++) {
+            this.monkeyAsteroids.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: 30,
+                speed: 2,
+                angle: Math.random() * Math.PI * 2
+            });
+        }
+    },
+    updateMonkeyAsteroids: function () {
+        // Implementation for updating monkey asteroids
+    },
+    deactivate: function () {
+        this.active = false;
+        this.monkeyAsteroids = [];
+    }
+};
+
+
+const darkSide = {
+    active: false,
+    duration: 600,
+    timer: 0,
+    damageMultiplier: 2,
+    activate: function () {
+        this.active = true;
+        this.timer = this.duration;
+        ship.laserDamage *= this.damageMultiplier;
+        ship.color = 'purple';
+    },
+    update: function () {
+        if (this.active) {
+            this.timer--;
+            if (this.timer <= 0) {
+                this.deactivate();
+            }
+            if (Math.random() < 0.05) {
+                this.spawnDarkEnergyBall();
+            }
+        }
+    },
+    spawnDarkEnergyBall: function () {
+        // Implement dark energy ball spawning
+    },
+    deactivate: function () {
+        this.active = false;
+        ship.laserDamage /= this.damageMultiplier;
+        ship.color = 'white';
+    }
+};
+
 
 const gravityBomb = {
     radius: 200,

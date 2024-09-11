@@ -14,48 +14,60 @@ floatingIsland.image.src = 'icons/gold-ore.png';
 
 // Mega Upgrades
 const megaUpgrades = [
-    // {
-    //     name: 'Glitch Effect',
-    //     description: 'Randomly causes asteroids to malfunction and break apart.',
-    //     icon: 'icons/upgrades/mainframe.png',
-    //     cooldown: 30 * 60, // 30 seconds at 60 FPS
-    //     cooldownTimer: 0,
-    //     effect: function () {
-    //         glitchEffect.active = true;
-    //         this.cooldownTimer = this.cooldown;
-    //     },
-    //     update: function () {
-    //         if (this.cooldownTimer > 0) {
-    //             this.cooldownTimer--;
-    //             glitchEffect.update();
-    //         } else {
-    //             glitchEffect.active = false;
-    //         }
-    //     }
-    // },
-    // {
-    //     name: 'Time Dilation',
-    //     description: 'Slows down time, making it easier to evade asteroids and aim.',
-    //     icon: 'icons/upgrades/void.png',
-    //     cooldown: 45 * 60, // 45 seconds at 60 FPS
-    //     cooldownTimer: 0,
-    //     effect: function () {
-    //         timeDilation.active = true;
-    //         timeDilation.timer = timeDilation.duration;
-    //         this.cooldownTimer = this.cooldown;
-    //     },
-    //     update: function () {
-    //         if (this.cooldownTimer > 0) {
-    //             this.cooldownTimer--;
-    //         }
-    //         timeDilation.update();
-    //     }
-    // },
+    {
+        name: 'Space Pizza',
+        description: 'Grants an extra life every 10 waves.',
+        icon: 'icons/upgrades/orbs/pizza_space_orb.png',
+        achievedKey: 'space_pizza',
+        effect: function () {
+            spacePizza.activate();
+        },
+        update: function () {
+            spacePizza.update();
+        }
+    },
+    {
+        name: 'Space Pickle',
+        description: 'Temporarily increases the ship\'s shield strength.',
+        icon: 'icons/upgrades/pickle.png',
+        achievedKey: 'space_pickle',
+        effect: function () {
+            spacePickle.activate();
+        },
+        update: function () {
+            spacePickle.update();
+        }
+    },
+    {
+        name: 'Space Pixie',
+        description: 'Temporarily increases the ship\'s fire rate.',
+        icon: 'icons/upgrades/orbs/pink_pixie_orb2.png',
+        achievedKey: 'space_pixie',
+        effect: function () {
+            spacePixie.activate();
+        },
+        update: function () {
+            spacePixie.update();
+        }
+    },
+    {
+        name: 'Space Monkey',
+        description: 'Spawns friendly "monkey asteroids" that destroy enemy asteroids.',
+        icon: 'icons/upgrades/orbs/space_monkey_orb.png',
+        achievedKey: 'space_monkey',
+        effect: function () {
+            spaceMonkey.activate();
+        },
+        update: function () {
+            spaceMonkey.update();
+        }
+    },
     {
         name: 'Space Potato',
         description: 'Summons a space potato that orbits the ship, slowing down nearby objects.',
-        icon: 'icons/upgrades/orbs/potato.png',
-        cooldown: 60 * 60, // 60 seconds at 60 FPS
+        icon: 'icons/upgrades/orbs/potato_orb.png',
+        achievedKey: 'space_potato',
+        cooldown: 60 * 60,
         cooldownTimer: 0,
         effect: function () {
             spacePotato.activate();
@@ -70,6 +82,55 @@ const megaUpgrades = [
             }
         },
         draw: spacePotato.draw
+    },
+    {
+        name: 'Dark Side',
+        description: 'Temporarily increases laser damage and spawns dark energy balls.',
+        icon: 'icons/upgrades/orbs/darkerdarkside_orb3.png',
+        achievedKey: 'dark_side',
+        effect: function () {
+            darkSide.activate();
+        },
+        update: function () {
+            darkSide.update();
+        }
+    },
+    {
+        name: 'Glitch Effect',
+        description: 'Randomly causes asteroids to malfunction and break apart.',
+        icon: 'icons/upgrades/mainframe.png',
+        cooldown: 30 * 60, // 30 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            glitchEffect.active = true;
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+                glitchEffect.update();
+            } else {
+                glitchEffect.active = false;
+            }
+        }
+    },
+    {
+        name: 'Time Dilation',
+        description: 'Slows down time, making it easier to evade asteroids and aim.',
+        icon: 'icons/upgrades/void.png',
+        cooldown: 45 * 60, // 45 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            timeDilation.active = true;
+            timeDilation.timer = timeDilation.duration;
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+            }
+            timeDilation.update();
+        }
     },
     {
         name: 'Gravity Bomb',
@@ -88,22 +149,22 @@ const megaUpgrades = [
             gravityBomb.update();
         }
     },
-    // {
-    //     name: 'Asteroid Splitter',
-    //     description: 'Randomly splits asteroids into smaller pieces.',
-    //     icon: 'icons/upgrades/asteroid_splitter_22.png', // Replace with appropriate icon
-    //     cooldown: 50 * 60, // 50 seconds at 60 FPS
-    //     cooldownTimer: 0,
-    //     effect: function () {
-    //         this.cooldownTimer = this.cooldown;
-    //     },
-    //     update: function () {
-    //         if (this.cooldownTimer > 0) {
-    //             this.cooldownTimer--;
-    //             asteroidSplitter.update();
-    //         }
-    //     }
-    // },
+    {
+        name: 'Asteroid Splitter',
+        description: 'Randomly splits asteroids into smaller pieces.',
+        icon: 'icons/upgrades/asteroid_splitter_22.png', // Replace with appropriate icon
+        cooldown: 50 * 60, // 50 seconds at 60 FPS
+        cooldownTimer: 0,
+        effect: function () {
+            this.cooldownTimer = this.cooldown;
+        },
+        update: function () {
+            if (this.cooldownTimer > 0) {
+                this.cooldownTimer--;
+                asteroidSplitter.update();
+            }
+        }
+    },
     {
         name: 'Quantum Teleporter',
         description: 'Teleports the nearest asteroid to a random location around the ship.',
@@ -140,7 +201,7 @@ const megaUpgrades = [
     {
         name: 'Damage Pickle',
         description: 'Increases all weapon damage by 5.',
-        icon: 'icons/upgrades//orbs/pickle.png', // Replace with appropriate icon
+        icon: 'icons/upgrades/orbs/pickle.png', // Replace with appropriate icon
         effect: function () {
             // damagePickle.active = true;
             damageBooster += 5; // Increase damage by 10
@@ -172,14 +233,18 @@ function drawActiveMegaUpgrades() {
         const x = startX;
         const y = startY + (upgradeSize + padding) * index;
 
+        ctx.save();  // Save the current canvas state
+
         // Draw background
         ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.fillRect(x, y, upgradeSize, upgradeSize);
 
-        // Draw icon
-        const icon = new Image();
-        icon.src = upgrade.icon;
-        ctx.drawImage(icon, x, y, upgradeSize, upgradeSize);
+        // Draw icon (if no custom draw function)
+        if (!upgrade.draw) {
+            const icon = new Image();
+            icon.src = upgrade.icon;
+            ctx.drawImage(icon, x, y, upgradeSize, upgradeSize);
+        }
 
         // Draw cooldown overlay if applicable
         if (upgrade.cooldown && upgrade.cooldownTimer) {
@@ -187,6 +252,15 @@ function drawActiveMegaUpgrades() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             ctx.fillRect(x, y + upgradeSize * (1 - cooldownPercentage), upgradeSize, upgradeSize * cooldownPercentage);
         }
+
+        // Call the upgrade's custom draw function if it exists
+        if (typeof upgrade.draw === 'function') {
+            ctx.translate(x, y);  // Translate context to upgrade's position
+            upgrade.draw(ctx, upgradeSize);  // Pass context and size to the draw function
+            ctx.translate(-x, -y);  // Translate back
+        }
+
+        ctx.restore();  // Restore the canvas state
     });
 }
 
