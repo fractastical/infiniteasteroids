@@ -258,25 +258,6 @@ function updatePlasmaShots() {
     }
 }
 
-function laser5x() {
-
-    for (i = 0; i < 5; i++) {
-        applyUpgrade('Increase Laser Level');
-        applyUpgrade('Decrease Laser Cooldown');
-    }
-}
-
-function sonic5x() {
-
-    for (i = 0; i < 5; i++) {
-        applyUpgrade('Increase Sonic Blast Range');
-        applyUpgrade('Decrease Sonic Blast Cooldown');
-        applyUpgrade('Increase Sonic Blast Damage');
-
-    }
-
-}
-
 
 function applyUpgrade(upgrade) {
     const now = Date.now();
@@ -1793,12 +1774,24 @@ function shootLasers() {
         const laserY = frontY - laserSize / 2;
 
         // Push the new laser to the array, with its position, size, and rotation
-        ship.lasers.push({
-            x: laserX,
-            y: laserY,
-            rotation: ship.rotation,
-            size: laserSize
-        });
+
+        if (laserSize > 5) {
+            ship.lasers.push({
+                x: ship.x,
+                y: ship.y,
+                rotation: ship.rotation,
+                size: laserSize
+            });
+
+        } else {
+
+            ship.lasers.push({
+                x: laserX,
+                y: laserY,
+                rotation: ship.rotation,
+                size: laserSize
+            });
+        }
 
         // Reset the laser cooldown timer
         ship.laserTimer = ship.laserCooldown;
