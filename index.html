@@ -628,6 +628,7 @@
         cooldown: 1
       };
 
+      resetPerformanceMonitoring();
 
       turret = {
         x: 0,
@@ -1166,7 +1167,60 @@
         console.error("Error getting user data:", error);
       }
 
+    }
 
+
+    function populateUserSessions(sessions) {
+      const pastSessionsList = document.getElementById('pastScoresList');
+      pastSessionsList.innerHTML = ''; // Clear previous content
+
+      sessions.forEach(session => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '20px';
+
+        // Display score, game mode, and session length
+        li.innerHTML = `
+      <h3>Score: ${session.score}</h3>
+      <p>Mode: ${getGameModeName(session.gameMode)}</p>
+      <p>Session Length: ${formatSessionLength(session.sessionLength)}</p>
+    `;
+
+        // Add a detailed damage report
+        const damageReport = document.createElement('ul');
+        damageReport.classList.add('damage-report');  // Add a class for custom styling
+
+        session.topWeapons.forEach(weaponData => {
+          const weapon = weaponData.weapon;
+          const damage = weaponData.damage;
+
+          // Find weapon info based on weapon name
+          const weaponInfo = weapons.find(w => w.name === weapon);
+
+          if (weaponInfo) {
+            const weaponLi = document.createElement('li');
+            weaponLi.style.display = 'flex';
+            weaponLi.style.alignItems = 'center';
+
+            // Display weapon icon
+            const icon = document.createElement('div');
+            icon.classList.add('weaponClassIcon', weaponInfo.icon);
+            icon.style.width = '24px';
+            icon.style.height = '24px';
+            icon.style.marginRight = '10px';
+
+            // Display weapon name and damage
+            const text = document.createElement('span');
+            text.textContent = `${weaponInfo.name}: ${damage}`;
+
+            weaponLi.appendChild(icon);
+            weaponLi.appendChild(text);
+            damageReport.appendChild(weaponLi);
+          }
+        });
+
+        li.appendChild(damageReport);
+        pastSessionsList.appendChild(li);
+      });
     }
 
 
@@ -1205,8 +1259,9 @@
             topWeapons: gameData.topWeapons,
             sessionLength: sessionLength,
             loginTime: loginTime,
-            fpsDrops: halfFPSCount,
-            gameMode: currentMode
+            fpsDrops: totalFpsDrops,
+            gameMode: currentMode,
+            megaUpgrades: activeMegaUpgradeNames
             // Add the game mode to the saved data
           }),
           [`games.${gameName}.achievements`]: updatedAchievements,
@@ -1425,34 +1480,37 @@
         // Add a detailed damage report
         const damageReport = document.createElement('ul');
         damageReport.classList.add('damage-report');  // Add a class for custom styling
+        console.log(scoreData.topWeapons.length);
 
         scoreData.topWeapons.forEach(weaponData => {
           const weapon = weaponData.weapon;
           const damage = weaponData.damage;
+          console.log(weapon);
 
           // Find weapon info based on weapon name
           const weaponInfo = weapons.find(w => w.name === weapon);
+          console.log(weaponInfo);
 
-          if (weaponInfo) {
-            const weaponLi = document.createElement('li');
-            weaponLi.style.display = 'flex';
-            weaponLi.style.alignItems = 'center';
+          // if (weaponInfo) {
+          const weaponLi = document.createElement('li');
+          weaponLi.style.display = 'flex';
+          weaponLi.style.alignItems = 'center';
 
-            // Display weapon icon
-            const icon = document.createElement('div');
-            icon.classList.add('weaponClassIcon', weaponInfo.icon);  // Use the class or image for the icon
-            icon.style.width = '24px';
-            icon.style.height = '24px';
-            icon.style.marginRight = '10px';
+          // Display weapon icon
+          // const icon = document.createElement('div');
+          // icon.classList.add('weaponClassIcon', weaponInfo.icon);  // Use the class or image for the icon
+          // icon.style.width = '24px';
+          // icon.style.height = '24px';
+          // icon.style.marginRight = '10px';
 
-            // Display weapon name and damage
-            const text = document.createElement('span');
-            text.textContent = `${weaponInfo.name}: ${damage}`;
+          // Display weapon name and damage
+          const text = document.createElement('span');
+          text.textContent = `${weapon}: ${damage}`;
 
-            weaponLi.appendChild(icon);
-            weaponLi.appendChild(text);
-            damageReport.appendChild(weaponLi);
-          }
+          // weaponLi.appendChild(icon);
+          weaponLi.appendChild(text);
+          damageReport.appendChild(weaponLi);
+          // }
         });
 
         li.appendChild(damageReport);

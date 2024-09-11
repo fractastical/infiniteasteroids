@@ -841,7 +841,7 @@ function update() {
 function processPlayerDeath() {
     resetShip(false);
 
-    xpToNextLevel = 0;
+    xp = 0;
     updateXPBar();
 
     if (!invincible) {
@@ -2045,7 +2045,6 @@ function levelUp() {
     let prevLevelUp = lastLevelUp;
     lastLevelUp = Date.now();
     console.log(lastLevelUp - prevLevelUp);
-    xp = 0;  // Reset XP
 
     if (wave > 75) {
         bonuslevelUpXPMultiplier = 1.5;
@@ -2053,8 +2052,6 @@ function levelUp() {
         bonuslevelUpXPMultiplier = 1.2;
     }
 
-    xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier * bonuslevelUpXPMultiplier);
-    updateXPBar();
 
     // Determine number of upgrades to show
     if (!waitAndClaimMode) {
@@ -2084,6 +2081,10 @@ function levelUp() {
         invincibilityTimer = invincibilityDuration;
 
     }
+
+    xp = 0;  // Reset XP
+    xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier * bonuslevelUpXPMultiplier);
+    updateXPBar();
 
     // Play level up sound (if you have one)
     // playSound('levelUpSound');
