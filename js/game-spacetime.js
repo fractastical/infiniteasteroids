@@ -1,14 +1,14 @@
 function drawGravityWellBackground(ctx, canvasWidth, canvasHeight) {
     const centerX = canvasWidth / 2;
     const centerY = canvasHeight / 2;
-    const baseGridSize = 20;
+    const gridSize = 40 * baseSizeIncrease;
     const holeRadius = 50;
     const distortionRadius = 150;
     const distortionRadiusSquared = distortionRadius * distortionRadius;
     const holeRadiusSquared = holeRadius * holeRadius;
 
     // Adjust grid size based on FPS
-    const gridSize = fps < 30 ? baseGridSize * (30 / fps) : baseGridSize;
+    // const gridSize = fps < 30 ? baseGridSize * (30 / fps) : baseGridSize;
 
     ctx.save();
     ctx.strokeStyle = 'rgba(0, 100, 255, 0.5)';
@@ -251,8 +251,10 @@ function drawWarpedBackground(ctx, canvasWidth, canvasHeight) {
 }
 
 function drawZigzagGridBackground(ctx, canvasWidth, canvasHeight) {
-    const baseGridSize = 40; // Base size of each grid cell
-    const gridSize = fps < 30 ? baseGridSize * (30 / fps) : baseGridSize;
+    const gridSize = 80 * baseSizeIncrease; // Base size of each grid cell
+
+    // const gridSize = fps < 30 ? baseGridSize * (30 / fps) : baseGridSize;
+
     const zigzagOffset = 10; // How far the zigzag deviates from straight line
     const lineColor = 'rgb(128, 0, 128)'; // Purple color
 
@@ -309,8 +311,8 @@ function drawZigzagGridBackground(ctx, canvasWidth, canvasHeight) {
 
 
 function drawSubtleGridBackground(ctx, canvasWidth, canvasHeight) {
-    const baseGridSize = 40; // Base size of each grid cell
-    const gridSize = fps < 30 ? baseGridSize * (30 / fps) : baseGridSize;
+    const gridSize = 40 * baseSizeIncrease; // Base size of each grid cell
+    // const gridSize = fps < 30 ? baseGridSize * (30 / fps) : baseGridSize;
     const zigzagOffset = 3; // Reduced zigzag effect
     const lineColor = 'rgba(128, 0, 128, 0.3)'; // More transparent purple color
 

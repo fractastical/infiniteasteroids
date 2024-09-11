@@ -1,5 +1,5 @@
-let HARDCAPONASTEROIDEXPLOSIONS = 50;
-let FRACTALLIGHTNINGDEPTH = 3;
+let HARDCAPONASTEROIDEXPLOSIONS = 100;
+let FRACTALLIGHTNINGDEPTH = 4;
 
 const desiredFPS = 60;
 let lastFrameTime = performance.now();
@@ -7,10 +7,12 @@ let frameCount = 0;
 let fps = 60; // Assume a target of 60 FPS
 const checkInterval = 1000; // Check FPS every 1000ms (1 second)
 let fpsThrottleMode = false;
+let baseSizeIncrease = 1;
+let lastThrottleThreshold = 0;
 
 // Variables for FPS drop tracking
 const fpsDropThreshold = desiredFPS * 0.75; // Consider it a drop if FPS is below 75% of desired
-const maxDropsBeforeThrottle = 10; // Enter throttle mode after 10 drops
+const maxDropsBeforeThrottle = 40; // Enter throttle mode after 10 drops
 let totalFpsDrops = 0;
 // let gameStartTime = performance.now();
 
@@ -49,11 +51,12 @@ function adjustEffectIntensity(fps) {
 }
 
 function checkThrottleMode() {
-    if (totalFpsDrops >= maxDropsBeforeThrottle && !fpsThrottleMode) {
+    if (totalFpsDrops >= maxDropsBeforeThrottle) {
         fpsThrottleMode = true;
         console.log("Entering FPS Throttle Mode");
-        applyThrottleMode();
-    } else if (totalFpsDrops < maxDropsBeforeThrottle && fpsThrottleMode) {
+        if (totalFpsDrops > lastThrottleThreshold * 2)
+            applyThrottleMode();
+    } else if (totalFpsDrops < maxDropsBeforeThrottle) {
         fpsThrottleMode = false;
         console.log("Exiting FPS Throttle Mode");
         removeThrottleMode();
@@ -62,9 +65,12 @@ function checkThrottleMode() {
 
 function applyThrottleMode() {
     // Implement more aggressive performance optimizations
-    HARDCAPONASTEROIDEXPLOSIONS = 25; // Reduce by 50%
-    FRACTALLIGHTNINGDEPTH = 2; // Reduce by 1 level
+    HARDCAPONASTEROIDEXPLOSIONS *= .5; // Reduce by 50%
+    FRACTALLIGHTNINGDEPTH -= 1; // Reduce by 1 level
     // Add other throttling measures as needed
+    baseSizeIncrease *= 1.3;
+    lastThrottleThreshold = totalFpsDrops;
+
 }
 
 function removeThrottleMode() {
@@ -78,6 +84,9 @@ function removeThrottleMode() {
 function resetPerformanceMonitoring() {
     totalFpsDrops = 0;
     fpsThrottleMode = false;
+    lastThrottleThreshold = 0;
+    HARDCAPONASTEROIDEXPLOSIONS = 100;
+    FRACTALLIGHTNINGDEPTH = 4;
     gameStartTime = performance.now();
     removeThrottleMode();
 }
