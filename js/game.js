@@ -2376,9 +2376,11 @@ function drawDamageReport() {
     const endTime = Date.now();
 
     damageReportStartTimes.lasers = gameStartTime;
-    damageReportStartTimes.fireAsteroid = gameStartTime;
-    damageReportStartTimes.lightningAsteroid = gameStartTime;
-    damageReportStartTimes.acidAsteroid = gameStartTime;
+
+    // Possible quickfix for weapon underreporting 
+    // damageReportStartTimes.fireAsteroid = gameStartTime;
+    // damageReportStartTimes.lightningAsteroid = gameStartTime;
+    // damageReportStartTimes.acidAsteroid = gameStartTime;
 
     Object.keys(damageReport).forEach(weapon => {
         const activeTime = (endTime - damageReportStartTimes[weapon]) / 60000; // Time in minutes
