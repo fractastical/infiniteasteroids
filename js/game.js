@@ -2221,7 +2221,9 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     const currentCoinsElement = document.getElementById('currentCoins');
     const damageReportList = document.getElementById('damageReportList');
     const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
+    const unlockedWeaponsHeader = document.getElementById('unlockedWeaponsHeader');
     const newAchievementsList = document.getElementById('newAchievementsList');
+    const newAchievementsHeader = document.getElementById('newAchievementsHeader');
     const achievementSound = unlockSound;
     // document.getElementById('achievementSound');
     const container = document.getElementById('activeWeaponClassesContainer');
@@ -2272,6 +2274,8 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
 
     // Clear and set recently unlocked weapons
     unlockedWeaponsList.innerHTML = '';
+    if (newlyUnlockedWeapons.length == 0)
+        unlockedWeaponsHeader.style.display = 'none';
     newlyUnlockedWeapons.forEach(weaponName => {
         const weaponInfo = weapons.find(w => w.name === weaponName);
         if (weaponInfo) {
@@ -2296,6 +2300,9 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
 
     // Clear and set achievements
     newAchievementsList.innerHTML = '';
+    if (newlyUnlockedAchievements.length == 0)
+        newAchievementsHeader.style.display = 'none';
+
     function displayAchievementsSequentially(index) {
         if (index >= newlyUnlockedAchievements.length) return;
 
