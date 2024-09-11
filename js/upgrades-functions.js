@@ -120,20 +120,30 @@ const spaceMonkey = {
     timer: 0,
     monkeyAsteroids: [],
     activate: function () {
+        console.log("Activating Space Monkey");
         this.active = true;
         this.timer = this.duration;
+        this.monkeyAsteroids = []; // Clear existing monkeys
         this.spawnMonkeyAsteroids();
     },
     update: function () {
-        if (this.active) {
-            this.timer--;
+        if (!this.active) return;
+
+        this.timer--;
+        if (this.timer <= 0) {
+            this.deactivate();
+            return;
+        }
+
+        try {
             this.updateMonkeyAsteroids();
-            if (this.timer <= 0) {
-                this.deactivate();
-            }
+        } catch (error) {
+            console.error("Error in updateMonkeyAsteroids:", error);
+            this.deactivate(); // Safely deactivate on error
         }
     },
     spawnMonkeyAsteroids: function () {
+        console.log("Spawning monkey asteroids");
         for (let i = 0; i < 5; i++) {
             this.monkeyAsteroids.push({
                 x: Math.random() * canvas.width,
@@ -143,62 +153,71 @@ const spaceMonkey = {
                 angle: Math.random() * Math.PI * 2
             });
         }
+        console.log(`Spawned ${this.monkeyAsteroids.length} monkey asteroids`);
     },
     updateMonkeyAsteroids: function () {
+        if (!Array.isArray(this.monkeyAsteroids)) {
+            console.error("monkeyAsteroids is not an array");
+            return;
+        }
+
         for (let i = this.monkeyAsteroids.length - 1; i >= 0; i--) {
             let monkey = this.monkeyAsteroids[i];
 
             // Move monkey asteroid
-            monkey.x += monkey.speed * Math.cos(monkey.angle) * globalTimeScale;
-            monkey.y += monkey.speed * Math.sin(monkey.angle) * globalTimeScale;
+            monkey.x += monkey.speed * Math.cos(monkey.angle);
+            monkey.y += monkey.speed * Math.sin(monkey.angle);
 
             // Wrap around screen edges
-            if (monkey.x < 0) monkey.x = canvas.width;
-            if (monkey.x > canvas.width) monkey.x = 0;
-            if (monkey.y < 0) monkey.y = canvas.height;
-            if (monkey.y > canvas.height) monkey.y = 0;
+            monkey.x = (monkey.x + canvas.width) % canvas.width;
+            monkey.y = (monkey.y + canvas.height) % canvas.height;
+            console.log("moving monkey asteroid");
 
             // Check for collisions with enemy asteroids
-            for (let j = asteroids.length - 1; j >= 0; j--) {
-                let asteroid = asteroids[j];
-                let dx = monkey.x - asteroid.x;
-                let dy = monkey.y - asteroid.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
+            if (Array.isArray(asteroids)) {
+                for (let j = asteroids.length - 1; j >= 0; j--) {
+                    let asteroid = asteroids[j];
+                    let dx = monkey.x - asteroid.x;
+                    let dy = monkey.y - asteroid.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < monkey.size / 2 + asteroid.size / 2) {
-                    // Collision detected, remove both monkey and enemy asteroid
-                    this.monkeyAsteroids.splice(i, 1);
-                    asteroids.splice(j, 1);
-                    // Add explosion effect or sound here if desired
-                    break;
+                    if (distance < monkey.size / 2 + asteroid.size / 2) {
+                        // Collision detected, remove both monkey and enemy asteroid
+                        this.monkeyAsteroids.splice(i, 1);
+                        asteroids.splice(j, 1);
+                        console.log("Monkey asteroid collision detected");
+                        break;
+                    }
                 }
+            } else {
+                console.error("asteroids is not an array");
             }
         }
     },
     draw: function (ctx) {
-        if (this.active) {
-            ctx.save();
-            ctx.fillStyle = 'brown';
-            for (let monkey of this.monkeyAsteroids) {
-                ctx.beginPath();
-                ctx.arc(monkey.x, monkey.y, monkey.size / 2, 0, Math.PI * 2);
-                ctx.fill();
+        if (!this.active || !Array.isArray(this.monkeyAsteroids)) return;
 
-                // Draw a face on the monkey asteroid
-                ctx.fillStyle = 'black';
-                ctx.beginPath();
-                ctx.arc(monkey.x - 5, monkey.y - 5, 3, 0, Math.PI * 2); // Left eye
-                ctx.arc(monkey.x + 5, monkey.y - 5, 3, 0, Math.PI * 2); // Right eye
-                ctx.fill();
+        ctx.save();
+        ctx.fillStyle = 'brown';
+        this.monkeyAsteroids.forEach(monkey => {
+            ctx.beginPath();
+            ctx.arc(monkey.x, monkey.y, monkey.size / 2, 0, Math.PI * 2);
+            ctx.fill();
 
-                ctx.beginPath();
-                ctx.arc(monkey.x, monkey.y + 5, 5, 0, Math.PI); // Smile
-                ctx.stroke();
-            }
-            ctx.restore();
-        }
+            // Draw a simple face
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(monkey.x - 5, monkey.y - 5, 3, 0, Math.PI * 2);
+            ctx.arc(monkey.x + 5, monkey.y - 5, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(monkey.x, monkey.y + 5, 5, 0, Math.PI);
+            ctx.stroke();
+        });
+        ctx.restore();
     },
     deactivate: function () {
+        console.log("Deactivating Space Monkey");
         this.active = false;
         this.monkeyAsteroids = [];
     }

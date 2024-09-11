@@ -1876,7 +1876,7 @@ function populateAchievements() {
     const technologiesCountElement = document.getElementById('technologiesCount');
     let totalTechnologyCount = 42; // 5 ships + 13 weapons + 7 boosters + 17 upgrades 
     // VERSION VERSION VERSION
-    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v 0.9719`;
+    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v 0.9727`;
 
     // Populate game modes
     populateGameModes();
@@ -1992,10 +1992,8 @@ let waitAndClaimMode = false;
 
 function claimLevelUps() {
 
-    console.log("r");
-    if (unclaimedLevelUps > 0) {
+    if (unclaimedLevelUps > 0 && document.getElementById('levelUpModal').style.display != "block") {
 
-        console.log("p");
 
         let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
 

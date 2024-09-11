@@ -205,11 +205,13 @@ const megaUpgrades = [
 function updateMegaUpgrades() {
 
     activeMegaUpgrades.forEach(upgrade => {
+        console.log(upgrade.name);
         if (typeof upgrade.update === 'function') {
             upgrade.update();
         }
     });
 }
+
 function drawActiveMegaUpgrades() {
     const upgradeSize = 40;
     const padding = 10;
