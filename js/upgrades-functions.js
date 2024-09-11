@@ -91,7 +91,10 @@ const spacePixie = {
     activate: function () {
         this.active = true;
         this.timer = this.duration;
-        ship.fireRate *= this.fireRateBoost;
+        ship.laserCooldownLevel *= this.fireRateBoost;
+        ship.laserCooldown = Math.max(3, ship.laserCooldown - this.fireRateBoost);
+
+
     },
     update: function () {
         if (this.active) {
@@ -103,14 +106,16 @@ const spacePixie = {
     },
     deactivate: function () {
         this.active = false;
-        ship.fireRate /= this.fireRateBoost;
+        ship.laserCooldownLevel /= this.fireRateBoost;
+        ship.laserCooldown += this.fireRateBoost;
+
     }
 };
 
 
 const spaceMonkey = {
     active: false,
-    duration: 900,
+    duration: 900, // 15 seconds at 60 FPS
     timer: 0,
     monkeyAsteroids: [],
     activate: function () {
@@ -139,7 +144,58 @@ const spaceMonkey = {
         }
     },
     updateMonkeyAsteroids: function () {
-        // Implementation for updating monkey asteroids
+        for (let i = this.monkeyAsteroids.length - 1; i >= 0; i--) {
+            let monkey = this.monkeyAsteroids[i];
+
+            // Move monkey asteroid
+            monkey.x += monkey.speed * Math.cos(monkey.angle) * globalTimeScale;
+            monkey.y += monkey.speed * Math.sin(monkey.angle) * globalTimeScale;
+
+            // Wrap around screen edges
+            if (monkey.x < 0) monkey.x = canvas.width;
+            if (monkey.x > canvas.width) monkey.x = 0;
+            if (monkey.y < 0) monkey.y = canvas.height;
+            if (monkey.y > canvas.height) monkey.y = 0;
+
+            // Check for collisions with enemy asteroids
+            for (let j = asteroids.length - 1; j >= 0; j--) {
+                let asteroid = asteroids[j];
+                let dx = monkey.x - asteroid.x;
+                let dy = monkey.y - asteroid.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < monkey.size / 2 + asteroid.size / 2) {
+                    // Collision detected, remove both monkey and enemy asteroid
+                    this.monkeyAsteroids.splice(i, 1);
+                    asteroids.splice(j, 1);
+                    // Add explosion effect or sound here if desired
+                    break;
+                }
+            }
+        }
+    },
+    draw: function (ctx) {
+        if (this.active) {
+            ctx.save();
+            ctx.fillStyle = 'brown';
+            for (let monkey of this.monkeyAsteroids) {
+                ctx.beginPath();
+                ctx.arc(monkey.x, monkey.y, monkey.size / 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw a face on the monkey asteroid
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(monkey.x - 5, monkey.y - 5, 3, 0, Math.PI * 2); // Left eye
+                ctx.arc(monkey.x + 5, monkey.y - 5, 3, 0, Math.PI * 2); // Right eye
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(monkey.x, monkey.y + 5, 5, 0, Math.PI); // Smile
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
     },
     deactivate: function () {
         this.active = false;
