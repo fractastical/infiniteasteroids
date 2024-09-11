@@ -2428,8 +2428,8 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
 
     // Clear and set achievements
     newAchievementsList.innerHTML = '';
-    if (newlyUnlockedAchievements.length == 0)
-        newAchievementsHeader.style.display = 'none';
+    // if (newlyUnlockedAchievements.length == 0)
+    //     newAchievementsHeader.style.display = 'none';
 
     function displayAchievementsSequentially(index) {
         if (index >= newlyUnlockedAchievements.length) return;
