@@ -1406,6 +1406,10 @@ canvas.addEventListener('touchend', () => {
     touchAccelerating = false;
 });
 
+window.addEventListener("wheel", (event) => event.preventDefault(), {
+    passive: false,
+});
+
 
 function handleKeyDown(event) {
     keys[event.key] = true;
