@@ -4,6 +4,7 @@ const secondaryWeapons = {
         duration: 300, // duration in frames (e.g., 5 seconds at 60 FPS)
         cooldown: 600, // cooldown in frames (e.g., 10 seconds at 60 FPS)
         uses: 3,
+        fullUses: 3,
         isActive: false,
         isAvailable: () => Achievements.million_score.reached,
         activate: function () {
@@ -27,6 +28,7 @@ const secondaryWeapons = {
         damage: 50,
         radius: 400, // radius of explosion
         cooldown: 500,
+        fullUses: 3,
         uses: 3,
         isActive: true,
         isAvailable: () => true,
@@ -50,9 +52,10 @@ const secondaryWeapons = {
     },
     piercingLaser: {
         name: 'Piercing Laser',
-        damage: 100,
+        damage: 250,
         cooldown: 400,
         uses: 3,
+        fullUses: 3,
         isActive: false,
         isAvailable: () => Achievements.wave_60_endless.reached,
         activate: function () {
@@ -80,6 +83,8 @@ function selectSecondaryWeapon(weaponName) {
         Object.values(secondaryWeapons).forEach(weapon => weapon.deactivate());
         // Activate the selected weapon
         secondaryWeapons[weaponKey].isActive = true;
+        secondaryWeapons[weaponKey].uses = secondaryWeapons[weaponKey].fullUses;
+
         // console.log(`${secondaryWeapons[weaponKey].name} selected as secondary weapon.`);
     } else {
         console.error(`Secondary weapon "${weaponName}" not found.`);

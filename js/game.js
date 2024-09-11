@@ -227,10 +227,10 @@ const Achievements = {
     kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
     kill_50_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 50 Aliens. Unlock Chain Lightning.' },
     kill_500_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 500 Aliens. Unlock Sonic Boom.' },
-    complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Shower Easy Mode. Unlock Starhawk' },
-    complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Shower Normal Mode. Unlock Double Turret.' },
-    complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Shower Hard Mode. Unlock Solar Phoenix .' },
-    complete_meteor_hero_mode: { reached: false, icon: 'achievements/death_meteor.png', description: 'Shower Hero Mode. Unlock Quantum Striker' },
+    complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Meteor Shower Easy Mode. Unlock Starhawk.' },
+    complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Meteor Shower Normal Mode. Unlock Double Turret.' },
+    complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Meteor Shower Hard Mode. Unlock Solar Phoenix.' },
+    complete_meteor_hero_mode: { reached: false, icon: 'achievements/death_meteor.png', description: 'Meteor Shower Hero Mode. Unlock Quantum Striker.' },
     complete_planet_easy_mode: { reached: false, icon: 'achievements/planet_medium.png', description: 'Planet Easy Mode.' },
     complete_planet_normal_mode: { reached: false, icon: 'achievements/storm_medium.png', description: 'Planet Normal Mode. Unlock Triple Turret.' },
     complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode. Unlock Explosive Rocket.' },
@@ -1715,6 +1715,134 @@ function getSelectedGameMode() {
 }
 
 
+let currentAchievementPage = 0;
+const achievementsPerPage = 5; // Number of achievements to show per page
+
+// Function to populate achievements inside the modal
+function populateAchievementsModal() {
+    const achievementsDisplay = document.getElementById('achievementsDisplay');
+    const totalAchievements = Object.keys(Achievements).length;
+
+    // Calculate the total number of pages
+    const totalPages = Math.ceil(totalAchievements / achievementsPerPage);
+
+    // Event listener for next button
+    document.getElementById('nextAchievement').addEventListener('click', function () {
+        if (currentAchievementPage < totalPages - 1) {
+            currentAchievementPage++;
+            displayAchievementPage(currentAchievementPage);
+        }
+    });
+
+    // Event listener for previous button
+    document.getElementById('prevAchievement').addEventListener('click', function () {
+        if (currentAchievementPage > 0) {
+            currentAchievementPage--;
+            displayAchievementPage(currentAchievementPage);
+        }
+    });
+
+    // Initial display of the first page
+    displayAchievementPage(currentAchievementPage);
+}
+
+// Function to display a specific page of achievements
+function displayAchievementPage(page) {
+    const achievementsDisplay = document.getElementById('achievementsDisplay');
+    achievementsDisplay.innerHTML = ''; // Clear the current content
+
+    // Get the achievements for the current page
+    const achievementKeys = Object.keys(Achievements);
+    const start = page * achievementsPerPage;
+    const end = Math.min(start + achievementsPerPage, achievementKeys.length);
+
+    // Loop through the achievements to display on this page
+    for (let i = start; i < end; i++) {
+        const achievement = Achievements[achievementKeys[i]];
+
+        // Create achievement element
+        const achievementElement = document.createElement('div');
+        achievementElement.classList.add('achievement');
+        achievementElement.style.opacity = achievement.reached ? '1' : '0.5';
+
+        // Create and append icon
+        const iconElement = document.createElement('img');
+        iconElement.src = achievement.icon || 'default-icon.png'; // Fallback to a default icon
+        iconElement.alt = achievement.description;
+        iconElement.classList.add('achievement-icon-small');
+        achievementElement.appendChild(iconElement);
+
+        // Create and append description
+        const descriptionElement = document.createElement('span');
+        descriptionElement.textContent = achievement.description;
+        achievementElement.appendChild(descriptionElement);
+
+        achievementsDisplay.appendChild(achievementElement);
+    }
+}
+
+// Function to open the achievements modal
+function openAchievementsModal() {
+    const modal = document.getElementById('achievementsModal');
+    modal.style.display = 'block';
+    populateAchievementsModal();
+}
+
+// Function to close the achievements modal
+document.getElementById('closeAchievementsModal').addEventListener('click', function () {
+    const modal = document.getElementById('achievementsModal');
+    modal.style.display = 'none';
+});
+
+
+// Function to display a specific page of achievements
+function displayAchievementPage(page) {
+    const achievementsDisplay = document.getElementById('achievementsDisplay');
+    achievementsDisplay.innerHTML = ''; // Clear the current content
+
+    // Get the achievements for the current page
+    const achievementKeys = Object.keys(Achievements);
+    const start = page * achievementsPerPage;
+    const end = Math.min(start + achievementsPerPage, achievementKeys.length);
+
+    // Loop through the achievements to display on this page
+    for (let i = start; i < end; i++) {
+        const achievement = Achievements[achievementKeys[i]];
+
+        // Create achievement element
+        const achievementElement = document.createElement('div');
+        achievementElement.classList.add('achievement');
+        achievementElement.style.opacity = achievement.reached ? '1' : '0.5';
+
+        // Create and append icon
+        const iconElement = document.createElement('img');
+        iconElement.src = achievement.icon || 'default-icon.png'; // Fallback to a default icon
+        iconElement.alt = achievement.description;
+        iconElement.classList.add('achievement-icon-small');
+        achievementElement.appendChild(iconElement);
+
+        // Create and append description
+        const descriptionElement = document.createElement('span');
+        descriptionElement.textContent = achievement.description;
+        achievementElement.appendChild(descriptionElement);
+
+        achievementsDisplay.appendChild(achievementElement);
+    }
+}
+
+// Function to open the achievements modal
+function openAchievementsModal() {
+    const modal = document.getElementById('achievementsModal');
+    modal.style.display = 'block';
+    populateAchievementsModal();
+}
+
+// Function to close the achievements modal
+document.getElementById('closeAchievementsModal').addEventListener('click', function () {
+    const modal = document.getElementById('achievementsModal');
+    modal.style.display = 'none';
+});
+
 function populateAchievements() {
     const achievementsList = document.getElementById('achievementsList');
     const achievementIconsList = document.getElementById('achievementIconsList');
@@ -1876,7 +2004,7 @@ function populateAchievements() {
     const technologiesCountElement = document.getElementById('technologiesCount');
     let totalTechnologyCount = 42; // 5 ships + 13 weapons + 7 boosters + 17 upgrades 
     // VERSION VERSION VERSION
-    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v 0.9727`;
+    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v 0.9737`;
 
     // Populate game modes
     populateGameModes();

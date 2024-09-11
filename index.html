@@ -183,7 +183,7 @@
     <h3 id="unlockedWeaponsHeader">Recently Unlocked Weapons</h3>
     <ul id="unlockedWeaponsList"></ul>
 
-    <h3 id="newAchievementHeader">New Achievements</h3>
+    <h3 id="newAchievementsHeader">New Achievements</h3>
     <ul id="newAchievementsList"></ul>
 
     <!-- <h3>Used Upgrades</h3>
@@ -289,7 +289,8 @@
           <td>
             <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
             <BR /><button id="settings" onclick="toggleVolumeScreen()">Settings</button><BR />
-            <button id="viewAllLeaderboardsButton">Leaderboards</button>
+            <button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
+            <button id="Achievements" onclick="openAchievementsModal()">My Achievements</button>
             <!-- <button id="viewPastScoresButton">View Stats</button> -->
           </td>
           <td style="min-width: 250px;">
@@ -298,9 +299,9 @@
         </tr>
       </table>
 
-      <div id="achievementsContainer">
+      <div id="achievementsContainer" style="display:none">
 
-        <h3>Your Achievements</h3>
+        <!-- <h3>Your Achievements</h3> -->
         <div id="achievementsList"></div>
       </div>
       <!-- <h3>Your Upgrades</h3> -->
@@ -330,6 +331,24 @@
 
     <button id="closeButton" onclick="toggleWeaponInfo()">Close</button>
   </div>
+
+  <div id="achievementsModal" class="modal">
+    <div class="modal-content">
+      <h2>Achievements</h2>
+
+      <!-- Container for showing achievements -->
+      <div id="achievementsDisplay" class="achievement-page"></div>
+
+      <!-- Navigation buttons -->
+      <div class="modal-navigation">
+        <button id="prevAchievement" class="nav-btn">←</button>
+        <button id="nextAchievement" class="nav-btn">→</button>
+      </div>
+
+      <button id="closeAchievementsModal">Close</button>
+    </div>
+  </div>
+
 
   <div id="volumeScreen" style="display:none;">
 
