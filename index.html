@@ -432,7 +432,6 @@
       } else {
         // startGame();
       }
-      // await window.CrazyGames.SDK.init();
 
     });
 
@@ -1010,6 +1009,8 @@
 
 
   </script>
+  <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
+
   <script type="module">
 
     // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -1020,6 +1021,8 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    await window.CrazyGames.SDK.init();
 
 
     // Firebase configuration and initialization
@@ -1480,16 +1483,16 @@
         // Add a detailed damage report
         const damageReport = document.createElement('ul');
         damageReport.classList.add('damage-report');  // Add a class for custom styling
-        console.log(scoreData.topWeapons.length);
+        // console.log(scoreData.topWeapons.length);
 
         scoreData.topWeapons.forEach(weaponData => {
           const weapon = weaponData.weapon;
           const damage = weaponData.damage;
-          console.log(weapon);
+          // console.log(weapon);
 
           // Find weapon info based on weapon name
           const weaponInfo = weapons.find(w => w.name === weapon);
-          console.log(weaponInfo);
+          // console.log(weaponInfo);
 
           // if (weaponInfo) {
           const weaponLi = document.createElement('li');
@@ -1593,8 +1596,8 @@
 
 
   <!-- #INFINITEGAMES JS START -->
-  <script src="infinite/js/48_leaderboard_20240829095112.js"></script>
-  <script src="infinite/js/48_firebase_20240829095112.js"></script>
+  <!-- <script src="infinite/js/48_leaderboard_20240829095112.js"></script>
+  <script src="infinite/js/48_firebase_20240829095112.js"></script> -->
   <!-- #INFINITEGAMES JS END -->
 </body>
 
