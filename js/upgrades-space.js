@@ -8,7 +8,7 @@ const floatingUpgrades = [
     },
     {
         name: 'Space Pickle',
-        icon: 'icons/upgrades/pickle.png',
+        icon: 'icons/upgrades/orbs/pickle.png',
         description: 'Find the deep space pickle.',
         achievedKey: 'space_pickle',
         mode: ['DEEP_SPACE', 'METEOR'],
@@ -53,10 +53,17 @@ const spawnChances = {
 
 let activeFloatingUpgrades = [];
 
-function spawnRandomUpgrade100x() {
-    for (i = 0; i < 100; i++)
-        spawnRandomUpgrade();
+function activateFloatingUpgrade(achievedKey) {
+    switch (achievedKey) {
+        case 'space_pizza': spacePizza.activate(); break;
+        case 'space_pickle': spacePickle.activate(); break;
+        case 'space_pixie': spacePixie.activate(); break;
+        case 'space_monkey': spaceMonkey.activate(); break;
+        case 'space_potato': spacePotato.activate(); break;
+        case 'dark_side': darkSide.activate(); break;
+    }
 }
+
 
 function spawnRandomUpgrade() {
     const currentGameMode = currentMode;
@@ -159,7 +166,7 @@ function drawFloatingUpgrades() {
         img.src = upgrade.icon;
         img.onload = () => {
             ctx.drawImage(img, upgrade.x, upgrade.y, upgrade.size, upgrade.size);
-            console.log(`Drew upgrade ${index} at:`, upgrade.x, upgrade.y);
+            // console.log(`Drew upgrade ${index} at:`, upgrade.x, upgrade.y);
         };
         img.onerror = () => {
             console.error(`Failed to load image for upgrade ${index}:`, upgrade.icon);

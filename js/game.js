@@ -859,6 +859,7 @@ function processPlayerDeath() {
     playShipDestroyedSound();
     invincible = true;
     invincibilityTimer = invincibilityDuration;
+
     if (lives === 0) gameOver = true;
 }
 
@@ -1342,7 +1343,7 @@ function resumeGame() {
     // const openModals = document.querySelectorAll('.modal:not([style*="display: none"])');
     console.log(openModals.length);
 
-    if (openModals.length === 0) {
+    if (openModals.length === 0 && !gameOver) {
         clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
@@ -2167,7 +2168,7 @@ function endGame() {
 
     document.getElementById('loginContainer').style.display = 'block';
     document.getElementById('userInfo').style.display = 'block';
-
+    xp = 0;
     clearInterval(gameLoop);
     backgroundMusic.pause(); // Stop the background music
     gameEndTime = new Date();
