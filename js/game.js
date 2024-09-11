@@ -2047,7 +2047,7 @@ function levelUp() {
     unclaimedLevelUps++;
     let prevLevelUp = lastLevelUp;
     lastLevelUp = Date.now();
-    console.log(lastLevelUp - prevLevelUp);
+    // console.log(lastLevelUp - prevLevelUp);
 
     if (wave > 75) {
         bonuslevelUpXPMultiplier = 1.5;

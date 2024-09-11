@@ -1,18 +1,18 @@
 const alienImage = new Image();
-alienImage.src = 'icons/alien-bullet-ship.png';
+alienImage.src = 'icons/aliens/alien-bullet-ship.png';
 // const alienBulletImage = new Image();
 // alienBulletImage.src = 'icons/alien_bullet_ship2.png';
 
 const bossAlienImage = new Image();
-bossAlienImage.src = 'icons/alien_boss_ship_2.png';
+bossAlienImage.src = 'icons/aliens/alien_boss_ship_2.png';
 const superBossAlienImage = new Image();
-superBossAlienImage.src = 'icons/cool_evil_alien_22.png';
+superBossAlienImage.src = 'icons/aliens/cool_evil_alien_22.png';
 const megaBossAlienImage = new Image();
-megaBossAlienImage.src = 'icons/alien_boss_ship_6.png';
+megaBossAlienImage.src = 'icons/aliens/alien_boss_ship_6.png';
 
 
 const octoBossImage = new Image();
-octoBossImage.src = 'icons/alien_boss_ship_17.png';
+octoBossImage.src = 'icons/aliens/alien_boss_ship_17.png';
 
 // Load swarming alien images
 const swarmingAlienImages = [];
