@@ -1,6 +1,7 @@
 
 const potatoImage = new Image();
 potatoImage.src = 'icons/upgrades/potatoroid_10.png';
+let globalTimeScale = 1;
 
 const glitchEffect = {
     update: function () {
@@ -49,6 +50,7 @@ const spacePizza = {
         const wavesSinceCollection = wave - this.collectedWave;
         if (wavesSinceCollection > 0 && wavesSinceCollection % this.wavesPerExtraLife === 0) {
             this.grantExtraLife();
+            this.collectedWave = wave;
         }
     },
     grantExtraLife: function () {
@@ -87,13 +89,12 @@ const spacePixie = {
     active: false,
     duration: 450,
     timer: 0,
-    fireRateBoost: 2,
+    fireRateBoost: 5,
     activate: function () {
         this.active = true;
         this.timer = this.duration;
-        ship.laserCooldownLevel *= this.fireRateBoost;
+        ship.laserCooldownLevel += this.fireRateBoost;
         ship.laserCooldown = Math.max(3, ship.laserCooldown - this.fireRateBoost);
-
 
     },
     update: function () {
@@ -106,7 +107,7 @@ const spacePixie = {
     },
     deactivate: function () {
         this.active = false;
-        ship.laserCooldownLevel /= this.fireRateBoost;
+        ship.laserCooldownLevel -= this.fireRateBoost;
         ship.laserCooldown += this.fireRateBoost;
 
     }

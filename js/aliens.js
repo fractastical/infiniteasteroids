@@ -914,8 +914,11 @@ function spawnOctoBoss() {
         x: canvas.width / 2,
         y: 5,
         size: 360,
+        bodyRadius: 190,
         speed: 0.1,
         hitpoints: 20000,
+        armRegrowthTimer: 0,
+        armRegrowthInterval: 1000, // Time in frames (adjust as needed)
         maxHitpoints: 20000,
         shootTimer: 0,
         shootInterval: 150,
@@ -977,7 +980,7 @@ function updateOctoBoss() {
     if (octoBoss.specialAttackTimer >= octoBoss.specialAttackInterval) {
         octoBoss.isSpecialAttacking = true;
         octoBoss.specialAttackTimer = 0;
-        octoBoss.specialAttackInterval = Math.random() * 5000 + 5000; // Set next interval
+        octoBoss.specialAttackInterval = Math.random() * 2000 + 1000; // Set next interval
         octoBoss.specialAttackDuration = 60; // Reset duration
     }
 
@@ -995,6 +998,18 @@ function updateOctoBoss() {
             console.log("normal attack");
             octoBoss.shootTimer = 0;
             shootOctoBossLaser();
+        }
+    }
+
+    octoBoss.armRegrowthTimer++;
+    if (octoBoss.armRegrowthTimer >= octoBoss.armRegrowthInterval) {
+        console.log("attempting regrowth");
+        octoBoss.armRegrowthTimer = 0;
+        if (octoBoss.arms.filter(arm => arm.segments.some(seg => seg.state !== OctoBossArmState.DESTROYED)).length < octoBoss.maxArms) {
+            console.log("regen");
+
+            regenerateArm();
+
         }
     }
 
@@ -1023,6 +1038,7 @@ function updateOctoBoss() {
             }
         });
     });
+
 
     // Check for collision with player
     if (!invincible && isColliding(octoBoss, ship)) {
@@ -1138,7 +1154,7 @@ function shootOctoBossLaser() {
     const targetAngle = Math.atan2(ship.y - eyeY, ship.x - octoBoss.x);
 
     // Left eye laser
-    console.log("push left eye laser");
+    // console.log("push left eye laser");
     alienLasers.push({
         x: leftEyeX,
         y: eyeY,
@@ -1156,7 +1172,7 @@ function shootOctoBossLaser() {
 
 
     // Right eye laser
-    console.log("push right eye laser");
+    // console.log("push right eye laser");
     alienLasers.push({
         x: rightEyeX,
         y: eyeY,
@@ -1193,34 +1209,137 @@ function shootOctoBossLaser() {
 //     playAlienLaserSound();
 // }
 
-function damageOctoBoss(damage) {
-    // First, try to damage an active arm segment
-    const activeArms = octoBoss.arms.filter(arm => arm.segments.some(seg => seg.state === OctoBossArmState.ACTIVE));
-    if (activeArms.length > 0) {
-        const armToDamage = activeArms[Math.floor(Math.random() * activeArms.length)];
-        const activeSegments = armToDamage.segments.filter(seg => seg.state === OctoBossArmState.ACTIVE);
-        const segmentToDamage = activeSegments[activeSegments.length - 1]; // Damage the outermost active segment
+function damageOctoBoss(damage, laserX, laserY) {
+    // First, try to damage the closest vulnerable arm segment
+    let closestSegment = null;
+    let closestDistance = Infinity;
+    let closestArmIndex = -1;
+    let closestSegmentIndex = -1;
+    let closestSegmentEndX = 0;
+    let closestSegmentEndY = 0;
 
-        segmentToDamage.hitpoints -= damage;
-        if (segmentToDamage.hitpoints <= 0) {
-            segmentToDamage.state = OctoBossArmState.DESTROYED;
-            let segmentEndX = octoBoss.x;
-            let segmentEndY = octoBoss.y;
-            armToDamage.segments.forEach(seg => {
-                if (seg.state !== OctoBossArmState.DESTROYED) {
-                    segmentEndX += Math.cos(seg.angle) * seg.length;
-                    segmentEndY += Math.sin(seg.angle) * seg.length;
+    octoBoss.arms.forEach((arm, armIndex) => {
+        let segmentStartX = octoBoss.x;
+        let segmentStartY = octoBoss.y;
+
+        arm.segments.forEach((segment, segmentIndex) => {
+            if (segment.state === OctoBossArmState.ACTIVE || segment.state === OctoBossArmState.GROWING) {
+                const segmentEndX = segmentStartX + Math.cos(segment.angle) * segment.length;
+                const segmentEndY = segmentStartY + Math.sin(segment.angle) * segment.length;
+
+                // Calculate distance from laser to segment
+                const distance = pointToLineDistance(laserX, laserY, segmentStartX, segmentStartY, segmentEndX, segmentEndY);
+
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestSegment = segment;
+                    closestArmIndex = armIndex;
+                    closestSegmentIndex = segmentIndex;
+                    closestSegmentEndX = segmentEndX;
+                    closestSegmentEndY = segmentEndY;
                 }
-            });
-            createExplosion(segmentEndX, segmentEndY);
+            }
+
+            // Update start position for next segment
+            segmentStartX += Math.cos(segment.angle) * segment.length;
+            segmentStartY += Math.sin(segment.angle) * segment.length;
+        });
+    });
+
+
+
+    if (closestSegment) {
+        console.log(closestSegment);
+        console.log(damage);
+
+        console.log(`Damaging arm ${closestArmIndex}, segment ${closestSegmentIndex}`);
+        closestSegment.hitpoints -= damage;
+        console.log("Segment hit points:", closestSegment.hitpoints);
+
+        if (closestSegment.hitpoints <= 0) {
+            closestSegment.state = OctoBossArmState.DESTROYED;
+            createExplosion(closestSegmentEndX, closestSegmentEndY);
+            checkArmDestruction(closestArmIndex);
         }
     } else {
-        // If all arm segments are destroyed, damage the body
+        console.log("Damaging body");
         octoBoss.hitpoints -= damage;
         if (octoBoss.hitpoints <= 0) {
             destroyOctoBoss();
         }
     }
+
+}
+
+
+function checkArmDestruction(armIndex) {
+    const arm = octoBoss.arms[armIndex];
+    if (arm.segments.every(segment => segment.state === OctoBossArmState.DESTROYED)) {
+        console.log(`Arm ${armIndex} completely destroyed`);
+        // You might want to add additional effects or score here
+    }
+}
+
+function regenerateArm() {
+    const destroyedArmIndex = octoBoss.arms.findIndex(arm =>
+        arm.segments.every(segment => segment.state === OctoBossArmState.DESTROYED)
+    );
+
+    if (destroyedArmIndex !== -1) {
+        console.log(`Regenerating arm ${destroyedArmIndex}`);
+        octoBoss.arms[destroyedArmIndex] = createNewArm(destroyedArmIndex);
+    }
+}
+
+
+function createNewArm(index) {
+    const baseAngle = (index * Math.PI) / 4;
+    return {
+        segments: [
+            {
+                angle: baseAngle,
+                length: 10, // Start small
+                maxLength: 150,
+                state: OctoBossArmState.GROWING,
+                hitpoints: 500,
+                growthRate: 0.5
+            }
+        ]
+    };
+}
+
+
+// Helper function to calculate the distance from a point to a line segment
+function pointToLineDistance(x, y, x1, y1, x2, y2) {
+    const A = x - x1;
+    const B = y - y1;
+    const C = x2 - x1;
+    const D = y2 - y1;
+
+    const dot = A * C + B * D;
+    const len_sq = C * C + D * D;
+    let param = -1;
+    if (len_sq != 0) // in case of 0 length line
+        param = dot / len_sq;
+
+    let xx, yy;
+
+    if (param < 0) {
+        xx = x1;
+        yy = y1;
+    }
+    else if (param > 1) {
+        xx = x2;
+        yy = y2;
+    }
+    else {
+        xx = x1 + param * C;
+        yy = y1 + param * D;
+    }
+
+    const dx = x - xx;
+    const dy = y - yy;
+    return Math.sqrt(dx * dx + dy * dy);
 }
 
 function drawOctoBossHitpointBar() {
@@ -1245,20 +1364,25 @@ function checkLaserOctoBossCollision(laser) {
     if (!octoBoss) return false;
 
     // Check collision with OctoBoss body
-    if (isColliding(laser, octoBoss)) {
+    const distanceToBody = Math.hypot(laser.x - octoBoss.x, laser.y - octoBoss.y);
+    if (distanceToBody <= octoBoss.bodyRadius + laser.size / 2) {
+        damageOctoBoss(ship.laserLevel + damageBooster, laser.x, laser.y);
         return true;
     }
 
     // Check collision with OctoBoss arms
-    for (let arm of octoBoss.arms) {
+    for (let armIndex = 0; armIndex < octoBoss.arms.length; armIndex++) {
+        let arm = octoBoss.arms[armIndex];
         let startX = octoBoss.x;
         let startY = octoBoss.y;
-        for (let segment of arm.segments) {
+        for (let segIndex = 0; segIndex < arm.segments.length; segIndex++) {
+            let segment = arm.segments[segIndex];
             if (segment.state !== OctoBossArmState.DESTROYED) {
                 const endX = startX + Math.cos(segment.angle) * segment.length;
                 const endY = startY + Math.sin(segment.angle) * segment.length;
 
                 if (lineCircleIntersection(startX, startY, endX, endY, laser.x, laser.y, laser.size / 2)) {
+                    damageOctoBoss(ship.laserLevel + damageBooster, laser.x, laser.y);
                     return true;
                 }
 
@@ -1270,6 +1394,7 @@ function checkLaserOctoBossCollision(laser) {
 
     return false;
 }
+
 
 function lineCircleIntersection(x1, y1, x2, y2, cx, cy, r) {
     const dx = x2 - x1;

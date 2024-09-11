@@ -58,8 +58,8 @@ function checkThrottleMode() {
             applyThrottleMode();
     } else if (totalFpsDrops < maxDropsBeforeThrottle) {
         fpsThrottleMode = false;
-        console.log("Exiting FPS Throttle Mode");
-        removeThrottleMode();
+        // console.log("Exiting FPS Throttle Mode");
+        // removeThrottleMode();
     }
 }
 

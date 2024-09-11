@@ -2404,7 +2404,7 @@ function checkLaserCollisions(lasers, isShip) {
 
         if (octoBoss && checkLaserOctoBossCollision(laser)) {
             let damage = isShip ? ship.laserLevel : 1;
-            damageOctoBoss(damage + damageBooster);
+            damageOctoBoss(damage + damageBooster, laser.x, laser.y);
             createExplosion(laser.x, laser.y);
             if (octoBoss.hitpoints <= 0) {
                 createExplosion(octoBoss.x, octoBoss.y, 50, 40);
