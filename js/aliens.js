@@ -965,6 +965,25 @@ function spawnOctoBoss() {
     aliens.push(octoBoss);
 }
 
+function validateOctoBossState() {
+
+    if (!octoBoss || freezeEffect.active) return;
+
+    validateOctoBossState();
+
+    resetNegativeHitpoints();
+
+    octoBoss.arms.forEach((arm, armIndex) => {
+        arm.segments = arm.segments.map((segment, segIndex) => {
+            const sanitizedSegment = sanitizeSegment(segment);
+            if (JSON.stringify(segment) !== JSON.stringify(sanitizedSegment)) {
+                console.warn(`Fixed invalid data in arm ${armIndex}, segment ${segIndex}`);
+            }
+            return sanitizedSegment;
+        });
+    });
+}
+
 function updateOctoBoss() {
     if (!octoBoss) return;
     if (freezeEffect.active) return;
@@ -1003,13 +1022,18 @@ function updateOctoBoss() {
 
     octoBoss.armRegrowthTimer++;
     if (octoBoss.armRegrowthTimer >= octoBoss.armRegrowthInterval) {
-        console.log("attempting regrowth");
+        console.log("Attempting regrowth");
         octoBoss.armRegrowthTimer = 0;
-        if (octoBoss.arms.filter(arm => arm.segments.some(seg => seg.state !== OctoBossArmState.DESTROYED)).length < octoBoss.maxArms) {
-            console.log("regen");
 
+        const destroyedArms = octoBoss.arms.filter(arm =>
+            arm.segments.every(seg => seg.state === OctoBossArmState.DESTROYED)
+        );
+
+        if (destroyedArms.length > 0) {
+            console.log("Regenerating arm");
             regenerateArm();
-
+        } else {
+            console.log("No arms to regenerate");
         }
     }
 
@@ -1271,6 +1295,18 @@ function damageOctoBoss(damage, laserX, laserY) {
 
 }
 
+function resetNegativeHitpoints() {
+    octoBoss.arms.forEach(arm => {
+        arm.segments.forEach(segment => {
+            if (segment.hitpoints < 0) {
+                console.log("Resetting negative hitpoints to 0");
+                segment.hitpoints = 0;
+                segment.state = OctoBossArmState.DESTROYED;
+            }
+        });
+    });
+}
+
 
 function checkArmDestruction(armIndex) {
     const arm = octoBoss.arms[armIndex];
@@ -1287,9 +1323,32 @@ function regenerateArm() {
 
     if (destroyedArmIndex !== -1) {
         console.log(`Regenerating arm ${destroyedArmIndex}`);
-        octoBoss.arms[destroyedArmIndex] = createNewArm(destroyedArmIndex);
+        const baseAngle = (destroyedArmIndex * Math.PI) / 4;
+        octoBoss.arms[destroyedArmIndex] = {
+            segments: [
+                createSegment(baseAngle, 10, 150, 500),
+                createSegment(baseAngle + Math.PI / 6, 10, 120, 400),
+                createSegment(baseAngle - Math.PI / 6, 10, 100, 300)
+            ]
+        };
+    } else {
+        console.log("No arms to regenerate");
     }
 }
+
+
+function createSegment(angle, initialLength, maxLength, initialHitpoints) {
+    return {
+        angle: Number(angle) || 0,
+        length: Number(initialLength) || 10,
+        maxLength: Number(maxLength) || 200,
+        state: OctoBossArmState.GROWING,
+        hitpoints: Number(initialHitpoints) || 500,
+        maxHitpoints: Number(initialHitpoints) || 500,
+        growthRate: 0.01
+    };
+}
+
 
 
 function createNewArm(index) {
