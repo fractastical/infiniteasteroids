@@ -1777,8 +1777,8 @@ function shootLasers() {
 
         if (laserSize > 5) {
             ship.lasers.push({
-                x: ship.x,
-                y: ship.y,
+                x: ship.x - 7,
+                y: ship.y - 7,
                 rotation: ship.rotation,
                 size: laserSize
             });

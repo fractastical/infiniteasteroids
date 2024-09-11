@@ -1009,6 +1009,8 @@ function handleTouch(e) {
     }
 }
 
+
+
 function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
     let angle = ship.rotation * Math.PI / 180;
 
