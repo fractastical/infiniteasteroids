@@ -28,8 +28,8 @@ const megaUpgrades = [
     },
     {
         name: 'Space Pickle',
-        description: 'Temporarily increases the ship\'s shield strength.',
-        icon: 'icons/upgrades/pickle.png',
+        description: 'Temporarily increases all damage.',
+        icon: 'icons/upgrades/orbs/pickle_orb.png',
         achievedKey: 'space_pickle',
         effect: function () {
             spacePickle.activate();
@@ -114,24 +114,24 @@ const megaUpgrades = [
             }
         }
     },
-    {
-        name: 'Time Dilation',
-        description: 'Slows down time, making it easier to evade asteroids and aim.',
-        icon: 'icons/upgrades/void.png',
-        cooldown: 45 * 60, // 45 seconds at 60 FPS
-        cooldownTimer: 0,
-        effect: function () {
-            timeDilation.active = true;
-            timeDilation.timer = timeDilation.duration;
-            this.cooldownTimer = this.cooldown;
-        },
-        update: function () {
-            if (this.cooldownTimer > 0) {
-                this.cooldownTimer--;
-            }
-            timeDilation.update();
-        }
-    },
+    // {
+    //     name: 'Time Dilation',
+    //     description: 'Slows down time, making it easier to evade asteroids and aim.',
+    //     icon: 'icons/upgrades/void.png',
+    //     cooldown: 45 * 60, // 45 seconds at 60 FPS
+    //     cooldownTimer: 0,
+    //     effect: function () {
+    //         timeDilation.active = true;
+    //         timeDilation.timer = timeDilation.duration;
+    //         this.cooldownTimer = this.cooldown;
+    //     },
+    //     update: function () {
+    //         if (this.cooldownTimer > 0) {
+    //             this.cooldownTimer--;
+    //         }
+    //         timeDilation.update();
+    //     }
+    // },
     {
         name: 'Gravity Bomb',
         description: 'Creates a gravity well that pulls in nearby asteroids.',
@@ -183,8 +183,8 @@ const megaUpgrades = [
         }
     },
     {
-        name: 'XP Monkey',
-        description: 'Doubles the XP gained from destroying asteroids for a limited time.',
+        name: 'XP Boost',
+        description: 'Boost XP gains by 10%.',
         icon: 'icons/upgrades/monkey.png', // Replace with appropriate icon
         cooldown: 45 * 60, // 45 seconds at 60 FPS
         cooldownTimer: 0,
@@ -197,20 +197,7 @@ const megaUpgrades = [
         update: function () {
             // No need to update anything since the effect is permanent
         }
-    },
-    {
-        name: 'Damage Pickle',
-        description: 'Increases all weapon damage by 5.',
-        icon: 'icons/upgrades/orbs/pickle.png', // Replace with appropriate icon
-        effect: function () {
-            // damagePickle.active = true;
-            damageBooster += 5; // Increase damage by 10
-        },
-        update: function () {
-            // No need to update anything since the effect is permanent
-        }
-    },
-
+    }
 
 ];
 

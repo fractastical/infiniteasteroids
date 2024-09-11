@@ -5,10 +5,13 @@ potatoImage.src = 'icons/upgrades/potatoroid_10.png';
 const glitchEffect = {
     update: function () {
         for (let i = 0; i < asteroids.length; i++) {
-            if (Math.random() < 0.05) {
-                createSmallerAsteroids(asteroids[i].x, asteroids[i].y, asteroids[i].size, asteroids[i].speed, 1);
-                asteroids.splice(i, 1);
-                i--;
+            if (Math.random() < 0.01) {
+                if (asteroids[i].hitpoints > 2) {
+                    createSmallerAsteroids(asteroids[i].x, asteroids[i].y, asteroids[i].size, asteroids[i].speed, asteroids[i].hitpoints);
+                    asteroids.splice(i, 1);
+                    i--;
+                }
+                break;
             }
         }
     }
@@ -54,29 +57,29 @@ const spacePizza = {
     }
 };
 
-// const spacePickle = {
-//     active: false,
-//     duration: 300,
-//     timer: 0,
-//     shieldStrength: 2,
-//     activate: function() {
-//         this.active = true;
-//         this.timer = this.duration;
-//         ship.shieldStrength *= this.shieldStrength;
-//     },
-//     update: function() {
-//         if (this.active) {
-//             this.timer--;
-//             if (this.timer <= 0) {
-//                 this.deactivate();
-//             }
-//         }
-//     },
-//     deactivate: function() {
-//         this.active = false;
-//         ship.shieldStrength /= this.shieldStrength;
-//     }
-// };
+const spacePickle = {
+    active: false,
+    duration: 300,
+    timer: 0,
+    shieldStrength: 2,
+    activate: function () {
+        this.active = true;
+        this.timer = this.duration;
+        damageBooster += 10;
+    },
+    update: function () {
+        if (this.active) {
+            this.timer--;
+            if (this.timer <= 0) {
+                this.deactivate();
+            }
+        }
+    },
+    deactivate: function () {
+        this.active = false;
+        damageBooster -= 10;
+    }
+};
 
 
 
@@ -265,26 +268,31 @@ const gravityBomb = {
 
 
 const asteroidSplitter = {
-    chance: 0.1,
+    chance: 0.01,
     splitCount: 2,
     update: function () {
         for (let i = asteroids.length - 1; i >= 0; i--) {
             if (Math.random() < this.chance) {
                 const asteroid = asteroids[i];
-                for (let j = 0; j < this.splitCount; j++) {
-                    const newAsteroid = {
-                        x: asteroid.x,
-                        y: asteroid.y,
-                        size: asteroid.size / 2,
-                        speed: asteroid.speed * 0.2,
-                        dx: Math.random() * 1.5 - 1,
-                        dy: Math.random() * 1.5 - 1,
-                        hitpoints: Math.floor(asteroid.hitpoints / 2),
-                        color: asteroid.color
-                    };
-                    asteroids.push(newAsteroid);
+                if (asteroid.hitpoints > 2) {
+
+                    for (let j = 0; j < this.splitCount; j++) {
+                        const newAsteroid = {
+                            x: asteroid.x,
+                            y: asteroid.y,
+                            size: asteroid.size / 2,
+                            speed: asteroid.speed * 0.2,
+                            dx: Math.random() * 1.5 - 1,
+                            dy: Math.random() * 1.5 - 1,
+                            hitpoints: Math.floor(asteroid.hitpoints / 2),
+                            color: asteroid.color
+                        };
+                        asteroids.push(newAsteroid);
+                    }
+                    asteroids.splice(i, 1);
                 }
-                asteroids.splice(i, 1);
+
+                break;
             }
         }
     }

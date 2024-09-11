@@ -8,7 +8,7 @@ const floatingUpgrades = [
     },
     {
         name: 'Space Pickle',
-        icon: 'icons/upgrades/orbs/pickle.png',
+        icon: 'icons/upgrades/orbs/pickle_orb.png',
         description: 'Find the deep space pickle.',
         achievedKey: 'space_pickle',
         mode: ['DEEP_SPACE', 'METEOR'],

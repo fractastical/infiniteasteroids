@@ -22,7 +22,7 @@ function createSmallerAsteroids(x, y, size, speed, hitpoints) {
             speed: speed * speedMultiplier,
             dx: Math.cos(angle) * speed * speedMultiplier,
             dy: Math.sin(angle) * speed * speedMultiplier,
-            hitpoints: hitpoints,
+            hitpoints: hitpoints / 2,
             initialHitpoints: hitpoints, // Store the initial hitpoints
             color: 'gray'
         };
