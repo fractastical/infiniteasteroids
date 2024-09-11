@@ -204,8 +204,8 @@ function drawWarpedBackground(ctx, canvasWidth, canvasHeight) {
     const centerX = canvasWidth / 2;
     const centerY = canvasHeight / 2;
     const maxRadius = Math.sqrt(centerX * centerX + centerY * centerY);
-    const numRings = 20;
-    const numRadialLines = 36;
+    const numRings = 20 / baseSizeIncrease;
+    const numRadialLines = 36 / baseSizeIncrease;
 
     ctx.save();
     ctx.strokeStyle = 'rgba(0, 100, 255, 0.5)';
