@@ -7,6 +7,7 @@ let crazyGamesMode = true;
 
 let activeMegaUpgrades = [];
 let lastActivatedWave = 0;
+let overClockingAllowed = false;
 
 const joystick = document.getElementById('joystick');
 const joystickInner = document.getElementById('joystick-inner');
@@ -820,11 +821,7 @@ function update() {
 
     }
 
-    updateAndDrawFloatingUpgrades();
 
-    if (gameOver) endGame();
-    if (wave == 10 && currentMode == GameModes.EASY)
-        updateAchievementsAtEnd();
 
     // if (wave == 30) updateAchievementsAtEnd();
 
@@ -836,7 +833,14 @@ function update() {
     drawScore();
 
     // if (gameOver) drawDamageReport();
+    updateAndDrawFloatingUpgrades();
+
     drawShip();
+
+    if (gameOver) endGame();
+    if (wave == 10 && currentMode == GameModes.EASY)
+        updateAchievementsAtEnd();
+
 
 
 }
@@ -863,7 +867,7 @@ function processPlayerDeath() {
     invincible = true;
     invincibilityTimer = invincibilityDuration;
 
-    if (lives === 0) gameOver = true;
+    if (lives == 0) gameOver = true;
 }
 
 function initializeGame(mode) {

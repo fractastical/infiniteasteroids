@@ -434,8 +434,14 @@ function openUpgradeOptions() {
 
 
 function selectMegaUpgrade() {
-    const availableMegaUpgrades = megaUpgrades.filter(upgrade => !activeMegaUpgrades.some(active => active.name === upgrade.name));
-    if (floatingIsland.active && availableMegaUpgrades.length > 0) {
+    const availableMegaUpgrades = megaUpgrades.filter(upgrade =>
+        !upgrade.achievedKey || // Include upgrades without an achievedKey
+        (upgrade.achievedKey && Achievements[upgrade.achievedKey].reached) // Include achieved upgrades
+    ).filter(upgrade =>
+        !activeMegaUpgrades.some(active => active.name === upgrade.name) // Exclude already active upgrades
+    );
+
+    if (availableMegaUpgrades.length > 0) {
         const megaUpgradeOptions = getRandomMegaUpgrades(availableMegaUpgrades, 3);
         displayMegaUpgradeOptions(megaUpgradeOptions);
     } else {
@@ -444,6 +450,13 @@ function selectMegaUpgrade() {
         resumeGame();
     }
 }
+
+
+function getRandomMegaUpgrades(upgrades, count) {
+    const shuffled = [...upgrades].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, Math.min(count, shuffled.length));
+}
+
 
 
 function getRandomMegaUpgrades(upgrades, count) {

@@ -205,8 +205,8 @@ function createAsteroids(side) {
             createSlowCluster();
         }
 
-        if (wave % 10 === 0 && !alien) {
-            alien = {
+        if (wave % 10 === 0 && !miniBossAlien) {
+            miniBossAlien = {
                 x: 20,
                 y: 50,
                 size: 60,

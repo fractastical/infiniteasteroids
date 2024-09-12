@@ -32,7 +32,7 @@ const SwarmingAlienTypes = {
 
 };
 
-let alien = null;
+let miniBossAlien = null;
 let alienLaser = null;
 const alienLaserSpeed = 2.2;
 const alienLaserSize = 4;
@@ -478,10 +478,10 @@ function spawnBlinkingAliens(count) {
 
 
 function drawBossAlien() {
-    if (!alien) return;
+    if (!miniBossAlien) return;
     ctx.save();
-    ctx.translate(alien.x, alien.y);
-    ctx.drawImage(bossAlienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
+    ctx.translate(miniBossAlien.x, miniBossAlien.y);
+    ctx.drawImage(bossAlienImage, -miniBossAlien.size / 2, -miniBossAlien.size / 2, miniBossAlien.size, miniBossAlien.size);
     ctx.restore();
     // drawBossHitpointBar();
 }
@@ -496,29 +496,29 @@ function drawMegaBossAlien() {
 }
 
 function updateBossAlien() {
-    if (!alien) return;
+    if (!miniBossAlien) return;
     if (!freezeEffect.active) {
         // Calculate direction towards the ship
-        const dx = ship.x - alien.x;
-        const dy = ship.y - alien.y;
+        const dx = ship.x - miniBossAlien.x;
+        const dy = ship.y - miniBossAlien.y;
         const angle = Math.atan2(dy, dx);
 
         // Update alien's position based on the new direction
-        alien.x += Math.cos(angle) * alien.speed;
-        alien.y += Math.sin(angle) * alien.speed;
+        miniBossAlien.x += Math.cos(angle) * miniBossAlien.speed;
+        miniBossAlien.y += Math.sin(angle) * miniBossAlien.speed;
 
         // Update alien's shooting timer
-        alien.shootTimer++;
-        if (alien.shootTimer >= alien.shootInterval) {
-            alien.shootTimer = 0;
+        miniBossAlien.shootTimer++;
+        if (miniBossAlien.shootTimer >= miniBossAlien.shootInterval) {
+            miniBossAlien.shootTimer = 0;
             shootBossAlienLaser();
         }
 
         // Wrap the alien around the screen edges
-        if (alien.x < 0) alien.x = canvas.width;
-        else if (alien.x > canvas.width) alien.x = 0;
-        if (alien.y < 0) alien.y = canvas.height;
-        else if (alien.y > canvas.height) alien.y = 0;
+        if (miniBossAlien.x < 0) miniBossAlien.x = canvas.width;
+        else if (miniBossAlien.x > canvas.width) miniBossAlien.x = 0;
+        if (miniBossAlien.y < 0) miniBossAlien.y = canvas.height;
+        else if (miniBossAlien.y > canvas.height) miniBossAlien.y = 0;
     }
 }
 
@@ -737,14 +737,14 @@ function shootAlienLaser(alien) {
 }
 
 function shootBossAlienLaser() {
-    if (!alien) return;
-    const dx = ship.x - alien.x;
-    const dy = ship.y - alien.y;
+    if (!miniBossAlien) return;
+    const dx = ship.x - miniBossAlien.x;
+    const dy = ship.y - miniBossAlien.y;
     const angle = Math.atan2(dy, dx);
 
     alienLaser = {
-        x: alien.x,
-        y: alien.y,
+        x: miniBossAlien.x,
+        y: miniBossAlien.y,
         dx: Math.cos(angle) * alienLaserSpeed,
         dy: Math.sin(angle) * alienLaserSpeed
     };

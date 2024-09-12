@@ -172,7 +172,9 @@
         <button onclick="spawnRandomUpgrade()">Space Upgrade</button>
         <button onclick="spawnRandomUpgrade100x()">Space Upgrade 100x</button>
 
+
         <button onclick="spawnFloatingIsland()">Spawn Island</button>
+        <button onclick="openUpgradeOptions()">openUpgradeOptions</button>
 
         <button onclick="laser5x()">Laser 5x</button>
         <button onclick="sonic5x()">Sonic 5x</button>
@@ -294,6 +296,14 @@
         <div id="controlsInfo"></div>
     </div>
 
+    <div id="rouletteContainer" style="display: none">
+        <div id="rouletteIcons"></div>
+        <div id="planet"></div>
+        <div id="upgradeDisplay"></div>
+        <button id="spinButton" onClick="startRoulette()">Spin [ENTER]</button>
+
+    </div>
+
 
     <script>
 
@@ -390,7 +400,7 @@
         // }
 
         function spawnBossAlien() {
-            alien = {
+            miniBossAlien = {
                 x: 20,
                 y: 50,
                 size: 60,
@@ -424,6 +434,7 @@
         }
 
         function endGame() {
+            gameOver = false;
             lives += 1;
         }
 

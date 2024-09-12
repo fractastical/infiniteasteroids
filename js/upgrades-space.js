@@ -113,7 +113,7 @@ function spawnRandomUpgrade() {
             return;
     }
 
-    console.log(spawnChance);
+    // console.log(spawnChance);
 
     // Random chance to spawn an upgrade
     if (Math.random() < spawnChance) {

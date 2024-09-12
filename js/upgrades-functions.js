@@ -1,6 +1,4 @@
 
-const potatoImage = new Image();
-potatoImage.src = 'icons/upgrades/potato.png';
 let globalTimeScale = 1;
 
 const glitchEffect = {
@@ -90,6 +88,7 @@ const spacePixie = {
     duration: 450,
     timer: 0,
     fireRateBoost: 5,
+    cooldown: 1000,
     oldCooldown: 100,
     activate: function () {
         this.active = true;
@@ -100,6 +99,13 @@ const spacePixie = {
 
     },
     update: function () {
+
+        this.cooldown--;
+        if (this.cooldown <= 0) {
+            this.activate();
+            this.cooldown = 1000;
+
+        }
         if (this.active) {
             this.timer--;
             if (this.timer <= 0) {
@@ -120,6 +126,7 @@ const spaceMonkey = {
     active: false,
     duration: 900, // 15 seconds at 60 FPS
     timer: 0,
+    cooldown: 1200,
     monkeyAsteroids: [],
     activate: function () {
         console.log("Activating Space Monkey");
@@ -129,6 +136,14 @@ const spaceMonkey = {
         this.spawnMonkeyAsteroids();
     },
     update: function () {
+
+
+        this.cooldown--;
+        if (this.cooldown <= 0) {
+            this.activate();
+            this.cooldown = 1200;
+        }
+
         if (!this.active) return;
 
         this.timer--;
@@ -163,6 +178,8 @@ const spaceMonkey = {
             return;
         }
 
+        console.log(this.timer);
+
         for (let i = this.monkeyAsteroids.length - 1; i >= 0; i--) {
             let monkey = this.monkeyAsteroids[i];
 
@@ -196,8 +213,10 @@ const spaceMonkey = {
             }
         }
     },
-    draw: function (ctx) {
+    draw: function () {
+        console.log("brown");
         if (!this.active || !Array.isArray(this.monkeyAsteroids)) return;
+        console.log("ast");
 
         ctx.save();
         ctx.fillStyle = 'brown';
@@ -205,6 +224,8 @@ const spaceMonkey = {
             ctx.beginPath();
             ctx.arc(monkey.x, monkey.y, monkey.size / 2, 0, Math.PI * 2);
             ctx.fill();
+
+            console.log(monkey.x);
 
             // Draw a simple face
             ctx.fillStyle = 'black';
@@ -415,59 +436,80 @@ function findNearestAsteroid() {
     return nearestAsteroid;
 }
 
+const potatoImage = new Image();
+potatoImage.src = 'icons/upgrades/potatoroid_10.png';
+let potatoImageLoaded = false;
+potatoImage.onload = function () {
+    potatoImageLoaded = true;
+};
+
 const spacePotato = {
     x: 0,
     y: 0,
-    radius: 100,
+    radius: 60, // Reduced radius for closer orbit
     slowdownFactor: 0.5,
-    rotationSpeed: 0.01,
+    rotationSpeed: 0.05, // Increased for more noticeable rotation
     angle: 0,
+    size: 40,
     active: false,
     update: function () {
         if (this.active) {
             this.angle += this.rotationSpeed;
-            this.x = ship.x + Math.cos(this.angle) * this.radius;
-            this.y = ship.y + Math.sin(this.angle) * this.radius;
 
-            for (let i = 0; i < asteroids.length; i++) {
-                const dx = this.x - asteroids[i].x;
-                const dy = this.y - asteroids[i].y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < this.radius) {
-                    asteroids[i].speed *= this.slowdownFactor;
+            // Calculate position relative to the ship
+            const offsetX = Math.cos(this.angle) * this.radius;
+            const offsetY = Math.sin(this.angle) * this.radius;
+
+            // Update potato position
+            this.x = ship.x + offsetX;
+            this.y = ship.y + offsetY;
+
+            // Apply slowdown effect to nearby objects
+            this.applySlowdownEffect(asteroids);
+            this.applySlowdownEffect(aliens);
+            this.applySlowdownEffect(alienLasers);
+        }
+    },
+    applySlowdownEffect: function (objects) {
+        for (let i = 0; i < objects.length; i++) {
+            const dx = this.x - objects[i].x;
+            const dy = this.y - objects[i].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < this.radius) {
+                if (objects[i].speed) {
+                    objects[i].speed *= this.slowdownFactor;
                 }
-            }
-
-            for (let i = 0; i < aliens.length; i++) {
-                const dx = this.x - aliens[i].x;
-                const dy = this.y - aliens[i].y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < this.radius) {
-                    aliens[i].speed *= this.slowdownFactor;
-                }
-            }
-
-            for (let i = 0; i < alienLasers.length; i++) {
-                const dx = this.x - alienLasers[i].x;
-                const dy = this.y - alienLasers[i].y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < this.radius) {
-                    alienLasers[i].speed *= this.slowdownFactor;
+                if (objects[i].dx && objects[i].dy) {
+                    objects[i].dx *= this.slowdownFactor;
+                    objects[i].dy *= this.slowdownFactor;
                 }
             }
         }
     },
     draw: function () {
-        if (this.active) {
+        console.log("po");
+
+        if (this.active && potatoImageLoaded) {
+            console.log("ta");
             ctx.save();
             ctx.translate(this.x, this.y);
             ctx.rotate(this.angle);
-            ctx.drawImage(potatoImage, -potatoImage.width / 2, -potatoImage.height / 2);
+            ctx.drawImage(potatoImage, -this.size / 2, -this.size / 2, this.size, this.size);
+
+            // Optionally, draw a circle to show the slowdown effect radius
+            ctx.beginPath();
+            ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.stroke();
+
             ctx.restore();
         }
     },
     activate: function () {
         this.active = true;
+        this.x = ship.x;
+        this.y = ship.y;
+        this.angle = Math.random() * Math.PI * 2; // Start at a random angle
     },
     deactivate: function () {
         this.active = false;

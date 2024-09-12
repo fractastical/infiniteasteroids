@@ -2318,21 +2318,21 @@ function checkAlienDamage(weapon) {
         }
     }
 
-    if (alien && isColliding(weapon, alien)) {
+    // if (alien && isColliding(weapon, alien)) {
 
-        actualDamage = Math.min(weapon.damage + damageBooster, alien.hitpoints); // Ensure we don't overkill the asteroid
-        alien.hitpoints -= actualDamage;
+    //     actualDamage = Math.min(weapon.damage + damageBooster, alien.hitpoints); // Ensure we don't overkill the asteroid
+    //     alien.hitpoints -= actualDamage;
 
-        createExplosion(alien.x, alien.y);
+    //     createExplosion(alien.x, alien.y);
 
-        if (alien.hitpoints <= 0) {
-            createExplosion(alien.x, alien.y, 15);
-            alien = null; // Destroy alien
-            aliensKilled++;
-            increaseXP(30 * 20);
-            score += 1000;
-        }
-    }
+    //     if (alien.hitpoints <= 0) {
+    //         createExplosion(alien.x, alien.y, 15);
+    //         alien = null; // Destroy alien
+    //         aliensKilled++;
+    //         increaseXP(30 * 20);
+    //         score += 1000;
+    //     }
+    // }
 
 
     if (superbossAlien && isColliding(weapon, superbossAlien)) {
@@ -2407,17 +2407,17 @@ function checkLaserCollisions(lasers, isShip) {
             }
         }
 
-        if (alien && isColliding(laser, alien)) {
+        if (miniBossAlien && isColliding(laser, miniBossAlien)) {
 
             let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
-            let actualDamage = Math.min(damage + damageBooster, alien.hitpoints); // Ensure we don't overkill the asteroid
-            alien.hitpoints -= actualDamage;
+            let actualDamage = Math.min(damage + damageBooster, miniBossAlien.hitpoints); // Ensure we don't overkill the asteroid
+            miniBossAlien.hitpoints -= actualDamage;
 
-            createExplosion(alien.x, alien.y);
+            createExplosion(miniBossAlien.x, miniBossAlien.y);
 
-            if (alien.hitpoints <= 0) {
-                createExplosion(alien.x, alien.y, 15);
-                alien = null; // Destroy alien
+            if (miniBossAlien.hitpoints <= 0) {
+                createExplosion(miniBossAlien.x, miniBossAlien.y, 15);
+                miniBossAlien = null; // Destroy alien
                 aliensKilled++;
                 increaseXP(30 * 20);
                 score += 1000;
