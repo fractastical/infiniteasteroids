@@ -125,6 +125,57 @@ const secondaryWeapons = {
             }
         }
     },
+    clusterBomb: {
+        name: 'Cluster Bomb',
+        damage: 25,
+        radius: 140, // radius of explosion
+        cooldown: 500,
+        fullUses: 3,
+        uses: 3,
+        isActive: true,
+        isAvailable: () => Achievements.reach_wave_5.reached,
+        activate: function () {
+            this.isActive = true;
+        },
+        deactivate: function () {
+            this.isActive = false;
+        },
+        useWeapon: function () {
+            console.log("bursting");
+            if (this.uses > 0) {
+                this.uses--;
+                playRandomAcidBombSound();
+                createAreaDamage(ship.x, ship.y, this.radius, this.damage);
+                createExplosion(ship.x, ship.y, 5, 5);
+                for (let i = 0; i < 3; i++) {
+                    let x = ship.x + Math.random() * this.radius;
+                    let y = ship.y + Math.random() * this.radius;
+                    createExplosion(x, y, 10, 2);
+                }
+                for (let i = 0; i < 3; i++) {
+                    let x = ship.x + Math.random() * this.radius;
+                    let y = ship.y - Math.random() * this.radius;
+                    createExplosion(x, y, 10, 2);
+                }
+                for (let i = 0; i < 3; i++) {
+                    let x = ship.x - Math.random() * this.radius5;
+                    let y = ship.y - Math.random() * this.radius;
+                    createExplosion(x, y, 10, 2);
+                }
+                for (let i = 0; i < 3; i++) {
+                    let x = ship.x - Math.random() * canvas.width / 5;
+                    let y = ship.y + Math.random() * canvas.height / 5;
+                    createExplosion(x, y, 10, 2);
+                }
+
+                this.cooldown = 500; // Reset cooldown after use
+            } else {
+                console.log('Cannot use cluster bomb right now.');
+            }
+        }
+    }
+
+
 
 
 };

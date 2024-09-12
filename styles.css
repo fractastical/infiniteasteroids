@@ -731,6 +731,9 @@ button {
     background-image: url('icons/basic-laser-icon.png');
 }
 
+.icon-secondary-weapon-clusterBomb {
+    background-image: url('icons/upgrades/mainframe.png');
+}
 
 .icon-secondary-weapon-bomb {
     background-image: url('icons/secondary/bomb_icon_2.png');

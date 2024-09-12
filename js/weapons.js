@@ -2483,8 +2483,8 @@ function checkLaserCollisions(lasers, isShip) {
 
             if (megaBossAlien.hitpoints <= 0) {
                 createExplosion(megaBossAlien.x, megaBossAlien.y, 50);
-                megaBossAlien = null; // Destroy alien
                 createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
+                megaBossAlien = null; // Destroy alien
                 aliensKilled++;
                 Achievements.alien_supermegaboss_killed.reached = true;
                 increaseXP(30 * 20);

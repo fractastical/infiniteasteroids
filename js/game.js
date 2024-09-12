@@ -209,16 +209,16 @@ let invincibilityDuration = 160; // 3.5 seconds (60 FPS)
 let achievements = [];
 
 const Achievements = {
-    reach_wave_2: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 2' },
-    reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5' },
+    reach_wave_2: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 2. Unlock Bomber Drone.' },
+    reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5. Unlock Cluster bomb.' },
     // reach_wave_57: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 7' },
     reach_wave_10: { reached: false, icon: 'achievements/angelcapitan.png', description: 'Reach Wave 10. Unlock Sonic Blast.' },
     // reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
-    reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20. Unlock Boomerang.' },
+    // reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20. ' },
     // reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
     destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game. Unlock Drone.' },
     // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
-    complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode.' },
+    complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode. Unlock Boomerang.' },
     complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 30 in Normal Mode. Unlock Acid Bomb.' },
     acid_bomb_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/acid.png', description: 'Deal 2,500 Damage with Acid Bomb. Unlock Flamethrower.' },
     laser_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/deathray2.png', description: 'Deal 2,500 Damage with Laser. Unlock Explosive Laser.' },
@@ -240,7 +240,7 @@ const Achievements = {
     complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode. Unlock Glitch Effect.' },
     complete_planet_hero_mode: { reached: false, icon: 'achievements/planet_huge.png', description: 'Planet Hero Mode. Unlock Asteroid Splitter.' },
     alien_megaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien Boss. Chain of Flame.' },
-    alien_supermegaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien SuperMegaBoss. Explo Drone.' },
+    alien_supermegaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien MegaBoss. Explo Drone.' },
     alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. CryoBomb.' },
     million_score: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Get a million points. Invincibility Shield.' },
     wave_60_endless: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Reach wave 60 on Endless. Piercing Laser.' },
@@ -1345,6 +1345,7 @@ function isColliding(obj1, obj2) {
         let dx = obj1.x - obj2.x;
         let dy = obj1.y - obj2.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
+        // console.log(distance < (obj1.size || 1) + obj2.size);
         return distance < (obj1.size || 1) + obj2.size;
     }
 }
@@ -1560,10 +1561,10 @@ function countTechnologies() {
     let count = 2; // laser + bomb
 
     // These are all the achievements that have a specific weapon unlock assigned
-    if (Achievements.reach_wave_2.reached) count++;
+    // if (Achievements.reach_wave_2.reached) count++;
     if (Achievements.reach_wave_5.reached) count++;
     if (Achievements.reach_wave_10.reached) count++;
-    if (Achievements.reach_wave_20.reached) count++;
+    if (Achievements.complete_easy_mode.reached) count++;
     if (Achievements.complete_normal_mode.reached) count++;
     if (Achievements.complete_hard_mode.reached) count++;
     if (Achievements.complete_hero_mode.reached) count++;
@@ -1647,7 +1648,7 @@ function getAvailableWeaponIcons() {
     if (activeWeaponClasses.includes('freeze') || (Achievements.reach_wave_5.reached && currentMode != GameModes.ENDLESS_SLOW)) availableIcons.push(upgradeDefinitions['Activate Freeze Effect'].icon);
     if (activeWeaponClasses.includes('explosive') || Achievements.laser_damage.reached) availableIcons.push(upgradeDefinitions['Activate Explosive Laser'].icon);
     if (activeWeaponClasses.includes('sonic') || Achievements.reach_wave_10.reached) availableIcons.push(upgradeDefinitions['Activate Sonic Blast'].icon);
-    if (activeWeaponClasses.includes('boomerang') || Achievements.reach_wave_20.reached) availableIcons.push(upgradeDefinitions['Activate Boomerang'].icon);
+    if (activeWeaponClasses.includes('boomerang') || Achievements.complete_easy_mode.reached) availableIcons.push(upgradeDefinitions['Activate Boomerang'].icon);
     if (activeWeaponClasses.includes('acid') || Achievements.complete_normal_mode.reached) availableIcons.push(upgradeDefinitions['Activate Acid Bomb'].icon);
     if (activeWeaponClasses.includes('drone') || Achievements.destroy_100_asteroids.reached) availableIcons.push(upgradeDefinitions['Activate Drone'].icon);
     if (activeWeaponClasses.includes('deathray') || Achievements.kill_5_aliens.reached) availableIcons.push(upgradeDefinitions['Activate Death Ray'].icon);
@@ -2140,7 +2141,7 @@ function updateAchievementsAtEnd() {
         'reach_wave_5': 'Freeze Effect',
         'laser_damage': 'Explosive Laser',
         'reach_wave_10': 'Sonic Blast',
-        'reach_wave_20': 'Boomerang',
+        'complete_easy_mode': 'Boomerang',
         'complete_normal_mode': 'Acid Bomb',
         'destroy_100_asteroids': 'Drone',
         'kill_5_aliens': 'Death Ray',
@@ -2151,28 +2152,29 @@ function updateAchievementsAtEnd() {
         'acid_bomb_damage': 'Flamethrower'
     };
 
+
     newlyUnlockedAchievements.forEach(achievement => {
         if (achievement in achievementToWeaponMap) {
             newlyUnlockedWeapons.push(achievementToWeaponMap[achievement]);
         }
     });
-    `    // console.log(newlyUnlockedAchievements);
-    // console.log(newlyUnlockedWeapons);
-`
+    console.log(newlyUnlockedAchievements);
+    console.log(newlyUnlockedWeapons);
+
     return { newlyUnlockedAchievements, newlyUnlockedWeapons };
 }
 
 function createUpgradeOptionsHTML(upgrades) {
     return upgrades.map((upgrade, index) => `
-        <div class="upgrade-option" onclick="selectUpgrade(${index + 1})">
+        <div class="upgrade-option" onclick="selectUpgrade(${index + 1})" >
             <div class="upgrade-number">${index + 1}</div>
             <div class="upgrade-icon ${upgrade.icon}"></div>
             <div class="upgrade-details">
                 <p class="upgrade-name">${upgrade.name}</p>
                 <p class="upgrade-description">${upgrade.description}</p>
             </div>
-        </div>
-    `).join('');
+        </div >
+        `).join('');
 }
 
 
@@ -2430,9 +2432,9 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
 
     // Set game stats
     if (currentMode === GameModes.ENDLESS_SLOW) {
-        waveElement.textContent = `Waves Survived: ${wave}`;
+        waveElement.textContent = `Waves Survived: ${wave} `;
     } else {
-        waveElement.textContent = `Wave: ${wave}`;
+        waveElement.textContent = `Wave: ${wave} `;
     }
 
     if (currentMode === GameModes.COOP) {
@@ -2440,10 +2442,10 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
         score = totalScore; // Set the total score for saving to leaderboard
         scoreElement.textContent = `Total Score: ${totalScore} (P1: ${ship.score}, P2: ${ship2.score})`;
     } else {
-        scoreElement.textContent = `Score: ${score}`;
+        scoreElement.textContent = `Score: ${score} `;
     }
 
-    asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
+    asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled} `;
 
     // Clear and set damage report
     damageReportList.innerHTML = '';
@@ -2530,7 +2532,7 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
 
 function saveUserUpgrades(userId, gameId, data) {
     // Example function to save user upgrades and coins to the server
-    fetch(`/api/saveUserUpgrades?userId=${userId}&gameId=${gameId}`, {
+    fetch(`/ api / saveUserUpgrades ? userId = ${userId}& gameId=${gameId} `, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

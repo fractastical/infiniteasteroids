@@ -29,7 +29,7 @@ function createBossExplosion(x, y, size) {
         const angle = Math.random() * Math.PI * 2;
         const speed = Math.random() * 5 + 2;
         const particleSize = Math.random() * 5 + 2;
-        const life = Math.random() * 60 + 30;
+        const life = Math.random() * 60 + 60;
         const color = Math.random() > 0.5 ? colorScheme.base : colorScheme.highlight;
 
         particles.push({

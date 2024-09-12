@@ -429,6 +429,7 @@ function spawnMegaBossAlien() {
         shootTimer: 0,
         spawnTimer: 0,
         hitpoints: 10000,
+        radius: 120,
         maxHitpoints: 10000,
         shootInterval: 100 // Adjust this value as needed
     };

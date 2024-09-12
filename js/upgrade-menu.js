@@ -79,7 +79,7 @@ function getRandomUpgrades(count) {
         availableUpgrades.push(...(activeWeaponClasses.includes('explosive') ? (getUpgradeCount('explosive') <= upgradeLimit ? ['Increase Explosive Laser Level'] : []) : ['Activate Explosive Laser']));
     if (Achievements.reach_wave_10.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('sonic') ? (getUpgradeCount('sonic') <= upgradeLimit ? ['Increase Sonic Blast Range', 'Increase Sonic Blast Damage', 'Decrease Sonic Blast Cooldown'] : []) : ['Activate Sonic Blast']));
-    if (Achievements.reach_wave_20.reached)
+    if (Achievements.complete_easy_mode.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('boomerang') ? (getUpgradeCount('boomerang') <= upgradeLimit ? ['Increase Boomerang Speed', 'Increase Boomerang Damage'] : []) : ['Activate Boomerang']));
     if (Achievements.complete_normal_mode.reached)
         availableUpgrades.push(...(activeWeaponClasses.includes('acid') ? (getUpgradeCount('acid') <= upgradeLimit ? ['Increase Acid Bomb Duration', 'Decrease Acid Bomb Cooldown', 'Increase Acid Bomb Size'] : []) : ['Activate Acid Bomb']));
