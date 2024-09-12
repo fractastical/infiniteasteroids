@@ -1868,17 +1868,17 @@ function displayAchievementPage(page) {
 }
 
 // Function to open the achievements modal
-function openAchievementsModal() {
-    const modal = document.getElementById('achievementsModal');
-    modal.style.display = 'block';
-    populateAchievementsModal();
-}
+// function openAchievementsModal() {
+//     const modal = document.getElementById('achievementsModal');
+//     modal.style.display = 'block';
+//     populateAchievementsModal();
+// }
 
 // Function to close the achievements modal
-document.getElementById('closeAchievementsModal').addEventListener('click', function () {
-    const modal = document.getElementById('achievementsModal');
-    modal.style.display = 'none';
-});
+// document.getElementById('closeAchievementsModal').addEventListener('click', function () {
+//     const modal = document.getElementById('achievementsModal');
+//     modal.style.display = 'none';
+// });
 
 function populateAchievements() {
     const achievementsList = document.getElementById('achievementsList');
@@ -2172,7 +2172,8 @@ function claimLevelUps() {
         console.log(levelUpModal);
 
         const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
-        document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
+        if (document.getElementById('upgradeOptions'))
+            document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
 
         // Show the modal
         levelUpModal.style.display = 'block';
@@ -2236,19 +2237,22 @@ function levelUp() {
         // Display the level-up modal
         const levelUpModal = document.getElementById('levelUpModal');
         const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
-        document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
+        if (document.getElementById('upgradeOptions')) {
 
-        // Show the modal
-        levelUpModal.style.display = 'block';
+            document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
 
-        // Store upgrades in a global variable for later use
-        window.levelUpgrades = upgrades;
-        // Pause the game
-        pauseGame();
+            // Show the modal
+            levelUpModal.style.display = 'block';
 
-        // Activate temporary invincibility
-        invincible = true;
-        invincibilityTimer = invincibilityDuration;
+            // Store upgrades in a global variable for later use
+            window.levelUpgrades = upgrades;
+            // Pause the game
+            pauseGame();
+
+            // Activate temporary invincibility
+            invincible = true;
+            invincibilityTimer = invincibilityDuration;
+        }
 
     }
 
@@ -2314,6 +2318,16 @@ function getUpgradeCount(weaponClass) {
             return chainLightningUpgrades.range + chainLightningUpgrades.damage + chainLightningUpgrades.bounces + chainLightningUpgrades.cooldown - 3;
         case 'explosiverocket':
             return explosiveRocketUpgrades.damage + explosiveRocketUpgrades.radius + explosiveRocketUpgrades.cooldown - 2;
+        case 'sonicboom':
+            return 1
+        case 'explodrone':
+            return 1
+        case 'crytobomb':
+            return 1
+        case 'chainofflame':
+            return 1
+
+
 
         default:
             return 0;

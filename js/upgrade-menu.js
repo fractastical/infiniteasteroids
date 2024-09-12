@@ -55,9 +55,10 @@ function getRandomUpgrades(count) {
         'Drone Army': { icon: 'icon-droneArmy', description: 'Multiply your drone force' },
         'Double Turret': { icon: 'icon-doubleTurret', description: 'Add a second defensive turret' },
         'Triple Turret': { icon: 'icon-tripleTurret', description: 'Deploy a third turret' },
-        'Chain of Flame': { icon: 'icon-flameChainLightning', description: 'Combine flame and lightning powers' },
-        'Explo Drone': { icon: 'icon-explosiveDrone', description: 'Equip drones with explosives' },
-        'Sonic Boom': { icon: 'icon-sonicBoomerang', description: 'Launch sonic-powered boomerangs' }
+        'Chain of Flame': { icon: 'icon-chainofflame', description: 'Combine flame and lightning powers' },
+        'Explo Drone': { icon: 'icon-explodrone', description: 'Equip drones with explosives' },
+        'Sonic Boom': { icon: 'icon-sonicboom', description: 'Launch sonic-powered boomerangs' },
+        'Cryo Bomb': { icon: 'icon-cryobomb', description: 'Icy slow acid bombs' }
     };
 
 

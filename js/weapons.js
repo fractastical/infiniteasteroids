@@ -1116,6 +1116,7 @@ function setAsteroidOnFire(asteroid) {
     asteroid.isOnFire = true; // Set the asteroid on fire
     asteroid.fireTimer = 0; // Reset the fire timer
     asteroid.distanceFromCenter = 0; // Track the distance from the center of the flame
+    asteroid.color = 'darkred';
 }
 
 
@@ -1149,8 +1150,22 @@ function activateSonicBlast() {
             x: ship.x,
             y: ship.y,
             radius: 0,
+            color: 'white',
             hitAsteroids: [], // Array to store the IDs of hit asteroids
         });
+
+        if (comboSonicBoomerangActive && boomerang) {
+
+            sonicBlast.waves.push({
+                x: boomerang.x,
+                y: boomerang.y,
+                radius: 0,
+                color: 'yellow',
+                hitAsteroids: [], // Array to store the IDs of hit asteroids
+            });
+
+        }
+
         sonicBlast.timer = sonicBlast.cooldown;
     }
 }
@@ -1179,12 +1194,14 @@ function fireChainLightning(target, bounces, roid = false) {
     else
         damageReport.chainlightning += actualDamage;
 
+    console.log(comboFlameChainLightningActive);
 
     if (target.hitpoints <= 0) {
         createExplosion(target.x, target.y, target.hitpoints, target.image);
         let index = asteroids.indexOf(target);
         asteroids.splice(index, 1);
     } else if (comboFlameChainLightningActive) {
+        console.log("setting on fire");
         setAsteroidOnFire(target);
     }
 
@@ -1646,9 +1663,6 @@ function updateBoomerang() {
             asteroid.hitpoints -= actualDamage;
             damageReport.boomerang += actualDamage;
 
-            if (comboSonicBoomerangActive) {
-                triggerSonicBlastEffect(boomerang.x, boomerang.y, sonicBlast.range);
-            }
 
             if (asteroid.hitpoints <= 0) {
                 processAsteroidDeath(asteroid);
@@ -2022,7 +2036,10 @@ function updateDrones() {
                     asteroid.hitpoints -= actualDamage;
                     damageReport.drones += actualDamage;
 
+                    console.log(comboExplosiveDroneActive);
+
                     if (comboExplosiveDroneActive) {
+                        console.log("explodronedamage");
                         createExplosion(asteroid.x, asteroid.y, 0);
                         applyExplosiveDamageToNearbyAsteroids(asteroid);
                     }
@@ -2221,15 +2238,21 @@ let comboGravityBlastActive = false;
 
 function activateComboFlameChainLightning() {
     if (canActivateComboWeapons().flameChainLightning) {
+        console.log("comboFlameChainLightningActive");
         activateWeaponClass("chainofflame");
         comboFlameChainLightningActive = true;
+
     }
 }
 
 function activateComboExplosiveDrone() {
+    console.log("activateComboExplosiveDrone");
+
     if (canActivateComboWeapons().explosiveDrone) {
         activateWeaponClass("explodrone");
         comboExplosiveDroneActive = true;
+        console.log("activateComboExplosiveDrone");
+
     }
 }
 

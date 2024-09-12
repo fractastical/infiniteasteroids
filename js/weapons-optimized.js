@@ -87,7 +87,7 @@ function drawSonicBlast() {
 
         if (simplifiedMode) {
             // Simplified mode: single layer, medium blue
-            ctx.strokeStyle = `rgba(30, 144, 255, ${opacityFactor})`;
+            ctx.strokeStyle = wave.color;
             ctx.beginPath();
             ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
             ctx.stroke();
@@ -95,7 +95,7 @@ function drawSonicBlast() {
             // Full effect: Multiple layers with dynamic opacity and different blue shades
 
             // Outer wave: Light blue, faster, more transparent
-            ctx.strokeStyle = `rgba(135, 206, 250, ${opacityFactor})`;
+            ctx.strokeStyle = wave.color;
             ctx.beginPath();
             ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
             ctx.stroke();

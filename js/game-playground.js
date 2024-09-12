@@ -24,6 +24,8 @@ function waveIncrement10x() {
 
 function sonic5x() {
 
+    activateWeaponClass('sonic');
+
     for (i = 0; i < 5; i++) {
         console.log("sonicup");
         applyUpgrade('Increase Sonic Blast Range');
@@ -33,4 +35,78 @@ function sonic5x() {
     }
 
 }
+
+function drone5x() {
+
+    activateWeaponClass('drone');
+
+    for (i = 0; i < 5; i++) {
+        // console.log("drone5x");
+        applyUpgrade('Increase Drone Firerate');
+        applyUpgrade('Increase Drone Damage');
+
+    }
+
+}
+
+
+function exploding5x() {
+
+    activateWeaponClass('explosive');
+
+    for (i = 0; i < 5; i++) {
+        // console.log("drone5x");
+        applyUpgrade('Increase Explosive Laser Level');
+
+    }
+
+}
+
+
+function chain5x() {
+
+    activateWeaponClass('chainlightning');
+
+    for (i = 0; i < 5; i++) {
+        console.log("chain5");
+        applyUpgrade('Increase Chain Lightning Range');
+        applyUpgrade('Increase Chain Lightning Damage');
+        applyUpgrade('Increase Chain Lightning Bounces');
+        applyUpgrade('Decrease Chain Lightning Cooldown');
+
+    }
+
+}
+
+
+function boom5x() {
+
+    activateWeaponClass('boomerang');
+
+    for (i = 0; i < 5; i++) {
+
+        console.log("boom5x");
+
+        applyUpgrade('Increase Boomerang Speed');
+        applyUpgrade('Increase Boomerang Damage');
+
+    }
+
+}
+
+function flame5x() {
+
+    activateWeaponClass('flamethrower');
+
+    for (i = 0; i < 5; i++) {
+        console.log("flame5");
+        applyUpgrade('Increase Flamethrower Range');
+        applyUpgrade('Increase Flamethrower Damage');
+        applyUpgrade('Decrease Flamethrower Cooldown');
+
+    }
+
+}
+
+
 

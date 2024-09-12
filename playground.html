@@ -171,13 +171,20 @@
 
         <button onclick="spawnRandomUpgrade()">Space Upgrade</button>
         <button onclick="spawnRandomUpgrade100x()">Space Upgrade 100x</button>
+
         <button onclick="spawnFloatingIsland()">Spawn Island</button>
 
         <button onclick="laser5x()">Laser 5x</button>
         <button onclick="sonic5x()">Sonic 5x</button>
-        <button onclick="modifyWeapon('flameChainLightning.active', 1)">Chain of Flame</button>
-        <button onclick="modifyWeapon('explosiveDrone.active', 1)">Explo Drone</button>
-        <button onclick="modifyWeapon('sonicBoomerang.active', 1)">Sonic Boom</button>
+        <button onclick="boom5x()">Boom 5x</button>
+        <button onclick="chain5x()">Chain 5x</button>
+        <button onclick="flame5x()">Flame 5x</button>
+        <button onclick="drone5x()">Drone 5x</button>
+        <button onclick="exploding5x()">Explo 5x</button>
+
+        <button onclick="activateComboFlameChainLightning()">Chain of Flame</button>
+        <button onclick="activateComboExplosiveDrone()">Explo Drone</button>
+        <button onclick="activateComboSonicBoomerang()">Sonic Boom</button>
         <button onclick="activateComboCryoBomb()">Cryo Bomb</button>
         <button onclick="activateComboGravityBlast()">Gravity Blast</button>
 
@@ -344,13 +351,13 @@
             if (lastPart === 'active') {
                 // Handle activation of combo weapons
                 switch (weaponClass) {
-                    case 'flameChainLightning':
+                    case 'chainofflame':
                         activateComboFlameChainLightning();
                         break;
-                    case 'explosiveDrone':
+                    case 'explodrone':
                         activateComboExplosiveDrone();
                         break;
-                    case 'sonicBoomerang':
+                    case 'sonicboom':
                         activateComboSonicBoomerang();
                         break;
 

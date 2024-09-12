@@ -52,7 +52,7 @@ const secondaryWeapons = {
     },
     piercingLaser: {
         name: 'Piercing Laser',
-        damage: 250,
+        damage: 550,
         cooldown: 400,
         uses: 3,
         fullUses: 3,
@@ -147,19 +147,41 @@ function shootPiercingLaser(x, y, rotation, damage) {
     const laserX = x + 10 * Math.sin(rotation * Math.PI / 180);
     const laserY = y - 10 * Math.cos(rotation * Math.PI / 180);
 
+    // Draw the laser
     ctx.beginPath();
     ctx.moveTo(laserX, laserY);
     ctx.lineTo(laserX + 1000 * Math.sin(rotation * Math.PI / 180), laserY - 1000 * Math.cos(rotation * Math.PI / 180));
-    ctx.strokeStyle = 'cyan';
+    ctx.strokeStyle = 'red';
     ctx.stroke();
 
-    // Check collision with all asteroids/enemies along the laser path
+    const sinRotation = Math.sin(rotation * Math.PI / 180);
+    const cosRotation = Math.cos(rotation * Math.PI / 180);
+
+    // Check collision with all asteroids along the laser path
     asteroids.forEach(asteroid => {
-        const dist = Math.abs((asteroid.x - laserX) * Math.cos(rotation * Math.PI / 180) - (asteroid.y - laserY) * Math.sin(rotation * Math.PI / 180));
+        const dist = Math.abs((asteroid.x - laserX) * cosRotation - (asteroid.y - laserY) * sinRotation);
         if (dist < asteroid.size) {
-            asteroid.health -= damage;
-            if (asteroid.health <= 0) {
-                destroyAsteroid(asteroid);
+            asteroid.hitpoints -= damage;
+            if (asteroid.hitpoints <= 0) {
+                processAsteroidDeath(asteroid, true);
+            }
+        }
+    });
+
+    // Check collision with all aliens along the laser path
+    aliens.forEach(alien => {
+        if (alien === octoBoss) {
+            // Handle OctoBoss separately
+            damageOctoBoss(damage);
+
+        } else {
+            const dist = Math.abs((alien.x - laserX) * cosRotation - (alien.y - laserY) * sinRotation);
+            if (dist < alien.size) {
+                alien.hitpoints -= damage;
+                if (alien.hitpoints <= 0) {
+                    createExplosion(alien.x, alien.y);
+                    aliens.splice(aliens.indexOf(alien), 1);
+                }
             }
         }
     });
