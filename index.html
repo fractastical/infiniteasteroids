@@ -239,7 +239,7 @@
           populateSelectors();
           handleSelections();
           updateShipPreview();
-
+          document.getElementById('versionInfo').innerHTML = "Version v " + version;
 
         });
       </script>
@@ -353,6 +353,7 @@
   <div id="volumeScreen" style="display:none;">
 
     <h2>Settings</h2>
+    <span id="versionInfo"><!--VERSION--> v 0.9713</span>
 
     <h3>Volume Control</h3>
     <input type="range" id="volumeSlider" min="1" max="10" value="5">

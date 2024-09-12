@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-
+let version = "0.9748"
 
 let activeMegaUpgrades = [];
 let lastActivatedWave = 0;
@@ -2004,7 +2004,7 @@ function populateAchievements() {
     const technologiesCountElement = document.getElementById('technologiesCount');
     let totalTechnologyCount = 42; // 5 ships + 13 weapons + 7 boosters + 17 upgrades 
     // VERSION VERSION VERSION
-    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v 0.9747`;
+    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v ${version} `;
 
     // Populate game modes
     populateGameModes();
