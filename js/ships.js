@@ -127,14 +127,14 @@ const ships = {
         draw: drawStarHawk,
         condition: () => Achievements.complete_meteor_easy_mode.reached
     },
-    VvidWarden: {
+    voidWarden: {
         name: 'Void Warden',
         lives: 4,
         laserLevel: 4,
         weaponSlots: 4,
         upgradeSlots: 2,
         draw: drawVoidWarden,
-        condition: () => Achievements.complete_meteor_hero_mode.reached
+        condition: () => Achievements.explosive_laser_damage.reached
     },
     solarPhoenix: {
         name: 'Solar Phoenix',
@@ -143,7 +143,7 @@ const ships = {
         weaponSlots: 3,
         upgradeSlots: 3,
         draw: drawSolarPhoenix,
-        condition: () => Achievements.complete_planet_hard_mode.reached
+        condition: () => Achievements.complete_meteor_hard_mode.reached
     },
     quantumStriker: {
         name: 'Quantum Striker',
@@ -152,7 +152,7 @@ const ships = {
         weaponSlots: 5,
         upgradeSlots: 2,
         draw: drawQuantumStriker,
-        condition: () => Achievements.complete_meteor_hard_mode.reached,
+        condition: () => Achievements.complete_meteor_hero_mode.reached,
         shoot: shootShotgunStyle // Add custom shooting function
     }
 };

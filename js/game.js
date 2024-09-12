@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9753"
+let version = "0.9755"
 let crazyGamesMode = true;
 
 let activeMegaUpgrades = [];
@@ -223,7 +223,7 @@ const Achievements = {
     acid_bomb_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/acid.png', description: 'Deal 2,500 Damage with Acid Bomb. Unlock Flamethrower.' },
     laser_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/deathray2.png', description: 'Deal 2,500 Damage with Laser. Unlock Explosive Laser.' },
     drone_damage: { reached: false, damage: 0, required: 1500, icon: 'achievements/storm_drone.png', description: 'Deal 1,500 Damage with Drone. Unlock Drone Army.' },
-    explosive_laser_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/explosive.png', description: 'Deal 5,000 Damage with Explosive Laser' },
+    explosive_laser_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/explosive.png', description: 'Deal 5,000 Damage with Explosive Laser. Unlock Solar Phoenix.' },
     death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Extra Choice.' },
     no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
     complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Hard Mode. Unlock Explosive Rocket.' },
@@ -1763,7 +1763,7 @@ function updateGameModeDisplay() {
     // Update the play button or any other elements that depend on the game mode
     const playNowButton = document.getElementById('playNow');
     if (playNowButton) {
-        console.log("starting" + gameModes[currentGameModeIndex].name);
+        // console.log("starting" + gameModes[currentGameModeIndex].name);
         playNowButton.onclick = () => initializeGame(gameModes[currentGameModeIndex].id);
     }
 }
