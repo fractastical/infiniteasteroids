@@ -60,7 +60,10 @@ const megaUpgrades = [
         },
         update: function () {
             spaceMonkey.update();
-        }
+        },
+        draw: function () {
+            spaceMonkey.draw();
+        },
     },
     {
         name: 'Space Potato',
@@ -81,15 +84,19 @@ const megaUpgrades = [
                 spacePotato.deactivate();
             }
         },
-        draw: spacePotato.draw
+        draw: function () {
+            spacePotato.draw();
+        }
+
     },
     {
         name: 'Dark Side',
-        description: 'Temporarily increases laser damage and spawns dark energy balls.',
+        description: 'Allows you to overclock your weapons.',
         icon: 'icons/upgrades/orbs/darkerdarkside_orb3.png',
         achievedKey: 'dark_side',
         effect: function () {
             darkSide.activate();
+            overClockingAllowed = true;
         },
         update: function () {
             darkSide.update();
@@ -206,8 +213,11 @@ function updateMegaUpgrades() {
 
     activeMegaUpgrades.forEach(upgrade => {
         console.log(upgrade.name);
+        console.log(upgrade.timer);
+
         if (typeof upgrade.update === 'function') {
             upgrade.update();
+
         }
     });
 }
