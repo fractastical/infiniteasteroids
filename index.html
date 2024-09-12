@@ -1085,6 +1085,14 @@
         console.log("Auth prompt result", user);
       } catch (e) {
         console.log("Error:", e);
+        //normal login as backup
+        loginFormOpen = true;
+        event.preventDefault();
+        pauseGame();
+        loginPopup.style.display = 'block';
+
+
+
       }
 
     }
@@ -1092,6 +1100,7 @@
     loginLink.addEventListener('click', (event) => {
       if (crazyGamesMode) {
 
+        console.log("showCrazyGamesAuthPrompt");
         showCrazyGamesAuthPrompt();
 
       } else {
