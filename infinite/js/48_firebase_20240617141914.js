@@ -51,6 +51,8 @@ auth.onAuthStateChanged(user => {
 async function loadUserData(userId) {
     try {
         const userDoc = await getDoc(doc(db, 'users', userId));
+        const token = await window.CrazyGames.SDK.user.getUserToken();
+        console.log("Get token result", token);
 
         // const userDoc = await db.doc(`users/${userId}`).get();
         if (userDoc.exists) {
@@ -122,7 +124,7 @@ async function loadLeaderboard(gameName) {
         const userData = doc.data();
         const gameScores = userData.games?.[gameName]?.scores || [];
         const highestScore = gameScores.reduce((max, session) => Math.max(max, session.score), 0);
-        
+
         users.push({
             nickname: userData.nickname || 'Unnamed',
             score: highestScore

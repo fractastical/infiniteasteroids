@@ -46,27 +46,34 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-async function loadUserData(userId) {
-    try {
-        const userDoc = await getDoc(doc(db, 'users', userId));
+async function loadUserData(userId, crazyGames = false) {
+    if (crazyGames) {
+        const user = await window.CrazyGames.SDK.user.getUser();
 
-        // const userDoc = await db.doc(`users/${userId}`).get();
-        if (userDoc.exists) {
-            const userData = userDoc.data();
-            document.getElementById('user-nickname').textContent = userData.nickname;
-            document.getElementById('user-coins').textContent = userData.coins;
-            document.getElementById('user-info').classList.remove('hidden');
-            document.getElementById('login-link').classList.add('hidden');
-            document.getElementById('auth').classList.add('hidden');
-            document.getElementById('game-section').classList.remove('hidden');
-            console.log("pizza");
-            // saveUserData(userId);
 
-        } else {
-            console.log("No such document!");
+
+    } else {
+        try {
+            const userDoc = await getDoc(doc(db, 'users', userId));
+
+            // const userDoc = await db.doc(`users/${userId}`).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                document.getElementById('user-nickname').textContent = userData.nickname;
+                document.getElementById('user-coins').textContent = userData.coins;
+                document.getElementById('user-info').classList.remove('hidden');
+                document.getElementById('login-link').classList.add('hidden');
+                document.getElementById('auth').classList.add('hidden');
+                document.getElementById('game-section').classList.remove('hidden');
+                console.log("pizza");
+                // saveUserData(userId);
+
+            } else {
+                console.log("No such document!");
+            }
+        } catch (error) {
+            console.error("Error getting user data:", error);
         }
-    } catch (error) {
-        console.error("Error getting user data:", error);
     }
 }
 

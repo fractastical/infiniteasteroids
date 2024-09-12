@@ -1077,11 +1077,32 @@
       await setDoc(doc(db, 'users', userId), initialData);
     }
 
+    async function showCrazyGamesAuthPrompt() {
+
+
+      try {
+        const user = await window.CrazyGames.SDK.user.showAuthPrompt();
+        console.log("Auth prompt result", user);
+      } catch (e) {
+        console.log("Error:", e);
+      }
+
+    }
+
     loginLink.addEventListener('click', (event) => {
-      loginFormOpen = true;
-      event.preventDefault();
-      pauseGame();
-      loginPopup.style.display = 'block';
+      if (crazyGamesMode) {
+
+        showCrazyGamesAuthPrompt();
+
+      } else {
+
+        loginFormOpen = true;
+        event.preventDefault();
+        pauseGame();
+        loginPopup.style.display = 'block';
+
+      }
+
     });
 
     loginForm.addEventListener('submit', (event) => {
@@ -1158,7 +1179,32 @@
     });
 
 
-    async function loadUserData(userId) {
+    async function loadUserData(userId, crazyGames = false) {
+
+      if (userId == '') {
+
+        console.log("trying crazygames user");
+        try {
+          // const user = await window.CrazyGames.SDK.user.getUser();
+          // userNickname.textContent = user.username;
+          const token = await window.CrazyGames.SDK.user.getUserToken();
+          console.log("Get token result", token);
+          userId = token.userId
+          userNickname.textContent = token.username;
+
+
+        } catch (e) {
+          console.log("Get user error: ", e);
+          try {
+            const user = await window.CrazyGames.SDK.user.showAuthPrompt();
+            console.log("Auth prompt result", user);
+          } catch (e) {
+            console.log("Error:", e);
+          }
+
+        }
+
+      }
       try {
         const userDoc = await getDoc(doc(db, 'users', userId));
 
