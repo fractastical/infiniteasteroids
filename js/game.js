@@ -2322,13 +2322,10 @@ function getUpgradeCount(weaponClass) {
             return 1
         case 'explodrone':
             return 1
-        case 'crytobomb':
+        case 'cryobomb':
             return 1
         case 'chainofflame':
             return 1
-
-
-
         default:
             return 0;
     }

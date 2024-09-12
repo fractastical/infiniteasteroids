@@ -1366,6 +1366,15 @@ function updateAcidAreas() {
                     asteroids.splice(j, 1);
                 }
             }
+            if (comboCryoBombActive) {
+                asteroid.speed *= 0.9;
+                asteroid.dx *= 0.9;
+                asteroid.dy *= 0.9;
+
+            }
+
+
+
         }
 
         // Remove the area if it has expired

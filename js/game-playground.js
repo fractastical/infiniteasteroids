@@ -36,6 +36,35 @@ function sonic5x() {
 
 }
 
+
+function acid5x() {
+
+    activateWeaponClass('acid');
+
+    for (i = 0; i < 5; i++) {
+        applyUpgrade('Increase Acid Bomb Duration');
+        applyUpgrade('Decrease Acid Bomb Cooldown');
+        applyUpgrade('Increase Acid Bomb Size');
+
+    }
+
+}
+
+
+function freeze5x() {
+
+    activateWeaponClass('freeze');
+
+    for (i = 0; i < 5; i++) {
+        applyUpgrade('Activate Freeze Effect');
+        applyUpgrade('Increase Freeze Duration');
+        applyUpgrade('Decrease Freeze Cooldown');
+
+    }
+
+}
+
+
 function drone5x() {
 
     activateWeaponClass('drone');
