@@ -707,6 +707,14 @@ button {
     background-image: url('icons/nano_swarm_22.png');
 }
 
+.icon-droneArmy {
+    background-image: url('icons/upgrades/drone_army.png');
+}
+
+.icon-tripleTurret {
+    background-image: url('icons/turret_icon_pink.png');
+}
+
 .icon- {
     background-image: url('icons/basic-laser-icon.png');
 }
