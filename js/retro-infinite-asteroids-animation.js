@@ -103,7 +103,7 @@ const InfiniteAsteroidsAnimation = (function () {
                     // Collision detected
                     createExplosion(particle.x, particle.y);
                     particles.splice(i, 1);
-                    ship.lasers.splice(j, 1);
+                    // ship.lasers.splice(j, 1);
                     break;
                 }
             }

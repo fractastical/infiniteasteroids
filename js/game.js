@@ -2040,6 +2040,7 @@ function populateAchievements() {
     // VERSION VERSION VERSION
     technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v ${version} `;
 
+    populateSelectors();
     // Populate game modes
     populateGameModes();
 }

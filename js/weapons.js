@@ -1737,7 +1737,7 @@ function activateBoomerang() {
 
 function shootTripleLaser() {
     const baseRotation = ship.rotation;
-    console.log("tripple");
+    // console.log("tripple");
     // Center laser
     const centerLaserX = ship.x + 100 * Math.sin(baseRotation * Math.PI / 180);
     const centerLaserY = ship.y - 100 * Math.cos(baseRotation * Math.PI / 180);
