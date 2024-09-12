@@ -695,6 +695,18 @@ button {
     background-image: url('icons/gravity_blast.png');
 }
 
+.icon-chainofflame {
+    background-image: url('icons/chain_of_flame.png');
+}
+
+.icon-explodrone {
+    background-image: url('icons/explo_drone.png');
+}
+
+.icon-sonicboom {
+    background-image: url('icons/upgrades/sonicboomerang_22.png');
+}
+
 .icon-ship {
     background-image: url('icons/ship-icon.png');
 }

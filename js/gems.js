@@ -54,7 +54,7 @@
 //     'Damage Booster': 'damagebooster'
 // };
 
-const icons = ['icon-laser', 'icon-turret', 'icon-drone', 'icon-freeze', 'icon-acid', 'icon-sonic'];
+const icons = ['icon-basiclaser', 'icon-turret', 'icon-drone', 'icon-freeze', 'icon-acid', 'icon-sonic'];
 
 const gemImages = {
     common: new Image(),
@@ -384,7 +384,7 @@ function checkGemCollection() {
             }
 
             // Increase the XP and check for level up
-            increaseXP(xpBoost);
+            increaseXP(xpBoost, true);
             updateXPBar();
 
             // Remove the collected gem

@@ -490,18 +490,24 @@ function applyUpgrade(upgrade) {
             chainLightning.cooldown = Math.max(60, 300 - 30 * chainLightningUpgrades.cooldown);
             break;
         case 'Chain of Flame':
+            activateWeaponClass('chainofflame');
             activateComboFlameChainLightning();
             break;
         case 'Explo Drone':
+            activateWeaponClass('explodrone');
             activateComboExplosiveDrone();
             break;
         case 'Sonic Boom':
+            activateWeaponClass('sonicboom');
             activateComboSonicBoomerang();
             break;
         case 'CryoBomb':
+            activateWeaponClass('cryobomb');
             activateComboCryoBomb();
             break;
         case 'GravityBlast':
+            activateWeaponClass('gravityblast');
+
             activateComboGravityBlast();
             break;
 
@@ -1950,7 +1956,7 @@ function applyGravity(object) {
     const distance = Math.sqrt(dx * dx + dy * dy);
     let force = gravityStrength / (distance * distance); // Inverse-square law
     if (force > 0.9) {
-        console.log(force);
+        // console.log(force);
         force = 0.9;
     }
 
@@ -2207,30 +2213,35 @@ let comboGravityBlastActive = false;
 
 function activateComboFlameChainLightning() {
     if (canActivateComboWeapons().flameChainLightning) {
+        activateWeaponClass("chainofflame");
         comboFlameChainLightningActive = true;
     }
 }
 
 function activateComboExplosiveDrone() {
     if (canActivateComboWeapons().explosiveDrone) {
+        activateWeaponClass("explodrone");
         comboExplosiveDroneActive = true;
     }
 }
 
 function activateComboSonicBoomerang() {
     if (canActivateComboWeapons().sonicBoomerang) {
+        activateWeaponClass("sonicboom");
         comboSonicBoomerangActive = true;
     }
 }
 
 function activateComboCryoBomb() {
     if (canActivateComboWeapons().cryoBomb) {
+        activateWeaponClass("cryobomb");
         comboCryoBombActive = true;
     }
 }
 
 function activateComboGravityBlast() {
     if (canActivateComboWeapons().gravityBlast) {
+        activateWeaponClass("gravityblast");
         comboGravityBlastActive = true;
     }
 }

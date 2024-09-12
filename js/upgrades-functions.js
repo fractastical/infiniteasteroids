@@ -90,11 +90,13 @@ const spacePixie = {
     duration: 450,
     timer: 0,
     fireRateBoost: 5,
+    oldCooldown: 100,
     activate: function () {
         this.active = true;
         this.timer = this.duration;
         ship.laserCooldownLevel += this.fireRateBoost;
-        ship.laserCooldown = Math.max(3, ship.laserCooldown - this.fireRateBoost);
+        this.oldCooldown = ship.laserCooldown;
+        ship.laserCooldown = Math.max(3, (ship.laserCooldown - this.fireRateBoost * 5));
 
     },
     update: function () {
@@ -108,7 +110,7 @@ const spacePixie = {
     deactivate: function () {
         this.active = false;
         ship.laserCooldownLevel -= this.fireRateBoost;
-        ship.laserCooldown += this.fireRateBoost;
+        ship.laserCooldown = this.oldCooldown;
 
     }
 };

@@ -190,7 +190,7 @@ function updateShipPositionAfterResize() {
 }
 
 
-let activeWeaponClasses = []; // Array to store active weapon classes
+let activeWeaponClasses = ['basiclaser']; // Array to store active weapon classes
 let particles = []; // Array to store thruster particles
 
 let level = 1;
@@ -969,6 +969,7 @@ function initializeGame(mode) {
 
     }
     currentMode = mode;
+    console.log("starting " + currentMode);
 
     startGame();
 }
@@ -1167,6 +1168,8 @@ function drawParticles() {
 // Function to create area damage
 function createAreaDamage(x, y, radius, damage = 1) {
     let totalDamage = 0;
+
+    // Damage asteroids
     for (let i = asteroids.length - 1; i >= 0; i--) {
         let asteroid = asteroids[i];
         let dx = asteroid.x - x;
@@ -1187,11 +1190,41 @@ function createAreaDamage(x, y, radius, damage = 1) {
             score += actualDamage * 50;
         }
     }
+
+    // Damage aliens
+    for (let i = aliens.length - 1; i >= 0; i--) {
+        let alien = aliens[i];
+        let dx = alien.x - x;
+        let dy = alien.y - y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < radius) {
+            let actualDamage = Math.min(damage + damageBooster, alien.hitpoints);
+
+            if (alien === octoBoss) {
+                // Handle OctoBoss damage separately
+                damageOctoBoss(actualDamage, x, y);
+            } else {
+                alien.hitpoints -= actualDamage;
+                totalDamage += actualDamage;
+
+                if (alien.hitpoints <= 0) {
+                    // Handle alien death
+                    createExplosion(alien.x, alien.y);
+                    aliens.splice(i, 1);
+                    aliensKilled++;
+                }
+            }
+
+            coins += actualDamage * 20;
+            increaseXP(actualDamage * 20);
+            score += actualDamage * 75;
+        }
+    }
+
     return totalDamage;
 }
 
-
-function increaseXP(amount) {
+function increaseXP(amount, isGem = false) {
 
     const currTimeInMS = Date.now();
     if (xp >= (xpToNextLevel / 1)) {
@@ -1208,7 +1241,7 @@ function increaseXP(amount) {
 
     updateXPBar();
 
-    if (xp >= xpToNextLevel && currTimeInMS > (lastLevelUp + 8000)) {
+    if (xp >= xpToNextLevel && (currTimeInMS > (lastLevelUp + 8000) || isGem)) {
 
         levelUp();
     }
@@ -1707,6 +1740,7 @@ function updateGameModeDisplay() {
     // Update the play button or any other elements that depend on the game mode
     const playNowButton = document.getElementById('playNow');
     if (playNowButton) {
+        console.log("starting" + gameModes[currentGameModeIndex].name);
         playNowButton.onclick = () => initializeGame(gameModes[currentGameModeIndex].id);
     }
 }
@@ -2250,6 +2284,8 @@ function drawCooldownIndicator(x, y, radius, cooldown, maxCooldown) {
 
 function getUpgradeCount(weaponClass) {
     switch (weaponClass) {
+        case 'basiclaser':
+            return ship.laserLevel + ship.laserCooldownLevel - 1;
         case 'explosive':
             return ship.explosiveLaserLevel;
         case 'turret':
@@ -2269,7 +2305,7 @@ function getUpgradeCount(weaponClass) {
         case 'boomerang':
             return boomerangUpgrades.speed + boomerangUpgrades.damage - 1;
         case 'nanoswarm':
-            return nanoswarmUpgrades.speed + nanoswarmUpgrades.damage + nanoswarmUpgrades.cooldown - 2;
+            return nanoswarmUpgrades.speed + nanoswarmUpgrades.damage + nanoswarmUpgrades.cooldown - 3;
         case 'flamethrower':
             return flamethrowerUpgrades.range + flamethrowerUpgrades.damage + flamethrowerUpgrades.cooldown - 2;
         case 'chainlightning':
