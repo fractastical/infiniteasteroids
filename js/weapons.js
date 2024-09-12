@@ -1772,32 +1772,40 @@ function shootLasers() {
         const rotationRad = ship.rotation * Math.PI / 180;
 
         // Calculate the position at the front of the ship
-        const frontX = ship.x + Math.sin(rotationRad) * ship.size / 2;
-        const frontY = ship.y - Math.cos(rotationRad) * ship.size / 2;
+        // const frontX = ship.x + Math.sin(rotationRad) * ship.size / 2;
+        // const frontY = ship.y - Math.cos(rotationRad) * ship.size / 2;
+
+
+        // const laserX = ship.x + 10 * Math.sin(ship.rotation * Math.PI / 180);
+        // const laserY = ship.y - 10 * Math.cos(ship.rotation * Math.PI / 180);
 
         // Calculate the laser's starting position
-        const laserX = frontX - laserSize / 2;
-        const laserY = frontY - laserSize / 2;
+        // const laserX = frontX + (laserSize / 2);
+        // const laserY = frontY + (laserSize / 2);
+
+        const laserX = ship.x + Math.cos(rotationRad) * ship.size / 2;
+        const laserY = ship.y + Math.sin(rotationRad) * ship.size / 2;
+
 
         // Push the new laser to the array, with its position, size, and rotation
 
-        if (laserSize > 5) {
-            ship.lasers.push({
-                x: ship.x - 7,
-                y: ship.y - 7,
-                rotation: ship.rotation,
-                size: laserSize
-            });
+        // if (laserSize > 5) {
+        //     ship.lasers.push({
+        //         x: ship.x - 7,
+        //         y: ship.y - 7,
+        //         rotation: ship.rotation,
+        //         size: laserSize
+        //     });
 
-        } else {
+        // } else {
 
-            ship.lasers.push({
-                x: laserX,
-                y: laserY,
-                rotation: ship.rotation,
-                size: laserSize
-            });
-        }
+        ship.lasers.push({
+            x: laserX,
+            y: laserY,
+            rotation: ship.rotation,
+            size: laserSize
+        });
+        // }
 
         // Reset the laser cooldown timer
         ship.laserTimer = ship.laserCooldown;

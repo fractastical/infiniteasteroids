@@ -19,6 +19,8 @@ const octoBossBackgroundMusic = document.getElementById('octoboss-background-mus
 let isTouchingJoystick = false;
 let joystickStartX, joystickStartY;
 let isMusicPlaying = true; // Flag to track music state
+let unclaimedLevelUps = 0;
+let waitAndClaimMode = false;
 
 const coinsDisplay = document.getElementById('coins');
 
@@ -2150,8 +2152,6 @@ function createUpgradeOptionsHTML(upgrades) {
     `).join('');
 }
 
-let unclaimedLevelUps = 0;
-let waitAndClaimMode = false;
 
 function claimLevelUps() {
 
