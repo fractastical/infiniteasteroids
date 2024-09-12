@@ -736,11 +736,11 @@ button {
     background-image: url('icons/secondary/bomb_icon_2.png');
 }
 
-.icon-secondary-weapon-invincibility {
+.icon-secondary-weapon-invincibilityShield {
     background-image: url('icons/secondary/invinciblity_icon.png');
 }
 
-.icon-secondary-weapon-piercinglaser {
+.icon-secondary-weapon-piercingLaser {
     background-image: url('icons/secondary/splitting_laser.png');
 }
 

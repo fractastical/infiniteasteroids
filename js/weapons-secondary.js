@@ -42,6 +42,7 @@ const secondaryWeapons = {
             console.log("bursting");
             if (this.uses > 0) {
                 this.uses--;
+                playRandomAcidBombSound();
                 createAreaDamage(ship.x, ship.y, this.radius, this.damage);
                 createExplosion(ship.x, ship.y, 50, 15);
                 this.cooldown = 500; // Reset cooldown after use
@@ -52,7 +53,7 @@ const secondaryWeapons = {
     },
     piercingLaser: {
         name: 'Piercing Laser',
-        damage: 550,
+        damage: 1000,
         cooldown: 400,
         uses: 3,
         fullUses: 3,
@@ -68,6 +69,7 @@ const secondaryWeapons = {
             if (this.uses > 0) {
                 this.uses--;
                 shootPiercingLaser(ship.x, ship.y, ship.rotation, this.damage);
+                playRandomShotSound();
                 this.cooldown = 400; // Reset cooldown after use
             } else {
                 console.log('Cannot use Piercing Laser right now.');

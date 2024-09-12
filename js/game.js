@@ -1619,7 +1619,13 @@ function getAvailableWeaponIcons() {
         'Activate Explosive Rocket': { icon: 'icon-explosiverocket' },
         'Activate Chain Lightning': { icon: 'icon-chainlightning' },
         'Activate Nano Swarm': { icon: 'icon-nanoswarm' },
-        'Activate Flamethrower': { icon: 'icon-flamethrower' }
+        'Activate Flamethrower': { icon: 'icon-flamethrower' },
+        'Sonic Boom': { icon: 'icon-sonicboom' },
+        'Explo Drone': { icon: 'icon-explodrone' },
+        'Chain of Flame': { icon: 'icon-chainofflame' },
+        'CryoBomb': { icon: 'icon-cryobomb' }
+
+
     };
 
     const availableIcons = [];
@@ -1640,6 +1646,10 @@ function getAvailableWeaponIcons() {
     if (activeWeaponClasses.includes('chainlightning') || Achievements.kill_50_aliens.reached) availableIcons.push(upgradeDefinitions['Activate Chain Lightning'].icon);
     if (activeWeaponClasses.includes('nanoswarm') || Achievements.no_lives_lost.reached) availableIcons.push(upgradeDefinitions['Activate Nano Swarm'].icon);
     if (activeWeaponClasses.includes('flamethrower') || Achievements.acid_bomb_damage.reached) availableIcons.push(upgradeDefinitions['Activate Flamethrower'].icon);
+    if (Achievements.alien_supermegaboss_killed.reached) availableIcons.push(upgradeDefinitions['Chain of Flame'].icon);
+    if (Achievements.alien_megaboss_killed.reached) availableIcons.push(upgradeDefinitions['Explo Drone'].icon);
+    if (Achievements.kill_500_aliens.reached) availableIcons.push(upgradeDefinitions['Sonic Boom'].icon);
+    if (Achievements.alien_octopus_killed.reached) availableIcons.push(upgradeDefinitions['CryoBomb'].icon);
 
     return availableIcons;
 }
@@ -2039,7 +2049,7 @@ function populateAchievements() {
     // Update technologies count
     let count = countTechnologies();
     const technologiesCountElement = document.getElementById('technologiesCount');
-    let totalTechnologyCount = 42; // 5 ships + 13 weapons + 7 boosters + 17 upgrades 
+    let totalTechnologyCount = 42; // 5 ships + 17 weapons + 3 secondary  + 13 upgrades 
     // VERSION VERSION VERSION
     technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v ${version} `;
 
@@ -2124,7 +2134,7 @@ function updateAchievementsAtEnd() {
         'kill_5_aliens': 'Death Ray',
         'complete_planet_hard_mode': 'Explosive Rocket',
         'kill_50_aliens': 'Chain Lightning',
-        'kill_500_aliens': 'SonicBoomerang',
+        'kill_500_aliens': 'Sonic Boom',
         'no_lives_lost': 'Nano Swarm',
         'acid_bomb_damage': 'Flamethrower'
     };
