@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9751"
+let version = "0.9753"
 let crazyGamesMode = true;
 
 let activeMegaUpgrades = [];
@@ -235,10 +235,10 @@ const Achievements = {
     complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Meteor Shower Normal Mode. Unlock Double Turret.' },
     complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Meteor Shower Hard Mode. Unlock Solar Phoenix.' },
     complete_meteor_hero_mode: { reached: false, icon: 'achievements/death_meteor.png', description: 'Meteor Shower Hero Mode. Unlock Quantum Striker.' },
-    complete_planet_easy_mode: { reached: false, icon: 'achievements/planet_medium.png', description: 'Planet Easy Mode.' },
+    complete_planet_easy_mode: { reached: false, icon: 'achievements/planet_medium.png', description: 'Planet Easy Mode. Unlock Elo Bomb.' },
     complete_planet_normal_mode: { reached: false, icon: 'achievements/storm_medium.png', description: 'Planet Normal Mode. Unlock Triple Turret.' },
-    complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode. Unlock Explosive Rocket.' },
-    complete_planet_hero_mode: { reached: false, icon: 'achievements/planet_huge.png', description: 'Planet Hero Mode' },
+    complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode. Unlock Glitch Effect.' },
+    complete_planet_hero_mode: { reached: false, icon: 'achievements/planet_huge.png', description: 'Planet Hero Mode. Unlock Asteroid Splitter.' },
     alien_megaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien Boss. Chain of Flame.' },
     alien_supermegaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien SuperMegaBoss. Explo Drone.' },
     alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. CryoBomb.' },
@@ -1578,8 +1578,12 @@ function countTechnologies() {
     if (Achievements.complete_meteor_hard_mode.reached) count++;
     if (Achievements.complete_meteor_hero_mode.reached) count++;
 
+
+    if (Achievements.complete_planet_easy_mode.reached) count++;
     if (Achievements.complete_planet_normal_mode.reached) count++;
     if (Achievements.complete_planet_hard_mode.reached) count++;
+    if (Achievements.complete_planet_hero_mode.reached) count++;
+
     if (Achievements.drone_damage.reached) count++;
     if (Achievements.laser_damage.reached) count++;
     if (Achievements.wave_60_endless.reached) count++;
@@ -1587,6 +1591,7 @@ function countTechnologies() {
 
     if (Achievements.space_potato.reached) count++;
     if (Achievements.space_pizza.reached) count++;
+
     if (Achievements.space_monkey.reached) count++;
     if (Achievements.space_pixie.reached) count++;
     if (Achievements.space_pickle.reached) count++;
@@ -1604,7 +1609,7 @@ function countTechnologies() {
             if (ships[ship].condition()) count++;
         }
     }
-    // think we are at 40
+    // think we are at 41
     return count;
 }
 
@@ -1958,7 +1963,10 @@ function populateAchievements() {
         { key: 'space_pizza', name: 'Space Pizza' },
         { key: 'space_monkey', name: 'Space Monkey' },
         { key: 'space_pixie', name: 'Space Pixie' },
-        { key: 'space_pickle', name: 'Space Pickle' }
+        { key: 'space_pickle', name: 'Space Pickle' },
+        { key: 'complete_planet_hard_mode', name: 'Glitch Effect' },
+        { key: 'complete_planet_hero_mode', name: 'Asteroid Splitter' }
+
     ];
 
     spaceWeapons.forEach(weapon => {
@@ -1974,7 +1982,7 @@ function populateAchievements() {
     let totalSecondaryWeapons = Object.keys(secondaryWeapons).length + spaceWeapons.length;
 
     const secondaryWeaponsHeader = document.createElement('h4');
-    secondaryWeaponsHeader.textContent = `Secondary Weapons and Passives (${availableSecondaryWeapons.length} / ${totalSecondaryWeapons})`;
+    secondaryWeaponsHeader.textContent = `Secondary Weapons and Upgrades (${availableSecondaryWeapons.length} / ${totalSecondaryWeapons})`;
     secondaryWeaponsContainer.appendChild(secondaryWeaponsHeader);
 
     availableSecondaryWeapons.forEach(weapon => {

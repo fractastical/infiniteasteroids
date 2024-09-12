@@ -659,7 +659,7 @@ const weapons = [
     {
         name: 'Nano Swarm',
         description: 'A swarm of nanobots that seek and destroy enemies.',
-        icon: 'icon-drone'
+        icon: 'icon-nanoswarm'
     },
     {
         name: 'Turret',
@@ -681,26 +681,26 @@ const weapons = [
         description: 'Fires a slow-moving rocket that causes explosive AoE damage on impact.',
         icon: 'icon-explosiverocket'
     },
-    {
-        name: 'Plasma Cannon',
-        description: 'Fires powerful plasma shots that explode on impact, dealing area damage.',
-        icon: 'icon-plasmacannon'
-    },
-    {
-        name: 'Gravity Well',
-        description: 'Creates a gravity well that pulls in nearby asteroids, slowing them down.',
-        icon: 'icon-gravitywell'
-    },
-    {
-        name: 'Cryo Bomb',
-        description: 'Combines Acid Bomb and Freeze Ray to create an explosive area effect that freezes enemies.',
-        icon: 'icon-cryobomb'
-    },
-    {
-        name: 'Gravity Blast',
-        description: 'Combines Gravity Well and Sonic Blast to create a powerful gravitational explosion followed by a sonic wave.',
-        icon: 'icon-gravityblast'
-    }
+    // {
+    //     name: 'Plasma Cannon',
+    //     description: 'Fires powerful plasma shots that explode on impact, dealing area damage.',
+    //     icon: 'icon-plasmacannon'
+    // },
+    // {
+    //     name: 'Gravity Well',
+    //     description: 'Creates a gravity well that pulls in nearby asteroids, slowing them down.',
+    //     icon: 'icon-gravitywell'
+    // },
+    // {
+    //     name: 'Cryo Bomb',
+    //     description: 'Combines Acid Bomb and Freeze Ray to create an explosive area effect that freezes enemies.',
+    //     icon: 'icon-cryobomb'
+    // },
+    // {
+    //     name: 'Gravity Blast',
+    //     description: 'Combines Gravity Well and Sonic Blast to create a powerful gravitational explosion followed by a sonic wave.',
+    //     icon: 'icon-gravityblast'
+    // }
 
 ];
 

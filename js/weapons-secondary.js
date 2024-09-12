@@ -75,7 +75,58 @@ const secondaryWeapons = {
                 console.log('Cannot use Piercing Laser right now.');
             }
         }
-    }
+    },
+    eloBomb: {
+        name: 'Elo Bomb',
+        damage: 25,
+        radius: 250, // radius of explosion
+        cooldown: 500,
+        fullUses: 3,
+        uses: 3,
+        isActive: true,
+        isAvailable: () => Achievements.complete_planet_easy_mode.reached,
+        activate: function () {
+            this.isActive = true;
+        },
+        deactivate: function () {
+            this.isActive = false;
+        },
+        useWeapon: function () {
+            console.log("bursting");
+            if (this.uses > 0) {
+                this.uses--;
+                playRandomAcidBombSound();
+                createAreaDamage(ship.x, ship.y, this.radius, this.damage);
+                createExplosion(ship.x, ship.y, 50, 15);
+                for (let i = 0; i < 2; i++) {
+                    let x = ship.x + Math.random() * canvas.width / 5;
+                    let y = ship.y + Math.random() * canvas.height / 5;
+                    createAcidExplosion(x, y, 25, 800); // smaller radius, longer duration
+                }
+                for (let i = 0; i < 2; i++) {
+                    let x = ship.x + Math.random() * canvas.width / 5;
+                    let y = ship.y - Math.random() * canvas.height / 5;
+                    createAcidExplosion(x, y, 25, 800); // smaller radius, longer duration
+                }
+                for (let i = 0; i < 2; i++) {
+                    let x = ship.x - Math.random() * canvas.width / 5;
+                    let y = ship.y - Math.random() * canvas.height / 5;
+                    createAcidExplosion(x, y, 25, 800); // smaller radius, longer duration
+                }
+                for (let i = 0; i < 2; i++) {
+                    let x = ship.x - Math.random() * canvas.width / 5;
+                    let y = ship.y + Math.random() * canvas.height / 5;
+                    createAcidExplosion(x, y, 25, 800); // smaller radius, longer duration
+                }
+
+                this.cooldown = 500; // Reset cooldown after use
+            } else {
+                console.log('Cannot use elo bomb right now.');
+            }
+        }
+    },
+
+
 };
 
 function selectSecondaryWeapon(weaponName) {

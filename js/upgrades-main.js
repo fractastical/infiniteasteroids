@@ -104,9 +104,10 @@ const megaUpgrades = [
     },
     {
         name: 'Glitch Effect',
+        achievedKey: 'complete_planet_hard_mode',
         description: 'Randomly causes asteroids to malfunction and break apart.',
         icon: 'icons/upgrades/mainframe.png',
-        cooldown: 30 * 60, // 30 seconds at 60 FPS
+        cooldown: 5 * 60, // 5 seconds at 60 FPS
         cooldownTimer: 0,
         effect: function () {
             glitchEffect.active = true;
@@ -159,6 +160,7 @@ const megaUpgrades = [
     {
         name: 'Asteroid Splitter',
         description: 'Randomly splits asteroids into smaller pieces.',
+        achievedKey: 'complete_planet_hero_mode',
         icon: 'icons/upgrades/asteroid_splitter_22.png', // Replace with appropriate icon
         cooldown: 50 * 60, // 50 seconds at 60 FPS
         cooldownTimer: 0,

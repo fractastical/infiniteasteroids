@@ -744,6 +744,10 @@ button {
     background-image: url('icons/secondary/splitting_laser.png');
 }
 
+.icon-secondary-weapon-eloBomb {
+    background-image: url('icons/secondary/bomb_icon_3.png');
+}
+
 .iconContainer {
     position: relative;
     display: inline-block;
