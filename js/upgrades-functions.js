@@ -1,6 +1,6 @@
 
 const potatoImage = new Image();
-potatoImage.src = 'icons/upgrades/potatoroid_10.png';
+potatoImage.src = 'icons/upgrades/potato.png';
 let globalTimeScale = 1;
 
 const glitchEffect = {
@@ -48,7 +48,7 @@ const spacePizza = {
     },
     checkForExtraLife: function () {
         const wavesSinceCollection = wave - this.collectedWave;
-        if (wavesSinceCollection > 0 && wavesSinceCollection % this.wavesPerExtraLife === 0) {
+        if (wavesSinceCollection >= this.wavesPerExtraLife) {
             this.grantExtraLife();
             this.collectedWave = wave;
         }

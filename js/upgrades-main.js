@@ -229,11 +229,11 @@ function drawActiveMegaUpgrades() {
         ctx.fillRect(x, y, upgradeSize, upgradeSize);
 
         // Draw icon (if no custom draw function)
-        if (!upgrade.draw) {
-            const icon = new Image();
-            icon.src = upgrade.icon;
-            ctx.drawImage(icon, x, y, upgradeSize, upgradeSize);
-        }
+        // if (!upgrade.draw) {
+        const icon = new Image();
+        icon.src = upgrade.icon;
+        ctx.drawImage(icon, x, y, upgradeSize, upgradeSize);
+        // }
 
         // Draw cooldown overlay if applicable
         if (upgrade.cooldown && upgrade.cooldownTimer) {
@@ -241,10 +241,11 @@ function drawActiveMegaUpgrades() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             ctx.fillRect(x, y + upgradeSize * (1 - cooldownPercentage), upgradeSize, upgradeSize * cooldownPercentage);
         }
-
+        console.log(upgrade);
         // Call the upgrade's custom draw function if it exists
         if (typeof upgrade.draw === 'function') {
             ctx.translate(x, y);  // Translate context to upgrade's position
+            console.log("calling draw");
             upgrade.draw(ctx, upgradeSize);  // Pass context and size to the draw function
             ctx.translate(-x, -y);  // Translate back
         }
