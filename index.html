@@ -119,26 +119,25 @@
   -->
   <div id="levelUpModal" class="modal">
     <div class="modal-content">
-      <h2 id="leveluptitle">Level Up!</h2>
-      <p>Choose an upgrade:</p>
-      <div id="upgradeOptions">
-        <div class="upgrade-option" onclick="selectUpgrade(0)">
-          <div id="upgradeIcon1" class="upgrade-icon"></div>
-          <button id="upgrade1"></button>
+      <h4 id="leveluptitle">Choose upgrade!</h2>
+        <div id="upgradeOptions">
+          <div class="upgrade-option" onclick="selectUpgrade(0)">
+            <div id="upgradeIcon1" class="upgrade-icon"></div>
+            <button id="upgrade1"></button>
+          </div>
+          <div class="upgrade-option" onclick="selectUpgrade(1)">
+            <div id="upgradeIcon2" class="upgrade-icon"></div>
+            <button id="upgrade2"></button>
+          </div>
+          <div class="upgrade-option" onclick="selectUpgrade(2)">
+            <div id="upgradeIcon3" class="upgrade-icon"></div>
+            <button id="upgrade3"></button>
+          </div>
+          <div class="upgrade-option" style="display:none" onclick="selectUpgrade(3)">
+            <div id="upgradeIcon4" class="upgrade-icon"></div>
+            <button id="upgrade4"></button>
+          </div>
         </div>
-        <div class="upgrade-option" onclick="selectUpgrade(1)">
-          <div id="upgradeIcon2" class="upgrade-icon"></div>
-          <button id="upgrade2"></button>
-        </div>
-        <div class="upgrade-option" onclick="selectUpgrade(2)">
-          <div id="upgradeIcon3" class="upgrade-icon"></div>
-          <button id="upgrade3"></button>
-        </div>
-        <div class="upgrade-option" style="display:none" onclick="selectUpgrade(3)">
-          <div id="upgradeIcon4" class="upgrade-icon"></div>
-          <button id="upgrade4"></button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -226,7 +225,7 @@
 
 
   <div id="startScreen">
-    <img src="icons/ia-logo.png" />
+    <img height="100px" src="icons/ia-logo.png" />
 
     <div>
       <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
@@ -250,7 +249,7 @@
           <td rowspan="2">
             <div id="shipCustomizationSection">
               <div class="ship-preview">
-                <canvas id="shipPreviewCanvas" width="100" height="100"></canvas>
+                <canvas id="shipPreviewCanvas" width="80" height="80"></canvas>
               </div>
               <div class="option-group">
                 <h4>Select Ship:</h4>
@@ -367,14 +366,14 @@
       <button id="toggleBackground" onClick="toggleBackground()">Toggle Background</button>
 
 
+      <button id="toggleReedem" onClick="toggleRedeemMode()">Toggle Redeem</button>
 
     </p>
 
-    <h3>Toggle redeem mode</h3>
+    <!-- <h3>Toggle redeem mode</h3> -->
     <p>In redeem mode you push "r" to use your upgrade credits instead of them appearing automatically</p>
     <p>Status: <span id="redeemModeStatus">Off</span></p>
 
-    <button id="toggleReedem" onClick="toggleRedeemMode()">Toggle Redeem</button>
 
 
     <button onclick="toggleVolumeScreen()">Close</button>
@@ -684,7 +683,7 @@
       asteroids = [];
       drones = [];
       aliens = [];
-      alien = null;
+      miniBossAlien = null;
       swarmingAliens = [];
       superbossAlien = null;
       megaBossAlien = null;

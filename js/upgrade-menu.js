@@ -55,12 +55,12 @@ function getRandomUpgrades(count) {
         'Decrease Flamethrower Cooldown': { icon: 'icon-flamethrower', description: 'Reduce flamethrower cooldown' },
         'Extra Upgrade Choice': { icon: 'icon-extra', description: 'Gain an additional upgrade option' },
         'Drone Army': { icon: 'icon-droneArmy', description: 'Multiply your drone force' },
-        'Double Turret': { icon: 'icon-doubleTurret', description: 'Add a second defensive turret' },
-        'Triple Turret': { icon: 'icon-tripleTurret', description: 'Deploy a third turret' },
-        'Chain of Flame': { icon: 'icon-chainofflame', description: 'Combine flame and lightning powers' },
+        'Wave Turret': { icon: 'icon-doubleTurret', description: 'Add two defensive turret that shoot at an angle' },
+        'Triple Turret': { icon: 'icon-tripleTurret', description: 'Deploy three more turrets' },
+        'Chain of Flame': { icon: 'icon-chainofflame', description: 'Lighthing powers also burn asteroids they hit' },
         'Explo Drone': { icon: 'icon-explodrone', description: 'Equip drones with explosives' },
         'Sonic Boom': { icon: 'icon-sonicboom', description: 'Launch sonic-powered boomerangs' },
-        'Cryo Bomb': { icon: 'icon-cryobomb', description: 'Icy slow acid bombs' }
+        'Cryo Bomb': { icon: 'icon-cryobomb', description: 'Acib bombs also slow their opponents' }
     };
 
 
@@ -106,18 +106,18 @@ function getRandomUpgrades(count) {
     if ((activeWeaponClasses.includes('drone') || activeWeaponClasses.includes('bomberdrone')) && Achievements.drone_damage.reached && !droneArmy)
         availableUpgrades.push('Drone Army');
     if (Achievements.complete_meteor_normal_mode.reached && activeWeaponClasses.includes('turret') && !doubleTurret)
-        availableUpgrades.push('Double Turret');
+        availableUpgrades.push('Wave Turret');
     if (Achievements.complete_planet_normal_mode.reached && activeWeaponClasses.includes('turret') && !tripleTurret)
         availableUpgrades.push('Triple Turret');
     // if (Achievements.complete_hard_mode.reached)
-    //   availableUpgrades.push('Damage Booster');
+    availableUpgrades.push('Damage Booster');
 
     //TODO: add achievements
     const comboWeapons = canActivateComboWeapons();
-    if (!comboFlameChainLightningActive && comboWeapons.flameChainLightning && Achievements.alien_supermegaboss_killed) {
+    if (!comboFlameChainLightningActive && comboWeapons.flameChainLightning && Achievements.alien_megaboss_killed) {
         availableUpgrades.push('Chain of Flame');
     }
-    if (!comboExplosiveDroneActive && comboWeapons.explosiveDrone && Achievements.alien_megaboss_killed) {
+    if (!comboExplosiveDroneActive && comboWeapons.explosiveDrone && Achievements.alien_supermegaboss_killed) {
         availableUpgrades.push('Explo Drone');
     }
     if (!comboSonicBoomerangActive && comboWeapons.sonicBoomerang && Achievements.kill_500_aliens.reached) {

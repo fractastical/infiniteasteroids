@@ -83,7 +83,7 @@ const spacePickle = {
 
 
 
-const spacePixie = {
+const pinkPixie = {
     active: false,
     duration: 450,
     timer: 0,
@@ -120,6 +120,67 @@ const spacePixie = {
 
     }
 };
+
+const purplePixie = {
+    active: false,
+    duration: 450,
+    timer: 0,
+    fireRateBoost: 5,
+    cooldown: 1000,
+    activate: function () {
+        this.active = true;
+        this.timer = this.duration;
+        damageBooster *= 2;
+    },
+    update: function () {
+
+        this.cooldown--;
+        if (this.cooldown <= 0) {
+            this.activate();
+            this.cooldown = 1000;
+
+        }
+        if (this.active) {
+            this.timer--;
+            if (this.timer <= 0) {
+                this.deactivate();
+            }
+        }
+    },
+    deactivate: function () {
+        this.active = false;
+        damageBooster /= 2;
+
+    }
+};
+
+const goldPixie = {
+    active: false,
+    collectedWave: 0,
+    wavesPerDamageBoost: 5,
+    activate: function () {
+        this.active = true;
+        this.collectedWave = wave;
+        console.log("goldPixie collected on wave: " + this.collectedWave);
+    },
+    update: function () {
+        if (this.active) {
+            this.checkForDamageBoost();
+        }
+    },
+    checkForDamageBoost: function () {
+        const wavesSinceCollection = wave - this.collectedWave;
+        if (wavesSinceCollection >= this.wavesPerExtraLife) {
+            this.grantDamageBoost();
+            this.collectedWave = wave;
+        }
+    },
+    grantDamageBoost: function () {
+        damageBooster++;
+        console.log("Damage boost granted! Current lives: " + damageBooster);
+    }
+};
+
 
 
 const spaceMonkey = {

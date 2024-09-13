@@ -39,15 +39,39 @@ const megaUpgrades = [
         }
     },
     {
-        name: 'Space Pixie',
+        name: 'Pink Pixie',
         description: 'Temporarily increases the ship\'s fire rate.',
         icon: 'icons/upgrades/orbs/pink_pixie_orb2.png',
-        achievedKey: 'space_pixie',
+        achievedKey: 'pink_pixie',
         effect: function () {
-            spacePixie.activate();
+            pinkPixie.activate();
         },
         update: function () {
-            spacePixie.update();
+            pinkPixie.update();
+        }
+    },
+    {
+        name: 'Purple Pixie',
+        description: 'Doubles the damage booster',
+        icon: 'icons/upgrades/orbs/purple_pixie_orb.png',
+        achievedKey: 'purple_pixie',
+        effect: function () {
+            purplePixie.activate();
+        },
+        update: function () {
+            purplePixie.update();
+        }
+    },
+    {
+        name: 'Gold Pixie',
+        description: 'Adds one to the damage booster every five waves',
+        icon: 'icons/upgrades/orbs/gold_pixie_orb.png',
+        achievedKey: 'gold_pixie',
+        effect: function () {
+            goldPixie.activate();
+        },
+        update: function () {
+            goldPixie.update();
         }
     },
     {

@@ -429,7 +429,7 @@ function spawnMegaBossAlien() {
         shootTimer: 0,
         spawnTimer: 0,
         hitpoints: 10000,
-        radius: 120,
+        radius: 80,
         maxHitpoints: 10000,
         shootInterval: 100 // Adjust this value as needed
     };
@@ -1426,7 +1426,7 @@ function checkLaserOctoBossCollision(laser) {
     // Check collision with OctoBoss body
     const distanceToBody = Math.hypot(laser.x - octoBoss.x, laser.y - octoBoss.y);
     if (distanceToBody <= octoBoss.bodyRadius + laser.size / 2) {
-        damageOctoBoss(ship.laserLevel + damageBooster, laser.x, laser.y);
+        damageOctoBoss(ship.laserLevel + damageBooster * pixieBoost, laser.x, laser.y);
         return true;
     }
 
@@ -1442,7 +1442,7 @@ function checkLaserOctoBossCollision(laser) {
                 const endY = startY + Math.sin(segment.angle) * segment.length;
 
                 if (lineCircleIntersection(startX, startY, endX, endY, laser.x, laser.y, laser.size / 2)) {
-                    damageOctoBoss(ship.laserLevel + damageBooster, laser.x, laser.y);
+                    damageOctoBoss(ship.laserLevel + damageBooster * pixieBoost, laser.x, laser.y);
                     return true;
                 }
 

@@ -14,10 +14,24 @@ const floatingUpgrades = [
         mode: ['DEEP_SPACE', 'METEOR'],
     },
     {
-        name: 'Space Pixie',
+        name: 'Pink Pixie',
         icon: 'icons/upgrades/orbs/pink_pixie_orb2.png',
-        description: 'Find the pixie.',
-        achievedKey: 'space_pixie',
+        description: 'Find the pink pixie.',
+        achievedKey: 'pink_pixie',
+        mode: ['DEEP_SPACE', 'METEOR'],
+    },
+    {
+        name: 'Purple Pixie',
+        icon: 'icons/upgrades/orbs/pink_pixie_orb2.png',
+        description: 'Find the purple pixie.',
+        achievedKey: 'purple_pixie',
+        mode: ['DEEP_SPACE', 'METEOR'],
+    },
+    {
+        name: 'Gold Pixie',
+        icon: 'icons/upgrades/orbs/pink_pixie_orb2.png',
+        description: 'Find the gold pixie.',
+        achievedKey: 'gold_pixie',
         mode: ['DEEP_SPACE', 'METEOR'],
     },
     {
@@ -57,7 +71,9 @@ function activateFloatingUpgrade(achievedKey) {
     switch (achievedKey) {
         case 'space_pizza': spacePizza.activate(); break;
         case 'space_pickle': spacePickle.activate(); break;
-        case 'space_pixie': spacePixie.activate(); break;
+        case 'pink_pixie': pinkPixie.activate(); break;
+        case 'purple_pixie': purplePixie.activate(); break;
+        case 'gold_pixie': goldPixie.activate(); break;
         case 'space_monkey': spaceMonkey.activate(); break;
         case 'space_potato': spacePotato.activate(); break;
         case 'dark_side': darkSide.activate(); break;

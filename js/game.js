@@ -121,6 +121,7 @@ let gameStartTime;
 let gameEndTime;
 
 let damageBooster = 0;
+let pixieBoost = 1;
 
 let initialSlowDown = true;
 let currentBackgroundImage = null;
@@ -223,7 +224,7 @@ const Achievements = {
     acid_bomb_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/acid.png', description: 'Deal 2,500 Damage with Acid Bomb. Unlock Flamethrower.' },
     laser_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/deathray2.png', description: 'Deal 2,500 Damage with Laser. Unlock Explosive Laser.' },
     drone_damage: { reached: false, damage: 0, required: 1500, icon: 'achievements/storm_drone.png', description: 'Deal 1,500 Damage with Drone. Unlock Drone Army.' },
-    explosive_laser_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/explosive.png', description: 'Deal 5,000 Damage with Explosive Laser. Unlock Solar Phoenix.' },
+    explosive_laser_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/explosive.png', description: 'Deal 5,000 Damage with Explosive Laser. Unlock Void Warden.' },
     death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Extra Choice.' },
     no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
     complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Hard Mode. Unlock Explosive Rocket.' },
@@ -232,7 +233,7 @@ const Achievements = {
     kill_50_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 50 Aliens. Unlock Chain Lightning.' },
     kill_500_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 500 Aliens. Unlock Sonic Boom.' },
     complete_meteor_easy_mode: { reached: false, icon: 'achievements/meteor_one.png', description: 'Meteor Shower Easy Mode. Unlock Starhawk.' },
-    complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Meteor Shower Normal Mode. Unlock Double Turret.' },
+    complete_meteor_normal_mode: { reached: false, icon: 'achievements/meteor_acid.png', description: 'Meteor Shower Normal Mode. Unlock Wave Turret.' },
     complete_meteor_hard_mode: { reached: false, icon: 'achievements/meteor_small.png', description: 'Meteor Shower Hard Mode. Unlock Solar Phoenix.' },
     complete_meteor_hero_mode: { reached: false, icon: 'achievements/death_meteor.png', description: 'Meteor Shower Hero Mode. Unlock Quantum Striker.' },
     complete_planet_easy_mode: { reached: false, icon: 'achievements/planet_medium.png', description: 'Planet Easy Mode. Unlock Elo Bomb.' },
@@ -246,7 +247,9 @@ const Achievements = {
     wave_60_endless: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Reach wave 60 on Endless. Piercing Laser.' },
     space_pizza: { reached: false, icon: 'icons/upgrades/pizza.png', description: 'Find the space pizza.' },
     space_pickle: { reached: false, icon: 'icons/upgrades/pickle.png', description: 'Find the deep space pickle.' },
-    space_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the pixie.' },
+    pink_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the pink pixie.' },
+    purple_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the purple pixie.' },
+    gold_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the gold pixie.' },
     space_monkey: { reached: false, icon: 'icons/upgrades/monkey.png', description: 'Find the space monkey.' },
     space_potato: { reached: false, icon: 'icons/upgrades/potato.png', description: 'Find the space potato.' },
     dark_side: { reached: false, icon: 'icons/upgrades/darkside.png', description: 'Make a deal with Dark Side.' },
@@ -1183,7 +1186,7 @@ function createAreaDamage(x, y, radius, damage = 1) {
         let dy = asteroid.y - y;
         let distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < radius) {
-            let actualDamage = Math.min(damage + damageBooster, asteroid.hitpoints);
+            let actualDamage = Math.min(damage + damageBooster * pixieBoost, asteroid.hitpoints);
             asteroid.hitpoints -= actualDamage;
             totalDamage += actualDamage;
 
@@ -1205,7 +1208,7 @@ function createAreaDamage(x, y, radius, damage = 1) {
         let dy = alien.y - y;
         let distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < radius) {
-            let actualDamage = Math.min(damage + damageBooster, alien.hitpoints);
+            let actualDamage = Math.min(damage + damageBooster * pixieBoost, alien.hitpoints);
 
             if (alien === octoBoss) {
                 // Handle OctoBoss damage separately
@@ -1594,7 +1597,10 @@ function countTechnologies() {
     if (Achievements.space_pizza.reached) count++;
 
     if (Achievements.space_monkey.reached) count++;
-    if (Achievements.space_pixie.reached) count++;
+    if (Achievements.pink_pixie.reached) count++;
+    if (Achievements.purple_pixie.reached) count++;
+    if (Achievements.gold_pixie.reached) count++;
+
     if (Achievements.space_pickle.reached) count++;
     if (Achievements.dark_side.reached) count++;
 
@@ -1960,10 +1966,11 @@ function populateAchievements() {
 
 
     const spaceWeapons = [
-        { key: 'space_potato', name: 'Space Potato' },
+        // { key: 'space_potato', name: 'Space Potato' },
         { key: 'space_pizza', name: 'Space Pizza' },
         { key: 'space_monkey', name: 'Space Monkey' },
-        { key: 'space_pixie', name: 'Space Pixie' },
+        { key: 'space_pixie', name: 'Pink Pixie' },
+        { key: 'purple_pixie', name: 'Purple Pixie' },
         { key: 'space_pickle', name: 'Space Pickle' },
         { key: 'complete_planet_hard_mode', name: 'Glitch Effect' },
         { key: 'complete_planet_hero_mode', name: 'Asteroid Splitter' }
@@ -2064,7 +2071,7 @@ function populateAchievements() {
     const technologiesCountElement = document.getElementById('technologiesCount');
     let totalTechnologyCount = 42; // 5 ships + 17 weapons + 3 secondary  + 13 upgrades 
     // VERSION VERSION VERSION
-    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked. v ${version} `;
+    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked.`;
 
     populateSelectors();
     // Populate game modes

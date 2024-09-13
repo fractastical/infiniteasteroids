@@ -434,7 +434,7 @@ function applyUpgrade(upgrade) {
             nanoswarmUpgrades.cooldown++;
             nanoswarm.cooldown = Math.max(20, 120 - 30 * nanoswarmUpgrades.cooldown);
             break;
-        case 'Double Turret':
+        case 'Wave Turret':
             doubleTurret = true;
             break;
         case 'Triple Turret':
@@ -813,19 +813,13 @@ function updateExplosiveRockets() {
         const rocket = explosiveRockets[i];
         rocket.x += Math.sin(rocket.angle) * rocket.speed;
         rocket.y -= Math.cos(rocket.angle) * rocket.speed;
-        rocket.distance += rocket.speed; // Update the rocket's travel distance
+        rocket.distance += rocket.speed;
 
         let collided = false;
 
         // Check for collision with asteroids
         for (let j = 0; j < asteroids.length; j++) {
-            const asteroid = asteroids[j];
-            const dx = rocket.x - asteroid.x;
-            const dy = rocket.y - asteroid.y;
-            const distance = Math.sqrt(dx * dx + dy * dy); // Fixed this line
-
-            if (distance < rocket.size + asteroid.size) {
-                // Collision detected with asteroid
+            if (isColliding(rocket, asteroids[j])) {
                 collided = true;
                 break;
             }
@@ -834,13 +828,7 @@ function updateExplosiveRockets() {
         // Check for collision with aliens if no asteroid collision
         if (!collided) {
             for (let j = 0; j < aliens.length; j++) {
-                const alien = aliens[j];
-                const dx = rocket.x - alien.x;
-                const dy = rocket.y - alien.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < rocket.size + alien.size) {
-                    // Collision detected with alien
+                if (isColliding(rocket, aliens[j])) {
                     collided = true;
                     break;
                 }
@@ -849,10 +837,10 @@ function updateExplosiveRockets() {
 
         // Handle collision or distance-based explosion
         if (collided || rocket.distance >= 200) {
-            createExplosion(rocket.x, rocket.y, 0); // Create explosion effect at rocket's position
-            applyExplosiveDamage(rocket); // Apply area damage
-            explosiveRockets.splice(i, 1); // Remove the rocket
-            continue; // Move to the next rocket
+            createExplosion(rocket.x, rocket.y, 0);
+            applyExplosiveDamage(rocket);
+            explosiveRockets.splice(i, 1);
+            continue;
         }
 
         // Remove the rocket if it goes off the canvas
@@ -1187,7 +1175,7 @@ function fireChainLightning(target, bounces, roid = false) {
     if (bounces <= 0 || !target) return;
 
     let damage = chainLightning.damage;
-    let actualDamage = Math.min(damage + damageBooster, target.hitpoints);
+    let actualDamage = Math.min(damage + damageBooster * pixieBoost, target.hitpoints);
     target.hitpoints -= actualDamage;
     if (roid)
         damageReport.lightningAsteroid += actualDamage;
@@ -1354,7 +1342,7 @@ function updateAcidAreas() {
             let distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance < area.radius) {
-                let actualDamage = Math.min(acidBomb.damagePerSecond + damageBooster, asteroid.hitpoints);
+                let actualDamage = Math.min(acidBomb.damagePerSecond + damageBooster * pixieBoost, asteroid.hitpoints);
                 asteroid.hitpoints -= actualDamage;
                 if (area.roid)
                     damageReport.acidAsteroid += actualDamage;
@@ -1437,10 +1425,11 @@ function updateDeathRay() {
             let distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance < rayLength && Math.abs(dx * Math.cos(ship.rotation * Math.PI / 180) + dy * Math.sin(ship.rotation * Math.PI / 180)) < rayWidth / 2) {
-                createExplosion(asteroid.x, asteroid.y, 1, asteroid.image);
-                asteroids.splice(i, 1);
+                // createExplosion(asteroid.x, asteroid.y, 1, asteroid.image);
+                processAsteroidDeath(asteroid);
                 damageReport.deathRay += asteroid.hitpoints;
                 increaseXP(asteroid.hitpoints * 20);
+                asteroids.splice(i, 1);
 
             }
         }
@@ -1629,6 +1618,16 @@ function updateTurret() {
                     color: 'cyan'
                 };
                 turret.lasers.push(laser2);
+
+                let laser3 = {
+                    x: ship.x + Math.cos(turret.rotation + offset) * turret.size,
+                    y: ship.y + Math.sin(turret.rotation + offset) * turret.size,
+                    rotation: turret.rotation + offset,
+                    size: 2,
+                    color: 'cyan'
+                };
+                turret.lasers.push(laser3);
+
             }
         }
     }
@@ -1668,7 +1667,7 @@ function updateBoomerang() {
     for (let i = 0; i < asteroids.length; i++) {
         let asteroid = asteroids[i];
         if (isColliding(boomerang, asteroid)) {
-            let actualDamage = Math.min(boomerang.damage + damageBooster, asteroid.hitpoints);
+            let actualDamage = Math.min(boomerang.damage + damageBooster * pixieBoost, asteroid.hitpoints);
             asteroid.hitpoints -= actualDamage;
             damageReport.boomerang += actualDamage;
 
@@ -1709,7 +1708,7 @@ function triggerSonicBlastEffect(x, y, range) {
             let distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance < wave.radius && !wave.hitAsteroids.includes(asteroid)) {
-                let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitpoints);
+                let actualDamage = Math.min(sonicBlast.damage + damageBooster * pixieBoost, asteroid.hitpoints);
                 asteroid.hitpoints -= actualDamage;
                 damageReport.sonicBlast += actualDamage;
                 wave.hitAsteroids.push(asteroid);
@@ -1931,7 +1930,7 @@ function updateSonicBlast() {
             let distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance < wave.radius && !wave.hitAsteroids.includes(asteroid)) {
-                let actualDamage = Math.min(sonicBlast.damage + damageBooster, asteroid.hitpoints);
+                let actualDamage = Math.min(sonicBlast.damage + damageBooster * pixieBoost, asteroid.hitpoints);
                 asteroid.hitpoints -= actualDamage;
                 damageReport.sonicBlast += actualDamage;
                 wave.hitAsteroids.push(asteroid);
@@ -2041,7 +2040,7 @@ function updateDrones() {
             for (let j = asteroids.length - 1; j >= 0; j--) {
                 let asteroid = asteroids[j];
                 if (isColliding(laser, asteroid)) {
-                    let actualDamage = Math.min(drone.damage + damageBooster, asteroid.hitpoints);
+                    let actualDamage = Math.min(drone.damage + damageBooster * pixieBoost, asteroid.hitpoints);
                     asteroid.hitpoints -= actualDamage;
                     damageReport.drones += actualDamage;
 
@@ -2136,7 +2135,7 @@ function updateBomberDrones() {
                 let dy = bomb.y - asteroid.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
                 if (distance < bomb.radius + asteroid.size) {
-                    let actualDamage = Math.min(bomb.damage + damageBooster, asteroid.hitpoints);
+                    let actualDamage = Math.min(bomb.damage + damageBooster * pixieBoost, asteroid.hitpoints);
                     asteroid.hitpoints -= actualDamage;
                     damageReport.bomberDrones += actualDamage;
 
@@ -2337,7 +2336,7 @@ function checkAlienDamage(weapon) {
 
     if (superbossAlien && isColliding(weapon, superbossAlien)) {
 
-        actualDamage = Math.min(weapon.damage + damageBooster, superbossAlien.hitpoints); // Ensure we don't overkill the asteroid
+        actualDamage = Math.min(weapon.damage + damageBooster * pixieBoost, superbossAlien.hitpoints); // Ensure we don't overkill the asteroid
         superbossAlien.hitpoints -= actualDamage;
         createExplosion(superbossAlien.x, superbossAlien.y);
 
@@ -2355,7 +2354,7 @@ function checkAlienDamage(weapon) {
 
     if (megaBossAlien && isColliding(weapon, megaBossAlien)) {
 
-        actualDamage = Math.min(weapon.damage + damageBooster, megaBossAlien.hitpoints); // Ensure we don't overkill the asteroid
+        actualDamage = Math.min(weapon.damage + damageBooster * pixieBoost, megaBossAlien.hitpoints); // Ensure we don't overkill the asteroid
         megaBossAlien.hitpoints -= actualDamage;
 
         createExplosion(megaBossAlien.x, megaBossAlien.y);
@@ -2410,7 +2409,7 @@ function checkLaserCollisions(lasers, isShip) {
         if (miniBossAlien && isColliding(laser, miniBossAlien)) {
 
             let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
-            let actualDamage = Math.min(damage + damageBooster, miniBossAlien.hitpoints); // Ensure we don't overkill the asteroid
+            let actualDamage = Math.min(damage + damageBooster * pixieBoost, miniBossAlien.hitpoints); // Ensure we don't overkill the asteroid
             miniBossAlien.hitpoints -= actualDamage;
 
             createExplosion(miniBossAlien.x, miniBossAlien.y);
@@ -2432,7 +2431,7 @@ function checkLaserCollisions(lasers, isShip) {
         if (superbossAlien && isColliding(laser, superbossAlien)) {
 
             let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
-            let actualDamage = Math.min(damage + damageBooster, superbossAlien.hitpoints); // Ensure we don't overkill the asteroid
+            let actualDamage = Math.min(damage + damageBooster * pixieBoost, superbossAlien.hitpoints); // Ensure we don't overkill the asteroid
             superbossAlien.hitpoints -= actualDamage;
 
             createExplosion(superbossAlien.x, superbossAlien.y);
@@ -2455,7 +2454,7 @@ function checkLaserCollisions(lasers, isShip) {
 
         if (octoBoss && checkLaserOctoBossCollision(laser)) {
             let damage = isShip ? ship.laserLevel : 1;
-            damageOctoBoss(damage + damageBooster, laser.x, laser.y);
+            damageOctoBoss(damage + damageBooster * pixieBoost, laser.x, laser.y);
             createExplosion(laser.x, laser.y);
             if (octoBoss.hitpoints <= 0) {
                 createExplosion(octoBoss.x, octoBoss.y, 50, 40);
@@ -2473,10 +2472,10 @@ function checkLaserCollisions(lasers, isShip) {
         }
 
 
-        if (megaBossAlien && isColliding(laser, megaBossAlien)) {
+        if (megaBossAlien && isColliding(megaBossAlien, laser)) {
 
             let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
-            let actualDamage = Math.min(damage + damageBooster, megaBossAlien.hitpoints); // Ensure we don't overkill the asteroid
+            let actualDamage = Math.min(damage + damageBooster * pixieBoost, megaBossAlien.hitpoints); // Ensure we don't overkill the asteroid
             megaBossAlien.hitpoints -= actualDamage;
 
             createExplosion(megaBossAlien.x, megaBossAlien.y);
@@ -2501,7 +2500,7 @@ function checkLaserCollisions(lasers, isShip) {
             if (isColliding(laser, asteroid)) {
                 let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
 
-                let actualDamage = Math.min(damage + damageBooster, asteroid.hitpoints); // Ensure we don't overkill the asteroid
+                let actualDamage = Math.min(damage + damageBooster * pixieBoost, asteroid.hitpoints); // Ensure we don't overkill the asteroid
                 asteroid.hitpoints -= actualDamage;
 
                 if (asteroid.hitpoints <= 0) {

@@ -24,9 +24,9 @@ const secondaryWeapons = {
         }
     },
     bomb: {
-        name: 'Bomb',
+        name: 'Basic Bomb',
         damage: 50,
-        radius: 400, // radius of explosion
+        radius: 300, // radius of explosion
         cooldown: 500,
         fullUses: 3,
         uses: 3,
