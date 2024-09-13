@@ -723,8 +723,12 @@ button {
     background-image: url('icons/upgrades/drone_army.png');
 }
 
+.icon-doubleTurret {
+    background-image: url('icons/upgrades/double_turret.png');
+}
+
 .icon-tripleTurret {
-    background-image: url('icons/turret_icon_pink.png');
+    background-image: url('icons/upgrades/triple_turret.png');
 }
 
 .icon- {
@@ -732,7 +736,7 @@ button {
 }
 
 .icon-secondary-weapon-clusterBomb {
-    background-image: url('icons/upgrades/mainframe.png');
+    background-image: url('icons/upgrades/cluster_bomb.png');
 }
 
 .icon-secondary-weapon-bomb {

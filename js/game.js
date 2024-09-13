@@ -250,8 +250,8 @@ const Achievements = {
     pink_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the pink pixie.' },
     purple_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the purple pixie.' },
     gold_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the gold pixie.' },
-    space_monkey: { reached: false, icon: 'icons/upgrades/monkey.png', description: 'Find the space monkey.' },
-    space_potato: { reached: false, icon: 'icons/upgrades/potato.png', description: 'Find the space potato.' },
+    // space_monkey: { reached: false, icon: 'icons/upgrades/monkey.png', description: 'Find the space monkey.' },
+    // space_potato: { reached: false, icon: 'icons/upgrades/potato.png', description: 'Find the space potato.' },
     dark_side: { reached: false, icon: 'icons/upgrades/darkside.png', description: 'Make a deal with Dark Side.' },
 
 
@@ -1564,7 +1564,7 @@ function countTechnologies() {
     let count = 2; // laser + bomb
 
     // These are all the achievements that have a specific weapon unlock assigned
-    // if (Achievements.reach_wave_2.reached) count++;
+    if (Achievements.reach_wave_2.reached) count += 2; //turret and bomber drone
     if (Achievements.reach_wave_5.reached) count++;
     if (Achievements.reach_wave_10.reached) count++;
     if (Achievements.complete_easy_mode.reached) count++;
@@ -1593,10 +1593,10 @@ function countTechnologies() {
     if (Achievements.wave_60_endless.reached) count++;
     if (Achievements.million_score.reached) count++;
 
-    if (Achievements.space_potato.reached) count++;
+    // if (Achievements.space_potato.reached) count++;
     if (Achievements.space_pizza.reached) count++;
 
-    if (Achievements.space_monkey.reached) count++;
+    // if (Achievements.space_monkey.reached) count++;
     if (Achievements.pink_pixie.reached) count++;
     if (Achievements.purple_pixie.reached) count++;
     if (Achievements.gold_pixie.reached) count++;
@@ -1608,7 +1608,7 @@ function countTechnologies() {
     if (Achievements.alien_octopus_killed.reached) count++;
     if (Achievements.alien_megaboss_killed.reached) count++;
 
-    // 4 ship types to be unlocked + basic ship.
+    // 5 ship types to be unlocked  (including basic).
 
     // Check the conditions of each ship
     for (const ship in ships) {
@@ -1968,9 +1968,10 @@ function populateAchievements() {
     const spaceWeapons = [
         // { key: 'space_potato', name: 'Space Potato' },
         { key: 'space_pizza', name: 'Space Pizza' },
-        { key: 'space_monkey', name: 'Space Monkey' },
-        { key: 'space_pixie', name: 'Pink Pixie' },
+        // { key: 'space_monkey', name: 'Space Monkey' },
+        { key: 'pink_pixie', name: 'Pink Pixie' },
         { key: 'purple_pixie', name: 'Purple Pixie' },
+        { key: 'gold_pixie', name: 'Gold Pixie' },
         { key: 'space_pickle', name: 'Space Pickle' },
         { key: 'complete_planet_hard_mode', name: 'Glitch Effect' },
         { key: 'complete_planet_hero_mode', name: 'Asteroid Splitter' }
