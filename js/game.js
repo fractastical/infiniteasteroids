@@ -210,8 +210,8 @@ let invincibilityDuration = 160; // 3.5 seconds (60 FPS)
 let achievements = [];
 
 const Achievements = {
-    reach_wave_2: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 2. Unlock Bomber Drone.' },
-    reach_wave_5: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 5. Unlock Cluster bomb.' },
+    reach_wave_2: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 2. Unlock Turret and Bomber Drone.' },
+    reach_wave_5: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Reach Wave 5. Unlock Freeze and Cluster bomb.' },
     // reach_wave_57: { reached: false, icon: 'achievements/whitehat.png', description: 'Reach Wave 7' },
     reach_wave_10: { reached: false, icon: 'achievements/angelcapitan.png', description: 'Reach Wave 10. Unlock Sonic Blast.' },
     // reach_wave_15: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 15' },
@@ -219,7 +219,7 @@ const Achievements = {
     // reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
     destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game. Unlock Drone.' },
     // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
-    complete_easy_mode: { reached: false, icon: 'achievements/whitehat.png', description: 'Complete Easy Mode. Unlock Boomerang.' },
+    complete_easy_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Complete Easy Mode. Unlock Boomerang.' },
     complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 30 in Normal Mode. Unlock Acid Bomb.' },
     acid_bomb_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/acid.png', description: 'Deal 2,500 Damage with Acid Bomb. Unlock Flamethrower.' },
     laser_damage: { reached: false, damage: 0, required: 2500, icon: 'achievements/deathray2.png', description: 'Deal 2,500 Damage with Laser. Unlock Explosive Laser.' },
@@ -227,8 +227,8 @@ const Achievements = {
     explosive_laser_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/explosive.png', description: 'Deal 5,000 Damage with Explosive Laser. Unlock Void Warden.' },
     death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Extra Choice.' },
     no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
-    complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Hard Mode. Unlock Explosive Rocket.' },
-    complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Hero Mode. Unlock Extra Life.' },
+    complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Deep Space Hard Mode. Unlock Explosive Rocket.' },
+    complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Deep Space Hero Mode. Unlock Extra Life.' },
     kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
     kill_50_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 50 Aliens. Unlock Chain Lightning.' },
     kill_500_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 500 Aliens. Unlock Sonic Boom.' },
@@ -240,16 +240,16 @@ const Achievements = {
     complete_planet_normal_mode: { reached: false, icon: 'achievements/storm_medium.png', description: 'Planet Normal Mode. Unlock Triple Turret.' },
     complete_planet_hard_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Planet Hard Mode. Unlock Glitch Effect.' },
     complete_planet_hero_mode: { reached: false, icon: 'achievements/planet_huge.png', description: 'Planet Hero Mode. Unlock Asteroid Splitter.' },
-    alien_megaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien Boss. Chain of Flame.' },
-    alien_supermegaboss_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Alien MegaBoss. Explo Drone.' },
-    alien_octopus_killed: { reached: false, icon: 'achievements/planet_huge.png', description: 'Killed Vampire Alien Octopus. CryoBomb.' },
+    alien_megaboss_killed: { reached: false, icon: 'icons/aliens/cool_evil_alien_22.png', description: 'Killed Alien Boss. Chain of Flame.' },
+    alien_supermegaboss_killed: { reached: false, icon: 'icons/aliens/alien_boss_ship_14.png', description: 'Killed Alien MegaBoss. Explo Drone.' },
+    alien_octopus_killed: { reached: false, icon: 'icons/aliens/alien_boss_ship_5.png', description: 'Killed Vampire Alien Octopus. CryoBomb.' },
     million_score: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Get a million points. Invincibility Shield.' },
-    wave_60_endless: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Reach wave 60 on Endless. Piercing Laser.' },
+    wave_60_endless: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach wave 60 on Endless. Piercing Laser.' },
     space_pizza: { reached: false, icon: 'icons/upgrades/pizza.png', description: 'Find the space pizza.' },
     space_pickle: { reached: false, icon: 'icons/upgrades/pickle.png', description: 'Find the deep space pickle.' },
     pink_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the pink pixie.' },
-    purple_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the purple pixie.' },
-    gold_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the gold pixie.' },
+    purple_pixie: { reached: false, icon: 'achievements/keroaccat.png', description: 'Find the purple pixie.' },
+    gold_pixie: { reached: false, icon: 'icons/upgrades/pixie2.png', description: 'Find the gold pixie.' },
     // space_monkey: { reached: false, icon: 'icons/upgrades/monkey.png', description: 'Find the space monkey.' },
     // space_potato: { reached: false, icon: 'icons/upgrades/potato.png', description: 'Find the space potato.' },
     dark_side: { reached: false, icon: 'icons/upgrades/darkside.png', description: 'Make a deal with Dark Side.' },
@@ -1565,7 +1565,7 @@ function countTechnologies() {
 
     // These are all the achievements that have a specific weapon unlock assigned
     if (Achievements.reach_wave_2.reached) count += 2; //turret and bomber drone
-    if (Achievements.reach_wave_5.reached) count++;
+    if (Achievements.reach_wave_5.reached) count += 2;  //freeze and cluster bomb
     if (Achievements.reach_wave_10.reached) count++;
     if (Achievements.complete_easy_mode.reached) count++;
     if (Achievements.complete_normal_mode.reached) count++;
