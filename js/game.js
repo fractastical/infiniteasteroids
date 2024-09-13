@@ -2072,7 +2072,7 @@ function populateAchievements() {
     const technologiesCountElement = document.getElementById('technologiesCount');
     let totalTechnologyCount = 42; // 5 ships + 17 weapons + 3 secondary  + 13 upgrades 
     // VERSION VERSION VERSION
-    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked.`;
+    technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked`;
 
     populateSelectors();
     // Populate game modes

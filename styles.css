@@ -1248,12 +1248,12 @@ select {
 
 .icons-section {
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .icons-section h4 {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     color: #0f0;
     /* Matching your green text color */
 }
@@ -1310,6 +1310,7 @@ selector span {
 
 h4 {
     color: white;
+
 }
 
 #shipCustomizationSection,
@@ -1367,5 +1368,16 @@ h4 {
     cursor: pointer;
 }
 
-.nav-btn:hover {
-    background-color: #555;
+h4 {
+    display: block;
+    margin-block-start: .8em;
+    margin-block-end: .8em;
+    font-size: .9em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+}
+
+/* .nav-btn:hover {
+    background-color: #555; */
