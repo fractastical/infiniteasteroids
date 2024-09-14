@@ -155,15 +155,15 @@ function createAsteroids(side) {
                 } else if (isMegaHardenedAsteroid) {
                     hitpoints = 10 + wave;
                     hitpoints += hpBooster;
-                    color = '#301934'; // Very dark purple for mega hardened asteroids
+                    color = '#47254d'; // Very dark purple for mega hardened asteroids
                 } else if (isVeryHardenedAsteroid) {
                     hitpoints = 15;
                     hitpoints += hpBooster;
-                    color = '#0A1414'; // Very dark green color for very hardened asteroids
+                    color = '#244747'; // Very dark green color for very hardened asteroids
                 } else if (isHardenedAsteroid) {
                     hitpoints = Math.floor(Math.random() * 5) + 3; // Random hitpoints between 5 and 8
                     hitpoints += hpBooster;
-                    color = '#172727'; // Dark green color for hardened asteroids
+                    color = '#274545'; // Dark green color for hardened asteroids
                 } else {
                     hitpoints = 1;
                     hitpoints += hpBooster;
@@ -206,7 +206,7 @@ function createAsteroids(side) {
         }
 
         if (wave % 10 === 0 && !miniBossAlien) {
-            miniBossAlien = {
+            alien = {
                 x: 20,
                 y: 50,
                 size: 60,
