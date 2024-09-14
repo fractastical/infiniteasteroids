@@ -2176,8 +2176,12 @@ function updateAchievementsAtEnd() {
     if (aliensKilled >= 50) addAchievement('kill_50_aliens');
     if (aliensKilled >= 500) addAchievement('kill_500_aliens');
 
+    try {
+        localStorage.setItem('achievements', JSON.stringify(Achievements));
 
-    localStorage.setItem('achievements', JSON.stringify(Achievements));
+    } catch (e) {
+
+    }
     populateAchievements();
 
     // Determine newly unlocked weapons based on the achievements unlocked
