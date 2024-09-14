@@ -74,45 +74,45 @@ const megaUpgrades = [
             goldPixie.update();
         }
     },
-    {
-        name: 'Space Monkey',
-        description: 'Spawns friendly "monkey asteroids" that destroy enemy asteroids.',
-        icon: 'icons/upgrades/orbs/space_monkey_orb.png',
-        achievedKey: 'space_monkey',
-        effect: function () {
-            spaceMonkey.activate();
-        },
-        update: function () {
-            spaceMonkey.update();
-        },
-        draw: function () {
-            spaceMonkey.draw();
-        },
-    },
-    {
-        name: 'Space Potato',
-        description: 'Summons a space potato that orbits the ship, slowing down nearby objects.',
-        icon: 'icons/upgrades/orbs/potato_orb.png',
-        achievedKey: 'space_potato',
-        cooldown: 60 * 60,
-        cooldownTimer: 0,
-        effect: function () {
-            spacePotato.activate();
-            this.cooldownTimer = this.cooldown;
-        },
-        update: function () {
-            if (this.cooldownTimer > 0) {
-                this.cooldownTimer--;
-                spacePotato.update();
-            } else {
-                spacePotato.deactivate();
-            }
-        },
-        draw: function () {
-            spacePotato.draw();
-        }
+    // {
+    //     name: 'Space Monkey',
+    //     description: 'Spawns friendly "monkey asteroids" that destroy enemy asteroids.',
+    //     icon: 'icons/upgrades/orbs/space_monkey_orb.png',
+    //     achievedKey: 'space_monkey',
+    //     effect: function () {
+    //         spaceMonkey.activate();
+    //     },
+    //     update: function () {
+    //         spaceMonkey.update();
+    //     },
+    //     draw: function () {
+    //         spaceMonkey.draw();
+    //     },
+    // },
+    // {
+    //     name: 'Space Potato',
+    //     description: 'Summons a space potato that orbits the ship, slowing down nearby objects.',
+    //     icon: 'icons/upgrades/orbs/potato_orb.png',
+    //     achievedKey: 'space_potato',
+    //     cooldown: 60 * 60,
+    //     cooldownTimer: 0,
+    //     effect: function () {
+    //         spacePotato.activate();
+    //         this.cooldownTimer = this.cooldown;
+    //     },
+    //     update: function () {
+    //         if (this.cooldownTimer > 0) {
+    //             this.cooldownTimer--;
+    //             spacePotato.update();
+    //         } else {
+    //             spacePotato.deactivate();
+    //         }
+    //     },
+    //     draw: function () {
+    //         spacePotato.draw();
+    //     }
 
-    },
+    // },
     {
         name: 'Dark Side',
         description: 'Allows you to overclock your weapons.',
