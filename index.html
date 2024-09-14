@@ -252,7 +252,7 @@
           try {
 
 
-            loadUserData();
+            loadUserData('');
 
           } catch (e) {
             console.log(e);
@@ -305,7 +305,7 @@
           </td>
         </tr>
         <tr>
-          <td>
+          <td><span id="crazyGameData"></span>
             <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
             <BR /><button id="settings" onclick="toggleVolumeScreen()">Settings</button><BR />
             <button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
@@ -1225,12 +1225,17 @@
 
       if (crazyGamesMode) {
 
+        const crazyGameData = document.getElementById('crazyGameData');
+
         console.log("trying crazygames user");
         try {
           // const user = await window.CrazyGames.SDK.user.getUser();
           // userNickname.textContent = user.username;
           const token = await window.CrazyGames.SDK.user.getUserToken();
           console.log("Get token result", token);
+          crazyGameData.innerHTML = ''; // Clear previous content
+          crazyGameData.innerHTML = token;
+
           userId = token.userId
           if (token.username) {
             userNickname.textContent = token.username;
@@ -1241,6 +1246,9 @@
 
         } catch (e) {
           console.log("Get user error: ", e);
+          crazyGameData.innerHTML = ''; // Clear previous content
+          crazyGameData.innerHTML = e.message;
+
           try {
             const user = await window.CrazyGames.SDK.user.showAuthPrompt();
             console.log("Auth prompt result", user);

@@ -2343,6 +2343,8 @@ function checkAlienDamage(weapon) {
         if (superbossAlien.hitpoints <= 0) {
             createExplosion(superbossAlien.x, superbossAlien.y, 50);
             createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
+            if (crazyGamesMode)
+                window.ConstructCrazySDK.game.happytime();
             superbossAlien = null; // Destroy alien
             aliensKilled++;
             Achievements.alien_megaboss_killed.reached = true;
@@ -2363,6 +2365,8 @@ function checkAlienDamage(weapon) {
             createExplosion(megaBossAlien.x, megaBossAlien.y, 50);
             megaBossAlien = null; // Destroy alien
             createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
+            if (crazyGamesMode)
+                window.ConstructCrazySDK.game.happytime();
             aliensKilled++;
             Achievements.alien_megaboss_killed.reached = true;
             increaseXP(30 * 20);
@@ -2439,6 +2443,8 @@ function checkLaserCollisions(lasers, isShip) {
             if (superbossAlien.hitpoints <= 0) {
                 createExplosion(superbossAlien.x, superbossAlien.y, 50);
                 createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
+                if (crazyGamesMode)
+                    window.ConstructCrazySDK.game.happytime();
                 superbossAlien = null; // Destroy alien
                 aliensKilled++;
                 Achievements.alien_supermegaboss_killed.reached = true;

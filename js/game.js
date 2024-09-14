@@ -338,6 +338,10 @@ function startGame() {
 
     gameOver = false;
     gameStartTime = Date.now();
+    if (crazyGamesMode) {
+        window.ConstructCrazySDK.game.gameplayStart();
+    }
+
     if (document.getElementById('endScreen'))
         document.getElementById('endScreen').style.display = 'none';
     if (document.getElementById('loginContainer'))
@@ -1379,6 +1383,11 @@ function pauseGame() {
     if (!isPaused) {
         clearInterval(gameLoop);
         isPaused = true;
+        if (crazyGamesMode) {
+            window.ConstructCrazySDK.game.gameplayStop();
+
+        }
+
     }
 }
 
@@ -1396,6 +1405,11 @@ function resumeGame() {
         clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
+        if (crazyGamesMode) {
+            window.ConstructCrazySDK.game.gameplayStart();
+
+        }
+
     }
 }
 
@@ -2399,6 +2413,10 @@ function endGame() {
     clearInterval(gameLoop);
     backgroundMusic.pause(); // Stop the background music
     gameEndTime = new Date();
+    if (crazyGamesMode) {
+        window.ConstructCrazySDK.game.gameplayStop();
+    }
+
     resetShip();
 
     // Calculate the time taken and save it
