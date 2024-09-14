@@ -1996,8 +1996,8 @@ function populateAchievements() {
 
     const spaceWeapons = [
         // { key: 'space_potato', name: 'Space Potato' },
-        { key: 'space_pizza', name: 'Space Pizza' },
         // { key: 'space_monkey', name: 'Space Monkey' },
+        { key: 'space_pizza', name: 'Space Pizza' },
         { key: 'pink_pixie', name: 'Pink Pixie' },
         { key: 'purple_pixie', name: 'Purple Pixie' },
         { key: 'gold_pixie', name: 'Gold Pixie' },
@@ -2115,9 +2115,10 @@ function updateAchievementsAtEnd() {
     const newlyUnlockedWeapons = [];
 
     const addAchievement = (achievementKey) => {
-        if (!Achievements[achievementKey].reached) {
+        if (!Achievements[achievementKey].reached || currentMatchAchievements.has(achievementKey)) {
             Achievements[achievementKey].reached = true;
             newlyUnlockedAchievements.push(Achievements[achievementKey].description);
+            currentMatchAchievements.delete(achievementKey); // Remove from set to avoid duplication
         }
     };
 
@@ -2175,6 +2176,14 @@ function updateAchievementsAtEnd() {
     if (aliensKilled >= 5) addAchievement('kill_5_aliens');
     if (aliensKilled >= 50) addAchievement('kill_50_aliens');
     if (aliensKilled >= 500) addAchievement('kill_500_aliens');
+
+    for (const key of currentMatchAchievements) {
+        newlyUnlockedAchievements.push(Achievements[key].description);
+    }
+
+    // Clear the current match achievements for the next game
+    currentMatchAchievements.clear();
+
 
     try {
         localStorage.setItem('achievements', JSON.stringify(Achievements));

@@ -224,13 +224,16 @@ function updateAndDrawFloatingUpgrades() {
     drawFloatingUpgrades();
 }
 
+let currentMatchAchievements = new Set();
 // Add achievements for collected upgrades
 function addAchievement(key) {
     if (!Achievements[key].reached) {
         Achievements[key].reached = true;
+        currentMatchAchievements.add(key);
         console.log(`Achievement unlocked: ${Achievements[key].description}`);
     }
 }
+
 
 function updateFloatingUpgrades() {
     activeFloatingUpgrades.forEach(upgrade => {
