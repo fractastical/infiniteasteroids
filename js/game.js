@@ -2126,7 +2126,7 @@ function updateAchievementsAtEnd() {
     if (wave >= 2) addAchievement('reach_wave_2');
     if (wave >= 5) addAchievement('reach_wave_5');
     if (wave >= 10) addAchievement('reach_wave_10');
-    if (wave >= 20) addAchievement('reach_wave_20');
+    // if (wave >= 20) addAchievement('reach_wave_20');
     if (score >= 1000000) addAchievement('million_score');
 
     if (damageReport.acid >= Achievements.acid_bomb_damage.required) addAchievement('acid_bomb_damage');
