@@ -688,21 +688,28 @@ function updateAlienLasers() {
 
 function drawAlienLasers() {
     alienLasers.forEach(laser => {
-        if (Math.abs(laser.dx) > alienLaserSpeed * 2 || Math.abs(laser.dy) > alienLaserSpeed * 2) {
-            // This is a fast eye laser
-            ctx.fillStyle = 'red'; // or any other color to distinguish it
+        if (laser.isInk) {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // Semi-transparent black for ink
             ctx.beginPath();
-            ctx.arc(laser.x, laser.y, alienLaserSize * 1.3, 0, Math.PI * 2); // Make it slightly larger
+            ctx.arc(laser.x, laser.y, laser.size, 0, Math.PI * 2);
             ctx.fill();
         } else {
-            // Regular laser
-            ctx.fillStyle = 'pink';
-            ctx.beginPath();
-            ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
-            ctx.fill();
+            // Existing laser drawing code
+            if (Math.abs(laser.dx) > alienLaserSpeed * 2 || Math.abs(laser.dy) > alienLaserSpeed * 2) {
+                ctx.fillStyle = 'red';
+                ctx.beginPath();
+                ctx.arc(laser.x, laser.y, alienLaserSize * 1.3, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                ctx.fillStyle = 'pink';
+                ctx.beginPath();
+                ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
     });
 }
+
 function shootAlienLaser(alien) {
     let laserSpeed = alienLaserSpeed;
     let laserDx = 0;
@@ -941,6 +948,12 @@ function spawnOctoBoss() {
         specialAttackInterval: Math.random() * 2000 + 2000, // Random interval between 5-10 seconds
         isSpecialAttacking: false,
         specialAttackDuration: 60, // Duration in frames (1 second at 60 FPS)
+        armReverseTimer: 0,
+        armReverseInterval: Math.random() * 300 + 300, // Random interval between 5-10 seconds (assuming 60 FPS)
+        inkShootTimer: 0,
+        inkShootInterval: Math.random() * 200 + 300, // Random interval between 10-20 seconds
+        isArmReversed: false
+
     };
 
     // Create 8 arms with 3 segments each
@@ -1034,6 +1047,22 @@ function updateOctoBoss() {
         }
     }
 
+    octoBoss.armReverseTimer++;
+    if (octoBoss.armReverseTimer >= octoBoss.armReverseInterval) {
+        octoBoss.isArmReversed = !octoBoss.isArmReversed;
+        octoBoss.armReverseTimer = 0;
+        octoBoss.armReverseInterval = Math.random() * 300 + 300; // Set next interval
+    }
+
+    // Ink shooting logic
+    octoBoss.inkShootTimer++;
+    if (octoBoss.inkShootTimer >= octoBoss.inkShootInterval) {
+        shootInk();
+        octoBoss.inkShootTimer = 0;
+        octoBoss.inkShootInterval = Math.random() * 600 + 600; // Set next interval
+    }
+
+
     octoBoss.armRegrowthTimer++;
     if (octoBoss.armRegrowthTimer >= octoBoss.armRegrowthInterval) {
         console.log("Attempting regrowth");
@@ -1057,14 +1086,14 @@ function updateOctoBoss() {
     octoBoss.arms.forEach((arm, index) => {
         const baseAngle = octoBoss.isSpecialAttacking
             ? targetAngle
-            : (index * Math.PI) / 4 + Date.now() * 0.001;
+            : (index * Math.PI) / 4 + Date.now() * 0.001 * (octoBoss.isArmReversed ? -1 : 1);
 
         arm.segments.forEach((segment, segIndex) => {
             if (segment.state !== OctoBossArmState.DESTROYED) {
                 if (octoBoss.isSpecialAttacking) {
-                    segment.angle = baseAngle + (Math.random() - 0.5) * Math.PI / 10; // Less randomness during special attack
+                    segment.angle = baseAngle + (Math.random() - 0.5) * Math.PI / 10;
                 } else {
-                    segment.angle = baseAngle + (segIndex - 1) * Math.PI / 6 * Math.sin(Date.now() * 0.002);
+                    segment.angle = baseAngle + (segIndex - 1) * Math.PI / 6 * Math.sin(Date.now() * 0.002 * (octoBoss.isArmReversed ? -1 : 1));
                 }
 
                 if (segment.state === OctoBossArmState.GROWING) {
@@ -1486,7 +1515,21 @@ function lineCircleIntersection(x1, y1, x2, y2, cx, cy, r) {
 }
 
 
-// Don't forget to call updateOctoBoss() and drawOctoBoss() in your main game loop
-// The destroyOctoBoss function remains the same as in the previous implementation
+function shootInk() {
+    const inkCount = 20; // Number of ink particles
+    for (let i = 0; i < inkCount; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 2 + .5;
+        alienLasers.push({
+            x: octoBoss.x,
+            y: octoBoss.y,
+            dx: Math.cos(angle) * speed,
+            dy: Math.sin(angle) * speed,
+            isInk: true,
+            size: Math.random() * 5 + 5 // Random size between 5 and 10
+        });
+    }
+    playAlienLaserSound(); // You might want to create a separate ink sound
+}
 
-// Don't forget to call updateOctoBoss() and drawOctoBoss() in your main game loop
+
