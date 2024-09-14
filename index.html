@@ -239,10 +239,14 @@
           handleSelections();
           updateShipPreview();
           document.getElementById('versionInfo').innerHTML = "Version v " + version;
-          if (window.height < 500) {
+          if (window.innerHeight < 500) {
             document.getElementById('gameModeHeader').style.display = "none";
             document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
+          } else if (window.innerHeight > 600) {
+            // make h4 largers
+
           }
+
         });
       </script>
 
