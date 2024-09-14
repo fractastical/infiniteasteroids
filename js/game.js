@@ -1015,9 +1015,10 @@ function handleTouch(e) {
 
     if (e.target === canvas && e.touches.length === 2) {
         // Two-finger touch for firing
-        if (ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
-            shootLasers();
-        }
+        // if (ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
+        //     shootLasers();
+        // }
+        fireSecondaryWeapon();
     }
 }
 

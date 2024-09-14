@@ -132,7 +132,12 @@ const InfiniteAsteroidsAnimation = (function () {
         // Draw instruction text
         ctx.font = '20px "Press Start 2P", monospace';
         ctx.fillStyle = '#FFFFFF';
-        const instruction = instructions[instructionPhase];
+        let instruction;
+        if (isMobile())
+            instruction = mobileInstructions[instructionPhase];
+        else
+            instruction = instructions[instructionPhase];
+
         const textWidth = ctx.measureText(instruction).width;
         ctx.fillText(instruction, ship.x - ship.width - 480, ship.y + 2);
 
@@ -314,6 +319,14 @@ const InfiniteAsteroidsAnimation = (function () {
         "Beat wave 30 to advance",
         "Final boss on wave 100"
     ];
+
+    const mobileIstructions = [
+        "Center tap for acceleration",
+        "Double tap for bomb",
+        "Beat wave 30 to advance",
+        "Final boss on wave 100"
+    ];
+
     let explosions = [];
 
     function createExplosion(x, y) {
@@ -403,7 +416,7 @@ const InfiniteAsteroidsAnimation = (function () {
             ctx = canvas.getContext('2d');
 
             canvas.width = 840;
-            canvas.height = 80;
+            canvas.height = 60;
 
             // console.log(`Canvas size: ${canvas.width}x${canvas.height}`);
 

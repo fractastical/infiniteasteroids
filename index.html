@@ -225,7 +225,7 @@
 
 
   <div id="startScreen">
-    <img height="100px" src="icons/ia-logo.png" />
+    <img src="icons/ia-logo2.png" />
 
     <div>
       <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
@@ -249,7 +249,7 @@
           <td rowspan="2">
             <div id="shipCustomizationSection">
               <div class="ship-preview">
-                <canvas id="shipPreviewCanvas" width="80" height="80"></canvas>
+                <canvas id="shipPreviewCanvas" width="60" height="60"></canvas>
               </div>
               <div class="option-group">
                 <h4>Select Ship:</h4>
@@ -624,6 +624,7 @@
       tripleTurret = false;
       droneArmy = false;
       alienLasers = [];
+      explosions = [];
       alienLaser = null;
       activeMegaUpgrades = [];
       ship.lasers = [];
@@ -631,6 +632,7 @@
       floatingIsland.active = false;
       explosiveRockets = [];
       miniBossAlien = null;
+      aliens = [];
 
       flamethrower = {
         cooldown: 10, // Cooldown time in frames
