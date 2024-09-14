@@ -202,6 +202,7 @@ let plasmaCannonUpgrades = {
     cooldown: 1
 };
 
+
 const droneImages = {
     regularDrone: 'icons/laserdrone.png',
     bomberDrone: 'icons/bomberdrone.png',
@@ -2343,7 +2344,7 @@ function checkAlienDamage(weapon) {
         if (superbossAlien.hitpoints <= 0) {
             createExplosion(superbossAlien.x, superbossAlien.y, 50);
             createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
-            if (crazyGamesMode)
+            if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game)
                 window.ConstructCrazySDK.game.happytime();
             superbossAlien = null; // Destroy alien
             aliensKilled++;
@@ -2365,12 +2366,14 @@ function checkAlienDamage(weapon) {
             createExplosion(megaBossAlien.x, megaBossAlien.y, 50);
             megaBossAlien = null; // Destroy alien
             createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
-            if (crazyGamesMode)
-                window.ConstructCrazySDK.game.happytime();
             aliensKilled++;
             Achievements.alien_megaboss_killed.reached = true;
+
             increaseXP(30 * 20);
             score += 100000;
+            if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game)
+                window.ConstructCrazySDK.game.happytime();
+
         }
     }
 
@@ -2443,13 +2446,16 @@ function checkLaserCollisions(lasers, isShip) {
             if (superbossAlien.hitpoints <= 0) {
                 createExplosion(superbossAlien.x, superbossAlien.y, 50);
                 createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
-                if (crazyGamesMode)
-                    window.ConstructCrazySDK.game.happytime();
+
                 superbossAlien = null; // Destroy alien
                 aliensKilled++;
-                Achievements.alien_supermegaboss_killed.reached = true;
+                // addAchievement('alien_supermegaboss_killed');
                 increaseXP(30 * 20);
                 score += 100000;
+                if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game)
+                    window.ConstructCrazySDK.game.happytime();
+
+
             }
             lasers.splice(i, 1); // Remove laser
             // console.log("removing laser collided with super boss alien");
@@ -2467,7 +2473,8 @@ function checkLaserCollisions(lasers, isShip) {
                 createBossExplosion(octoBoss.x, octoBoss.y, 150);
                 octoBoss = null; // Destroy alien
                 aliensKilled++;
-                Achievements.alien_octopus_killed.reached = true;
+                // addAchievement('alien_octopus_killed');
+                // Achievements.alien_octopus_killed.reached = true;
                 increaseXP(30 * 40);
                 score += 200000;
             }
@@ -2491,7 +2498,9 @@ function checkLaserCollisions(lasers, isShip) {
                 createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
                 megaBossAlien = null; // Destroy alien
                 aliensKilled++;
-                Achievements.alien_supermegaboss_killed.reached = true;
+                // addAchievement('alien_supermegaboss_killed');
+
+                // Achievements.alien_supermegaboss_killed.reached = true;
                 increaseXP(30 * 20);
                 score += 100000;
             }

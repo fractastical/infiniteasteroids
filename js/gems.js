@@ -49,7 +49,7 @@
 //     'Activate Flamethrower': 'flamethrower',
 //     'Extra Upgrade Choice': 'extra',
 //     'Drone Army': 'dronearmy',
-//     'Double Turret': 'doubleturret',
+//     'Wave Turret': 'doubleturret',
 //     'Triple Turret': 'tripleturret',
 //     'Damage Booster': 'damagebooster'
 // };
@@ -475,12 +475,14 @@ function updateGems() {
     }
 }
 function applyUpgrades(upgrades) {
-    upgrades.forEach(upgrade => {
-        // Apply each upgrade logic here
-        console.log(`Applying upgrade: ${upgrade}`);
-        applyUpgrade(upgrade);
-        // Example: applyUpgrade(upgrade); 
-    });
+    if (upgrades) {
+        upgrades.forEach(upgrade => {
+            // Apply each upgrade logic here
+            console.log(`Applying upgrade: ${upgrade}`);
+            applyUpgrade(upgrade);
+            // Example: applyUpgrade(upgrade); 
+        });
+    }
 }
 
 // Call positionIcons to initially position the icons around the roulette wheel

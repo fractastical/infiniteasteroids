@@ -33,11 +33,19 @@ const SwarmingAlienTypes = {
 };
 
 let miniBossAlien = null;
+
 let alienLaser = null;
 const alienLaserSpeed = 2.2;
 const alienLaserSize = 4;
 let superbossAlien = null;
+let superbossAlienSpawned = false;
 let megaBossAlien = null;
+let megaBossAlienSpawned = false;
+let octoBoss = null;
+let octoBossSpawned = false;
+
+
+
 let swarmingAliens = [];
 
 let aliens = [];
@@ -320,6 +328,8 @@ function updateAliens() {
 }
 
 function spawnSuperBossAlien() {
+    superbossAlienSpawned = true;
+
     const laughSound = new Audio('sounds/alien_laugh3.mp3');
     if (!toggleMusicOff) {
         backgroundMusic.pause();
@@ -408,6 +418,7 @@ function drawSuperBossAlien() {
 
 function spawnMegaBossAlien() {
     const laughSound = new Audio('sounds/alien_laugh3.mp3');
+    megaBossAlienSpawned = true;
 
     if (!toggleMusicOff) {
         backgroundMusic.pause();
@@ -899,9 +910,11 @@ const OctoBossArmState = {
     GROWING: 'growing'
 };
 
-let octoBoss = null;
 
 function spawnOctoBoss() {
+
+    octoBossSpawned = true;
+
     const laughSound = new Audio('sounds/alien_laugh3.mp3');
     if (!toggleMusicOff) {
         backgroundMusic.pause();

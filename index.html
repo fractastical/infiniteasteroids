@@ -247,7 +247,22 @@
             document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
           }
 
+
           try {
+            if (crazyGamesMode) {
+
+              const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
+              if (crazyGamesDebugMode) {
+
+                const crazyGameData = document.getElementById('crazyGameData');
+
+                // crazyGameData.innerHTML = ''; // Clear previous content
+                crazyGameData.innerHTML += "userAvail:" + available;
+
+              }
+              console.log("User account system available", available);
+
+            }
 
             // window.CrazyGames.SDK.user
             //   .getUser()
@@ -653,6 +668,11 @@
       explosiveRockets = [];
       miniBossAlien = null;
       aliens = [];
+
+      megaBossAlienSpawned = false;
+      superbossAlienSpawned = false;
+      octoBossSpawned = false;
+
 
       flamethrower = {
         cooldown: 10, // Cooldown time in frames
@@ -1141,6 +1161,8 @@
       try {
         const user = await window.CrazyGames.SDK.user.showAuthPrompt();
         console.log("Auth prompt result", user);
+
+
       } catch (e) {
         console.log("Error:", e);
         // normal login as backup

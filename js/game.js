@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9801"
+let version = "0.9803"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 
@@ -342,7 +342,7 @@ function startGame() {
 
     gameOver = false;
     gameStartTime = Date.now();
-    if (crazyGamesMode) {
+    if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game) {
         window.ConstructCrazySDK.game.gameplayStart();
     }
 
@@ -1387,7 +1387,7 @@ function pauseGame() {
     if (!isPaused) {
         clearInterval(gameLoop);
         isPaused = true;
-        if (crazyGamesMode) {
+        if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game) {
             window.ConstructCrazySDK.game.gameplayStop();
 
         }
@@ -1409,7 +1409,7 @@ function resumeGame() {
         clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
-        if (crazyGamesMode) {
+        if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game) {
             window.ConstructCrazySDK.game.gameplayStart();
 
         }
@@ -1950,6 +1950,7 @@ function populateAchievements() {
     const achievementsIconsContainer = document.createElement('div');
     achievementsIconsContainer.classList.add('icons-section', 'achievement-icons');
 
+
     // Add ship icons
     let availableShips = [];
     Object.keys(ships).forEach(shipKey => {
@@ -2120,6 +2121,8 @@ function updateAchievementsAtEnd() {
         }
     };
 
+
+
     if (wave >= 2) addAchievement('reach_wave_2');
     if (wave >= 5) addAchievement('reach_wave_5');
     if (wave >= 10) addAchievement('reach_wave_10');
@@ -2132,6 +2135,10 @@ function updateAchievementsAtEnd() {
     if (asteroidsKilled >= 1000) addAchievement('destroy_1000_asteroids');
 
     if (wave >= 30 && lives === 3) addAchievement('no_lives_lost');
+
+    if (megaBossAlienSpawned && megaBossAlien == null) addAchievement('alien_megaboss_killed');
+    if (superbossAlienSpawned && superbossAlien == null) addAchievement('alien_supermegaboss_killed');
+    if (octoBossSpawned && octoBoss == null) addAchievement('alien_octopus_killed');
 
     const gameModeAchievements = [
         { key: 'complete_easy_mode', mode: GameModes.EASY },
@@ -2151,8 +2158,8 @@ function updateAchievementsAtEnd() {
     gameModeAchievements.forEach(({ key, mode }) => {
         if (currentMode === mode && wave >= 30) addAchievement(key);
     });
-    if (currentMode == GameModes.ENDLESS_SLOW && wave >= 30)
-        addAchievement('space_pizza');
+    // if (currentMode == GameModes.ENDLESS_SLOW && wave >= 30)
+    //     addAchievement('space_pizza');
 
 
     if (currentMode == GameModes.ENDLESS_SLOW && wave >= 60)
@@ -2417,7 +2424,7 @@ function endGame() {
     clearInterval(gameLoop);
     backgroundMusic.pause(); // Stop the background music
     gameEndTime = new Date();
-    if (crazyGamesMode) {
+    if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game) {
         window.ConstructCrazySDK.game.gameplayStop();
     }
 
