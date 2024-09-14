@@ -951,7 +951,7 @@ function spawnOctoBoss() {
         armReverseTimer: 0,
         armReverseInterval: Math.random() * 300 + 300, // Random interval between 5-10 seconds (assuming 60 FPS)
         inkShootTimer: 0,
-        inkShootInterval: Math.random() * 200 + 300, // Random interval between 10-20 seconds
+        inkShootInterval: Math.random() * 200 + 200, // Random interval between 10-20 seconds
         isArmReversed: false
 
     };
@@ -1057,9 +1057,10 @@ function updateOctoBoss() {
     // Ink shooting logic
     octoBoss.inkShootTimer++;
     if (octoBoss.inkShootTimer >= octoBoss.inkShootInterval) {
-        shootInk();
+        if (octoBoss.hitpoints < 10500)
+            shootInk();
         octoBoss.inkShootTimer = 0;
-        octoBoss.inkShootInterval = Math.random() * 600 + 600; // Set next interval
+        octoBoss.inkShootInterval = Math.random() * 200 + 200; // Set next interval
     }
 
 
