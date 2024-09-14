@@ -307,7 +307,7 @@ let testMode = false;
 
 if (testMode)
     lives = 1;
-let gameOver = false;
+let gameOver = true;
 let invincible = false;
 let invincibilityTimer = 0;
 
