@@ -218,6 +218,8 @@ const Achievements = {
     // reach_wave_20: { reached: false, icon: 'achievements/keroaccat.png', description: 'Reach Wave 20. ' },
     // reach_wave_25: { reached: false, icon: 'achievements/onthemoon.png', description: 'Reach Wave 25' },
     destroy_100_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 100 Asteroids in One Game. Unlock Drone.' },
+    destroy_1000_asteroids: { reached: false, icon: 'achievements/speedy.png', description: 'Destroy 1000 Asteroids in One Game. Unlock Damage Booster.' },
+
     // destroy_500_asteroids: { reached: false, icon: 'achievements/_5973.png', description: 'Destroy 500 Asteroids in One Game' },
     complete_easy_mode: { reached: false, icon: 'achievements/onthemoon.png', description: 'Complete Easy Mode. Unlock Boomerang.' },
     complete_normal_mode: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach Wave 30 in Normal Mode. Unlock Acid Bomb.' },
@@ -1574,6 +1576,8 @@ function countTechnologies() {
     if (Achievements.complete_hero_mode.reached) count++;
     if (Achievements.acid_bomb_damage.reached) count++;
     if (Achievements.destroy_100_asteroids.reached) count++;
+    if (Achievements.destroy_1000_asteroids.reached) count++;
+
     if (Achievements.kill_5_aliens.reached) count++;
     if (Achievements.kill_50_aliens.reached) count++;
     if (Achievements.kill_500_aliens.reached) count++;
@@ -1640,7 +1644,8 @@ function getAvailableWeaponIcons() {
         'Sonic Boom': { icon: 'icon-sonicboom' },
         'Explo Drone': { icon: 'icon-explodrone' },
         'Chain of Flame': { icon: 'icon-chainofflame' },
-        'CryoBomb': { icon: 'icon-cryobomb' }
+        'CryoBomb': { icon: 'icon-cryobomb' },
+        'Damage Booster': { icon: 'icon-ship' }
 
 
     };
@@ -1649,6 +1654,7 @@ function getAvailableWeaponIcons() {
 
     // Always include the basic laser icon
     availableIcons.push('icon-basiclaser');
+    // availableIcons.push('icon-ship');
 
     if (activeWeaponClasses.includes('turret') || Achievements.reach_wave_2.reached) availableIcons.push(upgradeDefinitions['Activate Turret'].icon);
     if (activeWeaponClasses.includes('bomberdrone') || Achievements.reach_wave_2.reached) availableIcons.push(upgradeDefinitions['Activate Bomber Drone'].icon);
@@ -1658,6 +1664,7 @@ function getAvailableWeaponIcons() {
     if (activeWeaponClasses.includes('boomerang') || Achievements.complete_easy_mode.reached) availableIcons.push(upgradeDefinitions['Activate Boomerang'].icon);
     if (activeWeaponClasses.includes('acid') || Achievements.complete_normal_mode.reached) availableIcons.push(upgradeDefinitions['Activate Acid Bomb'].icon);
     if (activeWeaponClasses.includes('drone') || Achievements.destroy_100_asteroids.reached) availableIcons.push(upgradeDefinitions['Activate Drone'].icon);
+    if (Achievements.destroy_1000_asteroids.reached) availableIcons.push(upgradeDefinitions['Damage Booster'].icon);
     if (activeWeaponClasses.includes('deathray') || Achievements.kill_5_aliens.reached) availableIcons.push(upgradeDefinitions['Activate Death Ray'].icon);
     if (activeWeaponClasses.includes('explosiverocket') || Achievements.complete_hard_mode.reached) availableIcons.push(upgradeDefinitions['Activate Explosive Rocket'].icon);
     if (activeWeaponClasses.includes('chainlightning') || Achievements.kill_50_aliens.reached) availableIcons.push(upgradeDefinitions['Activate Chain Lightning'].icon);
@@ -1740,7 +1747,7 @@ let currentGameModeIndex = 0;
 function populateGameModes() {
     const gameModeSection = document.getElementById('gameModeSection');
     gameModeSection.innerHTML = `
-        <h4>Select Game Mode</h4>
+        <h4 id="gameModeHeader">Select Game Mode</h4>
         <div class="selector">
             <button id="prevGameModeButton">&#60;</button>
             <span id="selectedGameMode">${gameModes[currentGameModeIndex].name}</span>
@@ -2102,7 +2109,9 @@ function updateAchievementsAtEnd() {
     if (damageReport.acid >= Achievements.acid_bomb_damage.required) addAchievement('acid_bomb_damage');
     if (damageReport.explosive >= Achievements.explosive_laser_damage.required) addAchievement('explosive_laser_damage');
     if (asteroidsKilled >= 100) addAchievement('destroy_100_asteroids');
-    if (lives === 3) addAchievement('no_lives_lost');
+    if (asteroidsKilled >= 1000) addAchievement('destroy_1000_asteroids');
+
+    if (wave >= 30 && lives === 3) addAchievement('no_lives_lost');
 
     const gameModeAchievements = [
         { key: 'complete_easy_mode', mode: GameModes.EASY },
@@ -2259,6 +2268,9 @@ function levelUp() {
 
     // Determine number of upgrades to show
     if (!waitAndClaimMode) {
+
+        pauseGame();
+        clearInterval(gameLoop);
 
         document.getElementById('leveluptitle').innerHTML = 'Level Up!';
 

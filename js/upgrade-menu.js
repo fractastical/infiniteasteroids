@@ -60,7 +60,9 @@ function getRandomUpgrades(count) {
         'Chain of Flame': { icon: 'icon-chainofflame', description: 'Lighthing powers also burn asteroids they hit' },
         'Explo Drone': { icon: 'icon-explodrone', description: 'Equip drones with explosives' },
         'Sonic Boom': { icon: 'icon-sonicboom', description: 'Launch sonic-powered boomerangs' },
-        'Cryo Bomb': { icon: 'icon-cryobomb', description: 'Acib bombs also slow their opponents' }
+        'Cryo Bomb': { icon: 'icon-cryobomb', description: 'Acid bombs also slow their opponents' },
+        'Damage Booster': { icon: 'icon-ship', description: 'Add one to damage from all weapons' }
+
     };
 
 
@@ -109,8 +111,8 @@ function getRandomUpgrades(count) {
         availableUpgrades.push('Wave Turret');
     if (Achievements.complete_planet_normal_mode.reached && activeWeaponClasses.includes('turret') && !tripleTurret)
         availableUpgrades.push('Triple Turret');
-    // if (Achievements.complete_hard_mode.reached)
-    availableUpgrades.push('Damage Booster');
+    if (Achievements.complete_hard_mode.reached)
+        availableUpgrades.push('Damage Booster');
 
     //TODO: add achievements
     const comboWeapons = canActivateComboWeapons();
@@ -127,12 +129,13 @@ function getRandomUpgrades(count) {
         availableUpgrades.push('CryoBomb');
     }
 
-
     const upgrades = [];
     for (let i = 0; i < count; i++) {
         if (availableUpgrades.length === 0) break;
         const randomIndex = Math.floor(Math.random() * availableUpgrades.length);
         const upgradeName = availableUpgrades[randomIndex];
+        console.log(upgradeDefinitions);
+        console.log(availableUpgrades[randomIndex]);
         upgrades.push({
             name: upgradeName,
             icon: upgradeDefinitions[upgradeName].icon,

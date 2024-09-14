@@ -239,8 +239,10 @@
           handleSelections();
           updateShipPreview();
           document.getElementById('versionInfo').innerHTML = "Version v " + version;
-          if (window.height < 500)
+          if (window.height < 500) {
             document.getElementById('gameModeHeader').style.display = "none";
+            document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
+          }
         });
       </script>
 
@@ -262,7 +264,7 @@
               </div>
 
               <div class="option-group">
-                <h4>Select Secondary Weapon:</h4>
+                <h4 id="secondaryWeaponHeader">Select Secondary Weapon:</h4>
                 <div class="selector">
                   <button id="prevSecondaryWeaponButton">&#60;</button>
                   <span id="selectedSecondaryWeapon">Bomb</span>
@@ -1090,10 +1092,10 @@
       } catch (e) {
         console.log("Error:", e);
         //normal login as backup
-        loginFormOpen = true;
-        event.preventDefault();
-        pauseGame();
-        loginPopup.style.display = 'block';
+        // loginFormOpen = true;
+        // event.preventDefault();
+        // pauseGame();
+        // loginPopup.style.display = 'block';
 
 
 
@@ -1194,7 +1196,7 @@
 
     async function loadUserData(userId, crazyGames = false) {
 
-      if (userId == '') {
+      if (cray) {
 
         console.log("trying crazygames user");
         try {
