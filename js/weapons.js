@@ -2348,7 +2348,7 @@ function checkAlienDamage(weapon) {
                 window.ConstructCrazySDK.game.happytime();
             superbossAlien = null; // Destroy alien
             aliensKilled++;
-            Achievements.alien_megaboss_killed.reached = true;
+            // Achievements.alien_megaboss_killed.reached = true;
             increaseXP(30 * 20);
             score += 100000;
         }
@@ -2367,7 +2367,7 @@ function checkAlienDamage(weapon) {
             megaBossAlien = null; // Destroy alien
             createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
             aliensKilled++;
-            Achievements.alien_megaboss_killed.reached = true;
+            // Achievements.alien_megaboss_killed.reached = true;
 
             increaseXP(30 * 20);
             score += 100000;

@@ -2452,13 +2452,14 @@ function endGame() {
         topWeapons: topSixWeapons
     };
 
+    // Update achievements and handle end game server logic
+    const { newlyUnlockedAchievements, newlyUnlockedWeapons } = updateAchievementsAtEnd();
+
     saveUserScore(userId, gameId, gameData);
 
     // Load and display the leaderboard
     loadLeaderboard(gameId, currentMode);
 
-    // Update achievements and handle end game server logic
-    const { newlyUnlockedAchievements, newlyUnlockedWeapons } = updateAchievementsAtEnd();
 
     // Get three random affordable upgrades
     // const affordableUpgrades = getRandomAffordableUpgrades(coins);
