@@ -15,7 +15,7 @@
 
 
   <!-- #INFINITEGAMES CSS START -->
-  <link rel="stylesheet" href="infinite/css/48_leaderboard_20240829095112.css">
+  <!-- <link rel="stylesheet" href="infinite/css/48_leaderboard_20240829095112.css"> -->
   <!-- #INFINITEGAMES CSS END -->
 </head>
 
@@ -249,8 +249,18 @@
             // make h4 largers
 
           }
+          try {
+
+
+            loadUserData();
+
+          } catch (e) {
+            console.log(e);
+
+          }
 
         });
+
       </script>
 
 
@@ -884,7 +894,6 @@
       };
 
       // Reset game state
-      gameOver = false;
       invincible = true;
       invincibilityTimer = invincibilityDuration;
       // document.getElementById('leaderboard-container').style.display = 'none';
@@ -1079,6 +1088,7 @@
     const signupForm = document.getElementById('signupForm');
 
 
+
     async function saveInitialData(userId, email, nickname) {
       const initialData = {
         email: email,
@@ -1213,7 +1223,7 @@
 
     async function loadUserData(userId, crazyGames = false) {
 
-      if (crazyGames) {
+      if (crazyGamesMode) {
 
         console.log("trying crazygames user");
         try {
@@ -1222,7 +1232,11 @@
           const token = await window.CrazyGames.SDK.user.getUserToken();
           console.log("Get token result", token);
           userId = token.userId
-          userNickname.textContent = token.username;
+          if (token.username) {
+            userNickname.textContent = token.username;
+            userInfo.style.display = 'block';
+            loginLink.style.display = 'none';
+          }
 
 
         } catch (e) {

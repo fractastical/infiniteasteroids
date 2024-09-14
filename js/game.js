@@ -336,6 +336,7 @@ let droneUpgrades = {
 function startGame() {
     // updateMiniShipPreview();
 
+    gameOver = false;
     gameStartTime = Date.now();
     if (document.getElementById('endScreen'))
         document.getElementById('endScreen').style.display = 'none';
@@ -981,6 +982,7 @@ function initializeGame(mode) {
 
     }
     currentMode = mode;
+
     console.log("starting " + currentMode);
 
     startGame();
