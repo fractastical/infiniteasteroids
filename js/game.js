@@ -3,7 +3,7 @@
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
 let version = "0.9801"
-let crazyGamesMode = true;
+let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 
 
@@ -102,6 +102,7 @@ let bonuslevelUpXPMultiplier = 1;
 let fourthUpgradeUnlocked = false;
 const levelUpModal = document.getElementById('levelUpModal');
 let lastLevelUp = Date.now();
+
 
 
 // Reset ship position

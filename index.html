@@ -245,14 +245,14 @@
           if (window.innerHeight < 500) {
             document.getElementById('gameModeHeader').style.display = "none";
             document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
-          } else if (window.innerHeight > 600) {
-            // make h4 largers
-
           }
+
           try {
 
-
-            loadUserData('');
+            // window.CrazyGames.SDK.user
+            //   .getUser()
+            //   .then((user) => loadUserData(user.id))
+            //   .catch((e) => alert("Get user error: ", e));
 
           } catch (e) {
             console.log(e);
@@ -1072,6 +1072,41 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // await example
+    // try {
+    //   const user = await window.CrazyGames.SDK.user.getUser();
+    //   crazyGamesMode = true;
+
+    //   const crazyGameData = document.getElementById('crazyGameData');
+
+    //   // if (crazyGamesDebugMode) {
+    //   crazyGameData.innerHTML = ''; // Clear previous content
+    //   crazyGameData.innerHTML = user;
+    //   // }
+
+    //   console.log(user);
+    // } catch (e) {
+
+
+    //   const crazyGameData = document.getElementById('crazyGameData');
+
+    //   // if (crazyGamesDebugMode) {
+    //   crazyGameData.innerHTML = ''; // Clear previous content
+    //   crazyGameData.innerHTML = e.message;
+    //   // }
+
+
+
+
+    //   console.log("Get user error: ", e);
+    // }
+
+    // .then .catch example
+    // window.CrazyGames.SDK.user
+    //   .getUser()
+    //   .then((user) => console.log(user))
+    //   .catch((e) => console.log("Get user error: ", e));
+
 
 
 
@@ -1159,9 +1194,9 @@
 
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = signupForm['signup-email'].value;
-      const password = signupForm['signup-password'].value;
-      const nickname = signupForm['signup-nickname'].value;
+      const email = signupForm['signupEmail'].value;
+      const password = signupForm['signupPassword'].value;
+      const nickname = signupForm['signupNickname'].value;
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         userId = cred.user.uid;
@@ -1234,8 +1269,8 @@
           const token = await window.CrazyGames.SDK.user.getUserToken();
           console.log("Get token result", token);
           if (crazyGamesDebugMode) {
-            crazyGameData.innerHTML = ''; // Clear previous content
-            crazyGameData.innerHTML = token;
+            // crazyGameData.innerHTML = ''; // Clear previous content
+            crazyGameData.innerHTML += token;
 
           }
 
@@ -1251,8 +1286,7 @@
           crazyGamesMode = false;
           console.log("Get user error: ", e);
           if (crazyGamesDebugMode) {
-            crazyGameData.innerHTML = ''; // Clear previous content
-            crazyGameData.innerHTML = e.message;
+            crazyGameData.innerHTML += e.message;
           }
           try {
             const user = await window.CrazyGames.SDK.user.showAuthPrompt();
@@ -1262,8 +1296,8 @@
           } catch (e) {
             console.log("Error:", e);
             if (crazyGamesDebugMode) {
-              crazyGameData.innerHTML = ''; // Clear previous content
-              crazyGameData.innerHTML = e.message;
+              // crazyGameData.innerHTML = ''; // Clear previous content
+              crazyGameData.innerHTML += e.message;
             }
 
           }
@@ -1302,6 +1336,8 @@
       }
 
     }
+
+    window.loadUserData = loadUserData;
 
 
     function populateUserSessions(sessions) {
