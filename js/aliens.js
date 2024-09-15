@@ -686,7 +686,7 @@ function updateAlienLasers() {
     }
 }
 
-function drawAlienLasers(time) {
+function drawAlienLasers(time = currentTime) {
     alienLasers.forEach((laser, i) => {
         ctx.save();
 
@@ -954,8 +954,8 @@ function spawnOctoBoss() {
     octoBoss = {
         x: canvas.width / 2,
         y: 5,
-        size: 360,
-        bodyRadius: 190,
+        size: 260,
+        bodyRadius: 120,
         speed: 0.1,
         hitpoints: 20000,
         armRegrowthTimer: 0,
