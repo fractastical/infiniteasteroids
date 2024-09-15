@@ -320,7 +320,7 @@ const InfiniteAsteroidsAnimation = (function () {
         "Final boss on wave 100"
     ];
 
-    const mobileIstructions = [
+    const mobileInstructions = [
         "Center tap for acceleration",
         "Double tap for bomb",
         "Beat wave 30 to advance",
