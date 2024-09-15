@@ -1073,10 +1073,17 @@
       measurementId: "G-9LE6E1BKZ7"
     };
 
-
   </script>
   <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
+  <script>
+    async function crazyLoad() {
 
+      await window.CrazyGames.SDK.init();
+    }
+    crazyLoad();
+
+
+  </script>
   <script type="module">
 
     // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -1088,7 +1095,6 @@
     // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    await window.CrazyGames.SDK.init();
 
 
     // Firebase configuration and initialization

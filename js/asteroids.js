@@ -949,7 +949,7 @@ function calculateAsteroidDy(wave, dy) {
 
 function calculateAsteroidHitpoints(wave, baseHitpoints) {
     const normalGrowthRate = 1.02; // Slight increase for waves before TAPER_WAVE
-    const exponentialGrowthRate = 1.05; // Stronger increase for waves after TAPER_WAVE
+    const exponentialGrowthRate = 1.015; // Stronger increase for waves after TAPER_WAVE
 
     if (wave <= TAPER_WAVE) {
         return baseHitpoints;
