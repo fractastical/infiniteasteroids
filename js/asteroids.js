@@ -574,7 +574,7 @@ function processAsteroidDeath(asteroid, fromArea = false) {
         droppedGems.push({
             x: asteroid.x,
             y: asteroid.y,
-            size: 10,
+            size: 15,
             type: gemType,
             dx: asteroid.dx / 5,
             dy: asteroid.dy / 5
