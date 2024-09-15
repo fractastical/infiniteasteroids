@@ -6,7 +6,7 @@ let chanceForHardenedAsteroid = 5;
 let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
 let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
 
-const TAPER_WAVE = 60;
+const TAPER_WAVE = 85;
 
 function createSmallerAsteroids(x, y, size, speed, hitpoints) {
     const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
