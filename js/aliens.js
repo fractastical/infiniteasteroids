@@ -686,27 +686,48 @@ function updateAlienLasers() {
     }
 }
 
-function drawAlienLasers() {
-    alienLasers.forEach(laser => {
-        if (laser.isInk) {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // Semi-transparent black for ink
+function drawAlienLasers(time) {
+    alienLasers.forEach((laser, i) => {
+        ctx.save();
+
+        // Pulsating effect (adjusting size dynamically)
+        const pulseFactor = Math.sin(time * 3 + i) * 0.2 + 0.8; // Pulsate between 0.6 and 1.0
+
+        if (!fpsThrottleMode) {
+            // Create and draw the glow effect using radial gradient
+            const gradient = ctx.createRadialGradient(
+                laser.x, laser.y, 0,             // Inner radius at the laser's position
+                laser.x, laser.y, alienLaserSize * 2 // Outer radius for the glow effect
+            );
+
+            // Add color stops for the glowing effect (red glow)
+            gradient.addColorStop(0, 'rgba(255, 0, 0, 0.5)');  // Strong red at center
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');      // Fade to transparent black
+
+            // Apply glow with pulsating effect
+            ctx.globalAlpha = 0.7 * pulseFactor;  // Adjust the transparency based on pulse
+            ctx.fillStyle = gradient;
             ctx.beginPath();
-            ctx.arc(laser.x, laser.y, laser.size, 0, Math.PI * 2);
+            ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Draw the main laser
+        if (Math.abs(laser.dx) > alienLaserSpeed * 2 || Math.abs(laser.dy) > alienLaserSpeed * 2) {
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(laser.x, laser.y, alienLaserSize * 1.3, 0, Math.PI * 2);
             ctx.fill();
         } else {
-            // Existing laser drawing code
-            if (Math.abs(laser.dx) > alienLaserSpeed * 2 || Math.abs(laser.dy) > alienLaserSpeed * 2) {
-                ctx.fillStyle = 'red';
-                ctx.beginPath();
-                ctx.arc(laser.x, laser.y, alienLaserSize * 1.3, 0, Math.PI * 2);
-                ctx.fill();
-            } else {
-                ctx.fillStyle = 'pink';
-                ctx.beginPath();
-                ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            ctx.fillStyle = 'pink';
+            ctx.beginPath();
+            ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
+            ctx.fill();
         }
+
+        // Reset alpha back to full for subsequent drawings
+        ctx.globalAlpha = 1;
+        ctx.restore();
     });
 }
 

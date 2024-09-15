@@ -330,20 +330,22 @@ function drawGems() {
             default: glowColor = 'rgba(255, 255, 255, 0.5)'; // White glow for unknown types
         }
 
-        // Create and draw the glow
-        const gradient = ctx.createRadialGradient(
-            gem.x, gem.y, 0,
-            gem.x, gem.y, gem.size * 2
-        );
-        gradient.addColorStop(0, glowColor);
-        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
-        ctx.globalAlpha = 0.7 * pulseFactor;
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(gem.x, gem.y, gem.size, 0, Math.PI * 2);
-        ctx.fill();
+        if (!fpsThrottleMode) {
+            // Create and draw the glow
+            const gradient = ctx.createRadialGradient(
+                gem.x, gem.y, 0,
+                gem.x, gem.y, gem.size * 2
+            );
+            gradient.addColorStop(0, glowColor);
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
+            ctx.globalAlpha = 0.7 * pulseFactor;
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(gem.x, gem.y, gem.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
         // Draw the gem image
         ctx.globalAlpha = 1;
         ctx.drawImage(gemImages[gem.type], gem.x - gem.size / 2, gem.y - gem.size / 2, gem.size, gem.size);

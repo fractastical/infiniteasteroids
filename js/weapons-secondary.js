@@ -251,12 +251,28 @@ function shootPiercingLaser(x, y, rotation, damage) {
     const laserX = x + 10 * Math.sin(rotation * Math.PI / 180);
     const laserY = y - 10 * Math.cos(rotation * Math.PI / 180);
 
-    // Draw the laser
+    // Calculate end of the laser to the edge of the screen
+    const laserEndX = laserX + canvas.width * Math.sin(rotation * Math.PI / 180);
+    const laserEndY = laserY - canvas.height * Math.cos(rotation * Math.PI / 180);
+
+    // Draw the main laser (make it more prominent)
+    ctx.save(); // Save context state
+    ctx.lineWidth = 5; // Thicker laser
+    ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)'; // Red laser with some transparency
     ctx.beginPath();
     ctx.moveTo(laserX, laserY);
-    ctx.lineTo(laserX + 1000 * Math.sin(rotation * Math.PI / 180), laserY - 1000 * Math.cos(rotation * Math.PI / 180));
-    ctx.strokeStyle = 'red';
+    ctx.lineTo(laserEndX, laserEndY);
     ctx.stroke();
+
+    // Create a glowing effect around the laser
+    ctx.lineWidth = 10; // Glow effect (wider stroke)
+    ctx.strokeStyle = 'rgba(255, 50, 50, 0.3)'; // Light red outer glow
+    ctx.beginPath();
+    ctx.moveTo(laserX, laserY);
+    ctx.lineTo(laserEndX, laserEndY);
+    ctx.stroke();
+
+    ctx.restore(); // Restore context state
 
     const sinRotation = Math.sin(rotation * Math.PI / 180);
     const cosRotation = Math.cos(rotation * Math.PI / 180);
@@ -277,7 +293,6 @@ function shootPiercingLaser(x, y, rotation, damage) {
         if (alien === octoBoss) {
             // Handle OctoBoss separately
             damageOctoBoss(damage);
-
         } else {
             const dist = Math.abs((alien.x - laserX) * cosRotation - (alien.y - laserY) * sinRotation);
             if (dist < alien.size) {
