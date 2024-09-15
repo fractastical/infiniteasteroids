@@ -225,11 +225,25 @@ function createAsteroids(side) {
     }
 }
 
+function calculateLineThickness(hitpoints) {
+    if (hitpoints <= 1) return 1;
+    if (hitpoints < 100) {
+        // Linear scaling from 1-20 for hitpoints under 100
+        return 1 + (hitpoints - 1) * (19 / 99);
+    } else {
+        // Logarithmic scaling for hitpoints 100 and above
+        return 20 + 60 * (Math.log(hitpoints) - Math.log(100)) / (Math.log(500) - Math.log(100));
+    }
+}
+
 function drawAsteroids() {
     for (let i = 0; i < asteroids.length; i++) {
         let asteroid = asteroids[i];
+        // let hitpointAnalogue = asteroid.hitpoints + 1;
 
-        ctx.lineWidth = asteroid.hitpoints + 1;
+
+        ctx.lineWidth = calculateLineThickness(asteroid.hitpoints)
+
 
         ctx.beginPath();
         ctx.arc(asteroid.x, asteroid.y, asteroid.size, 0, Math.PI * 2);
@@ -242,6 +256,15 @@ function drawAsteroids() {
         } else {
             // Use shades of grey for non-rare asteroids
             ctx.strokeStyle = asteroid.color;
+        }
+
+        if (asteroid.hitpoints > 100) {
+            const ringThickness = Math.min((asteroid.hitpoints - 10) / 10, 5); // Increase thickness with HP, max 5
+            ctx.beginPath();
+            ctx.arc(asteroid.x, asteroid.y, asteroid.size - ringThickness - 2, 0, Math.PI * 2);
+            ctx.strokeStyle = getHPColor(asteroid.hitpoints);
+            ctx.lineWidth = ringThickness;
+            ctx.stroke();
         }
 
 
@@ -257,6 +280,13 @@ function drawAsteroids() {
     }
 }
 
+
+function getHPColor(hitpoints) {
+    if (hitpoints <= 100) return '#FFA500'; // Orange
+    if (hitpoints <= 200) return '#FF4500'; // OrangeRed
+    if (hitpoints <= 300) return '#FF0000'; // Red
+    return '#8B0000'; // DarkRed
+}
 
 function createEndlessSlowAsteroids() {
     const baseAsteroidCount = 20;
