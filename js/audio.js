@@ -78,9 +78,7 @@ const alienLaserSounds = [
 ];
 
 const alienLaughSounds = [
-    document.getElementById('alien-laser-1'),
-    document.getElementById('alien-laser-2'),
-    document.getElementById('alien-laser-3')
+    document.getElementById('alien-laugh'),
 ];
 
 const gemCollectingSounds = [
