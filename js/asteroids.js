@@ -6,6 +6,8 @@ let chanceForHardenedAsteroid = 5;
 let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
 let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
 
+const TAPER_WAVE = 60;
+
 function createSmallerAsteroids(x, y, size, speed, hitpoints) {
     const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
     const speedMultiplier = 0.2; // Decrease speed for smaller asteroids
@@ -176,17 +178,16 @@ function createAsteroids(side) {
                 x: x,
                 y: y,
                 size: asteroidSize,
-                speed: 2 * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
-                dx: dx * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
-                dy: dy * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * Math.pow(1.02, wave - 1) * asteroidDifficultySpeedMultiplier,
-                hitpoints: hitpoints,
-                initialHitpoints: hitpoints,
+                speed: calculateAsteroidSpeed(wave),
+                dx: calculateAsteroidDx(wave, dx),
+                dy: calculateAsteroidDy(wave, dy),
+                hitpoints: calculateAsteroidHitpoints(wave, hitpoints),
+                initialHitpoints: calculateAsteroidHitpoints(wave, hitpoints),
                 color: color,
                 isLarge: isLargeAsteroid,
                 image: asteroidImage,
                 type: type
             };
-
             asteroids.push(asteroid);
         }
 
@@ -920,4 +921,37 @@ function updateAsteroids() {
 
 
 
-// Initialize acid areas array
+
+function calculateAsteroidSpeed(wave) {
+    const baseSpeed = 2;
+    const growthRate = 1.02;
+
+    if (wave <= TAPER_WAVE) {
+        return baseSpeed * Math.pow(growthRate, wave - 1) * asteroidDifficultySpeedMultiplier;
+    } else {
+        const maxExponentialSpeed = baseSpeed * Math.pow(growthRate, TAPER_WAVE - 1);
+        const linearIncrease = (wave - TAPER_WAVE) * 0.05; // Adjust 0.05 for desired linear growth
+        return (maxExponentialSpeed + linearIncrease) * asteroidDifficultySpeedMultiplier;
+    }
+}
+
+function calculateAsteroidDx(wave, dx) {
+    return dx * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * calculateAsteroidSpeed(wave) / 2;
+}
+
+function calculateAsteroidDy(wave, dy) {
+    return dy * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * calculateAsteroidSpeed(wave) / 2;
+}
+
+function calculateAsteroidHitpoints(wave, baseHitpoints) {
+    const normalGrowthRate = 1.02; // Slight increase for waves before TAPER_WAVE
+    const exponentialGrowthRate = 1.05; // Stronger increase for waves after TAPER_WAVE
+
+    if (wave <= TAPER_WAVE) {
+        return baseHitpoints;
+        // return baseHitpoints * Math.pow(normalGrowthRate, wave - 1));
+    } else {
+        const baseExponentialHitpoints = baseHitpoints * Math.pow(normalGrowthRate, TAPER_WAVE - 1);
+        return Math.round(baseExponentialHitpoints * Math.pow(exponentialGrowthRate, wave - TAPER_WAVE));
+    }
+}
