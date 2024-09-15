@@ -1462,52 +1462,82 @@
         return;
       }
 
-      const userDoc = await getDoc(userDocRef);
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        const existingAchievements = userData.games?.[gameName]?.achievements || {};
+      try {
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          const existingAchievements = userData.games?.[gameName]?.achievements || {};
 
-        const activeMegaUpgradeNames = activeMegaUpgrades.map(upgrade => upgrade.name);
+          // Define the expected number of achievements
+          const expectedAchievementsCount = 37; // Adjust this number to match your total achievements
 
-        const updatedAchievements = { ...existingAchievements, ...Achievements };
+          if (Object.keys(Achievements).length >= expectedAchievementsCount) {
+            // Achievements object is complete, proceed with saving
+            const updatedAchievements = { ...existingAchievements, ...Achievements };
 
-        //FirebaseError: Function arrayUnion() called with invalid data. Unsupported field value: undefined (found in document users/fpm9uNmvYeb9HKnZ32juQTmyxzj2)
-        // usedUpgrades: activeMegaUpgradeNames
+            const activeMegaUpgradeNames = activeMegaUpgrades.map(upgrade => upgrade.name);
 
-        const fullGameData = {
-          [`games.${gameName}.scores`]: arrayUnion({
-            score: gameData.score,
-            topWeapons: gameData.topWeapons,
-            sessionLength: sessionLength,
-            loginTime: loginTime,
-            fpsDrops: totalFpsDrops,
-            gameMode: currentMode,
-            megaUpgrades: activeMegaUpgradeNames,
-            asteroidsKilled: asteroidsKilled,
-            aliensKilled: aliensKilled
-            // Add the game mode to the saved data
-          }),
-          [`games.${gameName}.achievements`]: updatedAchievements,
-        };
+            const fullGameData = {
+              [`games.${gameName}.scores`]: arrayUnion({
+                score: gameData.score,
+                topWeapons: gameData.topWeapons,
+                sessionLength: sessionLength,
+                loginTime: loginTime,
+                fpsDrops: totalFpsDrops,
+                gameMode: currentMode,
+                megaUpgrades: activeMegaUpgradeNames,
+                asteroidsKilled: asteroidsKilled,
+                aliensKilled: aliensKilled
+              }),
+              [`games.${gameName}.achievements`]: updatedAchievements,
+            };
 
-        await updateDoc(userDocRef, fullGameData);
-      } else {
-        const gameData = {
-          [`games.${gameName}.scores`]: [
-            {
-              score: score,
+            await updateDoc(userDocRef, fullGameData);
+            console.log('User score and achievements saved successfully');
+          } else {
+            console.error('Achievements object is incomplete');
+
+            // Option 1: Load from last known good state
+            Achievements = { ...existingAchievements };
+            console.log('Loaded achievements from last known good state');
+
+            // Option 2: Prevent overwriting by only updating scores
+            const scoresOnlyData = {
+              [`games.${gameName}.scores`]: arrayUnion({
+                score: gameData.score,
+                topWeapons: gameData.topWeapons,
+                sessionLength: sessionLength,
+                loginTime: loginTime,
+                fpsDrops: totalFpsDrops,
+                gameMode: currentMode,
+                megaUpgrades: activeMegaUpgradeNames,
+                asteroidsKilled: asteroidsKilled,
+                aliensKilled: aliensKilled
+              })
+            };
+            await updateDoc(userDocRef, scoresOnlyData);
+            console.log('User score saved, achievements not updated due to incomplete data');
+          }
+        } else {
+          // Handle new user case
+          const newUserData = {
+            [`games.${gameName}.scores`]: [{
+              score: gameData.score,
               sessionLength: sessionLength,
               loginTime: loginTime,
-              gameMode: currentMode  // Add the game mode to the saved data
-            }
-          ],
-          [`games.${gameName}.achievements`]: Achievements,
-        };
+              gameMode: currentMode
+            }],
+            [`games.${gameName}.achievements`]: Achievements,
+          };
 
-        await setDoc(userDocRef, gameData);
+          await setDoc(userDocRef, newUserData);
+          console.log('New user data created and saved');
+        }
+      } catch (error) {
+        console.error('Error saving user data:', error);
+        // Implement additional error handling or retry logic here
       }
     }
-
     window.saveUserScore = saveUserScore;
 
     // Function to save initial user data
