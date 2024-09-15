@@ -249,9 +249,12 @@
 
 
           try {
+
+            const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
+
             if (crazyGamesMode) {
 
-              const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
+              const cgUser = window.CrazyGames.SDK.user.getUser;
               if (crazyGamesDebugMode) {
 
                 const crazyGameData = document.getElementById('crazyGameData');
@@ -1180,10 +1183,34 @@
     }
 
     loginLink.addEventListener('click', (event) => {
+      try {
+        const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
+        crazyGamesMode = true;
+
+      } catch (e) {
+
+      }
+
+
       if (crazyGamesMode) {
 
         console.log("showCrazyGamesAuthPrompt");
-        showCrazyGamesAuthPrompt();
+        const callback = (error, user) => {
+          console.log("callback");
+          if (error) {
+            console.log("Error:", error);
+          } else {
+            console.log(user);
+            userNickname.textContent = user.username;
+            userInfo.style.display = 'block';
+            loginLink.style.display = 'none';
+
+            console.log("Auth prompt result (callback)", user);
+          }
+        };
+        window.CrazyGames.SDK.user.showAuthPrompt(callback);
+
+
 
       } else {
 

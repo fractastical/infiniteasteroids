@@ -1969,7 +1969,8 @@ function populateAchievements() {
 
     // Add weapon icons
     const weaponIcons = getAvailableWeaponIcons();
-    const totalWeapons = 17; // Adjust this number to match your total number of weapons
+    const totalWeapons = 19; // Adjust this number to match your total number of weapons
+    // not including double and triple turret
 
     const weaponsHeader = document.createElement('h4');
     weaponsHeader.textContent = `Weapons (${weaponIcons.length} / ${totalWeapons})`;
