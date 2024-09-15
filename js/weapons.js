@@ -502,7 +502,7 @@ function applyUpgrade(upgrade) {
             activateWeaponClass('sonicboom');
             activateComboSonicBoomerang();
             break;
-        case 'CryoBomb':
+        case 'Cryo Bomb':
             activateWeaponClass('cryobomb');
             activateComboCryoBomb();
             break;

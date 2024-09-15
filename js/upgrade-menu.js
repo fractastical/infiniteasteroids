@@ -126,7 +126,7 @@ function getRandomUpgrades(count) {
         availableUpgrades.push('Sonic Boom');
     }
     if (!comboCryoBombActive && comboWeapons.cryoBomb && Achievements.alien_octopus_killed.reached) {
-        availableUpgrades.push('CryoBomb');
+        availableUpgrades.push('Cryo Bomb');
     }
 
     const upgrades = [];
