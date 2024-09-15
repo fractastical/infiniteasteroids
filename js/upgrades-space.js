@@ -131,13 +131,17 @@ function spawnRandomUpgrade() {
 
     // console.log(spawnChance);
 
+    const availableUpgrades = floatingUpgrades.filter(upgrade =>
+        !Achievements[upgrade.achievedKey].reached  // Only spawn if not achieved
+    );
+
+    if (availableUpgrades.length > 4)
+        spawnChance += 0.025;
+
     // Random chance to spawn an upgrade
     if (Math.random() < spawnChance) {
         console.log("spawning");
 
-        const availableUpgrades = floatingUpgrades.filter(upgrade =>
-            !Achievements[upgrade.achievedKey].reached  // Only spawn if not achieved
-        );
 
         if (availableUpgrades.length > 0) {
             // Select a random upgrade from the available pool
@@ -225,6 +229,7 @@ function updateAndDrawFloatingUpgrades() {
 }
 
 let currentMatchAchievements = new Set();
+
 // Add achievements for collected upgrades
 function addAchievement(key) {
     if (!Achievements[key].reached) {
