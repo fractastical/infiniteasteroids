@@ -2103,7 +2103,7 @@ function populateAchievements() {
     // VERSION VERSION VERSION
     technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked`;
 
-    populateSelectors();
+    // populateSelectors();
     // Populate game modes
     populateGameModes();
 }
@@ -2442,6 +2442,7 @@ function endGame() {
     }
 
     resetShip();
+    populateSelectors();
 
     // Calculate the time taken and save it
     timeTaken = gameEndTime - gameStartTime; // Time in milliseconds

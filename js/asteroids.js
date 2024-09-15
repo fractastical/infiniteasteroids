@@ -9,7 +9,7 @@ let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened aster
 function createSmallerAsteroids(x, y, size, speed, hitpoints) {
     const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
     const speedMultiplier = 0.2; // Decrease speed for smaller asteroids
-    const newSize = size / 2; // New size for smaller asteroids
+    const newSize = Math.max(4, size / 2); // New size for smaller asteroids
 
     for (let i = 0; i < 3; i++) {
         const angleVariation = (Math.random() - 0.5) * 0.7; // Random variation between -0.1 and 0.1 radians
