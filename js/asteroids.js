@@ -259,12 +259,14 @@ function drawAsteroids() {
         }
 
         if (asteroid.hitpoints > 100) {
-            const ringThickness = Math.min((asteroid.hitpoints - 10) / 10, 5); // Increase thickness with HP, max 5
-            ctx.beginPath();
-            ctx.arc(asteroid.x, asteroid.y, asteroid.size - ringThickness - 2, 0, Math.PI * 2);
-            ctx.strokeStyle = getHPColor(asteroid.hitpoints);
-            ctx.lineWidth = ringThickness;
-            ctx.stroke();
+            const ringThickness = Math.min((asteroid.hitpoints - 10) / 5, 5); // Increase thickness with HP, max 5
+            if (ringThickness > 0) {
+                ctx.beginPath();
+                ctx.arc(asteroid.x, asteroid.y, asteroid.size - ringThickness - 2, 0, Math.PI * 2);
+                ctx.strokeStyle = getHPColor(asteroid.hitpoints);
+                ctx.lineWidth = ringThickness;
+                ctx.stroke();
+            }
         }
 
 
