@@ -3,6 +3,7 @@ let FRACTALLIGHTNINGDEPTH = 4;
 
 const desiredFPS = 60;
 let lastFrameTime = performance.now();
+let currentTime = lastFrameTime;
 let frameCount = 0;
 let fps = 60; // Assume a target of 60 FPS
 const checkInterval = 1000; // Check FPS every 1000ms (1 second)
@@ -17,7 +18,7 @@ let totalFpsDrops = 0;
 // let gameStartTime = performance.now();
 
 function calculateAndAdjustFPS() {
-    const currentTime = performance.now();
+    currentTime = performance.now();
     const deltaTime = currentTime - lastFrameTime;
     frameCount++;
 
