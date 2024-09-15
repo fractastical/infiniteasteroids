@@ -21,6 +21,12 @@
 
 <body>
 
+  <div id="mobile-controls">
+    <button id="steer-left" class="mobile-btn">◄</button>
+    <button id="steer-right" class="mobile-btn">►</button>
+    <button id="accelerate" class="mobile-btn">▲</button>
+  </div>
+
   <div id="leftArrow" class="flashing-arrow" style="left: 20px; top: 50%;"></div>
   <div id="rightArrow" class="flashing-arrow" style="right: 20px; top: 50%;"></div>
 
@@ -609,43 +615,85 @@
     }
 
 
+    // Function to toggle mobile buttons visibility based on device type
+    function toggleMobileButtons() {
+      const mobileControls = document.getElementById('mobile-controls');
 
-
-
-    joystick.addEventListener('touchstart', (e) => {
-      isTouchingJoystick = true;
-      joystickStartX = e.touches[0].clientX;
-      joystickStartY = e.touches[0].clientY;
-    });
-
-
-    joystick.addEventListener('touchmove', (e) => {
-      if (isTouchingJoystick) {
-        const touchX = e.touches[0].clientX;
-        const touchY = e.touches[0].clientY;
-        const deltaX = touchX - joystickStartX;
-        const deltaY = touchY - joystickStartY;
-
-        // Calculate angle and distance from the center
-        const angle = Math.atan2(deltaY, deltaX);
-        const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
-
-        // Update joystick handle position
-        joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
-
-        // Update ship rotation and speed based on joystick movement
-        ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
-        ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
-
-        e.preventDefault();
+      // Check if it's a mobile device
+      if (isMobile()) {
+        if (mobileControls) mobileControls.style.display = 'block';
+      } else {
+        if (mobileControls) mobileControls.style.display = 'none';
       }
+    }
+
+    // Call this function on page load
+    window.addEventListener('load', toggleMobileButtons);
+
+    // Also call this on window resize in case the device orientation changes
+    window.addEventListener('resize', toggleMobileButtons);
+
+    // Handle touch events for the buttons
+    document.getElementById('steer-left').addEventListener('touchstart', function () {
+      keys['ArrowLeft'] = true; // Trigger left steering
     });
 
-    joystick.addEventListener('touchend', () => {
-      isTouchingJoystick = false;
-      ship.speed = 0;
-      joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
+    document.getElementById('steer-left').addEventListener('touchend', function () {
+      keys['ArrowLeft'] = false;
     });
+
+    document.getElementById('steer-right').addEventListener('touchstart', function () {
+      keys['ArrowRight'] = true; // Trigger right steering
+    });
+
+    document.getElementById('steer-right').addEventListener('touchend', function () {
+      keys['ArrowRight'] = false;
+    });
+
+    document.getElementById('accelerate').addEventListener('touchstart', function () {
+      keys['ArrowUp'] = true; // Trigger acceleration
+    });
+
+    document.getElementById('accelerate').addEventListener('touchend', function () {
+      keys['ArrowUp'] = false;
+    });
+
+
+
+    // joystick.addEventListener('touchstart', (e) => {
+    //   isTouchingJoystick = true;
+    //   joystickStartX = e.touches[0].clientX;
+    //   joystickStartY = e.touches[0].clientY;
+    // });
+
+
+    // joystick.addEventListener('touchmove', (e) => {
+    //   if (isTouchingJoystick) {
+    //     const touchX = e.touches[0].clientX;
+    //     const touchY = e.touches[0].clientY;
+    //     const deltaX = touchX - joystickStartX;
+    //     const deltaY = touchY - joystickStartY;
+
+    //     // Calculate angle and distance from the center
+    //     const angle = Math.atan2(deltaY, deltaX);
+    //     const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
+
+    //     // Update joystick handle position
+    //     joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
+
+    //     // Update ship rotation and speed based on joystick movement
+    //     ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
+    //     ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
+
+    //     e.preventDefault();
+    //   }
+    // });
+
+    // joystick.addEventListener('touchend', () => {
+    //   isTouchingJoystick = false;
+    //   ship.speed = 0;
+    //   joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
+    // });
 
     restartButton.addEventListener('click', () => {
       // restartButton.style.display = 'none';
