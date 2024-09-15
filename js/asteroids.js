@@ -6,6 +6,8 @@ let chanceForHardenedAsteroid = 5;
 let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
 let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
 
+let asteroidSpeedMultiplier = 1;
+
 const TAPER_WAVE = 85;
 
 function createSmallerAsteroids(x, y, size, speed, hitpoints) {
@@ -82,7 +84,7 @@ function createAsteroids(side) {
             let dx = 1;
             let dy = 1;
             let asteroidSize = isLargeAsteroid ? 40 : isSmallAsteroid ? 10 : 20;
-            let asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : isLargeAsteroid ? 0.05 : 0.1;
+            asteroidSpeedMultiplier = isSmallAsteroid ? 0.3 : isLargeAsteroid ? 0.05 : 0.1;
 
             const randomIndex = Math.floor(Math.random() * asteroidImages.length);
             const asteroidImage = asteroidImages[randomIndex];
