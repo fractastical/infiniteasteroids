@@ -491,7 +491,11 @@
       // loadAchievements();
       // populateAchievements();
       if (isMobile()) {
-        document.getElementById('joystick').style.display = 'block';
+
+        const mobileControls = document.getElementById('mobile-controls');
+        if (mobileControls) mobileControls.style.display = 'block';
+
+        // document.getElementById('joystick').style.display = 'block';
         document.getElementById('startScreen').style.display = 'flex';
       } else {
         // startGame();
@@ -628,7 +632,7 @@
     }
 
     // Call this function on page load
-    window.addEventListener('load', toggleMobileButtons);
+    // window.addEventListener('load', toggleMobileButtons);
 
     // Also call this on window resize in case the device orientation changes
     window.addEventListener('resize', toggleMobileButtons);
