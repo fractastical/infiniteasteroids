@@ -9,6 +9,7 @@
 
 
 
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 
 
@@ -638,30 +639,35 @@
     window.addEventListener('resize', toggleMobileButtons);
 
     // Handle touch events for the buttons
-    document.getElementById('steer-left').addEventListener('touchstart', function () {
-      keys['ArrowLeft'] = true; // Trigger left steering
+    document.getElementById('steer-left').addEventListener('touchstart', function (e) {
+      e.preventDefault();  // Prevent zooming
+      keys['ArrowLeft'] = true;
     });
 
-    document.getElementById('steer-left').addEventListener('touchend', function () {
+    document.getElementById('steer-left').addEventListener('touchend', function (e) {
+      e.preventDefault();  // Prevent zooming
       keys['ArrowLeft'] = false;
     });
 
-    document.getElementById('steer-right').addEventListener('touchstart', function () {
-      keys['ArrowRight'] = true; // Trigger right steering
+    document.getElementById('steer-right').addEventListener('touchstart', function (e) {
+      e.preventDefault();  // Prevent zooming
+      keys['ArrowRight'] = true;
     });
 
-    document.getElementById('steer-right').addEventListener('touchend', function () {
+    document.getElementById('steer-right').addEventListener('touchend', function (e) {
+      e.preventDefault();  // Prevent zooming
       keys['ArrowRight'] = false;
     });
 
-    document.getElementById('accelerate').addEventListener('touchstart', function () {
-      keys['ArrowUp'] = true; // Trigger acceleration
+    document.getElementById('accelerate').addEventListener('touchstart', function (e) {
+      e.preventDefault();  // Prevent zooming
+      keys['ArrowUp'] = true;
     });
 
-    document.getElementById('accelerate').addEventListener('touchend', function () {
+    document.getElementById('accelerate').addEventListener('touchend', function (e) {
+      e.preventDefault();  // Prevent zooming
       keys['ArrowUp'] = false;
     });
-
 
 
     // joystick.addEventListener('touchstart', (e) => {

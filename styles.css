@@ -1426,3 +1426,12 @@ h4 {
     bottom: 50px;
     left: 30px;
 }
+
+#steer-left,
+#steer-right,
+#accelerate {
+    touch-action: manipulation;
+    /* Prevents zooming and panning */
+    user-select: none;
+    /* Prevents text selection (optional, good for button interactions) */
+}
