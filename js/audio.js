@@ -3,6 +3,11 @@
 
 let currentVolume = 8;
 
+const backgroundMusic = document.getElementById('background-music');
+const megabossBackgroundMusic = document.getElementById('megaboss-background-music');
+const superMegabossBackgroundMusic = document.getElementById('supermegaboss-background-music');
+const octoBossBackgroundMusic = document.getElementById('octoboss-background-music');
+
 const meteorDestroySounds = [
     document.getElementById('meteor-destroy-1'),
     document.getElementById('meteor-destroy-2'),
@@ -67,6 +72,12 @@ const alienEnteringSounds = [
 ];
 
 const alienLaserSounds = [
+    document.getElementById('alien-laser-1'),
+    document.getElementById('alien-laser-2'),
+    document.getElementById('alien-laser-3')
+];
+
+const alienLaughSounds = [
     document.getElementById('alien-laser-1'),
     document.getElementById('alien-laser-2'),
     document.getElementById('alien-laser-3')
@@ -167,6 +178,13 @@ function playAlienLaserSound() {
     }
 }
 
+function playAlienLaughSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * alienLaughSounds.length);
+        alienLaughSounds[randomIndex].play();
+    }
+}
+
 function playFlamethrowerSound() {
     if (!toggleSoundOff) {
         const randomIndex = Math.floor(Math.random() * FlamethrowerSounds.length);
@@ -199,8 +217,12 @@ const allSounds = [
     ...alienLaserSounds,
     ...LightningSounds,
     ...FlamethrowerSounds,
-    backgroundMusic // Include background music in the volume control
+    backgroundMusic,
+    megabossBackgroundMusic,
+    superMegabossBackgroundMusic,
+    octoBossBackgroundMusic
 ];
+
 
 // Function to show/hide the volume screen
 //TODO: bizarre but can't figure out why this one modal won't consistently open

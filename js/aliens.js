@@ -330,12 +330,11 @@ function updateAliens() {
 function spawnSuperBossAlien() {
     superbossAlienSpawned = true;
 
-    const laughSound = new Audio('sounds/alien_laugh3.mp3');
     if (!toggleMusicOff) {
         backgroundMusic.pause();
     }
     if (!toggleSoundOff)
-        laughSound.play();
+        playAlienLaughSound();
     if (!toggleMusicOff) {
         superMegabossBackgroundMusic.play();
     }
@@ -417,14 +416,15 @@ function drawSuperBossAlien() {
 }
 
 function spawnMegaBossAlien() {
-    const laughSound = new Audio('sounds/alien_laugh3.mp3');
+
     megaBossAlienSpawned = true;
 
     if (!toggleMusicOff) {
         backgroundMusic.pause();
     }
     if (!toggleSoundOff)
-        laughSound.play();
+        if (!toggleSoundOff)
+            playAlienLaughSound();
     if (!toggleMusicOff) {
         megabossBackgroundMusic.play();
     }
@@ -943,14 +943,13 @@ function spawnOctoBoss() {
 
     octoBossSpawned = true;
 
-    const laughSound = new Audio('sounds/alien_laugh3.mp3');
     if (!toggleMusicOff) {
         backgroundMusic.pause();
         octoBossBackgroundMusic.play();
     }
-    if (!toggleSoundOff) {
-        laughSound.play();
-    }
+    if (!toggleSoundOff)
+        playAlienLaughSound();
+
 
     octoBoss = {
         x: canvas.width / 2,

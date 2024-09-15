@@ -16,10 +16,6 @@ const joystick = document.getElementById('joystick');
 const joystickInner = document.getElementById('joystick-inner');
 const joystickHandle = document.getElementById('joystickHandle');
 const restartButton = document.getElementById('restartButton');
-const backgroundMusic = document.getElementById('background-music');
-const megabossBackgroundMusic = document.getElementById('megaboss-background-music');
-const superMegabossBackgroundMusic = document.getElementById('supermegaboss-background-music');
-const octoBossBackgroundMusic = document.getElementById('octoboss-background-music');
 
 let isTouchingJoystick = false;
 let joystickStartX, joystickStartY;
@@ -2435,7 +2431,11 @@ function endGame() {
     document.getElementById('userInfo').style.display = 'block';
     xp = 0;
     clearInterval(gameLoop);
-    backgroundMusic.pause(); // Stop the background music
+    backgroundMusic.pause(); // Stop al background music
+    megabossBackgroundMusic.pause();
+    superMegabossBackgroundMusic.pause();
+    octoBossBackgroundMusic.pause();
+
     gameEndTime = new Date();
     if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game) {
         window.ConstructCrazySDK.game.gameplayStop();
