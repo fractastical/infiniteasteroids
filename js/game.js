@@ -335,6 +335,9 @@ let droneUpgrades = {
 // Game loop
 function startGame() {
     // updateMiniShipPreview();
+    // userId = testCrazyGamesUserFlow();
+    console.log("user Id");
+    console.log(userId);
 
     gameOver = false;
     gameStartTime = Date.now();

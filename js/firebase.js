@@ -75,28 +75,28 @@ document.getElementById('login-toggle').addEventListener('click', function (even
 });
 
 // Function to save user score for a specific game
-async function saveUserScore(userId, gameName, score) {
-    const db = getFirestore();
-    const userDocRef = doc(db, 'users', userId);
-    const sessionLength = calculateSessionLength(); // Implement this function as needed
-    const loginTime = new Date();
+// async function saveUserScore(userId, gameName, score) {
+//     const db = getFirestore();
+//     const userDocRef = doc(db, 'users', userId);
+//     const sessionLength = calculateSessionLength(); // Implement this function as needed
+//     const loginTime = new Date();
 
-    if (typeof score === 'undefined' || typeof sessionLength === 'undefined') {
-        console.error('Invalid score or session length');
-        return;
-    }
+//     if (typeof score === 'undefined' || typeof sessionLength === 'undefined') {
+//         console.error('Invalid score or session length');
+//         return;
+//     }
 
-    // Save the score, session length, and login time for the specific game
-    const gameData = {
-        [`games.${gameName}.scores`]: arrayUnion({
-            score: score,
-            sessionLength: sessionLength,
-            loginTime: loginTime
-        })
-    };
+//     // Save the score, session length, and login time for the specific game
+//     const gameData = {
+//         [`games.${gameName}.scores`]: arrayUnion({
+//             score: score,
+//             sessionLength: sessionLength,
+//             loginTime: loginTime
+//         })
+//     };
 
-    await updateDoc(userDocRef, gameData);
-}
+//     await updateDoc(userDocRef, gameData);
+// }
 
 window.saveUserScore = saveUserScore;
 

@@ -164,6 +164,7 @@ function updateIconPositions(angle) {
 function startRoulette() {
 
     clearInterval(gameLoop);
+    pauseGame();
 
     const rouletteContainer = document.getElementById('rouletteContainer');
     rouletteContainer.style.display = 'flex';
@@ -377,9 +378,9 @@ function checkGemCollection() {
                     xpBoost = xpToNextLevel * 0.6; // 25% of XP to next level
                     break;
                 case 'epic':
-                    // xpBoost = xpToNextLevel * 0.95; // 50% of XP to next level
-                    clearInterval(gameLoop);
-                    isPaused = true;
+                    // xpBoost = xpTo     extLevel * 0.95; // 50% of XP to next level
+
+                    pauseGame();
                     // drawPlanetx(); // Draw the planet
                     document.getElementById('rouletteContainer').style.display = 'block';
                     break;

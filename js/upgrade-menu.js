@@ -134,8 +134,8 @@ function getRandomUpgrades(count) {
         if (availableUpgrades.length === 0) break;
         const randomIndex = Math.floor(Math.random() * availableUpgrades.length);
         const upgradeName = availableUpgrades[randomIndex];
-        console.log(upgradeDefinitions);
-        console.log(availableUpgrades[randomIndex]);
+        // console.log(upgradeDefinitions);
+        // console.log(availableUpgrades[randomIndex]);
         upgrades.push({
             name: upgradeName,
             icon: upgradeDefinitions[upgradeName].icon,
