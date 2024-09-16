@@ -1491,6 +1491,23 @@ function handleKeyDown(event) {
         event.preventDefault();
     }
 
+    if (event.key === 'ArrowDown') {
+        const visibleModal = document.querySelector('.modal:not([style*="display: none"])');
+        if (visibleModal) {
+            event.preventDefault();
+            const focusableElements = visibleModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            if (document.activeElement === lastElement || !visibleModal.contains(document.activeElement)) {
+                firstElement.focus();
+            } else {
+                const currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
+                focusableElements[currentIndex + 1].focus();
+            }
+        }
+    }
+
     if (document.getElementById('loginPopup') && document.getElementById('loginPopup').style.display == 'none') {
 
         // Player 2 controls
@@ -1879,6 +1896,11 @@ function openAchievementsModal() {
     const modal = document.getElementById('achievementsModal');
     modal.style.display = 'block';
     populateAchievementsModal();
+    const firstAchievement = modal.querySelector('.achievement');
+    if (firstAchievement) {
+        firstAchievement.focus();
+    }
+
 }
 
 // Function to close the achievements modal
@@ -2434,8 +2456,8 @@ let timeTaken = 0;
 function endGame() {
     // Stop the game loop and background music
 
-    document.getElementById('loginContainer').style.display = 'block';
-    document.getElementById('userInfo').style.display = 'block';
+    // document.getElementById('loginContainer').style.display = 'block';
+    // document.getElementById('userInfo').style.display = 'block';
     xp = 0;
     clearInterval(gameLoop);
     backgroundMusic.pause(); // Stop al background music
@@ -2443,7 +2465,7 @@ function endGame() {
     superMegabossBackgroundMusic.pause();
     octoBossBackgroundMusic.pause();
 
-    gameEndTime = new Date();
+
     if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game) {
         window.ConstructCrazySDK.game.gameplayStop();
     }
@@ -2452,14 +2474,14 @@ function endGame() {
     populateSelectors();
 
     // Calculate the time taken and save it
+    gameEndTime = new Date();
     timeTaken = gameEndTime - gameStartTime; // Time in milliseconds
-    saveTimeTaken(timeTaken); // Save the time taken to local storage
 
-    console.log("this run: " + timeTaken);
-    score = Math.floor(score * modeScoreMultiplier); // Ensure score is a whole number
+    score = Math.floor(Math.abs(score * modeScoreMultiplier)); // Ensure score is a positive whole number
 
-    // quick fix for unkown negative nubmer problem 
-    score = Math.abs(score);
+    const activeMegaUpgradesData = activeMegaUpgrades.map(upgrade => ({
+        name: upgrade.name
+    }));
 
     // Calculate top six weapons by damage
     const topSixWeapons = Object.entries(damageReport)
@@ -2470,13 +2492,24 @@ function endGame() {
 
     const gameData = {
         score: score,
-        topWeapons: topSixWeapons
+        topWeapons: topSixWeapons,
+        sessionLength: timeTaken,
+        gameMode: currentMode,
+        activeMegaUpgrades: activeMegaUpgradesData,
+        asteroidsKilled: asteroidsKilled,
+        aliensKilled: aliensKilled,
+        wave: wave
     };
 
     // Update achievements and handle end game server logic
     const { newlyUnlockedAchievements, newlyUnlockedWeapons } = updateAchievementsAtEnd();
 
-    saveUserScore(userId, gameId, gameData);
+    // Ensure we have a valid userId before saving
+    if (userId) {
+        saveUserScore(userId, gameData);
+    } else {
+        console.error('No valid userId available, unable to save score');
+    }
 
     // Load and display the leaderboard
     loadLeaderboard(gameId, currentMode);
@@ -2493,22 +2526,20 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     const waveElement = document.getElementById('wave');
     const scoreElement = document.getElementById('score');
     const asteroidsDestroyedElement = document.getElementById('asteroidsDestroyed');
-    const currentCoinsElement = document.getElementById('currentCoins');
     const damageReportList = document.getElementById('damageReportList');
     const unlockedWeaponsList = document.getElementById('unlockedWeaponsList');
     const unlockedWeaponsHeader = document.getElementById('unlockedWeaponsHeader');
     const newAchievementsList = document.getElementById('newAchievementsList');
     const newAchievementsHeader = document.getElementById('newAchievementsHeader');
     const achievementSound = unlockSound;
-    // document.getElementById('achievementSound');
     const container = document.getElementById('activeWeaponClassesContainer');
     container.innerHTML = ''; // Clear previous content
 
     // Set game stats
     if (currentMode === GameModes.ENDLESS_SLOW) {
-        waveElement.textContent = `Waves Survived: ${wave} `;
+        waveElement.textContent = `Waves Survived: ${wave}`;
     } else {
-        waveElement.textContent = `Wave: ${wave} `;
+        waveElement.textContent = `Wave: ${wave}`;
     }
 
     if (currentMode === GameModes.COOP) {
@@ -2516,21 +2547,22 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
         score = totalScore; // Set the total score for saving to leaderboard
         scoreElement.textContent = `Total Score: ${totalScore} (P1: ${ship.score}, P2: ${ship2.score})`;
     } else {
-        scoreElement.textContent = `Score: ${score} `;
+        scoreElement.textContent = `Score: ${score}`;
     }
 
-    asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled} `;
+    asteroidsDestroyedElement.textContent = `Asteroids Destroyed: ${asteroidsKilled}`;
 
     // Clear and set damage report
     damageReportList.innerHTML = '';
     const weaponDPM = calculateWeaponDPM();
-    topWeapons.forEach(({ weapon, damage }) => {
+    topWeapons.forEach(({ weapon, damage }, index) => {
         const weaponName = damageReportMapping[weapon];
         const weaponInfo = weapons.find(w => w.name === weaponName);
         if (weaponInfo) {
             const li = document.createElement('li');
             li.style.display = 'flex';
             li.style.alignItems = 'center';
+            li.tabIndex = 0; // Make it focusable
 
             const icon = document.createElement('div');
             icon.classList.add('weaponClassIcon', weaponInfo.icon);
@@ -2549,14 +2581,18 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
 
     // Clear and set recently unlocked weapons
     unlockedWeaponsList.innerHTML = '';
-    if (newlyUnlockedWeapons.length == 0)
+    if (newlyUnlockedWeapons.length === 0) {
         unlockedWeaponsHeader.style.display = 'none';
-    newlyUnlockedWeapons.forEach(weaponName => {
+    } else {
+        unlockedWeaponsHeader.style.display = 'block';
+    }
+    newlyUnlockedWeapons.forEach((weaponName, index) => {
         const weaponInfo = weapons.find(w => w.name === weaponName);
         if (weaponInfo) {
             const li = document.createElement('li');
             li.style.display = 'flex';
             li.style.alignItems = 'center';
+            li.tabIndex = 0; // Make it focusable
 
             const icon = document.createElement('div');
             icon.classList.add('weaponClassIcon', weaponInfo.icon);
@@ -2575,8 +2611,11 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
 
     // Clear and set achievements
     newAchievementsList.innerHTML = '';
-    // if (newlyUnlockedAchievements.length == 0)
-    //     newAchievementsHeader.style.display = 'none';
+    if (newlyUnlockedAchievements.length === 0) {
+        newAchievementsHeader.style.display = 'none';
+    } else {
+        newAchievementsHeader.style.display = 'block';
+    }
 
     function displayAchievementsSequentially(index) {
         if (index >= newlyUnlockedAchievements.length) return;
@@ -2585,9 +2624,11 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
         const li = document.createElement('li');
         li.textContent = achievement;
         li.classList.add('flash'); // Add the flashing animation class
+        li.tabIndex = 0; // Make it focusable
         newAchievementsList.appendChild(li);
-        if (!toggleSoundOff)
+        if (!toggleSoundOff) {
             achievementSound.play();
+        }
 
         // Remove the flash class after the animation duration (1 second)
         setTimeout(() => {
@@ -2601,8 +2642,36 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     // Show the end screen
     endScreen.style.display = 'flex';
     levelUpModal.style.display = 'none';
+
+    // Load and display the leaderboard
+    loadLeaderboard(gameId, currentMode);
+
+    // Set focus to the first focusable element in the end screen
+    const firstFocusableElement = endScreen.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (firstFocusableElement) {
+        firstFocusableElement.focus();
+    }
+
+    // Add keyboard navigation
+    endScreen.addEventListener('keydown', handleEndScreenKeydown);
 }
 
+function handleEndScreenKeydown(event) {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const focusableElements = Array.from(document.getElementById('endScreen').querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'));
+        const currentIndex = focusableElements.indexOf(document.activeElement);
+        let nextIndex;
+
+        if (event.key === 'ArrowDown') {
+            nextIndex = (currentIndex + 1) % focusableElements.length;
+        } else {
+            nextIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
+        }
+
+        focusableElements[nextIndex].focus();
+    }
+}
 
 function saveUserUpgrades(userId, gameId, data) {
     // Example function to save user upgrades and coins to the server
