@@ -260,7 +260,7 @@
 
             if (crazyGamesMode) {
 
-              const cgUser = window.CrazyGames.SDK.user.getUser;
+              cgUser = window.CrazyGames.SDK.user.getUser;
               if (crazyGamesDebugMode) {
 
                 const crazyGameData = document.getElementById('crazyGameData');
@@ -1246,10 +1246,35 @@
 
     }
 
-    let cgUser = null;
+    async function testCrazyGamesUserFlow() {
+
+      try {
+        cgUser = await window.CrazyGames.SDK.user.getUser();
+
+        console.log(cgUser);
+
+        const userToken = await window.CrazyGames.SDK.user.getUserToken();
+
+        console.log(userToken);
+
+        console.log(cgUser);
+        userNickname.textContent = cgUser.username;
+        userInfo.style.display = 'block';
+        loginLink.style.display = 'none';
+        userId = cgUser.userId;
+        console.log("userId");
+        console.log(userId);
+
+      } catch (e) {
+        console.log("Get user error: ", e);
+
+      }
+    }
+
 
     loginLink.addEventListener('click', (event) => {
       try {
+
         const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
         crazyGamesMode = true;
 
@@ -1262,13 +1287,14 @@
       if (crazyGamesMode) {
 
         console.log("getUser");
-        cgUser = window.CrazyGames.SDK.user.getUser();
-        console.log(cgUser);
-        userNickname.textContent = cgUser.username;
-        userInfo.style.display = 'block';
-        loginLink.style.display = 'none';
-        userId = cgUser.id;
-        console.log(userId);
+
+        testCrazyGamesUserFlow();
+
+        // cgUser = window.CrazyGames.SDK.user.getUserToken();
+
+        // code: "sdkDisabled"
+        // message: "CrazySDK is disabled on this domain. Check docs.crazygames.com for more info."
+
 
         // const callback = (error, user) => {
         //   console.log("callback");

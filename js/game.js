@@ -5,6 +5,7 @@ let gameId = "InfiniteSpaceWar";
 let version = "0.9828"
 let crazyGamesMode = true;
 let crazyGamesDebugMode = false;
+let cgUser = null;
 
 
 
