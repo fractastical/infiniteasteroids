@@ -246,7 +246,7 @@ function startRoulette() {
             });
 
             const okButton = document.createElement('button');
-            okButton.textContent = '[A]ctivate';
+            okButton.textContent = '[A]ctivate All';
             okButton.onclick = () => {
 
                 activateGemUpgrades();
