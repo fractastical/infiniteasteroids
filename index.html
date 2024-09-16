@@ -1261,9 +1261,9 @@
         userNickname.textContent = cgUser.username;
         userInfo.style.display = 'block';
         loginLink.style.display = 'none';
-        userId = cgUser.userId;
         console.log("userId");
         console.log(userId);
+        window.userId = "cg+" + cgUser.username;
 
       } catch (e) {
         console.log("Get user error: ", e);
