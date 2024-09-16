@@ -511,31 +511,77 @@
       const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
       allLeaderboardsContainer.innerHTML = ''; // Clear previous content
 
-      const allScores = await loadAllLeaderboards(gameId); // Replace 'YourGameName' with your actual game name
+      const allScores = await loadAllLeaderboards(gameId);
 
       for (let mode in allScores) {
         const leaderboardDiv = document.createElement('div');
         leaderboardDiv.className = 'leaderboard-mode';
-        leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3>${mode}</h3>`;
+        leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${mode}</h3>`;
 
         allScores[mode].forEach((entry, index) => {
           const formattedScore = entry.score.toLocaleString('en-US', {
             maximumFractionDigits: 0
           });
-          leaderboardDiv.innerHTML += `<p>${index + 1}. ${entry.nickname}: ${formattedScore} points</p>`;
+          const entryP = document.createElement('p');
+          entryP.textContent = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+          entryP.tabIndex = 0; // Make each entry focusable
+          leaderboardDiv.appendChild(entryP);
         });
 
         allLeaderboardsContainer.appendChild(leaderboardDiv);
       }
 
-      document.getElementById('allLeaderboardsModal').style.display = 'block';
+      const modal = document.getElementById('allLeaderboardsModal');
+      modal.style.display = 'block';
+
+      // Set focus to the first focusable element
+      const firstFocusableElement = modal.querySelector('[tabindex="0"]');
+      if (firstFocusableElement) {
+        firstFocusableElement.focus();
+      }
+
+      // Add keyboard event listener
+      modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
     });
 
     document.getElementById('closeAllLeaderboards').addEventListener('click', () => {
-      document.getElementById('allLeaderboardsModal').style.display = 'none';
+      const modal = document.getElementById('allLeaderboardsModal');
+      modal.style.display = 'none';
+      modal.removeEventListener('keydown', handleAllLeaderboardsKeydown);
     });
 
 
+    function handleAllLeaderboardsKeydown(event) {
+      const modal = document.getElementById('allLeaderboardsModal');
+      const focusableElements = modal.querySelectorAll('[tabindex="0"]');
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (event.key === 'Tab') {
+        // Handle Tab key navigation
+        if (event.shiftKey && document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement.focus();
+        }
+      } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
+        let nextIndex;
+
+        if (event.key === 'ArrowDown') {
+          nextIndex = (currentIndex + 1) % focusableElements.length;
+        } else {
+          nextIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
+        }
+
+        focusableElements[nextIndex].focus();
+      } else if (event.key === 'Escape') {
+        document.getElementById('closeAllLeaderboards').click();
+      }
+    }
 
 
 
