@@ -629,7 +629,7 @@ const weapons = [
     },
     {
         name: 'Bomber Drone',
-        description: 'Drone that leaves protective mines that explode with area damage when an asteroid gets nearby.',
+        description: 'Drone that leaves protective mines.',
         icon: 'icon-bomberdrone'
     },
     {

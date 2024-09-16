@@ -255,6 +255,7 @@
 
           try {
 
+            // doesn't work becuase not loaed yet
             const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
 
             if (crazyGamesMode) {
@@ -491,6 +492,7 @@
       // populateAchievements();
       if (isMobile()) {
 
+        fpsThrottleMode = true;
         const mobileControls = document.getElementById('mobile-controls');
         if (mobileControls) mobileControls.style.display = 'block';
 
@@ -1257,12 +1259,17 @@
       if (crazyGamesMode) {
 
         console.log("showCrazyGamesAuthPrompt");
+        const user = window.CrazyGames.SDK.user.getUser()
+        console.log(user);
+        userNickname.textContent = user.username;
+        userInfo.style.display = 'block';
+        loginLink.style.display = 'none';
+
         const callback = (error, user) => {
           console.log("callback");
           if (error) {
             console.log("Error:", error);
           } else {
-            console.log(user);
             userNickname.textContent = user.username;
             userInfo.style.display = 'block';
             loginLink.style.display = 'none';

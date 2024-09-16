@@ -1156,7 +1156,10 @@ function generateThrusterParticles() {
         life: Math.random() * 30 + 20,
         color: 'rgba(255, 165, 0, 0.8)'
     };
-    particles.push(particle);
+    if (fpsThrottleMode && particles.length > 5) {
+        return;
+    } else
+        particles.push(particle);
 }
 
 // Function to update particles
