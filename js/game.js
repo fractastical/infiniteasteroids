@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9831"
+let version = "0.9881"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -341,9 +341,17 @@ function startGame() {
 
     gameOver = false;
     gameStartTime = Date.now();
-    if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game) {
-        window.ConstructCrazySDK.game.gameplayStart();
-    }
+    console.log(crazyGamesMode);
+    console.log(window.CrazyGames);
+
+    // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+    //     try {
+    //         window.CrazyGames.SDK.game.gameplayStart();
+
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
 
     if (document.getElementById('endScreen'))
         document.getElementById('endScreen').style.display = 'none';
@@ -1389,10 +1397,16 @@ function pauseGame() {
     if (!isPaused) {
         clearInterval(gameLoop);
         isPaused = true;
-        if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game) {
-            window.ConstructCrazySDK.game.gameplayStop();
+        // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+        //     try {
+        //         window.CrazyGames.SDK.game.gameplayStop();
 
-        }
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+
+        // }
+
 
     }
 }
@@ -1411,11 +1425,14 @@ function resumeGame() {
         clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
-        if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game) {
-            window.ConstructCrazySDK.game.gameplayStart();
+        // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+        //     try {
+        //         window.CrazyGames.SDK.game.gameplayStart();
 
-        }
-
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
     }
 }
 
@@ -1785,7 +1802,8 @@ let currentGameModeIndex = 0;
 
 function populateGameModes() {
     const gameModeSection = document.getElementById('gameModeSection');
-    gameModeSection.innerHTML = `
+    if (window.innerHeight > 500) {
+        gameModeSection.innerHTML = `
         <h4 id="gameModeHeader">Select Game Mode</h4>
         <div class="selector">
             <button id="prevGameModeButton">&#60;</button>
@@ -1793,6 +1811,20 @@ function populateGameModes() {
             <button id="nextGameModeButton">></button>
         </div>
     `;
+
+    } else {
+
+        gameModeSection.innerHTML = `
+        <div class="selector">
+            <button id="prevGameModeButton">&#60;</button>
+            <span id="selectedGameMode">${gameModes[currentGameModeIndex].name}</span>
+            <button id="nextGameModeButton">></button>
+        </div>
+    `;
+
+
+
+    }
 
     function cycleGameMode(direction) {
         if (direction === 'next') {
@@ -2457,7 +2489,7 @@ function endGame() {
     // Stop the game loop and background music
 
     // document.getElementById('loginContainer').style.display = 'block';
-    // document.getElementById('userInfo').style.display = 'block';
+    document.getElementById('userInfo').style.display = 'block';
     xp = 0;
     clearInterval(gameLoop);
     backgroundMusic.pause(); // Stop al background music
@@ -2466,9 +2498,15 @@ function endGame() {
     octoBossBackgroundMusic.pause();
 
 
-    if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game) {
-        window.ConstructCrazySDK.game.gameplayStop();
-    }
+    // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+    //     try {
+    //         window.CrazyGames.SDK.game.gameplayStop();
+
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+
+    // }
 
     resetShip();
     populateSelectors();

@@ -87,7 +87,8 @@
 
 
   <div class="top-right" id="loginContainer">
-    <a href="#" id="login-link">Login</a>
+
+    <a href="#" id="login-link"><img width="80" src="icons/user/login.png" /></a>
   </div>
 
   <div class="top-right hidden" id="userInfo">
@@ -247,8 +248,12 @@
           handleSelections();
           updateShipPreview();
           document.getElementById('versionInfo').innerHTML = "Version v " + version;
+          console.log("innerHeight");
+          console.log(window.innerHeight);
+
           if (window.innerHeight < 500) {
-            document.getElementById('gameModeHeader').style.display = "none";
+            document.getElementById('gameModeHeader').remove();
+            console.log(window.innerHeight);
             document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
           }
 
@@ -1466,16 +1471,37 @@
 
     async function handleUserLogin(id, username) {
       console.log('Handling user login for:', id, username);
-      if (!id || !username) {
-        console.error('Invalid user data received');
+      if (!id) {
+        console.error('Invalid user ID received');
         return;
       }
       userId = id;
-      userNickname.textContent = username;
-      userInfo.style.display = 'block';
-      loginLink.style.display = 'none';
 
-      await loadOrInitializeUserData(id, username);
+      try {
+        const db = getFirestore();
+        const userDocRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          username = userData.nickname || username; // Use the stored nickname if available
+          loadUserData(userId);
+        } else {
+          // If the user document doesn't exist, we might want to create it
+          await setDoc(userDocRef, {
+            nickname: username,
+            createdAt: new Date()
+          });
+        }
+
+        userNickname.textContent = username;
+        userInfo.style.display = 'block';
+        loginLink.style.display = 'none';
+
+        await loadOrInitializeUserData(id, username);
+      } catch (error) {
+        console.error('Error handling user login:', error);
+      }
     }
 
 
@@ -1502,6 +1528,9 @@
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        console.log(user);
+        console.log("username");
+
         await handleUserLogin(user.uid, user.email.split('@')[0]);
         loginPopup.style.display = 'none';
         loginFormOpen = false;
@@ -1577,93 +1606,93 @@
     });
 
 
-    async function loadUserData(initialUserId = null) {
-      const crazyGameData = document.getElementById('crazyGameData');
-      let userId = initialUserId;
+    async function loadUserData(userId = null) {
+      // const crazyGameData = document.getElementById('crazyGameData');
+      // let userId = initialUserId;
 
-      console.log("Attempting to load user data");
+      // console.log("Attempting to load user data");
 
-      if (!window.CrazyGames.SDK.user.isUserAccountAvailable) {
-        console.log("CrazyGames user account system is not available");
-        crazyGamesMode = false;
-        return;
-      }
+      // if (!window.CrazyGames.SDK.user.isUserAccountAvailable) {
+      //   console.log("CrazyGames user account system is not available");
+      //   crazyGamesMode = false;
+      //   return;
+      // }
 
-      crazyGamesMode = true;
+      // crazyGamesMode = true;
 
+      // try {
+      //   let user = await window.CrazyGames.SDK.user.getUser();
+      //   console.log("CrazyGames user:", user);
+
+      //   if (!user) {
+      //     console.log("No user logged in, showing auth prompt");
+      //     const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
+      //     console.log("Auth prompt result", authResult);
+
+      //     if (!authResult.userObject) {
+      //       console.log("User cancelled login");
+      //       return;
+      //     }
+      //     user = authResult.userObject;
+      //   }
+
+      //   const token = await window.CrazyGames.SDK.user.getUserToken();
+      //   console.log("Get token result", token);
+
+      //   if (crazyGamesDebugMode) {
+      //     crazyGameData.innerHTML += JSON.stringify(token);
+      //   }
+
+      //   userId = 'cg_' + user.username; // Using username as unique identifier
+      //   userNickname.textContent = user.username;
+      //   userInfo.style.display = 'block';
+      //   loginLink.style.display = 'none';
+
+      // Now load data from Firebase
       try {
-        let user = await window.CrazyGames.SDK.user.getUser();
-        console.log("CrazyGames user:", user);
+        const db = getFirestore();
+        const userDocRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userDocRef);
 
-        if (!user) {
-          console.log("No user logged in, showing auth prompt");
-          const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
-          console.log("Auth prompt result", authResult);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          console.log("User data loaded from Firebase:", userData);
 
-          if (!authResult.userObject) {
-            console.log("User cancelled login");
-            return;
-          }
-          user = authResult.userObject;
-        }
+          // Load achievements
+          const gameAchievements = userData.games?.[gameId]?.achievements || {};
+          Object.assign(Achievements, gameAchievements);
 
-        const token = await window.CrazyGames.SDK.user.getUserToken();
-        console.log("Get token result", token);
+          // Load scores
+          const userScores = userData.games?.[gameId]?.scores || [];
+          const last10Scores = userScores.slice(-10).reverse();
 
-        if (crazyGamesDebugMode) {
-          crazyGameData.innerHTML += JSON.stringify(token);
-        }
+          populateAchievements();
+          populateSelectors();
+          populateUserScores(last10Scores);
 
-        userId = 'cg_' + user.username; // Using username as unique identifier
-        userNickname.textContent = user.username;
-        userInfo.style.display = 'block';
-        loginLink.style.display = 'none';
-
-        // Now load data from Firebase
-        try {
-          const db = getFirestore();
-          const userDocRef = doc(db, 'users', userId);
-          const userDoc = await getDoc(userDocRef);
-
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            console.log("User data loaded from Firebase:", userData);
-
-            // Load achievements
-            const gameAchievements = userData.games?.[gameId]?.achievements || {};
-            Object.assign(Achievements, gameAchievements);
-
-            // Load scores
-            const userScores = userData.games?.[gameId]?.scores || [];
-            const last10Scores = userScores.slice(-10).reverse();
-
-            populateAchievements();
-            populateSelectors();
-            populateUserScores(last10Scores);
-
-            // You can add more data loading here as needed
-          } else {
-            console.log("No existing user document. Creating new user data.");
-            await setDoc(userDocRef, {
-              nickname: user.username,
-              games: {
-                [gameId]: {
-                  achievements: {},
-                  scores: []
-                }
+          // You can add more data loading here as needed
+        } else {
+          console.log("No existing user document. Creating new user data.");
+          await setDoc(userDocRef, {
+            nickname: user.username,
+            games: {
+              [gameId]: {
+                achievements: {},
+                scores: []
               }
-            });
-          }
-        } catch (firebaseError) {
-          console.error("Error getting/setting user data in Firebase:", firebaseError);
+            }
+          });
         }
-
-      } catch (crazyGamesError) {
-        console.error("Error with CrazyGames authentication:", crazyGamesError);
-        if (crazyGamesDebugMode) {
-          crazyGameData.innerHTML += crazyGamesError.message;
-        }
+      } catch (firebaseError) {
+        console.error("Error getting/setting user data in Firebase:", firebaseError);
       }
+
+      // } catch (crazyGamesError) {
+      //   console.error("Error with CrazyGames authentication:", crazyGamesError);
+      //   if (crazyGamesDebugMode) {
+      //     crazyGameData.innerHTML += crazyGamesError.message;
+      //   }
+      // }
     }
     window.loadUserData = loadUserData;
 
@@ -1980,7 +2009,7 @@
             maximumFractionDigits: 0
           });
           const scoreDiv = document.createElement('div');
-          scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points (Wave ${entry.wave})`;
+          scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
           scoreDiv.tabIndex = 0; // Make it focusable
 
           if (entry.isCurrentUser && entry.score === userScore.score) {

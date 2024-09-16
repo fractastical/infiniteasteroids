@@ -2344,8 +2344,16 @@ function checkAlienDamage(weapon) {
         if (superbossAlien.hitpoints <= 0) {
             createExplosion(superbossAlien.x, superbossAlien.y, 50);
             createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
-            if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game)
-                window.ConstructCrazySDK.game.happytime();
+            if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+                try {
+                    window.CrazyGames.SDK.game.happytime();
+
+                } catch (error) {
+                    console.log(error);
+                }
+
+            }
+
             superbossAlien = null; // Destroy alien
             aliensKilled++;
             // Achievements.alien_megaboss_killed.reached = true;
@@ -2371,8 +2379,15 @@ function checkAlienDamage(weapon) {
 
             increaseXP(30 * 20);
             score += 100000;
-            if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game)
-                window.ConstructCrazySDK.game.happytime();
+            if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+                try {
+                    window.CrazyGames.SDK.game.happytime();
+
+                } catch (error) {
+                    console.log(error);
+                }
+
+            }
 
         }
     }
@@ -2452,8 +2467,15 @@ function checkLaserCollisions(lasers, isShip) {
                 // addAchievement('alien_supermegaboss_killed');
                 increaseXP(30 * 20);
                 score += 100000;
-                if (crazyGamesMode && window.ConstructCrazySDK && window.ConstructCrazySDK.game)
-                    window.ConstructCrazySDK.game.happytime();
+                if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+                    try {
+                        window.CrazyGames.SDK.game.happytime();
+
+                    } catch (error) {
+                        console.log(error);
+                    }
+
+                }
 
 
             }
