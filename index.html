@@ -403,16 +403,16 @@
     <p>Volume: <span id="volumeValue">5</span></p>
 
     <p>
-      <button id="toggleMusic" onClick="toggleMusic()">Toggle Music (or push "M")</button>
+      <button id="toggleMusic" onClick="toggleMusic()">Toggle [M]usic</button>
 
-      <button id="toggleSound" onClick="toggleSound()">Toggle Sound (or push "N")</button>
+      <button id="toggleSound" onClick="toggleSound()">Toggle Sou[n]d</button>
 
       <button id="toggleBackground" onClick="toggleBackground()">Toggle Background</button>
 
 
       <button id="toggleReedem" onClick="toggleRedeemMode()">Toggle Redeem</button>
 
-      <button id="saveProgress" onClick="saveUserData()">Save Progress</button>
+      <!-- <button id="saveProgress" onClick="saveUserData()">Save Progress</button> -->
 
     </p>
 
@@ -1136,12 +1136,72 @@
   </script>
   <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
   <script>
-    async function crazyLoad() {
+    let sdkReady = false;
 
-      await window.CrazyGames.SDK.init();
+    async function initializeCrazyGamesSDK() {
+      console.log('Attempting to initialize CrazyGames SDK...');
+      try {
+        await window.CrazyGames.SDK.init();
+        console.log('CrazyGames SDK initialized successfully');
+        sdkReady = true;
+        crazyGamesMode = true;
+        await checkUserStatus();
+      } catch (error) {
+        console.error('Error initializing CrazyGames SDK:', error);
+        handleSDKInitializationFailure();
+      }
     }
-    crazyLoad();
 
+    function handleSDKInitializationFailure() {
+      crazyGamesMode = false;
+      clearUserId();
+      // Fallback to your regular game initialization here
+      console.log('Falling back to standard mode due to SDK initialization failure');
+    }
+
+    async function checkUserStatus() {
+      if (!sdkReady) {
+        console.log('SDK not ready, cannot check user status');
+        return;
+      }
+
+      try {
+        const user = await window.CrazyGames.SDK.user.getUser();
+        if (user && user.userId) {
+          console.log('User already signed in:', user);
+          saveUserId('cg_' + user.userId);
+          await handleUserLogin(userId, user.username);
+        } else {
+          console.log('No user signed in');
+          clearUserId();
+          // You might want to show a login button or prompt here
+        }
+      } catch (error) {
+        console.error('Error checking user status:', error);
+        clearUserId();
+      }
+    }
+
+    function saveUserId(id) {
+      userId = id;
+      localStorage.setItem('userId', id);
+      console.log('UserId saved:', id);
+    }
+
+    function loadUserId() {
+      const storedId = localStorage.getItem('userId');
+      if (storedId) {
+        userId = storedId;
+        console.log('UserId loaded from storage:', userId);
+      }
+      return userId;
+    }
+
+    function clearUserId() {
+      userId = null;
+      localStorage.removeItem('userId');
+      console.log('UserId cleared');
+    }
 
   </script>
   <script type="module">
@@ -1216,14 +1276,19 @@
     const signupForm = document.getElementById('signupForm');
 
     window.addEventListener('load', async () => {
-      try {
-        await window.CrazyGames.SDK.game.sdkGameLoadingStart();
-        crazyGamesMode = true;
-        console.log('CrazyGames SDK initialized successfully');
-      } catch (error) {
+      console.log('Window loaded, initializing...');
+      loadUserId(); // Load any existing userId
+
+      // Check if CrazyGames SDK is available
+      if (typeof window.CrazyGames !== 'undefined' && window.CrazyGames.SDK) {
+        await initializeCrazyGamesSDK();
+      } else {
         console.log('CrazyGames SDK not available, running in standard mode');
-        crazyGamesMode = false;
+        handleSDKInitializationFailure();
       }
+
+      // Continue with the rest of your game initialization here
+      // For example: initializeGame();
     });
 
 
@@ -1292,9 +1357,10 @@
     // window.testCrazyGamesUserFlow = testCrazyGamesUserFlow;
 
     loginLink.addEventListener('click', async (event) => {
+
       event.preventDefault();
 
-      if (crazyGamesMode) {
+      if (true) {
         await handleCrazyGamesLogin();
       } else {
 
@@ -1308,33 +1374,60 @@
     });
 
     async function handleCrazyGamesLogin() {
+      if (!sdkReady) {
+        console.log('SDK not ready, cannot handle login');
+        return;
+      }
+
+      console.log('Handling CrazyGames login...');
+
+      const isUserAccountAvailable = window.CrazyGames.SDK.user.isUserAccountAvailable;
+      console.log("User account system available", isUserAccountAvailable);
+
+      if (!isUserAccountAvailable) {
+        console.log('User account system is not available on this domain');
+        // Handle the case where user accounts are not available
+        // You might want to disable login functionality or use a fallback
+        return;
+      }
+
       try {
         const user = await window.CrazyGames.SDK.user.getUser();
-        if (user) {
-          const token = await window.CrazyGames.SDK.user.getUserToken();
-          userId = 'cg_' + token.userId;
+        console.log("Get user result", user);
+
+        if (user && user.username) {
+          console.log('User is logged in:', user);
+          saveUserId('cg_' + user.username); // Using username as ID since userId is not provided
           await handleUserLogin(userId, user.username);
         } else {
-          const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
-          if (authResult.userObject) {
-            userId = 'cg_' + authResult.userObject.userId;
-            await handleUserLogin(userId, authResult.userObject.username);
-          }
+          console.log('No user is logged in');
+          clearUserId();
+          // You might want to show a login prompt or handle this case as needed
         }
       } catch (error) {
-        console.error("CrazyGames login error:", error);
-        // Fallback to Firebase login
-        loginPopup.style.display = 'block';
+        console.error("Error getting user:", error);
+        clearUserId();
+        // Handle any errors that occur during the process
       }
     }
 
-    async function handleUserLogin(userId, username) {
+
+
+
+    async function handleUserLogin(id, username) {
+      console.log('Handling user login for:', id, username);
+      if (!id || !username) {
+        console.error('Invalid user data received');
+        clearUserId();
+        return;
+      }
       userNickname.textContent = username;
       userInfo.style.display = 'block';
       loginLink.style.display = 'none';
 
-      await loadOrInitializeUserData(userId, username);
+      await loadOrInitializeUserData(id, username);
     }
+
 
     function loadUserDataToGame(userData) {
       coins = userData.coins || 0;
@@ -1344,32 +1437,10 @@
     }
 
 
-    async function loadOrInitializeUserData(userId, username) {
-      const db = getFirestore();
-      const userDocRef = doc(db, 'users', userId);
-
-      try {
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          loadUserDataToGame(userData);
-        } else {
-          const initialData = {
-            nickname: username,
-            coins: 100,
-            games: {
-              [gameId]: {
-                scores: [],
-                achievements: {}
-              }
-            }
-          };
-          await setDoc(userDocRef, initialData);
-          loadUserDataToGame(initialData);
-        }
-      } catch (error) {
-        console.error("Error loading/initializing user data:", error);
-      }
+    async function loadOrInitializeUserData(id, username) {
+      console.log('Loading or initializing user data for:', id);
+      // Implement your logic to load or initialize user data here
+      // This might involve fetching data from Firebase or initializing new user data
     }
 
 
@@ -1452,7 +1523,7 @@
           const gameData = {
             score: score
           };
-          saveUserScore(userId, gameId, gameData);
+          saveUserScore(userId, gameData);
         }
 
 
@@ -1466,89 +1537,95 @@
     });
 
 
-    async function loadUserData(userId, crazyGames = false) {
+    async function loadUserData(initialUserId = null) {
+      const crazyGameData = document.getElementById('crazyGameData');
+      let userId = initialUserId;
 
-      if (crazyGamesMode) {
+      console.log("Attempting to load user data");
 
-        const crazyGameData = document.getElementById('crazyGameData');
-
-        console.log("trying crazygames user");
-        try {
-          const user = await window.CrazyGames.SDK.user.getUser();
-          // userNickname.textContent = user.username;
-          const token = await window.CrazyGames.SDK.user.getUserToken();
-          console.log("Get token result", token);
-          if (crazyGamesDebugMode) {
-            // crazyGameData.innerHTML = ''; // Clear previous content
-            crazyGameData.innerHTML += token;
-
-          }
-
-          userId = token.userId
-          if (token.username) {
-            userNickname.textContent = token.username;
-            userInfo.style.display = 'block';
-            loginLink.style.display = 'none';
-          }
-
-
-        } catch (e) {
-          crazyGamesMode = false;
-          console.log("Get user error: ", e);
-          if (crazyGamesDebugMode) {
-            crazyGameData.innerHTML += e.message;
-          }
-          try {
-            const user = await window.CrazyGames.SDK.user.showAuthPrompt();
-            console.log("Auth prompt result", user);
-            crazyGamesMode = true;
-
-          } catch (e) {
-            console.log("Error:", e);
-            if (crazyGamesDebugMode) {
-              // crazyGameData.innerHTML = ''; // Clear previous content
-              crazyGameData.innerHTML += e.message;
-            }
-
-          }
-
-        }
-
+      if (!window.CrazyGames.SDK.user.isUserAccountAvailable) {
+        console.log("CrazyGames user account system is not available");
+        crazyGamesMode = false;
+        return;
       }
+
+      crazyGamesMode = true;
+
       try {
-        const userDoc = await getDoc(doc(db, 'users', userId));
+        let user = await window.CrazyGames.SDK.user.getUser();
+        console.log("CrazyGames user:", user);
 
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          userNickname.textContent = userData.nickname;
-          userInfo.style.display = 'block';
-          loginLink.style.display = 'none';
+        if (!user) {
+          console.log("No user logged in, showing auth prompt");
+          const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
+          console.log("Auth prompt result", authResult);
 
-          const gameAchievements = userData.games?.[gameId]?.achievements || {};
-          Object.assign(Achievements, gameAchievements);
-
-          const userScores = userData.games?.[gameId]?.scores || [];
-          const last10Scores = userScores.slice(-10).reverse(); // Get the last 10 scores
-
-          populateAchievements();
-          populateSelectors();
-          populateUserScores(last10Scores);
-
-          // const gameUpgrades = userData.games?.[gameId]?.megaUpgrades || {};
-          // Object.assign(megaUpgrades, gameUpgrades);
-
-          // populateUpgrades();
-        } else {
-          console.log("No such document!");
+          if (!authResult.userObject) {
+            console.log("User cancelled login");
+            return;
+          }
+          user = authResult.userObject;
         }
-      } catch (error) {
-        console.error("Error getting user data:", error);
+
+        const token = await window.CrazyGames.SDK.user.getUserToken();
+        console.log("Get token result", token);
+
+        if (crazyGamesDebugMode) {
+          crazyGameData.innerHTML += JSON.stringify(token);
+        }
+
+        userId = 'cg_' + user.username; // Using username as unique identifier
+        userNickname.textContent = user.username;
+        userInfo.style.display = 'block';
+        loginLink.style.display = 'none';
+
+        // Now load data from Firebase
+        try {
+          const db = getFirestore();
+          const userDocRef = doc(db, 'users', userId);
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            console.log("User data loaded from Firebase:", userData);
+
+            // Load achievements
+            const gameAchievements = userData.games?.[gameId]?.achievements || {};
+            Object.assign(Achievements, gameAchievements);
+
+            // Load scores
+            const userScores = userData.games?.[gameId]?.scores || [];
+            const last10Scores = userScores.slice(-10).reverse();
+
+            populateAchievements();
+            populateSelectors();
+            populateUserScores(last10Scores);
+
+            // You can add more data loading here as needed
+          } else {
+            console.log("No existing user document. Creating new user data.");
+            await setDoc(userDocRef, {
+              nickname: user.username,
+              games: {
+                [gameId]: {
+                  achievements: {},
+                  scores: []
+                }
+              }
+            });
+          }
+        } catch (firebaseError) {
+          console.error("Error getting/setting user data in Firebase:", firebaseError);
+        }
+
+      } catch (crazyGamesError) {
+        console.error("Error with CrazyGames authentication:", crazyGamesError);
+        if (crazyGamesDebugMode) {
+          crazyGameData.innerHTML += crazyGamesError.message;
+        }
       }
-
     }
-
     window.loadUserData = loadUserData;
-
 
     function populateUserSessions(sessions) {
       const pastSessionsList = document.getElementById('pastScoresList');
@@ -1610,77 +1687,173 @@
     // });
 
 
+    // async function saveUserScore(gameData) {
+    //   if (!userId) {
+    //     console.log('No user logged in, score not saved');
+    //     return;
+    //   }
+
+    //   const db = getFirestore();
+    //   const userDocRef = doc(db, 'users', userId);
+
+    //   try {
+    //     await setDoc(userDocRef, {
+    //       [`games.${gameId}.scores`]: arrayUnion({
+    //         score: gameData.score,
+    //         topWeapons: gameData.topWeapons,
+    //         sessionLength: gameData.sessionLength,
+    //         loginTime: new Date(),
+    //         gameMode: gameData.gameMode
+    //       }),
+    //       [`games.${gameId}.achievements`]: Achievements,
+    //       coins: coins
+    //     }, { merge: true });
+    //     console.log('User data saved successfully');
+    //   } catch (error) {
+    //     console.error('Error saving user data:', error);
+    //     console.error('Error details:', error.code, error.message);
+    //   }
+    // }
+
+
+
+    // Function to save user score for a specific game
+    // async function saveUserScore(userId, gameData) {
+    //   const db = getFirestore();
+    //   const userDocRef = doc(db, 'users', userId);
+
+    //   try {
+    //     // For CrazyGames users, we need to set the document if it doesn't exist
+    //     if (userId.startsWith('cg_')) {
+    //       await setDoc(userDocRef, {
+    //         [`games.${gameId}.scores`]: arrayUnion({
+    //           score: gameData.score,
+    //           topWeapons: gameData.topWeapons,
+    //           sessionLength: gameData.sessionLength,
+    //           loginTime: new Date(),
+    //           gameMode: gameData.gameMode
+    //         }),
+    //         [`games.${gameId}.achievements`]: Achievements,
+    //         coins: coins
+    //       }, { merge: true });
+    //     } else {
+    //       // For Firebase users, we can use updateDoc as before
+    //       await updateDoc(userDocRef, {
+    //         [`games.${gameId}.scores`]: arrayUnion({
+    //           score: gameData.score,
+    //           topWeapons: gameData.topWeapons,
+    //           sessionLength: gameData.sessionLength,
+    //           loginTime: new Date(),
+    //           gameMode: gameData.gameMode
+    //         }),
+    //         [`games.${gameId}.achievements`]: Achievements,
+    //         coins: coins
+    //       });
+    //     }
+    //     console.log('User data saved successfully');
+    //   } catch (error) {
+    //     console.error('Error saving user data:', error);
+    //     // Log more details about the error
+    //     console.error('Error details:', error.code, error.message);
+    //   }
+    // }
+    // window.saveUserScore = saveUserScore;
+
+    // async function saveUserScore(gameData) {
+    //   console.log('Saving user score, userId:', userId);
+    //   if (!userId || userId === 'cg_undefined') {
+    //     console.error('Invalid userId, score not saved');
+    //     return;
+    //   }
+
+    //   if (!gameData || typeof gameData !== 'object') {
+    //     console.error('Invalid gameData, score not saved');
+    //     return;
+    //   }
+
+    //   const db = getFirestore();
+    //   const userDocRef = doc(db, 'users', userId);
+
+    //   // Ensure all gameData properties are defined
+    //   const safeGameData = {
+    //     score: gameData.score || 0,
+    //     topWeapons: gameData.topWeapons || [],
+    //     sessionLength: gameData.sessionLength || 0,
+    //     loginTime: new Date(),
+    //     gameMode: gameData.gameMode || 'unknown'
+    //   };
+
+    //   try {
+    //     await setDoc(userDocRef, {
+    //       [`games.${gameId}.scores`]: arrayUnion(safeGameData),
+    //       [`games.${gameId}.achievements`]: Achievements || {},
+    //       coins: coins || 0
+    //     }, { merge: true });
+    //     console.log('User data saved successfully');
+    //   } catch (error) {
+    //     console.error('Error saving user data:', error);
+    //     console.error('Error details:', error.code, error.message);
+    //   }
+    // }
+
+
     async function saveUserScore(gameData) {
-      if (!userId) {
-        console.log('No user logged in, score not saved');
+      let userId;
+      let username;
+
+      if (crazyGamesMode) {
+        const user = await window.CrazyGames.SDK.user.getUser();
+        if (user && user.username) {
+          userId = 'cg_' + user.username;
+          username = user.username;
+        }
+      } else {
+        const currentUser = getCurrentUser();
+        if (currentUser) {
+          userId = currentUser.uid;
+          username = currentUser.displayName || currentUser.email;
+        }
+      }
+
+      if (!userId || !gameData) {
+        console.error('Invalid userId or gameData');
         return;
       }
 
       const db = getFirestore();
       const userDocRef = doc(db, 'users', userId);
 
+      const safeGameData = {
+        score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
+        topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
+        activeMegaUpgrades: Array.isArray(gameData.activeMegaUpgrades) ? gameData.activeMegaUpgrades : [],
+        sessionLength: gameData.sessionLength || 0,
+        loginTime: gameData.loginTime || new Date(),
+        endTime: gameData.endTime || new Date(),
+        gameMode: gameData.gameMode || 'unknown',
+        asteroidsKilled: gameData.asteroidsKilled || 0,
+        aliensKilled: gameData.aliensKilled || 0,
+        wave: gameData.wave || 1,
+        username: username
+      };
+
       try {
         await setDoc(userDocRef, {
-          [`games.${gameId}.scores`]: arrayUnion({
-            score: gameData.score,
-            topWeapons: gameData.topWeapons,
-            sessionLength: gameData.sessionLength,
-            loginTime: new Date(),
-            gameMode: gameData.gameMode
-          }),
-          [`games.${gameId}.achievements`]: Achievements,
-          coins: coins
+          games: {
+            InfiniteSpaceWar: {
+              scores: arrayUnion(safeGameData),
+              achievements: Achievements || {}
+            }
+          },
+          coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
+          lastUpdated: new Date(),
+          username: username
         }, { merge: true });
-        console.log('User data saved successfully');
+        console.log('User score saved successfully:', safeGameData);
       } catch (error) {
-        console.error('Error saving user data:', error);
-        console.error('Error details:', error.code, error.message);
+        console.error('Error saving user score:', error);
       }
-    }
-
-
-
-    // Function to save user score for a specific game
-    async function saveUserScore(userId, gameData) {
-      const db = getFirestore();
-      const userDocRef = doc(db, 'users', userId);
-
-      try {
-        // For CrazyGames users, we need to set the document if it doesn't exist
-        if (userId.startsWith('cg_')) {
-          await setDoc(userDocRef, {
-            [`games.${gameId}.scores`]: arrayUnion({
-              score: gameData.score,
-              topWeapons: gameData.topWeapons,
-              sessionLength: gameData.sessionLength,
-              loginTime: new Date(),
-              gameMode: gameData.gameMode
-            }),
-            [`games.${gameId}.achievements`]: Achievements,
-            coins: coins
-          }, { merge: true });
-        } else {
-          // For Firebase users, we can use updateDoc as before
-          await updateDoc(userDocRef, {
-            [`games.${gameId}.scores`]: arrayUnion({
-              score: gameData.score,
-              topWeapons: gameData.topWeapons,
-              sessionLength: gameData.sessionLength,
-              loginTime: new Date(),
-              gameMode: gameData.gameMode
-            }),
-            [`games.${gameId}.achievements`]: Achievements,
-            coins: coins
-          });
-        }
-        console.log('User data saved successfully');
-      } catch (error) {
-        console.error('Error saving user data:', error);
-        // Log more details about the error
-        console.error('Error details:', error.code, error.message);
-      }
-    }
-    window.saveUserScore = saveUserScore;
+    } window.saveUserScore = saveUserScore;
 
     // Function to save initial user data
     async function saveUserData(userIdToSave = window.userId, gameName = gameId) {
@@ -1703,56 +1876,93 @@
     window.saveUserData = saveUserData;
 
 
-    async function loadLeaderboard(gameName, gameMode) {
-      const db = getFirestore();
-      const usersSnapshot = await getDocs(collection(db, 'users'));
-      const scores = [];
+    async function loadLeaderboard(gameName, gameMode, retryCount = 0) {
+      const maxRetries = 3;
+      const retryDelay = 2000; // 2 seconds
 
-      usersSnapshot.forEach(doc => {
-        const userData = doc.data();
-        const gameScores = userData.games?.[gameName]?.scores || [];
-        gameScores.forEach(session => {
-          if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === gameMode) {
-            scores.push({
-              nickname: userData.nickname || 'Unnamed',
-              score: session.score,
-              wave: session.wave  // Assuming we also save the wave number
-            });
+      try {
+        const db = getFirestore();
+        const usersSnapshot = await getDocs(collection(db, 'users'));
+        const scores = [];
+        let userScore = null;
+
+        usersSnapshot.forEach(doc => {
+          const userData = doc.data();
+          const gameScores = userData.games?.[gameName]?.scores || [];
+          gameScores.forEach(session => {
+            if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === gameMode) {
+              const scoreEntry = {
+                nickname: userData.nickname || 'Unnamed',
+                score: session.score,
+                wave: session.wave,
+                isCurrentUser: doc.id === userId
+              };
+              scores.push(scoreEntry);
+
+              // Check if this is the current user's most recent score
+              if (scoreEntry.isCurrentUser && (!userScore || session.loginTime > userScore.loginTime)) {
+                userScore = scoreEntry;
+              }
+            }
+          });
+        });
+
+        scores.sort((a, b) => b.score - a.score);
+
+        const limitedScores = [];
+        const playerCounts = {};
+        let userScoreIncluded = false;
+
+        scores.forEach(score => {
+          if (!playerCounts[score.nickname]) {
+            playerCounts[score.nickname] = 0;
+          }
+          if (playerCounts[score.nickname] < 3 || (score.isCurrentUser && score.score === userScore.score)) {
+            limitedScores.push(score);
+            playerCounts[score.nickname]++;
+            if (score.isCurrentUser && score.score === userScore.score) {
+              userScoreIncluded = true;
+            }
           }
         });
-      });
 
-
-
-      scores.sort((a, b) => b.score - a.score);
-
-      const limitedScores = [];
-      const playerCounts = {};
-
-      scores.forEach(score => {
-        if (!playerCounts[score.nickname]) {
-          playerCounts[score.nickname] = 0;
+        // If user's score is not in top scores, add it at the end
+        if (!userScoreIncluded && userScore) {
+          limitedScores.push(userScore);
         }
-        if (playerCounts[score.nickname] < 3) {
-          limitedScores.push(score);
-          playerCounts[score.nickname]++;
-        }
-      });
 
-      const topScores = limitedScores.slice(0, 12);
+        const topScores = limitedScores.slice(0, 13); // Increased to potentially include user's score
 
-      const leaderboard = document.getElementById('leaderboard');
-      leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gameMode)}</h2>`;
-      topScores.forEach((entry, index) => {
-        const formattedScore = entry.score.toLocaleString('en-US', {
-          maximumFractionDigits: 0
+        const leaderboard = document.getElementById('leaderboard');
+        leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gameMode)}</h2>`;
+        topScores.forEach((entry, index) => {
+          const formattedScore = entry.score.toLocaleString('en-US', {
+            maximumFractionDigits: 0
+          });
+          const scoreDiv = document.createElement('div');
+          scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points (Wave ${entry.wave})`;
+          scoreDiv.tabIndex = 0; // Make it focusable
+
+          if (entry.isCurrentUser && entry.score === userScore.score) {
+            scoreDiv.style.fontWeight = 'bold';
+            scoreDiv.style.color = '#FFD700'; // Gold color for user's score
+          }
+
+          leaderboard.appendChild(scoreDiv);
         });
-        const scoreDiv = document.createElement('div');
-        scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
-        leaderboard.appendChild(scoreDiv);
-      });
 
-      document.getElementById('leaderboard-container').appendChild(leaderboard);
+        document.getElementById('leaderboard-container').appendChild(leaderboard);
+      } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        if (retryCount < maxRetries) {
+          console.log(`Retrying leaderboard load... (Attempt ${retryCount + 1})`);
+          setTimeout(() => loadLeaderboard(gameName, gameMode, retryCount + 1), retryDelay);
+        } else {
+          console.error('Max retries reached. Unable to load leaderboard.');
+          const leaderboard = document.getElementById('leaderboard');
+          leaderboard.innerHTML = '<h2>Leaderboard Unavailable</h2><p>Please try again later.</p>';
+        }
+      }
     }
 
 
