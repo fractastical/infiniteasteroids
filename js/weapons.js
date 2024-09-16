@@ -2603,11 +2603,11 @@ const lifeHeight = 30; // Height of each life rectangle (3 times the width)
 function drawLives() {
     const spacing = 5;     // Space between life rectangles
     // document.getElementById('livesDisplay').textContent = `Health:`;
-    const startX = 55;     // Starting X position for the first life
-    const startY = 5;     // Starting X position for the first life
+    // const startX = 55;     // Starting X position for the first life
+    // const startY = 5;     // Starting X position for the first life
 
-    // const startX = document.getElementById('livesDisplay').getBoundingClientRect().right + 5;     // Starting X position for the first life
-    // const startY = document.getElementById('bottomContent').getBoundingClientRect().top;     // Starting X position for the first life
+    const startX = document.getElementById('miniShipPreview').getBoundingClientRect().right + 5;     // Starting X position for the first life
+    const startY = document.getElementById('miniShipPreview').getBoundingClientRect().top;     // Starting X position for the first life
     // console.log(document.getElementById('xpBar').getBoundingClientRect().right);
     // console.log(document.getElementById('bottomContent').getBoundingClientRect().bottom);
     // console.log("s" + startY);
@@ -2635,13 +2635,14 @@ function drawLives() {
     } else {
         // Single player mode
         let finalX = startX;
+
         for (let i = 0; i < lives; i++) {
             const x = startX + (lifeWidth + spacing) * i;
             finalX = x;
             ctx.fillRect(x, startY, lifeWidth, lifeHeight);
         }
 
-        displayWeaponInfo(finalX + 10, 5);
+        displayWeaponInfo(finalX + 10, startY);
 
         // Update HTML display
         // document.getElementById('livesDisplay').textContent = `Health: ${lives}`;
