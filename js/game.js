@@ -2,11 +2,10 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9828"
-let crazyGamesMode = true;
+let version = "0.9831"
+let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
-
 
 
 let activeMegaUpgrades = [];
