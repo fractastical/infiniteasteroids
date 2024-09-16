@@ -1325,19 +1325,35 @@
       console.log('Window loaded, initializing...');
       loadUserId(); // Load any existing userId
 
-      // Check if CrazyGames SDK is available
-      if (typeof window.CrazyGames !== 'undefined' && window.CrazyGames.SDK) {
-        await initializeCrazyGamesSDK();
-      } else {
+      try {
+        await window.CrazyGames.SDK.init();
+        console.log('CrazyGames SDK initialized successfully');
+        sdkReady = true;
+        crazyGamesMode = true;
+        await checkAndHandleCrazyGamesUser();
+      } catch (error) {
         console.log('CrazyGames SDK not available, running in standard mode');
+        crazyGamesMode = false;
         handleSDKInitializationFailure();
       }
-
-      // Continue with the rest of your game initialization here
-      // For example: initializeGame();
     });
 
 
+    async function checkAndHandleCrazyGamesUser() {
+      if (sdkReady) {
+        try {
+          const user = await window.CrazyGames.SDK.user.getUser();
+          if (user && user.username) {
+            console.log('CrazyGames user already logged in:', user);
+            await handleUserLogin('cg_' + user.username, user.username);
+          } else {
+            console.log('No CrazyGames user logged in');
+          }
+        } catch (error) {
+          console.error('Error checking CrazyGames user:', error);
+        }
+      }
+    }
 
 
     async function saveInitialData(userId, email, nickname) {
@@ -1403,57 +1419,45 @@
     // window.testCrazyGamesUserFlow = testCrazyGamesUserFlow;
 
     loginLink.addEventListener('click', async (event) => {
-
       event.preventDefault();
 
-      if (true) {
-        await handleCrazyGamesLogin();
+      if (crazyGamesMode && sdkReady) {
+        try {
+          await handleCrazyGamesLogin();
+        } catch (error) {
+          console.error('CrazyGames login failed:', error);
+          showFirebaseLoginPopup();
+        }
       } else {
-
-        loginFormOpen = true;
-        event.preventDefault();
-        pauseGame();
-        loginPopup.style.display = 'block';
-
+        showFirebaseLoginPopup();
       }
-
     });
+
+    function showFirebaseLoginPopup() {
+      loginFormOpen = true;
+      pauseGame();
+      loginPopup.style.display = 'block';
+    }
+
+
 
     async function handleCrazyGamesLogin() {
       if (!sdkReady) {
-        console.log('SDK not ready, cannot handle login');
-        return;
+        throw new Error('CrazyGames SDK not ready');
       }
 
       console.log('Handling CrazyGames login...');
 
-      const isUserAccountAvailable = window.CrazyGames.SDK.user.isUserAccountAvailable;
-      console.log("User account system available", isUserAccountAvailable);
-
-      if (!isUserAccountAvailable) {
-        console.log('User account system is not available on this domain');
-        // Handle the case where user accounts are not available
-        // You might want to disable login functionality or use a fallback
-        return;
-      }
-
-      try {
-        const user = await window.CrazyGames.SDK.user.getUser();
-        console.log("Get user result", user);
-
-        if (user && user.username) {
-          console.log('User is logged in:', user);
-          saveUserId('cg_' + user.username); // Using username as ID since userId is not provided
-          await handleUserLogin(userId, user.username);
+      const user = await window.CrazyGames.SDK.user.getUser();
+      if (user && user.username) {
+        await handleUserLogin('cg_' + user.username, user.username);
+      } else {
+        const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
+        if (authResult && authResult.userObject && authResult.userObject.username) {
+          await handleUserLogin('cg_' + authResult.userObject.username, authResult.userObject.username);
         } else {
-          console.log('No user is logged in');
-          clearUserId();
-          // You might want to show a login prompt or handle this case as needed
+          throw new Error('CrazyGames authentication failed');
         }
-      } catch (error) {
-        console.error("Error getting user:", error);
-        clearUserId();
-        // Handle any errors that occur during the process
       }
     }
 
@@ -1464,9 +1468,9 @@
       console.log('Handling user login for:', id, username);
       if (!id || !username) {
         console.error('Invalid user data received');
-        clearUserId();
         return;
       }
+      userId = id;
       userNickname.textContent = username;
       userInfo.style.display = 'block';
       loginLink.style.display = 'none';
@@ -1490,24 +1494,22 @@
     }
 
 
-    loginForm.addEventListener('submit', (event) => {
+    loginForm.addEventListener('submit', async (event) => {
       event.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          loadUserData(user.uid);
-          loginPopup.style.display = 'none';
-          loginFormOpen = false;
-          resumeGame();
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          document.getElementById('loginError').textContent = errorMessage; // Display the error message
-          console.error('Error signing in:', errorMessage);
-        });
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        await handleUserLogin(user.uid, user.email.split('@')[0]);
+        loginPopup.style.display = 'none';
+        loginFormOpen = false;
+        resumeGame();
+      } catch (error) {
+        console.error('Error signing in:', error);
+        document.getElementById('loginError').textContent = error.message;
+      }
     });
 
     signupForm.addEventListener('submit', async (e) => {
@@ -1559,25 +1561,17 @@
 
 
     auth.onAuthStateChanged(user => {
-      if (user) {
-        loadUserData(user.uid);
-        userId = user.uid;
-        console.log("user ID change:" + userId);
+      if (user && !crazyGamesMode) {
+        handleUserLogin(user.uid, user.email.split('@')[0]);
         if (score && score > 1000) {
-
-
           const gameData = {
             score: score
           };
-          saveUserScore(userId, gameData);
+          saveUserScore(gameData);
         }
-
-
-
-      } else {
+      } else if (!user && !crazyGamesMode) {
         userInfo.style.display = 'none';
         loginContainer.style.display = 'block';
-
         pauseGame();
       }
     });
