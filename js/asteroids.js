@@ -1,12 +1,5 @@
 let acidAreas = [];
 
-let chanceForSmallAsteroid = 3;
-let chanceForVerySmallAsteroid = 1;
-let chanceForHardenedAsteroid = 5;
-let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
-let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
-
-let asteroidSpeedMultiplier = 1;
 
 
 function createSmallerAsteroids(x, y, size, speed, hitpoints) {
@@ -36,6 +29,7 @@ function createSmallerAsteroids(x, y, size, speed, hitpoints) {
 const asteroidImages = [];
 
 function createAsteroids(side) {
+
     if (currentMode === GameModes.ENDLESS_SLOW) {
         createEndlessSlowAsteroids();
     } else {
@@ -68,17 +62,10 @@ function createAsteroids(side) {
             let isHardenedAsteroid = Math.random() * 100 < chanceForHardenedAsteroid;
             let isVeryHardenedAsteroid = Math.random() * 100 < chanceForVeryHardenedAsteroid;
             let isMegaHardenedAsteroid = Math.random() * 100 < chanceForMegaHardenedAsteroid;
-            let randomChance = 0.07;
-            if (wave > 9)
-                randomChance = 0.05;
-            else if (wave > 18)
-                randomChance = 0.02;
-            else if (wave > 28)
-                randomChance = 0.01;
-            else if (wave > 70)
-                randomChance = 0.005;
 
-            let isRareAsteroid = Math.random() < randomChance; // 5% chance for a rare asteroid
+
+
+            let isRareAsteroid = Math.random() < getRareAsteroidChance(); // 5% chance for a rare asteroid
 
             let dx = 1;
             let dy = 1;

@@ -40,39 +40,6 @@ const droneLaserIntervalLevelDisplay = document.getElementById('droneLaserInterv
 let toggleMusicOff = false;
 let toggleSoundOff = false;
 
-const GameModes = {
-    EASY: 'easy',
-    NORMAL: 'normal',
-    HARD: 'hard',
-    HERO: 'heroic',
-    METEORSHOWEREASY: 'meteorshowereasy',
-    METEORSHOWERNORMAL: 'meteorshowernormal',
-    METEORSHOWERHARD: 'meteorshowerhard',
-    METEORSHOWERHERO: 'meteorshowerhero',
-    PLANETEASY: 'planeteasy',
-    PLANETNORMAL: 'planetnormal',
-    PLANETHARD: 'planethard',
-    PLANETHERO: 'planethero',
-    ENDLESS_SLOW: 'endless_slow',
-    COOP: 'coop'
-
-};
-
-const gameModes = [
-    { id: GameModes.EASY, name: "Deep Space Easy" },
-    { id: GameModes.NORMAL, name: "Deep Space Normal" },
-    { id: GameModes.HARD, name: "Deep Space Hard" },
-    { id: GameModes.HERO, name: "Deep Space Hero" },
-    { id: GameModes.METEORSHOWEREASY, name: "Meteor Shower Easy" },
-    { id: GameModes.METEORSHOWERNORMAL, name: "Meteor Shower Normal" },
-    { id: GameModes.METEORSHOWERHARD, name: "Meteor Shower Hard" },
-    { id: GameModes.METEORSHOWERHERO, name: "Meteor Shower Hero" },
-    { id: GameModes.PLANETEASY, name: "Planet Easy" },
-    { id: GameModes.PLANETNORMAL, name: "Planet Normal" },
-    { id: GameModes.PLANETHARD, name: "Planet Hard" },
-    { id: GameModes.PLANETHERO, name: "Planet Hero" },
-    { id: GameModes.ENDLESS_SLOW, name: "Endless Slow" }
-];
 
 let currentMode = GameModes.EASY; // Start with Easy mode by default
 let modesUnlocked = {
@@ -99,7 +66,6 @@ const planet = {
 
 
 let gravityStrength = 0;
-let bonuslevelUpXPMultiplier = 1;
 let fourthUpgradeUnlocked = false;
 const levelUpModal = document.getElementById('levelUpModal');
 let lastLevelUp = Date.now();
@@ -207,7 +173,6 @@ let level = 1;
 let xp = 0;
 let xpToNextLevel = 300;
 
-let asteroidDifficultySpeedMultiplier = 1;
 let levelUpXPMultiplier = 1.2;
 let meteorMode = false;
 let planetMode = false;
@@ -291,8 +256,8 @@ let acidBombUpgrades = {
     size: 1
 };
 
-let meteorBooster = 0;
-let modeScoreMultiplier = 1;
+// let meteorBooster = 0;
+// let modeScoreMultiplier = 1;
 let megaExplosions = [];
 
 
@@ -902,109 +867,8 @@ function processPlayerDeath() {
 
 function initializeGame(mode) {
     handleSelections();
-    switch (mode) {
-        case GameModes.EASY:
-            asteroidDifficultySpeedMultiplier = 0.7;
-            levelUpXPMultiplier = 1.07;
-            invincibilityDuration = 220;
-            modeScoreMultiplier = 1;
-            break;
-        case GameModes.NORMAL:
-            asteroidDifficultySpeedMultiplier = 0.9;
-            levelUpXPMultiplier = 1.17;
-            invincibilityDuration = 180;
-            modeScoreMultiplier = 4;
-            break;
-        case GameModes.HARD:
-            asteroidDifficultySpeedMultiplier = 1.1;
-            levelUpXPMultiplier = 1.27;
-            invincibilityDuration = 140;
-            modeScoreMultiplier = 6;
-            break;
-        case GameModes.HERO:
-            asteroidDifficultySpeedMultiplier = 1.3;
-            levelUpXPMultiplier = 1.35;
-            invincibilityDuration = 130;
-            modeScoreMultiplier = 8;
-            break;
-        case GameModes.METEORSHOWEREASY:
-            asteroidDifficultySpeedMultiplier = 1.6;
-            levelUpXPMultiplier = 1.1;
-            modeScoreMultiplier = 1.2;
-            meteorMode = true;
-            break;
-        case GameModes.METEORSHOWERNORMAL:
-            asteroidDifficultySpeedMultiplier = 1.8;
-            levelUpXPMultiplier = 1.2;
-            modeScoreMultiplier = 4.2;
-            invincibilityDuration = 150;
+    multiplierCalculator(mode);
 
-            meteorBooster = 7;
-            meteorMode = true;
-            break;
-        case GameModes.METEORSHOWERHARD:
-            asteroidDifficultySpeedMultiplier = 2;
-            levelUpXPMultiplier = 1.3;
-            meteorBooster = 14;
-            modeScoreMultiplier = 6.2;
-            invincibilityDuration = 140;
-            meteorMode = true;
-            break;
-        case GameModes.METEORSHOWERHERO:
-            asteroidDifficultySpeedMultiplier = 2.2;
-            levelUpXPMultiplier = 1.4;
-            meteorBooster = 21;
-            modeScoreMultiplier = 8.2;
-            meteorMode = true;
-            invincibilityDuration = 120;
-            break;
-        case GameModes.PLANETEASY:
-            asteroidDifficultySpeedMultiplier = 1.3;
-            levelUpXPMultiplier = 1.1;
-            gravityStrength = 60;
-            meteorBooster = 7;
-            modeScoreMultiplier = 1.6;
-            planetMode = true;
-            break;
-        case GameModes.PLANETNORMAL:
-            asteroidDifficultySpeedMultiplier = 1.5;
-            levelUpXPMultiplier = 1.2;
-            meteorBooster = 10;
-            gravityStrength = 90;
-            modeScoreMultiplier = 3.6;
-            planetMode = true;
-
-            break;
-        case GameModes.PLANETHARD:
-            asteroidDifficultySpeedMultiplier = 1.7;
-            levelUpXPMultiplier = 1.3;
-            meteorBooster = 15;
-            gravityStrength = 120;
-            planetMode = true;
-            invincibilityDuration = 140;
-
-            modeScoreMultiplier = 5.4;
-            break;
-        case GameModes.PLANETHERO:
-            asteroidDifficultySpeedMultiplier = 1.9;
-            levelUpXPMultiplier = 1.4;
-            meteorBooster = 25;
-            gravityStrength = 140;
-            planetMode = true;
-            invincibilityDuration = 130;
-
-            modeScoreMultiplier = 7.2;
-            break;
-        case GameModes.ENDLESS_SLOW:
-            asteroidDifficultySpeedMultiplier = 0.2; // Very slow asteroids
-            levelUpXPMultiplier = 1.1;
-            modeScoreMultiplier = 2;
-            spawnCooldown = 6;
-            break;
-
-
-
-    }
     currentMode = mode;
 
     console.log("starting " + currentMode);
@@ -2431,12 +2295,7 @@ function levelUp() {
     let prevLevelUp = lastLevelUp;
     lastLevelUp = Date.now();
     // console.log(lastLevelUp - prevLevelUp);
-
-    if (wave > 75) {
-        bonuslevelUpXPMultiplier = 1.5;
-    } else if (wave > 50) {
-        bonuslevelUpXPMultiplier = 1.2;
-    }
+    bonusLevelUpCalculator();
 
 
     // Determine number of upgrades to show
@@ -2475,7 +2334,7 @@ function levelUp() {
     }
 
     xp = 0;  // Reset XP
-    xpToNextLevel = Math.floor(xpToNextLevel * levelUpXPMultiplier * bonuslevelUpXPMultiplier);
+    xpToNextLevel = levelXPCalculator();
     updateXPBar();
 
     // Play level up sound (if you have one)

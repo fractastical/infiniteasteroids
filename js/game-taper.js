@@ -1,14 +1,67 @@
+
+let bonuslevelUpXPMultiplier = 1;
+
 const TAPER_WAVE = 85;
 
 const MULTI_WAVE = 65;
 
 const MULTI_WAVE_MULTIPLIER = 1.2;
 
+let asteroidDifficultySpeedMultiplier = 1;
+xpToNextLevel = 300;
+let meteorBooster = 0;
+let modeScoreMultiplier = 1;
+
+let chanceForSmallAsteroid = 3;
+let chanceForVerySmallAsteroid = 1;
+let chanceForHardenedAsteroid = 5;
+let chanceForVeryHardenedAsteroid = 2; // Example chance for very hardened asteroid
+let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened asteroid
+
+let asteroidSpeedMultiplier = 1;
+
+
+const GameModes = {
+    EASY: 'easy',
+    NORMAL: 'normal',
+    HARD: 'hard',
+    HERO: 'heroic',
+    METEORSHOWEREASY: 'meteorshowereasy',
+    METEORSHOWERNORMAL: 'meteorshowernormal',
+    METEORSHOWERHARD: 'meteorshowerhard',
+    METEORSHOWERHERO: 'meteorshowerhero',
+    PLANETEASY: 'planeteasy',
+    PLANETNORMAL: 'planetnormal',
+    PLANETHARD: 'planethard',
+    PLANETHERO: 'planethero',
+    ENDLESS_SLOW: 'endless_slow',
+    COOP: 'coop'
+
+};
+
+const gameModes = [
+    { id: GameModes.EASY, name: "Deep Space Easy" },
+    { id: GameModes.NORMAL, name: "Deep Space Normal" },
+    { id: GameModes.HARD, name: "Deep Space Hard" },
+    { id: GameModes.HERO, name: "Deep Space Hero" },
+    { id: GameModes.METEORSHOWEREASY, name: "Meteor Shower Easy" },
+    { id: GameModes.METEORSHOWERNORMAL, name: "Meteor Shower Normal" },
+    { id: GameModes.METEORSHOWERHARD, name: "Meteor Shower Hard" },
+    { id: GameModes.METEORSHOWERHERO, name: "Meteor Shower Hero" },
+    { id: GameModes.PLANETEASY, name: "Planet Easy" },
+    { id: GameModes.PLANETNORMAL, name: "Planet Normal" },
+    { id: GameModes.PLANETHARD, name: "Planet Hard" },
+    { id: GameModes.PLANETHERO, name: "Planet Hero" },
+    { id: GameModes.ENDLESS_SLOW, name: "Endless Slow" }
+];
+
+
 function xpTaperingFactor() {
 
     return Math.max(0.3, 1 - (wave - 1) * 0.0015);
 
 }
+
 
 function applyMultiWaveBoost(wave) {
 
@@ -18,6 +71,147 @@ function applyMultiWaveBoost(wave) {
         hpBooster = multiplier * MULTI_WAVE_MULTIPLIER;
     }
     return hpBooster;
+
+}
+
+function multiplierCalculator(mode) {
+
+    switch (mode) {
+        case GameModes.EASY:
+            asteroidDifficultySpeedMultiplier = 0.7;
+            levelUpXPMultiplier = 1.07;
+            invincibilityDuration = 220;
+            modeScoreMultiplier = 1;
+            break;
+        case GameModes.NORMAL:
+            asteroidDifficultySpeedMultiplier = 0.9;
+            levelUpXPMultiplier = 1.17;
+            invincibilityDuration = 180;
+            modeScoreMultiplier = 4;
+            break;
+        case GameModes.HARD:
+            asteroidDifficultySpeedMultiplier = 1.1;
+            levelUpXPMultiplier = 1.27;
+            invincibilityDuration = 140;
+            modeScoreMultiplier = 6;
+            break;
+        case GameModes.HERO:
+            asteroidDifficultySpeedMultiplier = 1.3;
+            levelUpXPMultiplier = 1.35;
+            invincibilityDuration = 130;
+            modeScoreMultiplier = 8;
+            break;
+        case GameModes.METEORSHOWEREASY:
+            asteroidDifficultySpeedMultiplier = 1.6;
+            levelUpXPMultiplier = 1.1;
+            modeScoreMultiplier = 1.2;
+            meteorMode = true;
+            break;
+        case GameModes.METEORSHOWERNORMAL:
+            asteroidDifficultySpeedMultiplier = 1.8;
+            levelUpXPMultiplier = 1.2;
+            modeScoreMultiplier = 4.2;
+            invincibilityDuration = 150;
+
+            meteorBooster = 7;
+            meteorMode = true;
+            break;
+        case GameModes.METEORSHOWERHARD:
+            asteroidDifficultySpeedMultiplier = 2;
+            levelUpXPMultiplier = 1.3;
+            meteorBooster = 14;
+            modeScoreMultiplier = 6.2;
+            invincibilityDuration = 140;
+            meteorMode = true;
+            break;
+        case GameModes.METEORSHOWERHERO:
+            asteroidDifficultySpeedMultiplier = 2.2;
+            levelUpXPMultiplier = 1.4;
+            meteorBooster = 21;
+            modeScoreMultiplier = 8.2;
+            meteorMode = true;
+            invincibilityDuration = 120;
+            break;
+        case GameModes.PLANETEASY:
+            asteroidDifficultySpeedMultiplier = 1.3;
+            levelUpXPMultiplier = 1.1;
+            gravityStrength = 60;
+            meteorBooster = 7;
+            modeScoreMultiplier = 1.6;
+            planetMode = true;
+            break;
+        case GameModes.PLANETNORMAL:
+            asteroidDifficultySpeedMultiplier = 1.5;
+            levelUpXPMultiplier = 1.2;
+            meteorBooster = 10;
+            gravityStrength = 90;
+            modeScoreMultiplier = 3.6;
+            planetMode = true;
+
+            break;
+        case GameModes.PLANETHARD:
+            asteroidDifficultySpeedMultiplier = 1.7;
+            levelUpXPMultiplier = 1.3;
+            meteorBooster = 15;
+            gravityStrength = 120;
+            planetMode = true;
+            invincibilityDuration = 140;
+
+            modeScoreMultiplier = 5.4;
+            break;
+        case GameModes.PLANETHERO:
+            asteroidDifficultySpeedMultiplier = 1.9;
+            levelUpXPMultiplier = 1.4;
+            meteorBooster = 25;
+            gravityStrength = 140;
+            planetMode = true;
+            invincibilityDuration = 130;
+
+            modeScoreMultiplier = 7.2;
+            break;
+        case GameModes.ENDLESS_SLOW:
+            asteroidDifficultySpeedMultiplier = 0.2; // Very slow asteroids
+            levelUpXPMultiplier = 1.1;
+            modeScoreMultiplier = 2;
+            spawnCooldown = 6;
+            break;
+
+
+
+    }
+
+
+}
+
+function levelXPCalculator() {
+
+    return Math.floor(xpToNextLevel * levelUpXPMultiplier * bonuslevelUpXPMultiplier);
+
+}
+
+function bonusLevelUpCalculator() {
+
+    if (wave > 75) {
+        bonuslevelUpXPMultiplier = 1.5;
+    } else if (wave > 50) {
+        bonuslevelUpXPMultiplier = 1.2;
+    }
+
+}
+
+function getRareAsteroidChance(wave) {
+
+    let randomChance = 0.07;
+    if (wave > 9)
+        randomChance = 0.05;
+    else if (wave > 18)
+        randomChance = 0.02;
+    else if (wave > 28)
+        randomChance = 0.01;
+    else if (wave > 70)
+        randomChance = 0.005;
+
+    return randomChance;
 
 }
 
