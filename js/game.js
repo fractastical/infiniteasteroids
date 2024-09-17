@@ -2375,29 +2375,32 @@ function claimLevelUps() {
 
         // Get random upgrades
         const upgrades = getRandomUpgrades(upgradesToRetrieve);
+        if (upgrades.length >= 2) {
 
-        document.getElementById('leveluptitle').innerHTML = 'Claim ' + unclaimedLevelUps + ' upgrades';
+            document.getElementById('leveluptitle').innerHTML = 'Claim ' + unclaimedLevelUps + ' upgrades';
 
 
-        // Display the level-up modal
-        const levelUpModal = document.getElementById('levelUpModal');
-        console.log(levelUpModal);
+            // Display the level-up modal
+            const levelUpModal = document.getElementById('levelUpModal');
+            console.log(levelUpModal);
 
-        const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
-        if (document.getElementById('upgradeOptions'))
-            document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
+            const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
+            if (document.getElementById('upgradeOptions'))
+                document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
 
-        // Show the modal
-        levelUpModal.style.display = 'block';
-        // Store upgrades in a global variable for later use
-        window.levelUpgrades = upgrades;
-        // Pause the game
-        pauseGame();
+            // Show the modal
+            levelUpModal.style.display = 'block';
+            // Store upgrades in a global variable for later use
+            window.levelUpgrades = upgrades;
+            // Pause the game
+            pauseGame();
 
-        // Activate temporary invincibility
+            // Activate temporary invincibility
 
-        invincible = true;
-        invincibilityTimer = invincibilityDuration;
+            invincible = true;
+            invincibilityTimer = invincibilityDuration;
+
+        }
 
     }
     resumeGame();
