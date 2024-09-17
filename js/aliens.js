@@ -957,10 +957,10 @@ function spawnOctoBoss() {
         size: 260,
         bodyRadius: 120,
         speed: 0.1,
-        hitpoints: 30000,
+        hitpoints: 20000,
         armRegrowthTimer: 0,
         armRegrowthInterval: 1000, // Time in frames (adjust as needed)
-        maxHitpoints: 30000,
+        maxHitpoints: 20000,
         shootTimer: 0,
         shootInterval: 150,
         arms: [],
