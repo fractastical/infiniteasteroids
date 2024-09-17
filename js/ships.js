@@ -642,8 +642,6 @@ function updateShipPreview(shipKey = "basic") {
 //     window.getSelectedSecondaryWeapon = () => availableSecondaryWeapons[currentSecondaryWeaponIndex].key;
 // }
 
-let currentSecondaryWeapon = ''; // Default to empty string or first available weapon
-
 function populateSelectors() {
     const selectedShipSpan = document.getElementById('selectedShip');
     const selectedSecondaryWeaponSpan = document.getElementById('selectedSecondaryWeapon');
@@ -654,82 +652,79 @@ function populateSelectors() {
 
     let availableShips = [];
     let availableSecondaryWeapons = [];
+    let currentShipIndex = 0;
+    let currentSecondaryWeaponIndex = 0;
 
     // Populate available ships
     Object.keys(ships).forEach(shipKey => {
         if (ships[shipKey].condition()) {
-            availableShips.push(shipKey);
+            availableShips.push({ key: shipKey, name: ships[shipKey].name });
         }
     });
+
+    // console.log("availableShips");
+    // console.log(availableShips.length);
+    // console.log(availableShips);
 
     // Populate available secondary weapons
     Object.keys(secondaryWeapons).forEach(weaponKey => {
         if (secondaryWeapons[weaponKey].isAvailable()) {
-            availableSecondaryWeapons.push(weaponKey);
+            availableSecondaryWeapons.push({ key: weaponKey, name: secondaryWeapons[weaponKey].name });
         }
     });
 
-    // Ensure currentShip is available, otherwise set to first available ship
-    if (!availableShips.includes(currentShip)) {
-        currentShip = availableShips[0];
-    }
-
-    // Set currentSecondaryWeapon if not set
-    if (!currentSecondaryWeapon && availableSecondaryWeapons.length > 0) {
-        currentSecondaryWeapon = availableSecondaryWeapons[0];
-    }
-
     // Function to cycle through options
-    function cycleOption(array, currentOption, direction) {
-        const currentIndex = array.indexOf(currentOption);
+    function cycleOption(array, currentIndex, direction) {
         if (direction === 'next') {
-            return array[(currentIndex + 1) % array.length];
+            return (currentIndex + 1) % array.length;
         } else {
-            return array[(currentIndex - 1 + array.length) % array.length];
+            return (currentIndex - 1 + array.length) % array.length;
         }
     }
 
     // Update display functions
     function updateShipDisplay() {
-        selectedShipSpan.textContent = ships[currentShip].name;
-        updateShipPreview(currentShip);
+        selectedShipSpan.textContent = availableShips[currentShipIndex].name;
+        updateShipPreview(availableShips[currentShipIndex].key);
     }
 
     function updateSecondaryWeaponDisplay() {
-        if (currentSecondaryWeapon) {
-            selectedSecondaryWeaponSpan.textContent = secondaryWeapons[currentSecondaryWeapon].name;
-        }
+        selectedSecondaryWeaponSpan.textContent = availableSecondaryWeapons[currentSecondaryWeaponIndex].name;
     }
 
     // Set initial values
-    updateShipDisplay();
-    updateSecondaryWeaponDisplay();
+    if (availableShips.length > 0) {
+        updateShipDisplay();
+    }
+    if (availableSecondaryWeapons.length > 0) {
+        updateSecondaryWeaponDisplay();
+    }
 
     // Add event listeners for ship buttons
     nextShipButton.addEventListener('click', () => {
-        currentShip = cycleOption(availableShips, currentShip, 'next');
+        currentShipIndex = cycleOption(availableShips, currentShipIndex, 'next');
         updateShipDisplay();
     });
 
     prevShipButton.addEventListener('click', () => {
-        currentShip = cycleOption(availableShips, currentShip, 'prev');
+        currentShipIndex = cycleOption(availableShips, currentShipIndex, 'prev');
         updateShipDisplay();
     });
 
     // Add event listeners for secondary weapon buttons
     nextSecondaryWeaponButton.addEventListener('click', () => {
-        currentSecondaryWeapon = cycleOption(availableSecondaryWeapons, currentSecondaryWeapon, 'next');
+        currentSecondaryWeaponIndex = cycleOption(availableSecondaryWeapons, currentSecondaryWeaponIndex, 'next');
         updateSecondaryWeaponDisplay();
     });
 
     prevSecondaryWeaponButton.addEventListener('click', () => {
-        currentSecondaryWeapon = cycleOption(availableSecondaryWeapons, currentSecondaryWeapon, 'prev');
+        currentSecondaryWeaponIndex = cycleOption(availableSecondaryWeapons, currentSecondaryWeaponIndex, 'prev');
         updateSecondaryWeaponDisplay();
     });
 
     // Function to get current selections
-    window.getSelectedShip = () => currentShip;
-    window.getSelectedSecondaryWeapon = () => currentSecondaryWeapon;
+    window.getSelectedShip = () => availableShips[currentShipIndex].key;
+    window.getSelectedSecondaryWeapon = () => availableSecondaryWeapons[currentSecondaryWeaponIndex].key;
 }
 
 
