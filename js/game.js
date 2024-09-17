@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9918"
+let version = "0.9919"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -2159,6 +2159,21 @@ function updateAchievementsAtEnd() {
     });
     // if (currentMode == GameModes.ENDLESS_SLOW && wave >= 30)
     //     addAchievement('space_pizza');
+
+    if (collectedSpacePizza)
+        addAchievement('space_pizza');
+    if (collectedPurplePixie)
+        addAchievement('purple_pixie');
+    if (collectedPinkPixie)
+        addAchievement('pink_pixie');
+    if (collectedGoldPixie)
+        addAchievement('gold_pixie');
+    if (collectedSpacePickle)
+        addAchievement('space_pickle');
+    if (collectedDarkSide)
+        addAchievement('dark_side');
+
+
 
 
     if (currentMode == GameModes.ENDLESS_SLOW && wave >= 60)

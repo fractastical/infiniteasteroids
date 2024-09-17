@@ -1,3 +1,13 @@
+
+let collectedSpacePizza = false;
+let collectedPurplePixie = false;
+let collectedGoldPixie = false;
+let collectedPinkPixie = false;
+let collectedSpacePickle = false;
+let collectedDarkSide = false;
+
+
+
 const floatingUpgrades = [
     {
         name: 'Space Pizza',
@@ -207,6 +217,8 @@ function drawFloatingUpgrades() {
 
 function collectFloatingUpgrade(upgrade) {
     addAchievement(upgrade.achievedKey);
+
+
     // Apply any specific effect from collecting the upgrade (optional)
     console.log(`${upgrade.name} collected!`);
 }
@@ -281,6 +293,23 @@ function updateFloatingUpgrades() {
 
         if (distance < ship.size / 2 + upgrade.size / 2) {
             collectFloatingUpgrade(upgrade);
+            if (upgrade.achievedKey === 'space_pizza')
+                collectedSpacePizza = true;
+            if (upgrade.achievedKey === 'purple_pixie')
+                collectedPurplePixie = true;
+            if (upgrade.achievedKey === 'pink_pixie')
+                collectedPinkPixie = true;
+            if (upgrade.achievedKey === 'gold_pixie')
+                collectedGoldPixie = true;
+            if (upgrade.achievedKey === 'space_pickle')
+                collectedSpacePickle = true;
+            if (upgrade.achievedKey === 'dark_side')
+                collectedDarkSide = true;
+
+
+
+
+
             // Remove the collected upgrade from activeFloatingUpgrades
             const index = activeFloatingUpgrades.indexOf(upgrade);
             if (index > -1) {
