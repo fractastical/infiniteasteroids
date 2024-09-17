@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9915"
+let version = "0.9916"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -316,6 +316,7 @@ function startGame() {
     lastCurrentShip = currentShip;
     gameOver = false;
     gameStartTime = Date.now();
+    initializeLastDamageReport();
     // console.log(crazyGamesMode);
     // console.log(window.CrazyGames);
 
@@ -1464,8 +1465,11 @@ function handleKeyDown(event) {
             const pastScoresModal = document.getElementById('pastScoresModal');
             pastScoresModal.style.display = 'block';
 
-        }
+        } else if (event.key === 'u' || event.key === 'U') {
 
+            toggleDamageByWeaponWaveChart();
+
+        }
 
         // Upgrade selection during level up
         if (document.getElementById('levelUpModal').style.display === 'block') {
@@ -2237,8 +2241,8 @@ function updateAchievementsAtEnd() {
             newlyUnlockedWeapons.push(achievementToWeaponMap[achievement]);
         }
     });
-    console.log(newlyUnlockedAchievements);
-    console.log(newlyUnlockedWeapons);
+    // console.log(newlyUnlockedAchievements);
+    // console.log(newlyUnlockedWeapons);
 
     return { newlyUnlockedAchievements, newlyUnlockedWeapons };
 }

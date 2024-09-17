@@ -1,69 +1,36 @@
 // Initialize the array to store weapon damage data per wave
 let weaponDamagePerWave = [];
 
-// List of all weapons
+// Store the last recorded damage values
+let lastDamageReport = {};
+let isDamageChartVisible = false;
+
+// List of all weapons (matching the keys in damageReport)
 const weaponsList = [
-    'Basic Laser', 'Explosive Laser', 'Turret', 'Drone', 'Bomber Drone',
-    'Sonic Blast', 'Death Ray', 'Acid Bomb', 'Freeze Ray', 'Boomerang',
-    'Nano Swarm', 'Flamethrower', 'Chain Lightning', 'Explosive Rocket'
+    'lasers', 'explosive', 'drones', 'turret', 'sonicBlast', 'bomberDrones',
+    'deathRay', 'acid', 'freeze', 'boomerang', 'nano', 'explosiverocket',
+    'flamethrower', 'chainlightning', 'fireAsteroid', 'acidAsteroid',
+    'lightningAsteroid', 'iceAsteroid'
 ];
 
-// Function to calculate and store weapon damage for the current wave
+// Function to initialize lastDamageReport
+function initializeLastDamageReport() {
+    weaponsList.forEach(weapon => {
+        lastDamageReport[weapon] = 0;
+    });
+}
+
+// Function to record the current wave's damage
 function recordWeaponDamageForWave() {
     const currentWaveDamage = {};
 
     weaponsList.forEach(weapon => {
-        let damage = 0;
-        switch (weapon) {
-            case 'Basic Laser':
-                damage = ship.laserLevel + damageBooster * pixieBoost;
-                break;
-            case 'Explosive Laser':
-                damage = (ship.laserLevel + damageBooster * pixieBoost) * (1 + ship.explosiveLaserLevel * 0.5);
-                break;
-            case 'Turret':
-                const perTurretDamage = turret.damage + damageBooster * pixieBoost;
-                damage = perTurretDamage;
-                if (doubleTurret)
-                    perTurretDamage += perTurretDamage * 2;
-                if (tripleTurret)
-                    perTurretDamage += perTurretDamage * 3;
-                break;
-            case 'Drone':
-                damage = drones.length * (drones[0].damage + damageBooster * pixieBoost);
-                break;
-            case 'Bomber Drone':
-                damage = bomberDrones.length * (bomberDroneUpgrades.bombDamage + damageBooster * pixieBoost);
-                break;
-            case 'Sonic Blast':
-                damage = sonicBlast.damage + damageBooster * pixieBoost;
-                break;
-            case 'Death Ray':
-                damage = 100 + damageBooster * pixieBoost;
-                break;
-            case 'Acid Bomb':
-                damage = acidBomb.damagePerSecond * acidBomb.size + damageBooster * pixieBoost;
-                break;
-            case 'Freeze Ray':
-                damage = 5 + damageBooster * pixieBoost;
-                break;
-            case 'Boomerang':
-                damage = boomerang.damage + damageBooster * pixieBoost;
-                break;
-            case 'Nano Swarm':
-                damage = nanoswarm.damage + damageBooster * pixieBoost;
-                break;
-            case 'Flamethrower':
-                damage = flamethrower.damagePerSecond + damageBooster * pixieBoost;
-                break;
-            case 'Chain Lightning':
-                damage = chainLightning.damage + damageBooster * pixieBoost;
-                break;
-            case 'Explosive Rocket':
-                damage = explosiveRocket.damage + damageBooster * pixieBoost;
-                break;
-        }
-        currentWaveDamage[weapon] = Number(damage.toFixed(2));
+        // Calculate the delta (damage dealt in this wave)
+        const deltaDamage = damageReport[weapon] - (lastDamageReport[weapon] || 0);
+        currentWaveDamage[weapon] = deltaDamage;
+
+        // Update lastDamageReport for the next wave
+        lastDamageReport[weapon] = damageReport[weapon];
     });
 
     weaponDamagePerWave.push(currentWaveDamage);
@@ -100,10 +67,31 @@ function printCurrentWaveDamageReport() {
     const currentWave = weaponDamagePerWave.length;
     console.log(`Weapon Damage Report for Wave ${currentWave}:`);
     Object.entries(weaponDamagePerWave[currentWave - 1]).forEach(([weapon, damage]) => {
-        console.log(`${weapon}: ${damage}`);
+        console.log(`${weapon}: ${damage.toFixed(2)}`);
     });
 }
+
+// Function to get total damage dealt by all weapons in a specific wave
+function getTotalDamageForWave(waveNumber) {
+    const waveDamage = getAllWeaponDamagesForWave(waveNumber);
+    if (!waveDamage) return null;
+    return Object.values(waveDamage).reduce((total, damage) => total + damage, 0);
+}
+
+// Function to get the most effective weapon for a specific wave
+function getMostEffectiveWeaponForWave(waveNumber) {
+    const waveDamage = getAllWeaponDamagesForWave(waveNumber);
+    if (!waveDamage) return null;
+    return Object.entries(waveDamage).reduce((max, [weapon, damage]) =>
+        damage > max.damage ? { weapon, damage } : max,
+        { weapon: '', damage: -Infinity }
+    );
+}
+
+
 let damageChart;
+
+
 
 function initializeDamageChart() {
     const ctx = document.getElementById('weaponDamageChart').getContext('2d');
@@ -115,28 +103,59 @@ function initializeDamageChart() {
                 label: weapon,
                 data: [],
                 borderColor: getRandomColor(),
-                fill: false
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                tension: 0.1 // Slight curve for smoother lines
             }))
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            title: {
-                display: true,
-                text: 'Weapon Damage Per Wave'
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Weapon Damage Per Wave',
+                    font: {
+                        size: 18,
+                        color: '#ff00ff' // Purple color for the title
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'right',
+                    labels: {
+                        color: '#ffffff' // White color for legend text
+                    }
+                }
             },
             scales: {
                 x: {
                     title: {
                         display: true,
-                        text: 'Wave'
+                        text: 'Wave',
+                        color: '#ffffff' // White color for axis title
+                    },
+                    ticks: {
+                        color: '#ffffff' // White color for axis labels
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)' // Slight white grid lines
                     }
                 },
                 y: {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Damage Per Shot'
+                        text: 'Damage',
+                        color: '#ffffff' // White color for axis title
+                    },
+                    ticks: {
+                        color: '#ffffff' // White color for axis labels
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)' // Slight white grid lines
                     }
                 }
             }
@@ -145,16 +164,23 @@ function initializeDamageChart() {
 }
 
 function updateDamageChart() {
+    if (!damageChart) {
+        initializeDamageChart();
+    }
+
     damageChart.data.labels = weaponDamagePerWave.map((_, index) => `Wave ${index + 1}`);
     damageChart.data.datasets.forEach((dataset, index) => {
-        dataset.data = weaponDamagePerWave.map(waveDamage => waveDamage[weaponsList[index]]);
+        const weapon = weaponsList[index];
+        dataset.data = weaponDamagePerWave.map(waveDamage => waveDamage[weapon]);
     });
     damageChart.update();
 }
 
 function getRandomColor() {
-    return `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
+    const hue = Math.random() * 360;
+    return `hsl(${hue}, 70%, 60%)`; // Using HSL for vibrant, distinct colors
 }
+
 
 function showWeaponDamageChart() {
     pauseGame();
@@ -174,3 +200,17 @@ function closeWeaponDamageChart() {
 
 // Event listener for the close button
 document.getElementById('closeWeaponDamageChart').addEventListener('click', closeWeaponDamageChart);
+
+function toggleDamageByWeaponWaveChart() {
+    const chartModal = document.getElementById('weaponDamageChartModal');
+    if (isDamageChartVisible) {
+        chartModal.style.display = 'none';
+        isDamageChartVisible = false;
+        resumeGame();
+    } else {
+        chartModal.style.display = 'block';
+        isDamageChartVisible = true;
+        pauseGame()
+        updateDamageChart(); // Ensure the chart is up-to-date
+    }
+}
