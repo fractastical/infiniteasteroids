@@ -2344,6 +2344,8 @@ function checkAlienDamage(weapon) {
         if (superbossAlien.hitpoints <= 0) {
             createExplosion(superbossAlien.x, superbossAlien.y, 50);
             createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
+            superbossAlien = null; // Destroy alien
+
             if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
                 try {
                     window.CrazyGames.SDK.game.happytime();
@@ -2354,8 +2356,10 @@ function checkAlienDamage(weapon) {
 
             }
 
-            superbossAlien = null; // Destroy alien
             aliensKilled++;
+            const xpBar = document.getElementById('xpBar');
+            xpBar.style.backgroundColor = 'green';
+
             // Achievements.alien_megaboss_killed.reached = true;
             increaseXP(30 * 20);
             score += 100000;
@@ -2388,6 +2392,9 @@ function checkAlienDamage(weapon) {
                 }
 
             }
+            const xpBar = document.getElementById('xpBar');
+            xpBar.style.backgroundColor = 'green';
+
 
         }
     }
@@ -2476,6 +2483,9 @@ function checkLaserCollisions(lasers, isShip) {
                     }
 
                 }
+                const xpBar = document.getElementById('xpBar');
+                xpBar.style.backgroundColor = 'green';
+
 
 
             }
