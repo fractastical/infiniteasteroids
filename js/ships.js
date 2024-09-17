@@ -656,6 +656,12 @@ function populateSelectors() {
     let currentShipIndex = 0;
     let currentSecondaryWeaponIndex = 0;
 
+    if (Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached)
+        addAchievement('all_hards');
+
+    if (Achievements.complete_normal_mode.reached && Achievements.complete_meteor_normal_mode.reached && Achievements.complete_planet_normal_mode.reached && Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached && Achievements.complete_planet_hero_mode.reached && Achievements.complete_meteor_hero_mode.reached && Achievements.complete_hero_mode.reached)
+        addAchievement('all_modes');
+
     // Populate available ships
     Object.keys(ships).forEach(shipKey => {
         if (ships[shipKey].condition()) {

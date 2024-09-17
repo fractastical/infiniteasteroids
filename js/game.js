@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9908"
+let version = "0.9909"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -2154,11 +2154,6 @@ function updateAchievementsAtEnd() {
     if (currentMode == GameModes.ENDLESS_SLOW && wave >= 120)
         addAchievement('wave_120_endless');
 
-    if (Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached)
-        addAchievement('all_hards');
-
-    if (Achievements.complete_normal_mode.reached && Achievements.complete_meteor_normal_mode.reached && Achievements.complete_planet_normal_mode.reached && Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached && Achievements.complete_planet_hero_mode.reached && Achievements.complete_meteor_hero_mode.reached && Achievements.complete_hero_mode.reached)
-        addAchievement('all_modes');
 
     // addAchievement('space_potato')
 
