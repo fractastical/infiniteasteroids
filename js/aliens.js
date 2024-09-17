@@ -45,6 +45,7 @@ let octoBoss = null;
 let octoBossSpawned = false;
 
 
+let currentMode = GameModes.NORMAL;
 
 let swarmingAliens = [];
 

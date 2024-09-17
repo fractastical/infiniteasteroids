@@ -53,6 +53,29 @@
         <div class="chart-container">
             <canvas id="xpProgressionChart"></canvas>
         </div>
+        <div class="chart-container">
+            <canvas id="alienSpawnChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="rareAsteroidChanceChart"></canvas>
+        </div>
+        <h2>Alien Types</h2>
+        <table id="alienTypesTable">
+            <tr>
+                <th>Type</th>
+                <th>Hitpoints</th>
+                <th>Speed</th>
+            </tr>
+        </table>
+        <h2>Boss Spawn Waves</h2>
+        <table id="bossSpawnTable">
+            <tr>
+                <th>Boss</th>
+                <th>Spawn Wave</th>
+                <th>Hitpoints</th>
+            </tr>
+        </table>
+
     </div>
 
     <script src="js/game-taper.js"></script>
@@ -317,6 +340,80 @@
             };
             return colors[difficulty] || 'rgb(0, 0, 0)';
         }
+
+        new Chart(document.getElementById('alienSpawnChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 100 }, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Aliens Spawned',
+                    data: Array.from({ length: 100 }, (_, i) => getAliensToSpawn(i + 1)),
+                    borderColor: 'rgb(255, 99, 132)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Aliens Spawned per Wave' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Wave' } },
+                    y: { title: { display: true, text: 'Number of Aliens' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // Rare Asteroid Chance Chart
+        new Chart(document.getElementById('rareAsteroidChanceChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 100 }, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Rare Asteroid Chance',
+                    data: Array.from({ length: 100 }, (_, i) => getRareAsteroidChance(i + 1)),
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Rare Asteroid Spawn Chance' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Wave' } },
+                    y: {
+                        title: { display: true, text: 'Chance' },
+                        beginAtZero: true,
+                        ticks: { callback: value => (value * 100).toFixed(1) + '%' }
+                    }
+                }
+            }
+        });
+
+        // Populate Alien Types Table
+        const alienTypesTable = document.getElementById('alienTypesTable');
+        for (const [type, stats] of Object.entries(SwarmingAlienTypes)) {
+            const row = alienTypesTable.insertRow();
+            row.insertCell(0).textContent = type;
+            row.insertCell(1).textContent = stats.hitpoints;
+            row.insertCell(2).textContent = stats.speed;
+        }
+
+        // Populate Boss Spawn Table
+        const bossSpawnTable = document.getElementById('bossSpawnTable');
+        [
+            { name: 'Super Boss', wave: SUPER_BOSS_SPAWN_WAVE, hp: SUPER_BOSS_HP },
+            { name: 'Mega Boss', wave: MEGA_BOSS_SPAWN_WAVE, hp: MEGA_BOSS_HP },
+            { name: 'Octo Boss', wave: OCTO_BOSS_SPAWN_WAVE, hp: OCTO_BOSS_HP }
+        ].forEach(boss => {
+            const row = bossSpawnTable.insertRow();
+            row.insertCell(0).textContent = boss.name;
+            row.insertCell(1).textContent = boss.wave;
+            row.insertCell(2).textContent = boss.hp;
+        });
+
     </script>
 </body>
 

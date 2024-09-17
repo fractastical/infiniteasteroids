@@ -56,6 +56,62 @@ const gameModes = [
 ];
 
 
+const ALIEN_SPAWN_WAVE_INTERVAL = 9;
+const HUNTING_ALIEN_SPAWN_WAVE_INTERVAL = 7;
+const SUPER_BOSS_SPAWN_WAVE = 50;
+const MEGA_BOSS_SPAWN_WAVE = 75;
+const OCTO_BOSS_SPAWN_WAVE = 100;
+
+// Alien types and properties
+const SwarmingAlienTypes = {
+    TOP: { hitpoints: 1, speed: 0.5 },
+    BOTTOM: { hitpoints: 1, speed: 0.3 },
+    HORIZONTAL: { hitpoints: 2, speed: 0.4 },
+    HUNTING: { hitpoints: 1, speed: 0.15 },
+    LITTLE: { hitpoints: 15, speed: 0.5 },
+    BLINKING: { hitpoints: 2, speed: 0.3 }
+};
+
+// Boss stats
+const SUPER_BOSS_HP = 5000;
+const MEGA_BOSS_HP = 10000;
+const OCTO_BOSS_HP = 20000;
+
+// Alien laser properties
+const alienLaserSpeed = 2.2;
+const alienLaserSize = 4;
+
+let currentMode = GameModes.NORMAL;
+
+// Function to determine number of aliens to spawn
+function getAliensToSpawn(wave) {
+    let booster = 0;
+    if (currentMode == GameModes.NORMAL) booster++;
+    else if (currentMode == GameModes.HARD) booster += 2;
+    else if (currentMode == GameModes.HERO) booster += 3;
+
+    if (wave > 50) return (parseInt(wave / 10)) + booster;
+    if (wave == 50) return 4 + booster;
+    if (wave == 45) return 4 + booster;
+    if (wave == 40) return 3 + booster;
+    if (wave == 35) return 3 + booster;
+    if (wave == 30) return 1 + booster;
+    if (wave == 25) return 2 + booster;
+    if (wave == 15) return 1 + booster;
+    if (wave == 10) return booster;
+    if (wave == 5) return booster;
+    return 0;
+}
+
+// Function to get rare asteroid chance
+function getRareAsteroidChance(wave) {
+    if (wave > 70) return 0.005;
+    if (wave > 28) return 0.01;
+    if (wave > 18) return 0.02;
+    if (wave > 9) return 0.05;
+    return 0.07;
+}
+
 function xpTaperingFactor() {
 
     return Math.max(0.3, 1 - (wave - 1) * 0.0015);
