@@ -135,8 +135,12 @@ function spawnRandomUpgrade() {
         !Achievements[upgrade.achievedKey].reached  // Only spawn if not achieved
     );
 
-    if (availableUpgrades.length > 4)
+    if (availableUpgrades.length > 3)
         spawnChance += 0.025;
+    if (availableUpgrades.length > 4)
+        spawnChance += 0.015;
+    if (availableUpgrades.length > 5)
+        spawnChance += 0.015;
 
     // Random chance to spawn an upgrade
     if (Math.random() < spawnChance) {
