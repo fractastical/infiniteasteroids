@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9913"
+let version = "0.9914"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -304,6 +304,8 @@ let droneUpgrades = {
 
 };
 
+let lastCurrentShip = 'basic';
+
 
 // Game loop
 function startGame() {
@@ -311,7 +313,7 @@ function startGame() {
     // userId = testCrazyGamesUserFlow();
     // console.log("user Id");
     // console.log(userId);
-
+    lastCurrentShip = currentShip;
     gameOver = false;
     gameStartTime = Date.now();
     // console.log(crazyGamesMode);
@@ -865,9 +867,11 @@ function processPlayerDeath() {
     if (lives == 0) gameOver = true;
 }
 
-function initializeGame(mode) {
+function initializeGame(mode, replay = false) {
     handleSelections();
     multiplierCalculator(mode);
+    if (replay)
+        currentShip = lastCurrentShip;
     // console.log(currentShip);
     currentMode = mode;
 
