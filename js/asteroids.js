@@ -582,17 +582,26 @@ function processAsteroidDeath(asteroid, fromArea = false) {
     }
 
 
+
+
     let baseDropChance = 0.15; // 10% base chance to drop a gem
+
+    if (wave > 55)
+        baseDropChance = 0.0015; // 10% base chance to drop a gem
+    if (wave > 55)
+        baseDropChance = 0.0025; // 10% base chance to drop a gem
     if (wave > 45)
+        baseDropChance = 0.005; // 10% base chance to drop a gem
+    else if (wave > 35)
         baseDropChance = 0.01; // 10% base chance to drop a gem
     else if (wave > 25)
-        baseDropChance = 0.03; // 10% base chance to drop a gem
+        baseDropChance = 0.02; // 10% base chance to drop a gem
     else if (wave > 15)
-        baseDropChance = 0.05; // 10% base chance to drop a gem
+        baseDropChance = 0.04; // 10% base chance to drop a gem
     else if (wave > 7)
-        baseDropChance = 0.09; // 10% base chance to drop a gem
+        baseDropChance = 0.07; // 10% base chance to drop a gem
 
-    const hitpointFactor = 0.005; // Increase drop chance by 0.5% per hitpoint
+    const hitpointFactor = 0.0005; // Increase drop chance by 0.05% per hitpoint
     const dropChance = Math.min(baseDropChance + (asteroid.initialHitpoints * hitpointFactor), 1);
 
     if (Math.random() < dropChance && droppedGems.length < 40) {
