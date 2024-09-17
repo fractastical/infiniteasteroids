@@ -23,7 +23,7 @@ let explosiveRocket = {
     timer: 0, // Current cooldown timer
     speed: 3, // Speed of the rocket
     damage: 10, // Damage dealt by the rocket
-    radius: 40, // Explosion radius
+    radius: 70, // Explosion radius
     active: false // Flag to track if the rocket is active
 };
 
@@ -393,7 +393,7 @@ function applyUpgrade(upgrade) {
             break;
         case 'Increase Explosive Rocket Radius':
             explosiveRocketUpgrades.radius++;
-            explosiveRocket.radius = 20 + (20 * explosiveRocketUpgrades.radius);
+            explosiveRocket.radius = 50 + (20 * explosiveRocketUpgrades.radius);
             break;
         case 'Decrease Explosive Rocket Cooldown':
             explosiveRocketUpgrades.cooldown++;
