@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9881"
+let version = "0.9883"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -1256,26 +1256,29 @@ function createAreaDamage(x, y, radius, damage = 1) {
 
     return totalDamage;
 }
-
 function increaseXP(amount, isGem = false) {
-
     const currTimeInMS = Date.now();
+
+    // Apply tapering based on wave number
+    const taperingFactor = xpTaperingFactor();
+    amount *= taperingFactor;
+
     if (xp >= (xpToNextLevel / 1)) {
         if (lastLevelUp + 2000 > currTimeInMS) {
             amount *= 0.05;
         } else if (lastLevelUp + 5000 > currTimeInMS) {
-            amount *= .2;
+            amount *= 0.2;
         } else if (lastLevelUp + 8000 > currTimeInMS) {
-            amount *= .3;
+            amount *= 0.3;
         }
     }
+
     xp += amount;
     document.getElementById('xpBarContainer').style.display = 'block';
 
     updateXPBar();
 
     if (xp >= xpToNextLevel && (currTimeInMS > (lastLevelUp + 8000) || isGem)) {
-
         levelUp();
     }
 }
