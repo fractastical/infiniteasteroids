@@ -975,14 +975,20 @@ function handleLaserAlienCollision(laser, alien) {
 function updateLasers() {
     for (let i = 0; i < ship.lasers.length; i++) {
         let laser = ship.lasers[i];
+
+        // Move the laser in the direction of its rotation (keep velocity)
         laser.x += 10 * Math.sin(laser.rotation * Math.PI / 180);
         laser.y -= 10 * Math.cos(laser.rotation * Math.PI / 180);
 
+        // Apply rotation if the laser has a rotation speed (spinning effect)
+        if (laser.rotationSpeed) {
+            laser.rotation += laser.rotationSpeed; // Adjust the laser's rotation by its rotation speed
+        }
+
         // Remove lasers that are off-screen
         if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
-            ship.lasers.splice(i, 1);
-            // console.log("removing laser went off screen");
-            i--;
+            ship.lasers.splice(i, 1); // Remove the laser if it's off-screen
+            i--; // Adjust the index after removal to avoid skipping the next laser
         }
     }
 }
@@ -1758,36 +1764,13 @@ function activateBoomerang() {
     boomerang.dy = (Math.random() * 2.2 - 1) * boomerang.speed;
 }
 
-function shootTripleLaser() {
-    const baseRotation = ship.rotation;
-    // console.log("tripple");
-    // Center laser
-    const centerLaserX = ship.x + 100 * Math.sin(baseRotation * Math.PI / 180);
-    const centerLaserY = ship.y - 100 * Math.cos(baseRotation * Math.PI / 180);
-    ship.lasers.push({ x: centerLaserX, y: centerLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
-
-    // Left laser
-    const leftLaserX = ship.x + 100 * Math.sin((baseRotation - 10) * Math.PI / 180);
-    const leftLaserY = ship.y - 100 * Math.cos((baseRotation - 10) * Math.PI / 180);
-    ship.lasers.push({ x: leftLaserX, y: leftLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
-
-    // Right laser
-    const rightLaserX = ship.x + 100 * Math.sin((baseRotation + 10) * Math.PI / 180);
-    const rightLaserY = ship.y - 100 * Math.cos((baseRotation + 10) * Math.PI / 180);
-    ship.lasers.push({ x: rightLaserX, y: rightLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
-
-    // Set the laser timer
-    ship.laserTimer = ship.laserCooldown;
-}
 
 function shootLasers() {
     if (!toggleMusicOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
 
     // Use the custom shoot function if it exists, otherwise use default shooting
-    if (currentShip === 'solarPhoenix') {
-        shootTripleLaser();
-    } else if (currentShip === 'quantumStriker' && ships.quantumStriker.shoot) {
-        ships.quantumStriker.shoot();
+    if (ships[currentShip] && typeof ships[currentShip].shoot === 'function') {
+        ships[currentShip].shoot(); // Call the custom shoot function
     } else {
         const laserSize = ship.laserLevel + 1; // Laser size depends on the ship's laser level
 

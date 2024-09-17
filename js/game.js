@@ -252,6 +252,7 @@ const Achievements = {
     alien_octopus_killed: { reached: false, icon: 'icons/aliens/alien_boss_ship_5.png', description: 'Killed Wave 100 Vampire Alien Octopus. CryoBomb.' },
     million_score: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Get a million points. Invincibility Shield.' },
     wave_60_endless: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach wave 60 on Endless. Piercing Laser.' },
+    wave_120_endless: { reached: false, icon: 'achievements/insanecat.png', description: 'Reach wave 120 on Endless. Pentacule.' },
     space_pizza: { reached: false, icon: 'icons/upgrades/pizza.png', description: 'Find the space pizza.' },
     space_pickle: { reached: false, icon: 'icons/upgrades/pickle.png', description: 'Find the deep space pickle.' },
     pink_pixie: { reached: false, icon: 'icons/upgrades/pixie.png', description: 'Find the pink pixie.' },
@@ -259,6 +260,8 @@ const Achievements = {
     gold_pixie: { reached: false, icon: 'icons/upgrades/pixie2.png', description: 'Find the gold pixie.' },
     // space_monkey: { reached: false, icon: 'icons/upgrades/monkey.png', description: 'Find the space monkey.' },
     // space_potato: { reached: false, icon: 'icons/upgrades/potato.png', description: 'Find the space potato.' },
+    all_hards: { reached: false, icon: 'achievements/insanecat.png', description: 'All hard modes wave 30. Unlock Tetragrammaship.' },
+    all_modes: { reached: false, icon: 'achievements/planet_huge.png', description: 'All game modes wave 30. Unlock Hexarose.' },
     dark_side: { reached: false, icon: 'icons/upgrades/darkside.png', description: 'Make a deal with Dark Side.' },
 
 
@@ -1048,15 +1051,23 @@ function handleTouch(e) {
 }
 
 
+let activeRotationRight = 0;
+let activeRotationLeft = 0;
 
 function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
     let angle = ship.rotation * Math.PI / 180;
 
     if (keys[leftKey]) {
         ship.rotation -= ship.rotationSpeed;
+        activeRotationLeft = ship.rotationSpeed;
+    } else {
+        activeRotationLeft = 0;
     }
     if (keys[rightKey]) {
         ship.rotation += ship.rotationSpeed;
+        activeRotationRight = ship.rotationSpeed;
+    } else {
+        activeRotationRight = 0;
     }
 
     if (keys[upKey] || (ship === ship && touchAccelerating)) {
@@ -1660,10 +1671,13 @@ function countTechnologies() {
     if (Achievements.complete_planet_normal_mode.reached) count++;
     if (Achievements.complete_planet_hard_mode.reached) count++;
     if (Achievements.complete_planet_hero_mode.reached) count++;
+    if (Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached) count++;
 
     if (Achievements.drone_damage.reached) count++;
     if (Achievements.laser_damage.reached) count++;
     if (Achievements.wave_60_endless.reached) count++;
+
+    if (Achievements.wave_120_endless.reached) count++;
     if (Achievements.million_score.reached) count++;
 
     // if (Achievements.space_potato.reached) count++;
@@ -2273,6 +2287,14 @@ function updateAchievementsAtEnd() {
 
     if (currentMode == GameModes.ENDLESS_SLOW && wave >= 60)
         addAchievement('wave_60_endless');
+    if (currentMode == GameModes.ENDLESS_SLOW && wave >= 120)
+        addAchievement('wave_120_endless');
+
+    if (Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached)
+        addAchievement('all_hards');
+
+    if (Achievements.complete_normal_mode.reached && Achievements.complete_meteor_normal_mode.reached && Achievements.complete_planet_normal_mode.reached && Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached && Achievements.complete_planet_hero_mode.reached && Achievements.complete_meteor_hero_mode.reached && Achievements.complete_hero_mode.reached)
+        addAchievement('all_modes');
 
     // addAchievement('space_potato')
 
