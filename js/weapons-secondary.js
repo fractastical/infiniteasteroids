@@ -234,7 +234,7 @@ function updateSecondaryWeapons() {
 
 function activateInvincibility(duration) {
     invincible = true;
-    invincibilityTimer = duration;
+    invincibilityTimer += duration;
 
     const invincibilityInterval = setInterval(() => {
         invincibilityTimer--;

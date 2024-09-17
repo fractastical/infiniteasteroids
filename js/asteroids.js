@@ -65,7 +65,7 @@ function createAsteroids(side) {
 
 
 
-            let isRareAsteroid = Math.random() < getRareAsteroidChance(); // 5% chance for a rare asteroid
+            let isRareAsteroid = Math.random() < getRareAsteroidChance(wave); // 5% chance for a rare asteroid
 
             let dx = 1;
             let dy = 1;

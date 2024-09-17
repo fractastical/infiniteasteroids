@@ -361,7 +361,7 @@ function startGame() {
     ship.laserTimer = 0;
     turret.bought = false;
     resetShip();
-    invincibilityTimer = invincibilityDuration;
+    invincibilityTimer += invincibilityDuration;
     clearInterval(gameLoop);
     // if (mode == GameModes.ENDLESS_SLOW)
     //   spawnCooldown = 6;
@@ -372,7 +372,7 @@ function startGame() {
     // selectedUpgrades.forEach(upgrade => {
     //   addUpgrade(upgrade);
     // });
-    console.log(currentShip);
+    // console.log(currentShip);
 
     ship.laserLevel = ships[currentShip].laserLevel;
     // Specific actions for StarHawk
@@ -860,7 +860,7 @@ function processPlayerDeath() {
 
     playShipDestroyedSound();
     invincible = true;
-    invincibilityTimer = invincibilityDuration;
+    invincibilityTimer += invincibilityDuration;
 
     if (lives == 0) gameOver = true;
 }
@@ -868,7 +868,7 @@ function processPlayerDeath() {
 function initializeGame(mode) {
     handleSelections();
     multiplierCalculator(mode);
-    console.log(currentShip);
+    // console.log(currentShip);
     currentMode = mode;
 
     console.log("starting " + currentMode);
@@ -2262,7 +2262,7 @@ function claimLevelUps() {
             // Activate temporary invincibility
 
             invincible = true;
-            invincibilityTimer = invincibilityDuration;
+            invincibilityTimer += invincibilityDuration;
 
         }
 
@@ -2328,7 +2328,7 @@ function levelUp() {
 
             // Activate temporary invincibility
             invincible = true;
-            invincibilityTimer = invincibilityDuration;
+            invincibilityTimer += invincibilityDuration;
         }
 
     }
@@ -2442,16 +2442,10 @@ function endGame() {
     //     }
 
     // }
-    console.log("endgame");
-    console.log(currentShip);
 
     resetShip();
-    console.log("endgame111");
-    console.log(currentShip);
 
     populateSelectors();
-    console.log("endgame115");
-    console.log(currentShip);
 
     // Calculate the time taken and save it
     gameEndTime = new Date();
@@ -2481,8 +2475,6 @@ function endGame() {
         wave: wave
     };
 
-    console.log("endgame12");
-    console.log(currentShip);
 
     // Update achievements and handle end game server logic
     const { newlyUnlockedAchievements, newlyUnlockedWeapons } = updateAchievementsAtEnd();
@@ -2497,16 +2489,12 @@ function endGame() {
     // Load and display the leaderboard
     loadLeaderboard(gameId, currentMode);
 
-    console.log("endgame15");
-    console.log(currentShip);
 
     // Get three random affordable upgrades
     // const affordableUpgrades = getRandomAffordableUpgrades(coins);
 
     // Display the end game screen
     displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons);
-    console.log("endgame2");
-    console.log(currentShip);
 
 }
 function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
