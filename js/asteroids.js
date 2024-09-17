@@ -130,7 +130,7 @@ function createAsteroids(side) {
             let hpBooster = 0;
             if (wave > MULTI_WAVE) {
                 let multiplier = wave - MULTI_WAVE;
-                hpBooster = multiplier * 2.5;
+                hpBooster = multiplier * 1.5;
             }
 
             if (isRareAsteroid) {
@@ -138,7 +138,7 @@ function createAsteroids(side) {
 
                 const rareTypes = ['exploding', 'freezing', 'chainLightning', 'acid'];
                 type = rareTypes[Math.floor(Math.random() * rareTypes.length)];
-                hitpoints = 5; // Fixed hitpoints for rare asteroids
+                hitpoints = 5 + hpBooster; // Fixed hitpoints for rare asteroids on early waves
                 switch (type) {
                     case 'exploding':
                         color = '#FF0000'; // Red

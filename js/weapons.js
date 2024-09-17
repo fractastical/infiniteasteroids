@@ -2597,13 +2597,18 @@ function checkLaserCollisions(lasers, isShip) {
 
 
 function selectGemType(hitpoints) {
-    const epicThreshold = 30;
+    const epicThreshold = 70;
     const rareThreshold = 15;
 
     // Probabilities (adjust these to fine-tune gem distribution)
-    let commonProb = 0.74;
-    let rareProb = 0.25;
+    let commonProb = 0.84;
+    let rareProb = 0.15;
     let epicProb = 0.01;
+    if (testMode) {
+        commonProb -= 0.3;
+        epicProb += 0.3;
+        console.log(epicProb);
+    }
 
     // Adjust probabilities based on hitpoints
     if (hitpoints > epicThreshold) {
@@ -2624,6 +2629,7 @@ function selectGemType(hitpoints) {
 
     // Weighted random selection
     const rand = Math.random();
+    console.log(rand);
     if (rand < commonProb) return 'common';
     if (rand < commonProb + rareProb) return 'rare';
     return 'epic';

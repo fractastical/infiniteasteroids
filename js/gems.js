@@ -366,12 +366,13 @@ function checkGemCollection() {
             switch (gem.type) {
                 case 'common':
                     xpBoost = xpToNextLevel * 0.1; // 10% of XP to next level
-                    if (testMode) {
-                        clearInterval(gameLoop);
-                        isPaused = true;
-                        // drawPlanetx(); // Draw the planet
-                        document.getElementById('rouletteContainer').style.display = 'block';
-                    }
+                    // if (testMode) {
+
+                    //     // drawPlanetx(); // Draw the planet
+                    //     document.getElementById('rouletteContainer').style.display = 'block';
+
+                    //     pauseGame();
+                    // }
 
                     break;
                 case 'rare':
@@ -380,15 +381,19 @@ function checkGemCollection() {
                 case 'epic':
                     // xpBoost = xpTo     extLevel * 0.95; // 50% of XP to next level
 
-                    pauseGame();
                     // drawPlanetx(); // Draw the planet
+                    console.log("attempting pause to get epic spin")
                     document.getElementById('rouletteContainer').style.display = 'block';
+                    pauseGame();
+
                     break;
             }
 
             // Increase the XP and check for level up
-            increaseXP(xpBoost, true);
-            updateXPBar();
+            if (xpBoost > 0) {
+                increaseXP(xpBoost, true);
+                updateXPBar();
+            }
 
             // Remove the collected gem
             droppedGems.splice(i, 1);

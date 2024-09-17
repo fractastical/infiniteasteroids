@@ -307,7 +307,7 @@ let asteroids = [];
 let gameLoop;
 let explosions = [];
 let lives = 3;
-let testMode = false;
+let testMode = true;
 
 if (testMode)
     lives = 1;
@@ -661,7 +661,6 @@ function update() {
     //   shootLasers();
     // }
 
-    checkGemCollection();
     updateGems();
     drawGems();
 
@@ -859,6 +858,8 @@ function update() {
 
     // if (gameOver) drawDamageReport();
     updateAndDrawFloatingUpgrades();
+    //BUG : something annoyingly unpausing after paused on epic collect
+    checkGemCollection();
 
     drawShip();
 
@@ -1401,7 +1402,10 @@ function drawScore() {
 }
 
 function pauseGame() {
+    console.log("p");
     if (!isPaused) {
+        console.log("p2");
+
         clearInterval(gameLoop);
         isPaused = true;
         // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
@@ -1937,7 +1941,7 @@ function populateAchievementsModal() {
     // Initial display of the first page
     displayAchievementPage(currentAchievementPage);
 
-    console.log('Achievements modal populated:', achievementsDisplay.innerHTML);
+    // console.log('Achievements modal populated:', achievementsDisplay.innerHTML);
 }
 
 function displayAchievementPage(page) {

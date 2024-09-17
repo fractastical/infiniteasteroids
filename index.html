@@ -151,7 +151,7 @@
   </div>
 
 
-  <div id="rouletteContainer" style="display: none">
+  <div id="rouletteContainer" class="modal" style="display: none">
     <div id="rouletteIcons"></div>
     <div id="planet"></div>
     <div id="upgradeDisplay"></div>
@@ -764,6 +764,7 @@
 
       document.getElementById('endScreen').style.display = 'none';
       startScreen.style.display = 'block';
+      document.getElementById('rouletteContainer').style.display = 'none';
 
       resetShip();
       gravityStrength = 0;
@@ -858,6 +859,12 @@
       // Reset active weapon classes
       activeWeaponClasses = [];
 
+
+      comboFlameChainLightningActive = false;
+      comboExplosiveDroneActive = false;
+      comboSonicBoomerangActive = false;
+      comboCryoBombActive = false;
+      comboGravityBlastActive = false;
 
       level = 1;
       xp = 0;

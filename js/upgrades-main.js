@@ -277,7 +277,7 @@ function drawActiveMegaUpgrades() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             ctx.fillRect(x, y + upgradeSize * (1 - cooldownPercentage), upgradeSize, upgradeSize * cooldownPercentage);
         }
-        console.log(upgrade);
+        // console.log(upgrade);
         // Call the upgrade's custom draw function if it exists
         if (typeof upgrade.draw === 'function') {
             ctx.translate(x, y);  // Translate context to upgrade's position
