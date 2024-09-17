@@ -858,7 +858,7 @@ function shootTetragrammatonShip() {
     const laserY = ship.y;
 
     // Create a fan-out effect from the front of the ship
-    const numLasers = 5; // Number of lasers in the fan
+    const numLasers = 4; // Number of lasers in the fan
     const spreadAngle = Math.PI / 4; // 45 degrees spread, increased for wider coverage
 
     for (let i = 0; i < numLasers; i++) {
