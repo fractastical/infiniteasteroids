@@ -283,9 +283,9 @@ function drawAsteroids() {
 
 
 function getHPColor(hitpoints) {
-    if (hitpoints <= 100) return '#FFA500'; // Orange
-    if (hitpoints <= 200) return '#FF4500'; // OrangeRed
-    if (hitpoints <= 300) return '#FF0000'; // Red
+    if (hitpoints <= 150) return '#FFA500'; // Orange
+    if (hitpoints <= 300) return '#FF4500'; // OrangeRed
+    if (hitpoints <= 500) return '#FF0000'; // Red
     return '#8B0000'; // DarkRed
 }
 

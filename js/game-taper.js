@@ -4,7 +4,7 @@ const MULTI_WAVE = 65;
 
 function xpTaperingFactor() {
 
-    return Math.max(0.3, 1 - (wave - 1) * 0.0025);
+    return Math.max(0.3, 1 - (wave - 1) * 0.0015);
 
 }
 
