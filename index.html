@@ -762,6 +762,7 @@
       document.getElementById('endScreen').style.display = 'none';
       startScreen.style.display = 'block';
       document.getElementById('rouletteContainer').style.display = 'none';
+      console.log(currentShip);
 
       resetShip();
       gravityStrength = 0;
@@ -1074,6 +1075,8 @@
         bounces: 1,
         cooldown: 1
       };
+
+      console.log(currentShip);
 
 
     }
