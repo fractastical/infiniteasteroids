@@ -2586,6 +2586,16 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
         }
     });
 
+    const chartContainer = document.createElement('div');
+    chartContainer.id = 'endGameDamageChartContainer';
+    chartContainer.style.width = '100%';
+    chartContainer.style.height = '400px';
+    endScreen.insertBefore(chartContainer, endScreen.firstChild);
+
+    // Create and display the chart
+    createEndGameDamageChart();
+
+
     // Clear and set recently unlocked weapons
     unlockedWeaponsList.innerHTML = '';
     if (newlyUnlockedWeapons.length === 0) {
@@ -2623,6 +2633,7 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     } else {
         newAchievementsHeader.style.display = 'block';
     }
+
 
     function displayAchievementsSequentially(index) {
         if (index >= newlyUnlockedAchievements.length) return;

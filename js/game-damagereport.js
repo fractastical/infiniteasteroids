@@ -91,6 +91,80 @@ function getMostEffectiveWeaponForWave(waveNumber) {
 
 let damageChart;
 
+function createEndGameDamageChart() {
+    const ctx = document.getElementById('endGameDamageChartContainer').getContext('2d');
+    const endGameDamageChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: weaponDamagePerWave.map((_, index) => `Wave ${index + 1}`),
+            datasets: weaponsList.map(weapon => ({
+                label: damageReportMapping[weapon] || weapon,
+                data: weaponDamagePerWave.map(waveDamage => waveDamage[weapon] || 0),
+                borderColor: getRandomColor(),
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                tension: 0.1
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Weapon Damage Per Wave',
+                    font: {
+                        size: 18,
+                        color: '#ff00ff'
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'right',
+                    labels: {
+                        color: '#ffffff'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Wave',
+                        color: '#ffffff'
+                    },
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Damage',
+                        color: '#ffffff'
+                    },
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function getRandomColor() {
+    const hue = Math.random() * 360;
+    return `hsl(${hue}, 70%, 60%)`;
+}
 
 
 function initializeDamageChart() {
