@@ -643,6 +643,11 @@ function updateShipPreview(shipKey = "basic") {
 // }
 
 
+let currentShipIndex = 0;
+let currentSecondaryWeaponIndex = 0;
+let availableShips = [];
+let availableSecondaryWeapons = [];
+
 function populateSelectors() {
     const selectedShipSpan = document.getElementById('selectedShip');
     const selectedSecondaryWeaponSpan = document.getElementById('selectedSecondaryWeapon');
@@ -651,34 +656,25 @@ function populateSelectors() {
     const prevSecondaryWeaponButton = document.getElementById('prevSecondaryWeaponButton');
     const nextSecondaryWeaponButton = document.getElementById('nextSecondaryWeaponButton');
 
-    let availableShips = [];
-    let availableSecondaryWeapons = [];
-    let currentShipIndex = 0;
-    let currentSecondaryWeaponIndex = 0;
+    // Always refresh available ships and weapons
+    availableShips = [];
+    availableSecondaryWeapons = [];
 
-    if (Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached)
-        addAchievement('all_hards');
-
-    if (Achievements.complete_normal_mode.reached && Achievements.complete_meteor_normal_mode.reached && Achievements.complete_planet_normal_mode.reached && Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached && Achievements.complete_planet_hero_mode.reached && Achievements.complete_meteor_hero_mode.reached && Achievements.complete_hero_mode.reached)
-        addAchievement('all_modes');
-
-    // Populate available ships
     Object.keys(ships).forEach(shipKey => {
         if (ships[shipKey].condition()) {
             availableShips.push({ key: shipKey, name: ships[shipKey].name });
         }
     });
 
-    // console.log("availableShips");
-    // console.log(availableShips.length);
-    // console.log(availableShips);
-
-    // Populate available secondary weapons
     Object.keys(secondaryWeapons).forEach(weaponKey => {
         if (secondaryWeapons[weaponKey].isAvailable()) {
             availableSecondaryWeapons.push({ key: weaponKey, name: secondaryWeapons[weaponKey].name });
         }
     });
+
+    // Ensure current indices are within bounds
+    currentShipIndex = Math.min(currentShipIndex, availableShips.length - 1);
+    currentSecondaryWeaponIndex = Math.min(currentSecondaryWeaponIndex, availableSecondaryWeapons.length - 1);
 
     // Function to cycle through options
     function cycleOption(array, currentIndex, direction) {
@@ -691,21 +687,21 @@ function populateSelectors() {
 
     // Update display functions
     function updateShipDisplay() {
-        selectedShipSpan.textContent = availableShips[currentShipIndex].name;
-        updateShipPreview(availableShips[currentShipIndex].key);
+        if (availableShips.length > 0) {
+            selectedShipSpan.textContent = availableShips[currentShipIndex].name;
+            updateShipPreview(availableShips[currentShipIndex].key);
+        }
     }
 
     function updateSecondaryWeaponDisplay() {
-        selectedSecondaryWeaponSpan.textContent = availableSecondaryWeapons[currentSecondaryWeaponIndex].name;
+        if (availableSecondaryWeapons.length > 0) {
+            selectedSecondaryWeaponSpan.textContent = availableSecondaryWeapons[currentSecondaryWeaponIndex].name;
+        }
     }
 
-    // Set initial values
-    if (availableShips.length > 0) {
-        updateShipDisplay();
-    }
-    if (availableSecondaryWeapons.length > 0) {
-        updateSecondaryWeaponDisplay();
-    }
+    // Always update displays to reflect current state
+    updateShipDisplay();
+    updateSecondaryWeaponDisplay();
 
     // Add event listeners for ship buttons
     nextShipButton.addEventListener('click', () => {
