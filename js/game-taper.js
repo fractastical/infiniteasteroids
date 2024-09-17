@@ -63,14 +63,14 @@ const MEGA_BOSS_SPAWN_WAVE = 75;
 const OCTO_BOSS_SPAWN_WAVE = 100;
 
 // Alien types and properties
-const SwarmingAlienTypes = {
-    TOP: { hitpoints: 1, speed: 0.5 },
-    BOTTOM: { hitpoints: 1, speed: 0.3 },
-    HORIZONTAL: { hitpoints: 2, speed: 0.4 },
-    HUNTING: { hitpoints: 1, speed: 0.15 },
-    LITTLE: { hitpoints: 15, speed: 0.5 },
-    BLINKING: { hitpoints: 2, speed: 0.3 }
-};
+// const SwarmingAlienTypes = {
+//     TOP: { hitpoints: 1, speed: 0.5 },
+//     BOTTOM: { hitpoints: 1, speed: 0.3 },
+//     HORIZONTAL: { hitpoints: 2, speed: 0.4 },
+//     HUNTING: { hitpoints: 1, speed: 0.15 },
+//     LITTLE: { hitpoints: 15, speed: 0.5 },
+//     BLINKING: { hitpoints: 2, speed: 0.3 }
+// };
 
 // Boss stats
 const SUPER_BOSS_HP = 5000;
@@ -78,10 +78,9 @@ const MEGA_BOSS_HP = 10000;
 const OCTO_BOSS_HP = 20000;
 
 // Alien laser properties
-const alienLaserSpeed = 2.2;
-const alienLaserSize = 4;
+// const alienLaserSpeed = 2.2;
+// const alienLaserSize = 4;
 
-let currentMode = GameModes.NORMAL;
 
 // Function to determine number of aliens to spawn
 function getAliensToSpawn(wave) {
