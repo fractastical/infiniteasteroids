@@ -2,12 +2,24 @@ const TAPER_WAVE = 85;
 
 const MULTI_WAVE = 65;
 
+const MULTI_WAVE_MULTIPLIER = 1.2;
+
 function xpTaperingFactor() {
 
     return Math.max(0.3, 1 - (wave - 1) * 0.0015);
 
 }
 
+function applyMultiWaveBoost(wave) {
+
+    let hpBooster = 0;
+    if (wave > MULTI_WAVE) {
+        let multiplier = wave - MULTI_WAVE;
+        hpBooster = multiplier * MULTI_WAVE_MULTIPLIER;
+    }
+    return hpBooster;
+
+}
 
 function calculateAsteroidSpeed(wave) {
     const baseSpeed = 2;

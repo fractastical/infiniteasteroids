@@ -128,10 +128,7 @@ function createAsteroids(side) {
             let type = 'normal';
 
             let hpBooster = 0;
-            if (wave > MULTI_WAVE) {
-                let multiplier = wave - MULTI_WAVE;
-                hpBooster = multiplier * 1.5;
-            }
+            hpBooster = applyMultiWaveBoost(wave);
 
             if (isRareAsteroid) {
                 // console.log("Rare asteroid created:", type, color);
