@@ -67,7 +67,7 @@ function getRandomUpgrades(count) {
 
 
     const availableUpgrades = [
-        ...(getUpgradeCount('basiclaser') <= upgradeLimit + 5 ? ['Increase Laser Level', 'Decrease Laser Cooldown', 'Increase Max Speed', 'Increase Rotation Speed'] : []),
+        ...(getUpgradeCount('basiclaser') <= upgradeLimit + 10 ? ['Increase Laser Level', 'Decrease Laser Cooldown', 'Increase Max Speed', 'Increase Rotation Speed'] : []),
         ...(activeWeaponClasses.includes('turret') ? (getUpgradeCount('turret') <= upgradeLimit ? ['Increase Turret Firerate', 'Increase Turret Damage'] : []) : ['Activate Turret'])
 
     ];
