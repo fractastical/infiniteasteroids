@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9901"
+let version = "0.9902"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -307,7 +307,7 @@ let asteroids = [];
 let gameLoop;
 let explosions = [];
 let lives = 3;
-let testMode = true;
+let testMode = false;
 
 if (testMode)
     lives = 1;
