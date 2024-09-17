@@ -2097,8 +2097,8 @@ function populateAchievements() {
 function updateAchievementsAtEnd() {
 
     const newlyUnlockedAchievements = [];
-
     const newlyUnlockedWeapons = [];
+    const allAchieved = new Set();
 
     const addAchievement = (achievementKey) => {
         if (!Achievements[achievementKey].reached || currentMatchAchievements.has(achievementKey)) {
@@ -2172,6 +2172,30 @@ function updateAchievementsAtEnd() {
 
     // Clear the current match achievements for the next game
     currentMatchAchievements.clear();
+
+    for (const [key, achievement] of Object.entries(Achievements)) {
+        if (achievement.reached) {
+            allAchieved.add(key);
+        }
+    }
+
+    if (allAchieved.has('complete_planet_hard_mode') &&
+        allAchieved.has('complete_meteor_hard_mode') &&
+        allAchieved.has('complete_hard_mode')) {
+        addAchievement('all_hards');
+    }
+
+    if (allAchieved.has('complete_normal_mode') &&
+        allAchieved.has('complete_meteor_normal_mode') &&
+        allAchieved.has('complete_planet_normal_mode') &&
+        allAchieved.has('complete_planet_hard_mode') &&
+        allAchieved.has('complete_meteor_hard_mode') &&
+        allAchieved.has('complete_hard_mode') &&
+        allAchieved.has('complete_planet_hero_mode') &&
+        allAchieved.has('complete_meteor_hero_mode') &&
+        allAchieved.has('complete_hero_mode')) {
+        addAchievement('all_modes');
+    }
 
 
     try {
