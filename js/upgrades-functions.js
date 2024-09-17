@@ -440,7 +440,7 @@ const asteroidSplitter = {
                         const newAsteroid = {
                             x: asteroid.x,
                             y: asteroid.y,
-                            size: Math.maxax(4, asteroid.size / 2),
+                            size: Math.max(4, asteroid.size / 2),
                             speed: asteroid.speed * 0.2,
                             dx: Math.random() * 1.5 - 1,
                             dy: Math.random() * 1.5 - 1,
