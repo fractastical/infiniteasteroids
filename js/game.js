@@ -12,6 +12,10 @@ let activeMegaUpgrades = [];
 let lastActivatedWave = 0;
 let overClockingAllowed = false;
 
+let totalDamage = 0;
+let totalAsteroidsKilled = 0;
+let totalAliensKilled = 0;
+
 const joystick = document.getElementById('joystick');
 const joystickInner = document.getElementById('joystick-inner');
 const joystickHandle = document.getElementById('joystickHandle');
@@ -1742,6 +1746,10 @@ function populateAchievementIcons() {
     const achievementIconsList = document.getElementById('achievementIconsList');
     achievementIconsList.innerHTML = '';
 
+
+    // Insert the total stats container at the beginning of achievementIconsList
+    achievementIconsList.insertBefore(totalStatsContainer, achievementIconsList.firstChild);
+
     // Create containers for weapons and achievements
     const weaponsContainer = document.createElement('div');
     weaponsContainer.classList.add('icons-section', 'weapons-icons');
@@ -1868,6 +1876,31 @@ function populateAchievementsModal() {
     const achievementsDisplay = document.getElementById('achievementsDisplay');
     const totalAchievements = Object.keys(Achievements).length;
 
+    // Clear existing content
+    achievementsDisplay.innerHTML = '';
+
+    // Add total stats section
+    const statsSection = document.createElement('div');
+    statsSection.className = 'achievement-stats';
+    statsSection.innerHTML = `
+        <h3>Total Stats</h3>
+        <ul>
+            <li>Total Damage Dealt: ${totalDamage.toLocaleString()}</li>
+            <li>Total Asteroids Destroyed: ${totalAsteroidsKilled.toLocaleString()}</li>
+            <li>Total Aliens Defeated: ${totalAliensKilled.toLocaleString()}</li>
+        </ul>
+    `;
+    achievementsDisplay.appendChild(statsSection);
+
+    // Add a separator
+    const separator = document.createElement('hr');
+    achievementsDisplay.appendChild(separator);
+
+    // Add container for paginated achievements
+    const paginatedAchievements = document.createElement('div');
+    paginatedAchievements.id = 'paginatedAchievements';
+    achievementsDisplay.appendChild(paginatedAchievements);
+
     // Calculate the total number of pages
     const totalPages = Math.ceil(totalAchievements / achievementsPerPage);
 
@@ -1893,8 +1926,8 @@ function populateAchievementsModal() {
 
 // Function to display a specific page of achievements
 function displayAchievementPage(page) {
-    const achievementsDisplay = document.getElementById('achievementsDisplay');
-    achievementsDisplay.innerHTML = ''; // Clear the current content
+    const paginatedAchievements = document.getElementById('paginatedAchievements');
+    paginatedAchievements.innerHTML = ''; // Clear only the paginated achievements
 
     // Get the achievements for the current page
     const achievementKeys = Object.keys(Achievements);
@@ -1922,10 +1955,13 @@ function displayAchievementPage(page) {
         descriptionElement.textContent = achievement.description;
         achievementElement.appendChild(descriptionElement);
 
-        achievementsDisplay.appendChild(achievementElement);
+        paginatedAchievements.appendChild(achievementElement);
     }
-}
 
+    // Update navigation buttons
+    document.getElementById('prevAchievement').disabled = (page === 0);
+    document.getElementById('nextAchievement').disabled = (page === Math.ceil(achievementKeys.length / achievementsPerPage) - 1);
+}
 // Function to open the achievements modal
 function openAchievementsModal() {
     const modal = document.getElementById('achievementsModal');
@@ -1998,6 +2034,24 @@ function populateAchievements() {
     const achievementIconsList = document.getElementById('achievementIconsList');
     achievementsList.innerHTML = '';
     achievementIconsList.innerHTML = '';
+
+
+    // const totalStatsContainer = document.createElement('div');
+    // totalStatsContainer.classList.add('total-stats');
+
+    // // Add total stats
+    // const statsHeader = document.createElement('h3');
+    // statsHeader.textContent = 'Total Stats';
+    // totalStatsContainer.appendChild(statsHeader);
+
+    // const statslist = document.createElement('ul');
+    // statslist.innerHTML = `
+    //     <li>Total Damage Dealt: ${totalDamage.toLocaleString()}</li>
+    //     <li>Total Asteroids Destroyed: ${totalAsteroidsKilled.toLocaleString()}</li>
+    //     <li>Total Aliens Defeated: ${totalAliensKilled.toLocaleString()}</li>
+    // `;
+    // totalStatsContainer.appendChild(statslist);
+
 
     // Create containers for ships, weapons, secondary weapons, and achievements icons
     const shipsContainer = document.createElement('div');
@@ -2149,10 +2203,12 @@ function populateAchievements() {
     achievementsHeader.textContent = `Achievements (${achievedCount} / ${totalAchievements})`;
     achievementsIconsContainer.insertBefore(achievementsHeader, achievementsIconsContainer.firstChild);
 
+
     // Append containers to the achievementIconsList
     achievementIconsList.appendChild(weaponsContainer);
     achievementIconsList.appendChild(secondaryWeaponsContainer);
     achievementIconsList.appendChild(shipsContainer);
+
 
     // achievementIconsList.appendChild(achievementsIconsContainer);
 

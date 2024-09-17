@@ -1607,49 +1607,8 @@
     });
 
 
-    async function loadUserData(userId = null) {
-      // const crazyGameData = document.getElementById('crazyGameData');
-      // let userId = initialUserId;
 
-      // console.log("Attempting to load user data");
-
-      // if (!window.CrazyGames.SDK.user.isUserAccountAvailable) {
-      //   console.log("CrazyGames user account system is not available");
-      //   crazyGamesMode = false;
-      //   return;
-      // }
-
-      // crazyGamesMode = true;
-
-      // try {
-      //   let user = await window.CrazyGames.SDK.user.getUser();
-      //   console.log("CrazyGames user:", user);
-
-      //   if (!user) {
-      //     console.log("No user logged in, showing auth prompt");
-      //     const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
-      //     console.log("Auth prompt result", authResult);
-
-      //     if (!authResult.userObject) {
-      //       console.log("User cancelled login");
-      //       return;
-      //     }
-      //     user = authResult.userObject;
-      //   }
-
-      //   const token = await window.CrazyGames.SDK.user.getUserToken();
-      //   console.log("Get token result", token);
-
-      //   if (crazyGamesDebugMode) {
-      //     crazyGameData.innerHTML += JSON.stringify(token);
-      //   }
-
-      //   userId = 'cg_' + user.username; // Using username as unique identifier
-      //   userNickname.textContent = user.username;
-      //   userInfo.style.display = 'block';
-      //   loginLink.style.display = 'none';
-
-      // Now load data from Firebase
+    async function loadUserData(userId) {
       try {
         const db = getFirestore();
         const userDocRef = doc(db, 'users', userId);
@@ -1663,8 +1622,21 @@
           const gameAchievements = userData.games?.[gameId]?.achievements || {};
           Object.assign(Achievements, gameAchievements);
 
-          // Load scores
+          // Load scores and calculate totals
           const userScores = userData.games?.[gameId]?.scores || [];
+          totalDamage = 0;
+          totalAsteroidsKilled = 0;
+          totalAliensKilled = 0;
+
+          userScores.forEach(score => {
+            // Check if topWeapons exists and is an array before using reduce
+            if (Array.isArray(score.topWeapons)) {
+              totalDamage += score.topWeapons.reduce((sum, weapon) => sum + (weapon.damage || 0), 0);
+            }
+            totalAsteroidsKilled += score.asteroidsKilled || 0;
+            totalAliensKilled += score.aliensKilled || 0;
+          });
+
           const last10Scores = userScores.slice(-10).reverse();
 
           populateAchievements();
@@ -1675,7 +1647,7 @@
         } else {
           console.log("No existing user document. Creating new user data.");
           await setDoc(userDocRef, {
-            nickname: user.username,
+            nickname: "New User", // Use a default nickname or prompt the user for one
             games: {
               [gameId]: {
                 achievements: {},
@@ -1687,16 +1659,7 @@
       } catch (firebaseError) {
         console.error("Error getting/setting user data in Firebase:", firebaseError);
       }
-
-      // } catch (crazyGamesError) {
-      //   console.error("Error with CrazyGames authentication:", crazyGamesError);
-      //   if (crazyGamesDebugMode) {
-      //     crazyGameData.innerHTML += crazyGamesError.message;
-      //   }
-      // }
     }
-    window.loadUserData = loadUserData;
-
     function populateUserSessions(sessions) {
       const pastSessionsList = document.getElementById('pastScoresList');
       pastSessionsList.innerHTML = ''; // Clear previous content
