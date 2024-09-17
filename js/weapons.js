@@ -896,8 +896,8 @@ function firenanoswarm() {
             x: ship.x,
             y: ship.y,
             target: findNearestAsteroid(),
-            speed: nanoswarm.speed + (nanoswarmUpgrades.speed / 2),
-            damage: nanoswarm.damage + (nanoswarmUpgrades.damage * 4),
+            speed: 1 + (nanoswarmUpgrades.speed / 2),
+            damage: nanoswarm.damage + (nanoswarmUpgrades.damage * 7),
             lifetime: 300 // Missile will expire after 300 frames (~5 seconds at 60 FPS)
         };
         nanoswarm.activeMissiles.push(missile);
