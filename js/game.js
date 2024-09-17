@@ -1871,7 +1871,8 @@ function getSelectedGameMode() {
 let currentAchievementPage = 0;
 const achievementsPerPage = 5; // Number of achievements to show per page
 
-// Function to populate achievements inside the modal
+
+
 function populateAchievementsModal() {
     const achievementsDisplay = document.getElementById('achievementsDisplay');
     const totalAchievements = Object.keys(Achievements).length;
@@ -1880,17 +1881,24 @@ function populateAchievementsModal() {
     achievementsDisplay.innerHTML = '';
 
     // Add total stats section
-    const statsSection = document.createElement('div');
-    statsSection.className = 'achievement-stats';
-    statsSection.innerHTML = `
-        <h3>Total Stats</h3>
-        <ul>
-            <li>Total Damage Dealt: ${totalDamage.toLocaleString()}</li>
-            <li>Total Asteroids Destroyed: ${totalAsteroidsKilled.toLocaleString()}</li>
-            <li>Total Aliens Defeated: ${totalAliensKilled.toLocaleString()}</li>
-        </ul>
-    `;
-    achievementsDisplay.appendChild(statsSection);
+    // const statsSection = document.createElement('div');
+    // statsSection.className = 'achievement-stats';
+    // statsSection.innerHTML = `
+    //     <ul>
+    //         <li>Total Damage Dealt: ${(totalDamage || 0).toLocaleString()}</li>
+    //     </ul>
+    // `;
+
+    //     statsSection.innerHTML = `
+    //     <h3>Total Stats</h3>
+    //     <ul>
+    //         <li>Total Damage Dealt: ${(totalDamage || 0).toLocaleString()}</li>
+    //         <li>Total Asteroids Destroyed: ${(totalAsteroidsKilled || 0).toLocaleString()}</li>
+    //         <li>Total Aliens Defeated: ${(totalAliensKilled || 0).toLocaleString()}</li>
+    //     </ul>
+    // `;
+
+    // achievementsDisplay.appendChild(statsSection);
 
     // Add a separator
     const separator = document.createElement('hr');
@@ -1922,11 +1930,16 @@ function populateAchievementsModal() {
 
     // Initial display of the first page
     displayAchievementPage(currentAchievementPage);
+
+    console.log('Achievements modal populated:', achievementsDisplay.innerHTML);
 }
 
-// Function to display a specific page of achievements
 function displayAchievementPage(page) {
     const paginatedAchievements = document.getElementById('paginatedAchievements');
+    if (!paginatedAchievements) {
+        console.error('Paginated achievements container not found');
+        return;
+    }
     paginatedAchievements.innerHTML = ''; // Clear only the paginated achievements
 
     // Get the achievements for the current page
@@ -1962,6 +1975,8 @@ function displayAchievementPage(page) {
     document.getElementById('prevAchievement').disabled = (page === 0);
     document.getElementById('nextAchievement').disabled = (page === Math.ceil(achievementKeys.length / achievementsPerPage) - 1);
 }
+
+
 // Function to open the achievements modal
 function openAchievementsModal() {
     const modal = document.getElementById('achievementsModal');
@@ -1982,39 +1997,6 @@ document.getElementById('closeAchievementsModal').addEventListener('click', func
 
 
 // Function to display a specific page of achievements
-function displayAchievementPage(page) {
-    const achievementsDisplay = document.getElementById('achievementsDisplay');
-    achievementsDisplay.innerHTML = ''; // Clear the current content
-
-    // Get the achievements for the current page
-    const achievementKeys = Object.keys(Achievements);
-    const start = page * achievementsPerPage;
-    const end = Math.min(start + achievementsPerPage, achievementKeys.length);
-
-    // Loop through the achievements to display on this page
-    for (let i = start; i < end; i++) {
-        const achievement = Achievements[achievementKeys[i]];
-
-        // Create achievement element
-        const achievementElement = document.createElement('div');
-        achievementElement.classList.add('achievement');
-        achievementElement.style.opacity = achievement.reached ? '1' : '0.5';
-
-        // Create and append icon
-        const iconElement = document.createElement('img');
-        iconElement.src = achievement.icon || 'default-icon.png'; // Fallback to a default icon
-        iconElement.alt = achievement.description;
-        iconElement.classList.add('achievement-icon-small');
-        achievementElement.appendChild(iconElement);
-
-        // Create and append description
-        const descriptionElement = document.createElement('span');
-        descriptionElement.textContent = achievement.description;
-        achievementElement.appendChild(descriptionElement);
-
-        achievementsDisplay.appendChild(achievementElement);
-    }
-}
 
 // Function to open the achievements modal
 // function openAchievementsModal() {
