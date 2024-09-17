@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9911"
+let version = "0.9912"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -225,7 +225,7 @@ const Achievements = {
     gold_pixie: { reached: false, icon: 'icons/upgrades/pixie2.png', description: 'Find the gold pixie.' },
     // space_monkey: { reached: false, icon: 'icons/upgrades/monkey.png', description: 'Find the space monkey.' },
     // space_potato: { reached: false, icon: 'icons/upgrades/potato.png', description: 'Find the space potato.' },
-    all_hards: { reached: false, icon: 'achievements/insanecat.png', description: 'All hard modes wave 30. Unlock Tetragrammaship.' },
+    all_hards: { reached: false, icon: 'achievements/insanecat.png', description: 'All hard modes wave 30. Unlock Tetragrammaton.' },
     all_modes: { reached: false, icon: 'achievements/planet_huge.png', description: 'All game modes wave 30. Unlock Hexarose.' },
     dark_side: { reached: false, icon: 'icons/upgrades/darkside.png', description: 'Make a deal with Dark Side.' },
 
