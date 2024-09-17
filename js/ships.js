@@ -642,6 +642,9 @@ function updateShipPreview(shipKey = "basic") {
 //     window.getSelectedSecondaryWeapon = () => availableSecondaryWeapons[currentSecondaryWeaponIndex].key;
 // }
 
+let currentShipIndex = 0;
+let currentSecondaryWeaponIndex = 0;
+
 function populateSelectors() {
     const selectedShipSpan = document.getElementById('selectedShip');
     const selectedSecondaryWeaponSpan = document.getElementById('selectedSecondaryWeapon');
@@ -652,8 +655,6 @@ function populateSelectors() {
 
     let availableShips = [];
     let availableSecondaryWeapons = [];
-    let currentShipIndex = 0;
-    let currentSecondaryWeaponIndex = 0;
 
     // Populate available ships
     Object.keys(ships).forEach(shipKey => {
