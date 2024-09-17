@@ -1,5 +1,6 @@
 const TAPER_WAVE = 85;
 
+const MULTI_WAVE = 65;
 
 function xpTaperingFactor() {
 

@@ -128,9 +128,9 @@ function createAsteroids(side) {
             let type = 'normal';
 
             let hpBooster = 0;
-            if (wave > 65) {
-                let multiplier = 65 - wave;
-                hpBooster = multiplier * 3;
+            if (wave > MULTI_WAVE) {
+                let multiplier = wave - MULTI_WAVE;
+                hpBooster = multiplier * 2.5;
             }
 
             if (isRareAsteroid) {
