@@ -814,6 +814,8 @@ function update() {
         spawnAliens(wave); // Spawn aliens based on the current wave
         checkForUpgradeSpawn();
         spawnTimer = spawnCooldown;
+        recordWeaponDamageForWave(); // Record the weapon damage for this wave
+
 
 
     }
