@@ -642,12 +642,6 @@ function updateShipPreview(shipKey = "basic") {
 //     window.getSelectedSecondaryWeapon = () => availableSecondaryWeapons[currentSecondaryWeaponIndex].key;
 // }
 
-
-let currentShipIndex = 0;
-let currentSecondaryWeaponIndex = 0;
-let availableShips = [];
-let availableSecondaryWeapons = [];
-
 function populateSelectors() {
     const selectedShipSpan = document.getElementById('selectedShip');
     const selectedSecondaryWeaponSpan = document.getElementById('selectedSecondaryWeapon');
@@ -656,25 +650,28 @@ function populateSelectors() {
     const prevSecondaryWeaponButton = document.getElementById('prevSecondaryWeaponButton');
     const nextSecondaryWeaponButton = document.getElementById('nextSecondaryWeaponButton');
 
-    // Always refresh available ships and weapons
-    availableShips = [];
-    availableSecondaryWeapons = [];
+    let availableShips = [];
+    let availableSecondaryWeapons = [];
+    let currentShipIndex = 0;
+    let currentSecondaryWeaponIndex = 0;
 
+    // Populate available ships
     Object.keys(ships).forEach(shipKey => {
         if (ships[shipKey].condition()) {
             availableShips.push({ key: shipKey, name: ships[shipKey].name });
         }
     });
 
+    // console.log("availableShips");
+    // console.log(availableShips.length);
+    // console.log(availableShips);
+
+    // Populate available secondary weapons
     Object.keys(secondaryWeapons).forEach(weaponKey => {
         if (secondaryWeapons[weaponKey].isAvailable()) {
             availableSecondaryWeapons.push({ key: weaponKey, name: secondaryWeapons[weaponKey].name });
         }
     });
-
-    // Ensure current indices are within bounds
-    currentShipIndex = Math.min(currentShipIndex, availableShips.length - 1);
-    currentSecondaryWeaponIndex = Math.min(currentSecondaryWeaponIndex, availableSecondaryWeapons.length - 1);
 
     // Function to cycle through options
     function cycleOption(array, currentIndex, direction) {
@@ -687,21 +684,21 @@ function populateSelectors() {
 
     // Update display functions
     function updateShipDisplay() {
-        if (availableShips.length > 0) {
-            selectedShipSpan.textContent = availableShips[currentShipIndex].name;
-            updateShipPreview(availableShips[currentShipIndex].key);
-        }
+        selectedShipSpan.textContent = availableShips[currentShipIndex].name;
+        updateShipPreview(availableShips[currentShipIndex].key);
     }
 
     function updateSecondaryWeaponDisplay() {
-        if (availableSecondaryWeapons.length > 0) {
-            selectedSecondaryWeaponSpan.textContent = availableSecondaryWeapons[currentSecondaryWeaponIndex].name;
-        }
+        selectedSecondaryWeaponSpan.textContent = availableSecondaryWeapons[currentSecondaryWeaponIndex].name;
     }
 
-    // Always update displays to reflect current state
-    updateShipDisplay();
-    updateSecondaryWeaponDisplay();
+    // Set initial values
+    if (availableShips.length > 0) {
+        updateShipDisplay();
+    }
+    if (availableSecondaryWeapons.length > 0) {
+        updateSecondaryWeaponDisplay();
+    }
 
     // Add event listeners for ship buttons
     nextShipButton.addEventListener('click', () => {
@@ -858,7 +855,7 @@ function shootTetragrammatonShip() {
     const laserY = ship.y;
 
     // Create a fan-out effect from the front of the ship
-    const numLasers = 4; // Number of lasers in the fan
+    const numLasers = 5; // Number of lasers in the fan
     const spreadAngle = Math.PI / 4; // 45 degrees spread, increased for wider coverage
 
     for (let i = 0; i < numLasers; i++) {
