@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9903"
+let version = "0.9904"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
