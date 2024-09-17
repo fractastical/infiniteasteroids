@@ -3,7 +3,7 @@ const TAPER_WAVE = 85;
 
 function xpTaperingFactor() {
 
-    return Math.max(0.5, 1 - (wave - 1) * 0.02);
+    return Math.max(0.2, 1 - (wave - 1) * 0.02);
 
 }
 
