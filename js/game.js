@@ -1708,7 +1708,10 @@ function getAvailableWeaponIcons() {
         'Explo Drone': { icon: 'icon-explodrone' },
         'Chain of Flame': { icon: 'icon-chainofflame' },
         'CryoBomb': { icon: 'icon-cryobomb' },
-        'Damage Booster': { icon: 'icon-ship' }
+        'Damage Booster': { icon: 'icon-ship' },
+        'Triple Turret': { icon: 'icon-tripleTurret' },
+        'Wave Turret': { icon: 'icon-doubleTurret' },
+        'Drone Army': { icon: 'icon-droneArmy' }
 
 
     };
@@ -1737,6 +1740,9 @@ function getAvailableWeaponIcons() {
     if (Achievements.alien_megaboss_killed.reached) availableIcons.push(upgradeDefinitions['Explo Drone'].icon);
     if (Achievements.kill_500_aliens.reached) availableIcons.push(upgradeDefinitions['Sonic Boom'].icon);
     if (Achievements.alien_octopus_killed.reached) availableIcons.push(upgradeDefinitions['CryoBomb'].icon);
+    if (Achievements.drone_damage.reached) availableIcons.push(upgradeDefinitions['Drone Army'].icon);
+    if (Achievements.complete_meteor_normal_mode.reached) availableIcons.push(upgradeDefinitions['Wave Turret'].icon);
+    if (Achievements.complete_planet_normal_mode.reached) availableIcons.push(upgradeDefinitions['Triple Turret'].icon);
 
     return availableIcons;
 }
@@ -1758,7 +1764,7 @@ function populateAchievementIcons() {
 
     // Add weapon icons
     const weaponIcons = getAvailableWeaponIcons();
-    const totalWeapons = 16; // Adjust this number to match your total number of weapons
+    const totalWeapons = 22; // Adjust this number to match your total number of weapons
 
     const weaponsHeader = document.createElement('h4');
     weaponsHeader.textContent = `Weapons (${weaponIcons.length} / ${totalWeapons})`;
@@ -2068,8 +2074,7 @@ function populateAchievements() {
 
     // Add weapon icons
     const weaponIcons = getAvailableWeaponIcons();
-    const totalWeapons = 19; // Adjust this number to match your total number of weapons
-    // not including double and triple turret
+    const totalWeapons = 22; // Adjust this number to match your total number of weapons
 
     const weaponsHeader = document.createElement('h4');
     weaponsHeader.textContent = `Weapons (${weaponIcons.length} / ${totalWeapons})`;

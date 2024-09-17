@@ -238,8 +238,8 @@ const megaUpgrades = [
 function updateMegaUpgrades() {
 
     activeMegaUpgrades.forEach(upgrade => {
-        console.log(upgrade.name);
-        console.log(upgrade.timer);
+        // console.log(upgrade.name);
+        // console.log(upgrade.timer);
 
         if (typeof upgrade.update === 'function') {
             upgrade.update();
