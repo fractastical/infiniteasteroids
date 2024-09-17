@@ -8,7 +8,6 @@ let chanceForMegaHardenedAsteroid = 1; // Example chance for mega hardened aster
 
 let asteroidSpeedMultiplier = 1;
 
-const TAPER_WAVE = 85;
 
 function createSmallerAsteroids(x, y, size, speed, hitpoints) {
     const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
@@ -262,7 +261,7 @@ function drawAsteroids() {
             const ringThickness = Math.min((asteroid.hitpoints - 10) / 5, 5); // Increase thickness with HP, max 5
             if (ringThickness > 0) {
                 ctx.beginPath();
-                ctx.arc(asteroid.x, asteroid.y, asteroid.size - ringThickness - 2, 0, Math.PI * 2);
+                ctx.arc(asteroid.x, asteroid.y, Math.abs(asteroid.size - ringThickness - 2), 0, Math.PI * 2);
                 ctx.strokeStyle = getHPColor(asteroid.hitpoints);
                 ctx.lineWidth = ringThickness;
                 ctx.stroke();
@@ -967,36 +966,3 @@ function updateAsteroids() {
 
 
 
-function calculateAsteroidSpeed(wave) {
-    const baseSpeed = 2;
-    const growthRate = 1.02;
-
-    if (wave <= TAPER_WAVE) {
-        return baseSpeed * Math.pow(growthRate, wave - 1) * asteroidDifficultySpeedMultiplier;
-    } else {
-        const maxExponentialSpeed = baseSpeed * Math.pow(growthRate, TAPER_WAVE - 1);
-        const linearIncrease = (wave - TAPER_WAVE) * 0.05; // Adjust 0.05 for desired linear growth
-        return (maxExponentialSpeed + linearIncrease) * asteroidDifficultySpeedMultiplier;
-    }
-}
-
-function calculateAsteroidDx(wave, dx) {
-    return dx * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * calculateAsteroidSpeed(wave) / 2;
-}
-
-function calculateAsteroidDy(wave, dy) {
-    return dy * (Math.random() * 2 - 1) * asteroidSpeedMultiplier * calculateAsteroidSpeed(wave) / 2;
-}
-
-function calculateAsteroidHitpoints(wave, baseHitpoints) {
-    const normalGrowthRate = 1.02; // Slight increase for waves before TAPER_WAVE
-    const exponentialGrowthRate = 1.015; // Stronger increase for waves after TAPER_WAVE
-
-    if (wave <= TAPER_WAVE) {
-        return baseHitpoints;
-        // return baseHitpoints * Math.pow(normalGrowthRate, wave - 1));
-    } else {
-        const baseExponentialHitpoints = baseHitpoints * Math.pow(normalGrowthRate, TAPER_WAVE - 1);
-        return Math.round(baseExponentialHitpoints * Math.pow(exponentialGrowthRate, wave - TAPER_WAVE));
-    }
-}
