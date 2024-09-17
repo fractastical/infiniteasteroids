@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9916"
+let version = "0.9917"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -2586,14 +2586,6 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
         }
     });
 
-    const chartContainer = document.createElement('div');
-    chartContainer.id = 'endGameDamageChartContainer';
-    chartContainer.style.width = '100%';
-    chartContainer.style.height = '400px';
-    endScreen.insertBefore(chartContainer, endScreen.firstChild);
-
-    // Create and display the chart
-    createEndGameDamageChart();
 
 
     // Clear and set recently unlocked weapons
@@ -2656,6 +2648,10 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     }
 
     displayAchievementsSequentially(0); // Start displaying achievements from the first one
+
+
+    // Create and display the chart
+    // createEndGameDamageChart();
 
     // Show the end screen
     endScreen.style.display = 'flex';

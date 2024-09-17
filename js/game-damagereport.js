@@ -92,7 +92,20 @@ function getMostEffectiveWeaponForWave(waveNumber) {
 let damageChart;
 
 function createEndGameDamageChart() {
-    const ctx = document.getElementById('endGameDamageChartContainer').getContext('2d');
+
+    const canvas = document.getElementById('endGameDamageChartContainer');
+    if (!canvas) {
+        console.error('End game damage chart canvas not found');
+        return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Unable to get 2D context from canvas');
+        return;
+    }
+
+    // const ctx = document.getElementById('endGameDamageChartContainer').getContext('2d');
     const endGameDamageChart = new Chart(ctx, {
         type: 'line',
         data: {

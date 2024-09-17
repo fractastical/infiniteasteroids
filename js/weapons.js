@@ -1189,7 +1189,7 @@ function fireChainLightning(target, bounces, roid = false) {
     else
         damageReport.chainlightning += actualDamage;
 
-    console.log(comboFlameChainLightningActive);
+    // console.log(comboFlameChainLightningActive);
 
     if (target.hitpoints <= 0) {
         createExplosion(target.x, target.y, target.hitpoints, target.image);
