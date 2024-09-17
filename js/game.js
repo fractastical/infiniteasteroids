@@ -810,7 +810,9 @@ function update() {
 
         } else
             createAsteroids();
+
         spawnAliens(wave); // Spawn aliens based on the current wave
+        checkForUpgradeSpawn();
         spawnTimer = spawnCooldown;
 
 

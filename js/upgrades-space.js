@@ -221,7 +221,7 @@ function collectFloatingUpgrade(upgrade) {
 
 // Call this function at the start of each wave
 function checkForUpgradeSpawn() {
-    if (wave >= 35) {  // Start spawning after wave 30
+    if (wave >= 30) {  // Start spawning after wave 30
         spawnRandomUpgrade();
     }
 }
@@ -229,7 +229,9 @@ function checkForUpgradeSpawn() {
 // Call these functions in the game loop
 function updateAndDrawFloatingUpgrades() {
     updateFloatingUpgrades();
+    checkForUpgradeSpawn();
     drawFloatingUpgrades();
+
 }
 
 let currentMatchAchievements = new Set();
