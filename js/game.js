@@ -20,6 +20,7 @@ const joystick = document.getElementById('joystick');
 const joystickInner = document.getElementById('joystick-inner');
 const joystickHandle = document.getElementById('joystickHandle');
 const restartButton = document.getElementById('restartButton');
+const mainMenuButton = document.getElementById('mainMenuButton');
 
 let isTouchingJoystick = false;
 let joystickStartX, joystickStartY;
@@ -340,13 +341,13 @@ let droneUpgrades = {
 function startGame() {
     // updateMiniShipPreview();
     // userId = testCrazyGamesUserFlow();
-    console.log("user Id");
-    console.log(userId);
+    // console.log("user Id");
+    // console.log(userId);
 
     gameOver = false;
     gameStartTime = Date.now();
-    console.log(crazyGamesMode);
-    console.log(window.CrazyGames);
+    // console.log(crazyGamesMode);
+    // console.log(window.CrazyGames);
 
     // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
     //     try {
@@ -2503,7 +2504,7 @@ function getUpgradeCount(weaponClass) {
         case 'boomerang':
             return boomerangUpgrades.speed + boomerangUpgrades.damage - 1;
         case 'nanoswarm':
-            return nanoswarmUpgrades.speed + nanoswarmUpgrades.damage + nanoswarmUpgrades.cooldown - 3;
+            return nanoswarmUpgrades.damage + nanoswarmUpgrades.cooldown - 1;
         case 'flamethrower':
             return flamethrowerUpgrades.range + flamethrowerUpgrades.damage + flamethrowerUpgrades.cooldown - 2;
         case 'chainlightning':

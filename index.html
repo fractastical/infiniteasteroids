@@ -196,7 +196,7 @@
 
     <!-- <h3>Used Upgrades</h3>
       <ul id="upgradesList"></ul> -->
-    <p><button id="restartButton">Main Menu</button></p>
+    <p><button id="restartButton">Play Again</button><button id="mainMenuButton">Main Menu</button></p>
 
     <div id="leaderboard-container">
       <div id="leaderboard">
@@ -758,10 +758,7 @@
     //   joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
     // });
 
-    restartButton.addEventListener('click', () => {
-      // restartButton.style.display = 'none';
-      // console.log("restart click");
-
+    function resetAllVariables() {
       document.getElementById('endScreen').style.display = 'none';
       startScreen.style.display = 'block';
       document.getElementById('rouletteContainer').style.display = 'none';
@@ -1080,11 +1077,25 @@
       };
 
 
-      // Start a new game
-      // createAsteroids();
-      // startGame();
+    }
+    mainMenuButton.addEventListener('click', () => {
+      // restartButton.style.display = 'none';
+      // console.log("restart click");
+
+      resetAllVariables();
+
     });
 
+    restartButton.addEventListener('click', () => {
+      // restartButton.style.display = 'none';
+      // console.log("restart click");
+
+      resetAllVariables();
+      initializeGame(gameModes[currentGameModeIndex].id);
+
+
+
+    });
 
 
 
