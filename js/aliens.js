@@ -957,10 +957,10 @@ function spawnOctoBoss() {
         size: 260,
         bodyRadius: 120,
         speed: 0.1,
-        hitpoints: 20000,
+        hitpoints: 30000,
         armRegrowthTimer: 0,
         armRegrowthInterval: 1000, // Time in frames (adjust as needed)
-        maxHitpoints: 20000,
+        maxHitpoints: 30000,
         shootTimer: 0,
         shootInterval: 150,
         arms: [],
@@ -983,10 +983,10 @@ function spawnOctoBoss() {
             segments: [
                 {
                     angle: baseAngle,
-                    length: 150,
+                    length: 100,
                     maxLength: 350,
                     state: OctoBossArmState.GROWING,
-                    hitpoints: 500,
+                    hitpoints: 1000,
                     growthRate: 0.01
                 },
                 {
@@ -994,15 +994,15 @@ function spawnOctoBoss() {
                     length: 120,
                     maxLength: 300,
                     state: OctoBossArmState.GROWING,
-                    hitpoints: 500,
+                    hitpoints: 1000,
                     growthRate: 0.01
                 },
                 {
                     angle: baseAngle - Math.PI / 6,
-                    length: 100,
+                    length: 70,
                     maxLength: 200,
                     state: OctoBossArmState.GROWING,
-                    hitpoints: 500,
+                    hitpoints: 1000,
                     growthRate: 0.004
                 }
             ]
