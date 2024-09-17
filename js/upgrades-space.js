@@ -229,7 +229,6 @@ function checkForUpgradeSpawn() {
 // Call these functions in the game loop
 function updateAndDrawFloatingUpgrades() {
     updateFloatingUpgrades();
-    checkForUpgradeSpawn();
     drawFloatingUpgrades();
 
 }
