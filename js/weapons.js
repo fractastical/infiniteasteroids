@@ -1360,14 +1360,15 @@ function updateAcidAreas() {
                     processAsteroidDeath(asteroid);
                     asteroids.splice(j, 1);
                 }
-            }
-            if (comboCryoBombActive) {
-                asteroid.speed *= 0.9;
-                asteroid.dx *= 0.9;
-                asteroid.dy *= 0.9;
+                if (comboCryoBombActive) {
+                    asteroid.speed *= 0.9;
+                    asteroid.dx *= 0.9;
+                    asteroid.dy *= 0.9;
+
+                }
+
 
             }
-
 
 
         }
