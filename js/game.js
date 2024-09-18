@@ -5,6 +5,7 @@ let gameId = "InfiniteSpaceWar";
 let version = "0.9931"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
+let normalDebugMode = false;
 let cgUser = null;
 
 
@@ -1486,7 +1487,7 @@ function handleKeyDown(event) {
             fireSecondaryWeapon(); // Use the selected secondary weapon
         } else if ((event.key === 'r' || event.key === 'R')) {
             claimLevelUps(); // Claim level ups
-        } else if (event.key === 'o' || event.key === 'O') {
+        } else if ((event.key === 'o' || event.key === 'O') && normalDebugMode) {
 
             const pastScoresModal = document.getElementById('pastScoresModal');
             pastScoresModal.style.display = 'block';
