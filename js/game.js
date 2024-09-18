@@ -2437,7 +2437,7 @@ function levelUp() {
     if (!waitAndClaimMode) {
 
         pauseGame();
-        // clearInterval(gameLoop);
+        clearInterval(gameLoop);
 
         document.getElementById('leveluptitle').innerHTML = 'Level Up!';
 
