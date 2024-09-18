@@ -1,10 +1,15 @@
 import os
 import subprocess
-from datetime import datetime
+from datetime import datetime, timezone
 import math
 import xml.etree.ElementTree as ET
 import re
 import ast
+import logging
+import base64
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 def get_file_creation_date(file_path):
     try:
@@ -13,36 +18,36 @@ def get_file_creation_date(file_path):
             capture_output=True, text=True, check=True
         )
         dates = result.stdout.strip().split('\n')
-        return dates[0] if dates else None
+        if dates and dates[0]:  # Check if dates[0] is not empty
+            return datetime.fromisoformat(dates[0]).astimezone(timezone.utc)
+        return None
     except subprocess.CalledProcessError:
         return None
+
+def ensure_utc(dt):
+    if isinstance(dt, str):
+        dt = datetime.fromisoformat(dt)
+    if dt.tzinfo is None or dt.tzinfo.utcoffset(dt) is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
 
 def calculate_radius(line_count):
     return 5 + (math.log10(line_count + 1) / math.log10(10000)) * 20
 
 def count_variables_in_functions(content):
-    tree = ast.parse(content)
-    function_var_counts = []
-    for node in ast.walk(tree):
-        if isinstance(node, ast.FunctionDef):
-            variables = set()
-            for child in ast.walk(node):
-                if isinstance(child, ast.Name) and isinstance(child.ctx, ast.Store):
-                    variables.add(child.id)
-            function_var_counts.append(len(variables))
-    return function_var_counts
+    functions = re.findall(r'function\s+\w+\s*\([^)]*\)\s*{', content)
+    var_counts = [len(re.findall(r'\b(var|let|const)\s+\w+', func)) for func in functions]
+    return var_counts
 
 def find_variable_references(content):
-    tree = ast.parse(content)
-    references = {}
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
-            if node.id not in references:
-                references[node.id] = set()
-            references[node.id].add(node.lineno)
+    declarations = re.findall(r'\b(var|let|const)\s+(\w+)', content)
+    variables = [var for _, var in declarations]
+    references = {var: [m.start() for m in re.finditer(r'\b' + var + r'\b', content)] for var in set(variables)}
     return references
 
 def analyze_project(root_dir):
+    logger.debug(f"Analyzing project in directory: {root_dir}")
     js_files = []
     html_files = []
     image_files = []
@@ -58,10 +63,15 @@ def analyze_project(root_dir):
 
         for file in files:
             full_path = os.path.join(root, file)
+            logger.debug(f"Processing file: {full_path}")
             _, ext = os.path.splitext(file)
             ext = ext.lower()
 
-            creation_date = get_file_creation_date(full_path) or datetime.fromtimestamp(os.path.getctime(full_path)).isoformat()
+            creation_date = get_file_creation_date(full_path)
+            if creation_date is None:
+                creation_date = ensure_utc(datetime.fromtimestamp(os.path.getctime(full_path)))
+            else:
+                creation_date = ensure_utc(creation_date)
 
             if ext == '.js':
                 with open(full_path, 'r', encoding='utf-8') as f:
@@ -103,6 +113,9 @@ def analyze_project(root_dir):
         }
     }
 
+def is_displayable_image(file_path):
+    return file_path.lower().endswith(('.png', '.svg'))
+
 def generate_svg(data):
     width, height = 1500, 1000  # Increased dimensions to accommodate more details
     margin = {'top': 50, 'right': 50, 'bottom': 150, 'left': 50}
@@ -114,11 +127,10 @@ def generate_svg(data):
 
     all_files.sort(key=lambda x: x['creation_date'])
     
-    time_range = (
-        (datetime.fromisoformat(all_files[-1]['creation_date']) - 
-         datetime.fromisoformat(all_files[0]['creation_date'])).total_seconds()
-        if len(all_files) > 1 else 24 * 60 * 60  # 1 day in seconds
-    )
+    time_range = (ensure_utc(all_files[-1]['creation_date']) - 
+                ensure_utc(all_files[0]['creation_date'])).total_seconds()
+    if time_range == 0:
+        time_range = 24 * 60 * 60  # 1 day in seconds
 
     x_scale = (width - margin['left'] - margin['right']) / time_range
     y_scale = (height - margin['top'] - margin['bottom']) / (len(all_files) + 1)
@@ -131,16 +143,16 @@ def generate_svg(data):
 
     def calc_x(date):
         return margin['left'] + (
-            datetime.fromisoformat(date) - 
-            datetime.fromisoformat(all_files[0]['creation_date'])
+            ensure_utc(date) - 
+            ensure_utc(all_files[0]['creation_date'])
         ).total_seconds() * x_scale
 
     # Draw time axis
-    start_date = datetime.fromisoformat(all_files[0]['creation_date'])
-    end_date = datetime.fromisoformat(all_files[-1]['creation_date'])
+    start_date = ensure_utc(all_files[0]['creation_date'])
+    end_date = ensure_utc(all_files[-1]['creation_date'])
     for i in range(5):
         date = start_date + (end_date - start_date) * (i / 4)
-        x = calc_x(date.isoformat())
+        x = calc_x(date)
         ET.SubElement(svg, 'line', {
             'x1': str(x),
             'y1': str(height - margin['bottom']),
@@ -226,26 +238,56 @@ def generate_svg(data):
                         'opacity': '0.3'
                     })
 
-    # Draw Image file dots
+    # Draw Image file representations
     for index, file in enumerate(data['image_files']):
-        x = calc_x(file['creation_date'])
-        y = margin['top'] + (len(data['js_files']) + index + 1) * y_scale
+        try:
+            x = calc_x(file['creation_date'])
+            y = margin['top'] + (len(data['js_files']) + index + 1) * y_scale
 
-        ET.SubElement(svg, 'circle', {
-            'cx': str(x),
-            'cy': str(y),
-            'r': '3',
-            'fill': 'red',
-            'opacity': '0.7'
-        })
-        
-        text = ET.SubElement(svg, 'text', {
-            'x': str(x),
-            'y': str(y + 15),
-            'font-size': '10',
-            'text-anchor': 'middle'
-        })
-        text.text = os.path.basename(file['path'])
+            if is_displayable_image(file['path']):
+                try:
+                    image_width = 8  # Set the width to 8 pixels
+                    image_height = 8  # Set the height to 8 pixels to maintain aspect ratio
+                    with open(file['path'], 'rb') as img_file:
+                        href = f"data:image/{file['path'].split('.')[-1]};base64,{base64.b64encode(img_file.read()).decode()}"
+                    ET.SubElement(svg, 'image', {
+                        'x': str(x - image_width/2),
+                        'y': str(y - image_height/2),
+                        'width': str(image_width),
+                        'height': str(image_height),
+                        'href': href
+                    })
+                except Exception as e:
+                    logging.warning(f"Failed to embed image {file['path']}: {str(e)}")
+                    # Fallback to red circle if image embedding fails
+                    ET.SubElement(svg, 'circle', {
+                        'cx': str(x),
+                        'cy': str(y),
+                        'r': '3',
+                        'fill': 'red',
+                        'opacity': '0.7'
+                    })
+            else:
+                # For non-PNG/SVG images, keep the red circle
+                ET.SubElement(svg, 'circle', {
+                    'cx': str(x),
+                    'cy': str(y),
+                    'r': '3',
+                    'fill': 'red',
+                    'opacity': '0.7'
+                })
+            
+            text = ET.SubElement(svg, 'text', {
+                'x': str(x),
+                'y': str(y + 15),
+                'font-size': '10',
+                'text-anchor': 'middle'
+            })
+            text.text = os.path.basename(file['path'])
+
+        except Exception as e:
+            logging.error(f"Error processing image file {file['path']}: {str(e)}")
+            continue  # Skip this file and continue with the next one
 
     # Draw HTML file representations
     for index, html_file in enumerate(data['html_files']):
@@ -287,8 +329,6 @@ def generate_svg(data):
             'font-weight': 'bold' if i == 0 else 'normal'
         })
         text.text = line.strip()
-
-    return ET.tostring(svg, encoding='unicode')
 
 def main():
     root_dir = os.getcwd()
