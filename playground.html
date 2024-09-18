@@ -207,6 +207,7 @@
         <button onclick="toggleVolumeScreen()">Close</button>
     </div>
 
+
     <audio id="background-music" src="sounds/music_loop.mp3" loop></audio>
 
     <audio id="meteor-destroy-1" src="sounds/meteor_destroy.mp3"></audio>
@@ -223,16 +224,26 @@
 
     <audio id="ship-destroyed" src="sounds/ship_destroyed.mp3"></audio>
 
-    <audio id="alien-laugh-sound" src="sounds/alien_laugh3.mp3"></audio>
-
     <audio id="alien-entering-sound" src="sounds/alien_entering.mp3"></audio>
+
+    <audio id="alien-laugh-sound" src="sounds/alien_laugh3.mp3"></audio>
 
     <audio id="alien-laser-1" src="sounds/alien_laser1.mp3"></audio>
     <audio id="alien-laser-2" src="sounds/alien_laser2.mp3"></audio>
     <audio id="alien-laser-3" src="sounds/alien_laser3.mp3"></audio>
 
+    <audio id="boss-shoot-1" src="sounds/boss/boss_shoot.mp3"></audio>
+    <audio id="boss-shoot-2" src="sounds/boss/boss_shoot2.mp3"></audio>
+
+    <audio id="boss-drone-1" src="sounds/boss/boss_drone_spawn.mp3"></audio>
+    <audio id="boss-take-damage-1" src="sounds/boss/boss_damaged.mp3"></audio>
+    <audio id="boss-die" src="sounds/boss/boss_die.mp3"></audio>
+
+
     <audio id="gem-collecting-sound" src="sounds/bird_chirp.mp3"></audio>
 
+    <audio id="spin-sound" src="sounds/upgrade_loop.mp3"></audio>
+    g
     <audio id="freeze-sound" src="sounds/freeze.mp3"></audio>
     <audio id="freeze-sound-2" src="sounds/freezew.mp3"></audio>
     <audio id="death-ray-sound" src="sounds/dray1.mp3"></audio>
@@ -240,11 +251,12 @@
     <audio id="acid-bomb-sound" src="sounds/acid_bomb.mp3"></audio>
     <audio id="bomb-lay-sound" src="sounds/lay_bomb.mp3"></audio>
     <audio id="lightning-sound" src="sounds/lightning_echo.mp3"></audio>
-    <audio id="flamethrower" src="sounds/flamethrow.mp3"></audio>
+    <audio id="flamethrower" src="sounds/flame_throw2.mp3"></audio>
 
     <audio id="megaboss-background-music" src="sounds/boss1.mp3" loop></audio>
     <audio id="supermegaboss-background-music" src="sounds/boss2.mp3" loop></audio>
     <audio id="octoboss-background-music" src="sounds/boss3.mp3" loop></audio>
+
 
     <div id="xpBarContainer">
         <div id="xpBar"></div>
@@ -265,6 +277,34 @@
         <canvas id="miniShipPreview" width="40" height="40"></canvas>
         </span>
     </div>
+
+    <div id="weaponDamageChartModal" class="modal" style="max-width:600px;">
+        <div class="modal-content">
+            <h2>Weapon Damage Per Wave</h2>
+            <div id="weaponDamageChartContainer">
+                <canvas id="weaponDamageChart"></canvas>
+            </div>
+            <button id="closeWeaponDamageChart">Close</button>
+        </div>
+    </div>
+
+    <div id="achievementsModal" class="modal">
+        <div class="modal-content">
+            <h2>Achievements</h2>
+
+            <!-- Container for showing achievements -->
+            <div id="achievementsDisplay" class="achievement-page"></div>
+
+            <!-- Navigation buttons -->
+            <div class="modal-navigation">
+                <button id="prevAchievement" class="nav-btn">←</button>
+                <button id="nextAchievement" class="nav-btn">→</button>
+            </div>
+
+            <button id="closeAchievementsModal">Close</button>
+        </div>
+    </div>
+
 
 
     <div id="levelUpModal" class="modal">
@@ -331,6 +371,7 @@
     <script src="js/game-spacetime.js"></script>
 
     <script src="js/game-taper.js"></script>
+    <script src="js/game-damagereport.js"></script>
 
     <script src="js/game.js"></script>
     <script src="js/game-playground.js"></script>

@@ -36,6 +36,20 @@ function sonic5x() {
 
 }
 
+// function flame5x() {
+
+//     activateWeaponClass('flamethrower');
+
+//     for (i = 0; i < 5; i++) {
+
+//         applyUpgrade('Increase Flamethrower Range');
+//         applyUpgrade('Increase Flamethrower Damage');
+//         applyUpgrade('Decrease Flamethrower Cooldown');
+
+//     }
+
+// }
+
 
 function acid5x() {
 

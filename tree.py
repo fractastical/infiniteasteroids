@@ -112,7 +112,7 @@ def analyze_project(root_dir):
             'achievements': achievements_count
         }
     }
-
+    
 def is_displayable_image(file_path):
     return file_path.lower().endswith(('.png', '.svg'))
 

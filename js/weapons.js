@@ -174,7 +174,7 @@ let sonicBlast = {
 let flamethrower = {
     cooldown: 10, // Cooldown time in frames
     timer: 0, // Current cooldown timer
-    range: 170, // Range of the flamethrower
+    range: 100, // Range of the flamethrower
     damage: 1, // Damage dealt per frame
     active: false, // Flag to track if the flamethrower is active
     damagePerSecond: 1 // Damage dealt per second
@@ -458,7 +458,7 @@ function applyUpgrade(upgrade) {
             break;
         case 'Increase Flamethrower Range':
             flamethrowerUpgrades.range++;
-            flamethrower.range = 100 * flamethrowerUpgrades.range;
+            flamethrower.range = 100 + (20 * flamethrowerUpgrades.range);
             break;
         case 'Increase Flamethrower Damage':
             flamethrowerUpgrades.damage++;
