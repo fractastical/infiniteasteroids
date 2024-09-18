@@ -152,4 +152,18 @@ function flame5x() {
 }
 
 
+function flame1x() {
+
+    activateWeaponClass('flamethrower');
+
+    for (i = 0; i < 1; i++) {
+        console.log("flame1");
+        applyUpgrade('Increase Flamethrower Range');
+        applyUpgrade('Increase Flamethrower Damage');
+        applyUpgrade('Decrease Flamethrower Cooldown');
+
+    }
+
+}
+
 

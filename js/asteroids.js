@@ -724,7 +724,7 @@ function applyMegaFreezeEffect(x, y, radius, duration) {
 function triggerMegaExplosion() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const megaExplosionRadius = Math.min(canvas.width, canvas.height) / 2;
+    const megaExplosionRadius = Math.min(canvas.width, canvas.height) / 3;
     const megaExplosionDamage = 300; // Adjust this value as needed
 
     // Create visual effect for mega explosion
