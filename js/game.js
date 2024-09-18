@@ -226,6 +226,7 @@ const Achievements = {
     gold_pixie: { reached: false, icon: 'icons/upgrades/pixie2.png', description: 'Find the gold pixie.' },
     // space_monkey: { reached: false, icon: 'icons/upgrades/monkey.png', description: 'Find the space monkey.' },
     // space_potato: { reached: false, icon: 'icons/upgrades/potato.png', description: 'Find the space potato.' },
+    // all_normals: { reached: false, icon: 'achievements/insanecat.png', description: 'All normal modes wave 30. Unlock remixes in settings.' },
     all_hards: { reached: false, icon: 'achievements/insanecat.png', description: 'All hard modes wave 30. Unlock Tetragrammaton.' },
     all_modes: { reached: false, icon: 'achievements/planet_huge.png', description: 'All game modes wave 30. Unlock Hexarose.' },
     dark_side: { reached: false, icon: 'icons/upgrades/darkside.png', description: 'Make a deal with Dark Side.' },
@@ -2259,6 +2260,13 @@ function updateAchievementsAtEnd() {
             allAchieved.add(key);
         }
     }
+
+    // if (allAchieved.has('complete_planet_normal_mode') &&
+    //     allAchieved.has('complete_meteor_normal_mode') &&
+    //     allAchieved.has('complete_normal_mode')) {
+    //     addAchievement('all_normals');
+    // }
+
 
     if (allAchieved.has('complete_planet_hard_mode') &&
         allAchieved.has('complete_meteor_hard_mode') &&
