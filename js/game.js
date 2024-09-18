@@ -2424,6 +2424,7 @@ function toggleRedeemMode() {
 
 function levelUp() {
 
+
     level++;
     unclaimedLevelUps++;
     let prevLevelUp = lastLevelUp;
@@ -2448,6 +2449,8 @@ function levelUp() {
             waitAndClaimMode = true;
             resumeGame();
         } else {
+
+            pauseGame();
 
             // Display the level-up modal
             const levelUpModal = document.getElementById('levelUpModal');

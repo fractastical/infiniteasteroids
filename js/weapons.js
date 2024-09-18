@@ -174,7 +174,7 @@ let sonicBlast = {
 let flamethrower = {
     cooldown: 10, // Cooldown time in frames
     timer: 0, // Current cooldown timer
-    range: 100, // Range of the flamethrower
+    range: 170, // Range of the flamethrower
     damage: 1, // Damage dealt per frame
     active: false, // Flag to track if the flamethrower is active
     damagePerSecond: 1 // Damage dealt per second
@@ -1043,38 +1043,27 @@ function updateFlamethrower() {
     if (!flamethrower.active) return;
 
     const flameRange = flamethrower.range;
-    const flameWidth = flamethrower.width || 30;
-    const spreadAngle = Math.PI / 8;  // Wider angle for side flames
-    const sideFlameOffset = Math.PI / 2;  // Perpendicular side flames
     const rotationRad = ship.rotation * Math.PI / 180;
+    const sideFlameOffset = Math.PI / 2;  // Offset for side flames, perpendicular to ship
 
-    // Front flames (narrow fan in front)
-    const leftEndX = ship.x + flameRange * Math.sin(rotationRad - spreadAngle);
-    const leftEndY = ship.y - flameRange * Math.cos(rotationRad - spreadAngle);
-    const rightEndX = ship.x + flameRange * Math.sin(rotationRad + spreadAngle);
-    const rightEndY = ship.y - flameRange * Math.cos(rotationRad + spreadAngle);
+    // Calculate positions for left and right side flames
+    const leftSideFlameX = ship.x + flameRange * Math.sin(rotationRad - sideFlameOffset);
+    const leftSideFlameY = ship.y - flameRange * Math.cos(rotationRad - sideFlameOffset);
+    const rightSideFlameX = ship.x + flameRange * Math.sin(rotationRad + sideFlameOffset);
+    const rightSideFlameY = ship.y - flameRange * Math.cos(rotationRad + sideFlameOffset);
 
-    // Side flames (perpendicular to the ship's direction)
-    const leftSideFlameX = ship.x + (flameRange / 2) * Math.sin(rotationRad - sideFlameOffset);
-    const leftSideFlameY = ship.y - (flameRange / 2) * Math.cos(rotationRad - sideFlameOffset);
-    const rightSideFlameX = ship.x + (flameRange / 2) * Math.sin(rotationRad + sideFlameOffset);
-    const rightSideFlameY = ship.y - (flameRange / 2) * Math.cos(rotationRad + sideFlameOffset);
-
-    // Reusable vector calculations
-    function isWithinFlame(asteroid) {
-        const dx = asteroid.x - ship.x;
-        const dy = asteroid.y - ship.y;
+    // Reusable vector calculations for side flames
+    function isWithinSideFlame(asteroid, sideX, sideY) {
+        const dx = asteroid.x - sideX;
+        const dy = asteroid.y - sideY;
         const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance > flameRange) return false;
-
-        const angleToAsteroid = Math.atan2(dy, dx) - rotationRad;
-        return Math.abs(angleToAsteroid) < spreadAngle && distance < flameRange;
+        return distance < flameRange;  // Only check if it's within range of the side flame
     }
 
-    // Check for collisions
+    // Check for collisions with side flames
     asteroids.forEach(asteroid => {
-        if (isWithinFlame(asteroid)) {
+        if (isWithinSideFlame(asteroid, leftSideFlameX, leftSideFlameY) ||
+            isWithinSideFlame(asteroid, rightSideFlameX, rightSideFlameY)) {
             asteroid.isOnFire = true;
             asteroid.fireTimer = 0;
             asteroid.distanceFromCenter = Math.hypot(asteroid.x - ship.x, asteroid.y - ship.y);
@@ -1086,68 +1075,69 @@ function updateFlamethrower() {
         }
     });
 
-    // Draw the flamethrower effect
+    // Draw the side flamethrower effect
     ctx.save();
 
-    // Front flame gradient (wider front)
-    const gradient = ctx.createRadialGradient(ship.x, ship.y, 0, ship.x, ship.y, flameRange);
-    gradient.addColorStop(0, 'rgba(255, 165, 0, 0.8)');
-    gradient.addColorStop(0.6, 'rgba(255, 69, 0, 0.5)');
-    gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
+    // Left flame gradient
+    const leftFlameGradient = ctx.createRadialGradient(ship.x, ship.y, 0, leftSideFlameX, leftSideFlameY, flameRange);
+    leftFlameGradient.addColorStop(0, 'rgba(255, 165, 0, 0.8)');
+    leftFlameGradient.addColorStop(0.6, 'rgba(255, 69, 0, 0.5)');
+    leftFlameGradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
 
-    // Draw the front flames (wider cone)
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.moveTo(ship.x, ship.y);
-    ctx.lineTo(leftEndX, leftEndY);
-    ctx.lineTo(rightEndX, rightEndY);
-    ctx.closePath();
-    ctx.fill();
-
-    // Side flames
-    ctx.fillStyle = 'rgba(255, 140, 0, 0.6)';  // More opaque side flames
+    ctx.fillStyle = leftFlameGradient;
     ctx.beginPath();
     ctx.moveTo(ship.x, ship.y);
     ctx.lineTo(leftSideFlameX, leftSideFlameY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Right flame gradient
+    const rightFlameGradient = ctx.createRadialGradient(ship.x, ship.y, 0, rightSideFlameX, rightSideFlameY, flameRange);
+    rightFlameGradient.addColorStop(0, 'rgba(255, 165, 0, 0.8)');
+    rightFlameGradient.addColorStop(0.6, 'rgba(255, 69, 0, 0.5)');
+    rightFlameGradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
+
+    ctx.fillStyle = rightFlameGradient;
+    ctx.beginPath();
+    ctx.moveTo(ship.x, ship.y);
     ctx.lineTo(rightSideFlameX, rightSideFlameY);
     ctx.closePath();
     ctx.fill();
 
-    // Particle effects (including side flames)
-    createFlameParticles(ship, flameRange, spreadAngle);
-    createSideFlameParticles(ship, flameRange / 2, sideFlameOffset);
+    // Side flame particle effects
+    createSideFlameParticles(ship, flameRange, sideFlameOffset);
 
     ctx.restore();
     flamethrower.active = false;
 }
 
-function createFlameParticles(ship, flameRange, spreadAngle) {
+function createSideFlameParticles(ship, flameRange, sideFlameOffset) {
+    // Create particles for both left and right flames
     for (let i = 0; i < 10; i++) {
-        const particleAngle = ship.rotation * Math.PI / 180 + (Math.random() - 0.5) * spreadAngle * 2;
-        const particleDistance = Math.random() * flameRange;
-        const particleX = ship.x + particleDistance * Math.sin(particleAngle);
-        const particleY = ship.y - particleDistance * Math.cos(particleAngle);
+        // Left side particles
+        let leftParticleAngle = ship.rotation * Math.PI / 180 - sideFlameOffset + (Math.random() - 0.5) * 0.2;  // Some random offset
+        let leftParticleDistance = Math.random() * flameRange;
+        let leftParticleX = ship.x + leftParticleDistance * Math.sin(leftParticleAngle);
+        let leftParticleY = ship.y - leftParticleDistance * Math.cos(leftParticleAngle);
 
         ctx.fillStyle = `rgba(255, ${Math.random() * 165}, 0, ${Math.random() * 0.7 + 0.3})`;
         ctx.beginPath();
-        ctx.arc(particleX, particleY, Math.random() * 3 + 1, 0, Math.PI * 2);
+        ctx.arc(leftParticleX, leftParticleY, Math.random() * 3 + 1, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Right side particles
+        let rightParticleAngle = ship.rotation * Math.PI / 180 + sideFlameOffset + (Math.random() - 0.5) * 0.2;  // Some random offset
+        let rightParticleDistance = Math.random() * flameRange;
+        let rightParticleX = ship.x + rightParticleDistance * Math.sin(rightParticleAngle);
+        let rightParticleY = ship.y - rightParticleDistance * Math.cos(rightParticleAngle);
+
+        ctx.fillStyle = `rgba(255, ${Math.random() * 165}, 0, ${Math.random() * 0.7 + 0.3})`;
+        ctx.beginPath();
+        ctx.arc(rightParticleX, rightParticleY, Math.random() * 3 + 1, 0, Math.PI * 2);
         ctx.fill();
     }
 }
 
-function createSideFlameParticles(ship, sideRange, sideFlameOffset) {
-    for (let i = 0; i < 5; i++) {
-        const particleAngle = ship.rotation * Math.PI / 180 + sideFlameOffset * (Math.random() > 0.5 ? 1 : -1);
-        const particleDistance = Math.random() * sideRange;
-        const particleX = ship.x + particleDistance * Math.sin(particleAngle);
-        const particleY = ship.y - particleDistance * Math.cos(particleAngle);
-
-        ctx.fillStyle = `rgba(255, ${Math.random() * 165}, 0, ${Math.random() * 0.7 + 0.3})`;
-        ctx.beginPath();
-        ctx.arc(particleX, particleY, Math.random() * 3 + 1, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
 
 function setAsteroidOnFire(asteroid) {
     asteroid.isOnFire = true; // Set the asteroid on fire
