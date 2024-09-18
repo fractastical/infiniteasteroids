@@ -49,6 +49,11 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
     <script>
+
+        // Add this line after your existing code to create a download button
+        document.body.insertAdjacentHTML('beforeend', '<button onclick="downloadCSV()">Download CSV</button>');
+
+
         // Initialize Firebase (replace with your own config)
         const firebaseConfig = {
             apiKey: "AIzaSyCvgdn8c6D8RusKRr4vHAzFj1x4FNxrXVE",
@@ -62,6 +67,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const MAX_VALID_SCORE = 90000000; // 90 million
+        let dailySessionData = {};
 
         // Function to calculate total session time in milliseconds
         function calculateTotalSessionTime(sessions) {
@@ -360,6 +366,19 @@
                     });
                     console.log(`User ${index + 1} valid sessions:`, validSessions.length);
 
+                    validSessions.forEach(session => {
+                        if (session.loginTime && session.loginTime.toDate instanceof Function) {
+                            const loginTime = session.loginTime.toDate();
+                            const sessionDateString = loginTime.toISOString().split('T')[0];
+                            if (!dailySessionData[sessionDateString]) {
+                                dailySessionData[sessionDateString] = { date: sessionDateString, sessions: 0, totalTime: 0 };
+                            }
+                            dailySessionData[sessionDateString].sessions++;
+                            dailySessionData[sessionDateString].totalTime += parseFloat(session.sessionLength);
+                        }
+                    });
+
+
                     if (earliestLoginTime) {
                         const dateString = earliestLoginTime.toISOString().split('T')[0];
                         newUsersData[dateString] = (newUsersData[dateString] || 0) + 1;
@@ -414,6 +433,39 @@
             .catch((error) => {
                 console.error('Error fetching admin data:', error);
             });
+
+        function convertToCSV(data) {
+            const headers = ['Date', 'Number of Sessions', 'Total Time (ms)'];
+            const csvRows = [headers.join(',')];
+
+            for (const date in data) {
+                const row = [
+                    data[date].date,
+                    data[date].sessions,
+                    data[date].totalTime
+                ];
+                csvRows.push(row.join(','));
+            }
+
+            return csvRows.join('\n');
+        }
+
+        // Function to trigger CSV download
+        function downloadCSV() {
+            const csv = convertToCSV(dailySessionData);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'daily_session_data.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
 
         function calculateRecentNewUsers(newUsersData) {
             const today = new Date();
