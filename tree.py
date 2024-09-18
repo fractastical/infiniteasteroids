@@ -3,10 +3,12 @@ import subprocess
 from datetime import datetime, timezone
 import math
 import xml.etree.ElementTree as ET
+from PIL import Image
+import io
+import base64
 import re
 import ast
 import logging
-import base64
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -112,9 +114,6 @@ def analyze_project(root_dir):
             'achievements': achievements_count
         }
     }
-    
-def is_displayable_image(file_path):
-    return file_path.lower().endswith(('.png', '.svg'))
 
 def generate_svg(data):
     width, height = 1500, 1000  # Increased dimensions to accommodate more details
@@ -138,7 +137,8 @@ def generate_svg(data):
     svg = ET.Element('svg', {
         'width': str(width),
         'height': str(height),
-        'xmlns': 'http://www.w3.org/2000/svg'
+        'xmlns': 'http://www.w3.org/2000/svg',
+        'xmlns:xlink': 'http://www.w3.org/1999/xlink'
     })
 
     def calc_x(date):
@@ -238,56 +238,63 @@ def generate_svg(data):
                         'opacity': '0.3'
                     })
 
-    # Draw Image file representations
+    # Draw Image file dots
+    # for index, file in enumerate(data['image_files']):
+    #     x = calc_x(file['creation_date'])
+    #     y = margin['top'] + (len(data['js_files']) + index + 1) * y_scale
+
+    #     ET.SubElement(svg, 'circle', {
+    #         'cx': str(x),
+    #         'cy': str(y),
+    #         'r': '3',
+    #         'fill': 'red',
+    #         'opacity': '0.7'
+    #     })
+        
+    #     text = ET.SubElement(svg, 'text', {
+    #         'x': str(x),
+    #         'y': str(y + 15),
+    #         'font-size': '10',
+    #         'text-anchor': 'middle'
+    #     })
+    #     text.text = os.path.basename(file['path'])
     for index, file in enumerate(data['image_files']):
+        x = calc_x(file['creation_date'])
+        y = margin['top'] + (len(data['js_files']) + index + 1) * y_scale
+
         try:
-            x = calc_x(file['creation_date'])
-            y = margin['top'] + (len(data['js_files']) + index + 1) * y_scale
+            with Image.open(file['path']) as img:
+                img.thumbnail((8, 8))
+                buffered = io.BytesIO()
+                img.save(buffered, format="PNG")
+                img_str = base64.b64encode(buffered.getvalue()).decode()
 
-            if is_displayable_image(file['path']):
-                try:
-                    image_width = 8  # Set the width to 8 pixels
-                    image_height = 8  # Set the height to 8 pixels to maintain aspect ratio
-                    with open(file['path'], 'rb') as img_file:
-                        href = f"data:image/{file['path'].split('.')[-1]};base64,{base64.b64encode(img_file.read()).decode()}"
-                    ET.SubElement(svg, 'image', {
-                        'x': str(x - image_width/2),
-                        'y': str(y - image_height/2),
-                        'width': str(image_width),
-                        'height': str(image_height),
-                        'href': href
-                    })
-                except Exception as e:
-                    logging.warning(f"Failed to embed image {file['path']}: {str(e)}")
-                    # Fallback to red circle if image embedding fails
-                    ET.SubElement(svg, 'circle', {
-                        'cx': str(x),
-                        'cy': str(y),
-                        'r': '3',
-                        'fill': 'red',
-                        'opacity': '0.7'
-                    })
-            else:
-                # For non-PNG/SVG images, keep the red circle
-                ET.SubElement(svg, 'circle', {
-                    'cx': str(x),
-                    'cy': str(y),
-                    'r': '3',
-                    'fill': 'red',
-                    'opacity': '0.7'
+                image = ET.SubElement(svg, 'image', {
+                    'x': str(x - 4),
+                    'y': str(y - 4),
+                    'width': '8',
+                    'height': '8',
+                    'xlink:href': f"data:image/png;base64,{img_str}"
                 })
-            
-            text = ET.SubElement(svg, 'text', {
-                'x': str(x),
-                'y': str(y + 15),
-                'font-size': '10',
-                'text-anchor': 'middle'
-            })
-            text.text = os.path.basename(file['path'])
-
         except Exception as e:
-            logging.error(f"Error processing image file {file['path']}: {str(e)}")
-            continue  # Skip this file and continue with the next one
+            logger.error(f"Error processing image {file['path']}: {e}")
+            # Fallback to a colored rectangle if image processing fails
+            ET.SubElement(svg, 'rect', {
+                'x': str(x - 4),
+                'y': str(y - 4),
+                'width': '8',
+                'height': '8',
+                'fill': 'red',
+                'opacity': '0.7'
+            })
+        
+        # text = ET.SubElement(svg, 'text', {
+        #     'x': str(x),
+        #     'y': str(y + 15),
+        #     'font-size': '10',
+        #     'text-anchor': 'middle'
+        # })
+        # text.text = os.path.basename(file['path'])
 
     # Draw HTML file representations
     for index, html_file in enumerate(data['html_files']):
@@ -329,6 +336,8 @@ def generate_svg(data):
             'font-weight': 'bold' if i == 0 else 'normal'
         })
         text.text = line.strip()
+
+    return ET.tostring(svg, encoding='unicode')
 
 def main():
     root_dir = os.getcwd()
