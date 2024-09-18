@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9925"
+let version = "0.9926"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -171,7 +171,7 @@ let particles = []; // Array to store thruster particles
 
 let level = 1;
 let xp = 0;
-let xpToNextLevel = 300;
+// let xpToNextLevel = 300;
 
 let levelUpXPMultiplier = 1.2;
 let meteorMode = false;
@@ -387,6 +387,19 @@ function startGame() {
         ship.laserCooldown = 50; // double length for shotgun style ship
 
     }
+    if (currentShip === 'Tetragrammaton') {
+        ship.laserCooldown = 60; // double length for shotgun style ship
+
+    }
+    if (currentShip === 'Pentacule') {
+        ship.laserCooldown = 65; // double length for shotgun style ship
+
+    }
+    if (currentShip === 'hexShip') {
+        ship.laserCooldown = 70; // double length for shotgun style ship
+
+    }
+
 
     fourthUpgradeUnlocked = false;
 
