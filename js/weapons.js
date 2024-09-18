@@ -1356,17 +1356,17 @@ function updateAcidAreas() {
                 else
                     damageReport.acid += actualDamage;
 
+                if (comboCryoBombActive) {
+                    asteroid.speed *= 0.93;
+                    asteroid.dx *= 0.93;
+                    asteroid.dy *= 0.93;
+
+                }
+
                 if (asteroid.hitpoints <= 0) {
                     processAsteroidDeath(asteroid);
                     asteroids.splice(j, 1);
                 }
-                if (comboCryoBombActive) {
-                    asteroid.speed *= 0.9;
-                    asteroid.dx *= 0.9;
-                    asteroid.dy *= 0.9;
-
-                }
-
 
             }
 
