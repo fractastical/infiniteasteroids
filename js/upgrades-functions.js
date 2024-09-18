@@ -431,28 +431,31 @@ const asteroidSplitter = {
     chance: 0.01,
     splitCount: 2,
     update: function () {
-        for (let i = asteroids.length - 1; i >= 0; i--) {
-            if (Math.random() < this.chance) {
-                const asteroid = asteroids[i];
-                if (asteroid.hitpoints > 2) {
+        const guess = Math.random();
+        if (guess < this.chance) {
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                if (guess < this.chance) {
+                    const asteroid = asteroids[i];
+                    if (asteroid.hitpoints > 2) {
 
-                    for (let j = 0; j < this.splitCount; j++) {
-                        const newAsteroid = {
-                            x: asteroid.x,
-                            y: asteroid.y,
-                            size: Math.max(4, asteroid.size / 2),
-                            speed: asteroid.speed * 0.2,
-                            dx: Math.random() * 1.5 - 1,
-                            dy: Math.random() * 1.5 - 1,
-                            hitpoints: Math.floor(asteroid.hitpoints / 2),
-                            color: asteroid.color
-                        };
-                        asteroids.push(newAsteroid);
+                        for (let j = 0; j < this.splitCount; j++) {
+                            const newAsteroid = {
+                                x: asteroid.x,
+                                y: asteroid.y,
+                                size: Math.max(4, asteroid.size / 2),
+                                speed: asteroid.speed * 0.2,
+                                dx: Math.random() * 1.5 - 1,
+                                dy: Math.random() * 1.5 - 1,
+                                hitpoints: Math.floor(asteroid.hitpoints / 2),
+                                color: asteroid.color
+                            };
+                            asteroids.push(newAsteroid);
+                        }
+                        asteroids.splice(i, 1);
                     }
-                    asteroids.splice(i, 1);
-                }
 
-                break;
+                    break;
+                }
             }
         }
     }
