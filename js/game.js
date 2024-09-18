@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9936"
+let version = "0.9937"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -2439,27 +2439,27 @@ function levelUp() {
         if (upgrades.length <= 2) {
             waitAndClaimMode = true;
             resumeGame();
-            break;
-        }
+        } else {
 
-        // Display the level-up modal
-        const levelUpModal = document.getElementById('levelUpModal');
-        const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
-        if (document.getElementById('upgradeOptions')) {
+            // Display the level-up modal
+            const levelUpModal = document.getElementById('levelUpModal');
+            const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
+            if (document.getElementById('upgradeOptions')) {
 
-            document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
+                document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
 
-            // Show the modal
-            levelUpModal.style.display = 'block';
+                // Show the modal
+                levelUpModal.style.display = 'block';
 
-            // Store upgrades in a global variable for later use
-            window.levelUpgrades = upgrades;
-            // Pause the game
-            // pauseGame();
+                // Store upgrades in a global variable for later use
+                window.levelUpgrades = upgrades;
+                // Pause the game
+                // pauseGame();
 
-            // Activate temporary invincibility
-            invincible = true;
-            invincibilityTimer += invincibilityDuration;
+                // Activate temporary invincibility
+                invincible = true;
+                invincibilityTimer += invincibilityDuration;
+            }
         }
 
     }
