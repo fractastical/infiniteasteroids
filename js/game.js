@@ -1557,6 +1557,7 @@ function countTechnologies() {
 
     if (Achievements.wave_120_endless.reached) count++;
     if (Achievements.million_score.reached) count++;
+    if (Achievements.all_modes.reached) count++;
 
     // if (Achievements.space_potato.reached) count++;
     if (Achievements.space_pizza.reached) count++;
