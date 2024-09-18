@@ -8,7 +8,7 @@ const MULTI_WAVE = 65;
 const MULTI_WAVE_MULTIPLIER = 1.2;
 
 let asteroidDifficultySpeedMultiplier = 1;
-xpToNextLevel = 300;
+let xpToNextLevel = 300;
 let meteorBooster = 0;
 let modeScoreMultiplier = 1;
 

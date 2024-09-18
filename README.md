@@ -1,5 +1,3 @@
-README.md
-
 # Infinite Asteroids Game Lifecycle
 
 ## 1. Game Login

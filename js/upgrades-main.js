@@ -508,12 +508,12 @@ function displayMegaUpgradeOptions(megaUpgradeOptions) {
     });
 }
 
-function applyMegaUpgrade(upgrade) {
-    const newUpgrade = { ...upgrade, cooldownTimer: 0 };
-    activeMegaUpgrades.push(newUpgrade);
-    newUpgrade.effect();
-    closeUpgradeModal();
-}
+// function applyMegaUpgrade(upgrade) {
+//     const newUpgrade = { ...upgrade, cooldownTimer: 0 };
+//     activeMegaUpgrades.push(newUpgrade);
+//     newUpgrade.effect();
+//     closeUpgradeModal();
+// }
 
 function closeUpgradeModal() {
     floatingIsland.active = false;
