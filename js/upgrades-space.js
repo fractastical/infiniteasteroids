@@ -291,7 +291,7 @@ function updateFloatingUpgrades() {
         const dy = ship.y - upgrade.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < ship.size / 2 + upgrade.size / 2) {
+        if (distance < ship.size / 2 + upgrade.size / 2 + 10) {
             collectFloatingUpgrade(upgrade);
             if (upgrade.achievedKey === 'space_pizza')
                 collectedSpacePizza = true;
