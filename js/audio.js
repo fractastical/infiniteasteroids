@@ -106,6 +106,18 @@ const gemCollectingSounds = [
 ];
 
 
+const spinSounds = [
+    document.getElementById('spin-sound')
+];
+
+
+function playSpinSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * spinSounds.length);
+        spinSounds[randomIndex].play();
+    }
+}
+
 
 // Function to play a random shot sound
 function playRandomShotSound() {
