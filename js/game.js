@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9934"
+let version = "0.9935"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -1671,7 +1671,7 @@ function getAvailableWeaponIcons() {
 
     if (activeWeaponClasses.includes('turret') || Achievements.reach_wave_2.reached) availableIcons.push(upgradeDefinitions['Activate Turret'].icon);
     if (activeWeaponClasses.includes('bomberdrone') || Achievements.reach_wave_2.reached) availableIcons.push(upgradeDefinitions['Activate Bomber Drone'].icon);
-    if (activeWeaponClasses.includes('freeze') || (Achievements.reach_wave_5.reached) availableIcons.push(upgradeDefinitions['Activate Freeze Effect'].icon);
+    if (activeWeaponClasses.includes('freeze') || Achievements.reach_wave_5.reached) availableIcons.push(upgradeDefinitions['Activate Freeze Effect'].icon);
     if (activeWeaponClasses.includes('explosive') || Achievements.laser_damage.reached) availableIcons.push(upgradeDefinitions['Activate Explosive Laser'].icon);
     if (activeWeaponClasses.includes('sonic') || Achievements.reach_wave_10.reached) availableIcons.push(upgradeDefinitions['Activate Sonic Blast'].icon);
     if (activeWeaponClasses.includes('boomerang') || Achievements.complete_easy_mode.reached) availableIcons.push(upgradeDefinitions['Activate Boomerang'].icon);
