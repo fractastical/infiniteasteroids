@@ -320,14 +320,14 @@ function startGame() {
     // console.log(crazyGamesMode);
     // console.log(window.CrazyGames);
 
-    // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
-    //     try {
-    //         window.CrazyGames.SDK.game.gameplayStart();
+    if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+        try {
+            window.CrazyGames.SDK.game.gameplayStart();
 
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     if (document.getElementById('endScreen'))
         document.getElementById('endScreen').style.display = 'none';
@@ -1293,15 +1293,15 @@ function pauseGame() {
 
         clearInterval(gameLoop);
         isPaused = true;
-        // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
-        //     try {
-        //         window.CrazyGames.SDK.game.gameplayStop();
+        if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+            try {
+                window.CrazyGames.SDK.game.gameplayStop();
 
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
+            } catch (error) {
+                console.log(error);
+            }
 
-        // }
+        }
 
 
     }
@@ -1321,14 +1321,14 @@ function resumeGame() {
         clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
-        // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
-        //     try {
-        //         window.CrazyGames.SDK.game.gameplayStart();
+        if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+            try {
+                window.CrazyGames.SDK.game.gameplayStart();
 
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
 }
 
@@ -2479,15 +2479,15 @@ function endGame() {
     octoBossBackgroundMusic.pause();
 
 
-    // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
-    //     try {
-    //         window.CrazyGames.SDK.game.gameplayStop();
+    if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+        try {
+            window.CrazyGames.SDK.game.gameplayStop();
 
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
+        } catch (error) {
+            console.log(error);
+        }
 
-    // }
+    }
 
     resetShip();
 
