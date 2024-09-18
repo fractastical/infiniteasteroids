@@ -1072,8 +1072,21 @@ margin-bottom: 20px;
     margin-bottom: 5px;
 }
 
+.upgrade-name-small {
+    font-size: 14px;
+    color: #00FF00;
+    margin-bottom: 5px;
+}
+
+
 .upgrade-description {
     font-size: 14px;
+    color: #ADFF2F;
+}
+
+
+.upgrade-description-small {
+    font-size: 11px;
     color: #ADFF2F;
 }
 

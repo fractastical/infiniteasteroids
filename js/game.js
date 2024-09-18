@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9923"
+let version = "0.9924"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -2264,17 +2264,35 @@ function updateAchievementsAtEnd() {
     return { newlyUnlockedAchievements, newlyUnlockedWeapons };
 }
 
-function createUpgradeOptionsHTML(upgrades) {
-    return upgrades.map((upgrade, index) => `
+function createUpgradeOptionsHTML(upgrades, isSmall = false) {
+    if (!isSmall) {
+        return upgrades.map((upgrade, index) => `
+            <div class="upgrade-option" onclick="selectUpgrade(${index + 1})" >
+                <div class="upgrade-number">${index + 1}</div>
+                <div class="upgrade-icon ${upgrade.icon}"></div>
+                <div class="upgrade-details">
+                    <p class="upgrade-name">${upgrade.name}</p>
+                    <p class="upgrade-description">${upgrade.description}</p>
+                </div>
+            </div >
+            `).join('');
+    } else {
+        return upgrades.map((upgrade, index) => `
         <div class="upgrade-option" onclick="selectUpgrade(${index + 1})" >
             <div class="upgrade-number">${index + 1}</div>
             <div class="upgrade-icon ${upgrade.icon}"></div>
             <div class="upgrade-details">
-                <p class="upgrade-name">${upgrade.name}</p>
-                <p class="upgrade-description">${upgrade.description}</p>
+                <p class="upgrade-name-small">${upgrade.name}</p>
+                <p class="upgrade-description-small">${upgrade.description}</p>
             </div>
         </div >
         `).join('');
+
+
+    }
+
+
+
 }
 
 
@@ -2296,7 +2314,12 @@ function claimLevelUps() {
             const levelUpModal = document.getElementById('levelUpModal');
             console.log(levelUpModal);
 
-            const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
+            let upgradeOptionsHTML;
+            if (isMobile() || fourthUpgradeUnlocked)
+                upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades, true);
+            else
+                upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
+
             if (document.getElementById('upgradeOptions'))
                 document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
 
