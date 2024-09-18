@@ -198,7 +198,7 @@ const Achievements = {
     drone_damage: { reached: false, damage: 0, required: 1500, icon: 'achievements/storm_drone.png', description: 'Deal 1,500 Damage with Drone. Unlock Drone Army.' },
     explosive_laser_damage: { reached: false, damage: 0, required: 5000, icon: 'achievements/explosive.png', description: 'Deal 5,000 Damage with Explosive Laser. Unlock Void Warden.' },
     death_ray_damage: { reached: false, damage: 0, required: 10000, icon: 'achievements/deathray.png', description: 'Deal 10,000 Damage with Death Ray. Unlock Extra Choice.' },
-    no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Survived with No Lives Lost. Unlock Nano Swarm.' },
+    no_lives_lost: { reached: false, icon: 'achievements/orpheus.png', description: 'Wave 50 with No Lives Lost. Unlock Nano Swarm.' },
     complete_hard_mode: { reached: false, icon: 'achievements/explosion.png', description: 'Deep Space Hard Wave 30. Unlock Explosive Rocket.' },
     complete_hero_mode: { reached: false, icon: 'achievements/cyberpunk.png', description: 'Deep Space Hero Wave 30. Unlock Extra Life.' },
     kill_5_aliens: { reached: false, icon: 'achievements/aliensign.png', description: 'Kill 5 Aliens. Unlock Death Ray.' },
@@ -2160,7 +2160,7 @@ function updateAchievementsAtEnd() {
     if (asteroidsKilled >= 100) addAchievement('destroy_100_asteroids');
     if (asteroidsKilled >= 1000) addAchievement('destroy_1000_asteroids');
 
-    if (wave >= 30 && lives === 3) addAchievement('no_lives_lost');
+    if (wave >= 50 && lives === 3) addAchievement('no_lives_lost');
 
     if (megaBossAlienSpawned && megaBossAlien == null) addAchievement('alien_megaboss_killed');
     if (superbossAlienSpawned && superbossAlien == null) addAchievement('alien_supermegaboss_killed');
