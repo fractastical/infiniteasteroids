@@ -1,6 +1,6 @@
 # Project Analysis Visualization
 
-![Project Analysis]({project_analysis.svg})
+![Project Analysis](project_analysis.svg)
 
 This SVG visualization represents the structure and timeline of the project files.
 
