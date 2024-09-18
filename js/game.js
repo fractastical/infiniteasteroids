@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9929"
+let version = "0.9930"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -387,7 +387,7 @@ function startGame() {
         ship.laserCooldown = 50; // double length for shotgun style ship
 
     }
-    if (currentShip === 'Tetragrammaton') {
+    if (currentShip === 'tetragrammatonShip') {
         ship.laserCooldown = 60; // double length for shotgun style ship
 
     }
