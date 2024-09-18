@@ -1240,9 +1240,15 @@
       try {
         await window.CrazyGames.SDK.init();
         console.log('CrazyGames SDK initialized successfully');
-        sdkReady = true;
-        crazyGamesMode = true;
-        await checkUserStatus();
+        if (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled") {
+          console.log('SDK disabled');
+          return;
+        } else {
+          sdkReady = true;
+          crazyGamesMode = true;
+          await checkCrazyUserStatus();
+
+        }
       } catch (error) {
         console.error('Error initializing CrazyGames SDK:', error);
         handleSDKInitializationFailure();
@@ -1256,8 +1262,8 @@
       console.log('Falling back to standard mode due to SDK initialization failure');
     }
 
-    async function checkUserStatus() {
-      if (!sdkReady) {
+    async function checkCrazyUserStatus() {
+      if (!sdkReady || (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled")) {
         console.log('SDK not ready, cannot check user status');
         return;
       }
@@ -1379,9 +1385,17 @@
       try {
         await window.CrazyGames.SDK.init();
         console.log('CrazyGames SDK initialized successfully');
-        sdkReady = true;
-        crazyGamesMode = true;
-        await checkAndHandleCrazyGamesUser();
+        if (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled") {
+          return;
+          console.log('CrazyGames SDK disabled on this domain');
+
+        }
+        else {
+          sdkReady = true;
+          crazyGamesMode = true;
+          await checkAndHandleCrazyGamesUser();
+
+        }
       } catch (error) {
         console.log('CrazyGames SDK not available, running in standard mode');
         crazyGamesMode = false;
@@ -1876,8 +1890,8 @@
 
 
     async function saveUserScore(gameData) {
-      let userId;
-      let username;
+      // let userId;
+      // let username;
 
       if (crazyGamesMode) {
         const user = await window.CrazyGames.SDK.user.getUser();
@@ -1885,12 +1899,11 @@
           userId = 'cg_' + user.username;
           username = user.username;
         }
-      } else {
-        const currentUser = getCurrentUser();
-        if (currentUser) {
-          userId = currentUser.uid;
-          username = currentUser.displayName || currentUser.email;
-        }
+        // } else {
+        // const currentUser = userId;
+        // if (currentUser) {
+        //   userId = currentUser.uid;
+        // }
       }
 
       if (!userId || !gameData) {
@@ -1911,8 +1924,7 @@
         gameMode: gameData.gameMode || 'unknown',
         asteroidsKilled: gameData.asteroidsKilled || 0,
         aliensKilled: gameData.aliensKilled || 0,
-        wave: gameData.wave || 1,
-        username: username
+        wave: gameData.wave || 1
       };
 
       console.log(safeGameData);
@@ -1927,8 +1939,7 @@
             }
           },
           coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
-          lastUpdated: new Date(),
-          username: username
+          lastUpdated: new Date()
         }, { merge: true });
         console.log('User score saved successfully:', safeGameData);
       } catch (error) {
