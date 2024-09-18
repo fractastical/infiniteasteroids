@@ -486,7 +486,7 @@ function applyUpgrades(upgrades) {
     if (upgrades) {
         upgrades.forEach(upgrade => {
             // Apply each upgrade logic here
-            console.log(`Applying upgrade: ${upgrade}`);
+            // console.log(`Applying upgrade: ${upgrade}`);
             applyUpgrade(upgrade);
             // Example: applyUpgrade(upgrade); 
         });

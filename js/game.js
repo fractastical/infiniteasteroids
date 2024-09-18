@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9920"
+let version = "0.9922"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -1287,9 +1287,9 @@ function drawScore() {
 }
 
 function pauseGame() {
-    console.log("p");
+    // console.log("p");
     if (!isPaused) {
-        console.log("p2");
+        // console.log("p2");
 
         clearInterval(gameLoop);
         isPaused = true;
@@ -2491,7 +2491,6 @@ function endGame() {
 
     resetShip();
 
-    populateSelectors();
 
     // Calculate the time taken and save it
     gameEndTime = new Date();
@@ -2535,6 +2534,7 @@ function endGame() {
     // Load and display the leaderboard
     loadLeaderboard(gameId, currentMode);
 
+    populateSelectors();
 
     // Get three random affordable upgrades
     // const affordableUpgrades = getRandomAffordableUpgrades(coins);
