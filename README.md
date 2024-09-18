@@ -1,4 +1,20 @@
+# Project Analysis Visualization
+
+![Project Analysis]({project_analysis.svg})
+
+This SVG visualization represents the structure and timeline of the project files.
+
+- Blue circles represent JavaScript files, with size indicating file complexity.
+- Image thumbnails are shown at the bottom, aligned with their creation dates.
+- Green rectangles represent HTML files.
+- Purple lines show connections between related JavaScript files.
+- Green lines show connections from HTML to JavaScript files.
+
+The time axis at the bottom shows the project timeline.
+
+
 # Infinite Asteroids Game Lifecycle
+
 
 ## 1. Game Login
 
