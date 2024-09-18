@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9924"
+let version = "0.9925"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -1574,7 +1574,7 @@ function countTechnologies() {
     if (Achievements.alien_octopus_killed.reached) count++;
     if (Achievements.alien_megaboss_killed.reached) count++;
 
-    // 5 ship types to be unlocked  (including basic).
+    // 8 ship types to be unlocked  (including basic).
 
     // Check the conditions of each ship
     for (const ship in ships) {
