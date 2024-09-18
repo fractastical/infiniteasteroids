@@ -509,7 +509,8 @@ function update() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (!toggleBackgroundOff) {
+    // for now mobile fps is too low.
+    if (!toggleBackgroundOff && !isMobile()) {
 
         if (currentMode == GameModes.EASY || currentMode == GameModes.NORMAL || currentMode == GameModes.HARD || currentMode == GameModes.HERO)
             drawSubtleGridBackground(ctx, canvas.width, canvas.height);
