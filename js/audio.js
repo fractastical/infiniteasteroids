@@ -77,6 +77,26 @@ const alienLaserSounds = [
     document.getElementById('alien-laser-3')
 ];
 
+const bossLaserSounds = [
+    document.getElementById('boss-shoot-1'),
+    document.getElementById('boss-shoot-2')
+];
+
+const bossDroneSounds = [
+    document.getElementById('boss-drone-1')
+];
+
+const bossTakeDamageSounds = [
+    document.getElementById('boss-take-damage-1')
+];
+
+
+const bossDieSounds = [
+    document.getElementById('boss-die')
+];
+
+
+
 const alienLaughSounds = [
     document.getElementById('alien-laugh-sound'),
 ];
@@ -199,6 +219,36 @@ function playLightningSound() {
 }
 
 
+function playBossLaserSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * bossLaserSounds.length);
+        bossLaserSounds[randomIndex].play();
+    }
+}
+
+function playBossDroneSpawnSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * bossDroneSounds.length);
+        bossDroneSounds[randomIndex].play();
+    }
+}
+
+function playBossTakeDamageSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * bossTakeDamageSounds.length);
+        bossTakeDamageSounds[randomIndex].play();
+    }
+}
+
+function playBossDieSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * bossDieSounds.length);
+        bossDieSounds[randomIndex].play();
+    }
+}
+
+
+
 // Get all sound arrays together
 const allSounds = [
     ...meteorDestroySounds,
@@ -215,6 +265,10 @@ const allSounds = [
     ...alienLaserSounds,
     ...LightningSounds,
     ...FlamethrowerSounds,
+    ...bossLaserSounds,
+    ...bossDroneSounds,
+    ...bossTakeDamageSounds,
+    ...bossDieSounds,
     backgroundMusic,
     megabossBackgroundMusic,
     superMegabossBackgroundMusic,

@@ -373,6 +373,7 @@ function updateSuperBossAlien() {
         if (superbossAlien.shootTimer >= superbossAlien.shootInterval) {
             superbossAlien.shootTimer = 0;
             shootSuperBossAlienLaser();
+            playBossLaserSound();
         }
 
         superbossAlien.spawnTimer++;
@@ -463,6 +464,8 @@ function shootMegaBossAlienLaser() {
             dx: Math.cos(angle) * alienLaserSpeed,
             dy: Math.sin(angle) * alienLaserSpeed
         });
+
+
     }
 }
 
@@ -581,6 +584,8 @@ function updateMegaBossAlien() {
         if (megaBossAlien.shootTimer >= megaBossAlien.shootInterval) {
             megaBossAlien.shootTimer = 0;
             shootMegaBossAlienLaser();
+            playBossLaserSound();
+
         }
 
         // Update alien's spawn timer
@@ -597,6 +602,8 @@ function updateMegaBossAlien() {
         else if (megaBossAlien.y > canvas.height) megaBossAlien.y = 0;
     }
 }
+
+
 
 
 function drawSuperBossHitpointBar() {
@@ -643,6 +650,8 @@ function spawnLittleAliensAroundSuperBoss() {
         };
         aliens.push(newAlien);
     }
+    playBossDroneSpawnSound();
+
 }
 
 function spawnLittleAliensAroundMegaBoss() {
@@ -665,7 +674,11 @@ function spawnLittleAliensAroundMegaBoss() {
         };
         aliens.push(newAlien);
     }
+    playBossDroneSpawnSound();
+
 }
+
+
 
 function updateAlienLasers() {
     // console.log("l");
@@ -1064,8 +1077,11 @@ function updateOctoBoss() {
             console.log("normal attack");
             octoBoss.shootTimer = 0;
             shootOctoBossLaser();
+            playBossLaserSound();
+
         }
     }
+
 
     octoBoss.armReverseTimer++;
     if (octoBoss.armReverseTimer >= octoBoss.armReverseInterval) {
@@ -1432,6 +1448,7 @@ function createNewArm(index) {
 }
 
 
+
 // Helper function to calculate the distance from a point to a line segment
 function pointToLineDistance(x, y, x1, y1, x2, y2) {
     const A = x - x1;
@@ -1476,7 +1493,10 @@ function destroyOctoBoss() {
     createExplosion(octoBoss.x, octoBoss.y);
     aliens = aliens.filter(alien => alien !== octoBoss);
     octoBoss = null;
+    playBossDieSound();
+
     if (!toggleMusicOff) {
+
         octoBossBackgroundMusic.pause();
         backgroundMusic.play();
     }

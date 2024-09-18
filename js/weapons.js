@@ -2366,11 +2366,13 @@ function checkAlienDamage(weapon) {
         actualDamage = Math.min(weapon.damage + damageBooster * pixieBoost, superbossAlien.hitpoints); // Ensure we don't overkill the asteroid
         superbossAlien.hitpoints -= actualDamage;
         createExplosion(superbossAlien.x, superbossAlien.y);
+        playBossTakeDamageSound();
 
         if (superbossAlien.hitpoints <= 0) {
             createExplosion(superbossAlien.x, superbossAlien.y, 50);
             createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
             superbossAlien = null; // Destroy alien
+            playBossDieSound();
 
             if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
                 try {
@@ -2399,6 +2401,7 @@ function checkAlienDamage(weapon) {
         megaBossAlien.hitpoints -= actualDamage;
 
         createExplosion(megaBossAlien.x, megaBossAlien.y);
+        playBossTakeDamageSound();
 
         if (megaBossAlien.hitpoints <= 0) {
             createExplosion(megaBossAlien.x, megaBossAlien.y, 50);
@@ -2406,6 +2409,7 @@ function checkAlienDamage(weapon) {
             createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
             aliensKilled++;
             // Achievements.alien_megaboss_killed.reached = true;
+            playBossDieSound();
 
             increaseXP(30 * 20);
             score += 100000;
