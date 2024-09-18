@@ -12,6 +12,11 @@ This SVG visualization represents the structure and timeline of the project file
 
 The time axis at the bottom shows the project timeline.
 
+# Tasks over time completion (via idl) 
+
+<img width="845" alt="ia_tasks" src="https://github.com/user-attachments/assets/a633260d-9859-467c-9caa-8cfb74fdbd8b">
+
+
 
 # Infinite Asteroids Game Lifecycle
 
