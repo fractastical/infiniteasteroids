@@ -140,7 +140,7 @@ function multiplierCalculator(mode) {
             break;
         case GameModes.NORMAL:
             asteroidDifficultySpeedMultiplier = 0.9;
-            levelUpXPMultiplier = 1.17;
+            levelUpXPMultiplier = 1.12;
             invincibilityDuration = 180;
             modeScoreMultiplier = 4;
             break;
@@ -199,7 +199,7 @@ function multiplierCalculator(mode) {
             asteroidDifficultySpeedMultiplier = 1.5;
             levelUpXPMultiplier = 1.2;
             meteorBooster = 10;
-            gravityStrength = 90;
+            gravityStrength = 80;
             modeScoreMultiplier = 3.6;
             planetMode = true;
 
