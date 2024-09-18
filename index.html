@@ -820,8 +820,10 @@
       };
 
       let count = countTechnologies();
+      const totalAchievements = Object.keys(Achievements).length + 5;
+
       const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `You have unlocked ${count} of 42 technologies`;
+      technologiesCountElement.textContent = `You have unlocked ${count} of ${totalAchievements} technologies`;
       document.getElementById('technologiesCount').style.display = 'block';
       // document.getElementById('shipType').style.display = 'block';
 

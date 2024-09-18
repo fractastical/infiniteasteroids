@@ -1544,69 +1544,93 @@ function handleKeyUp(event) {
 }
 
 
+// function countTechnologies() {
+//     let count = 2; // laser + bomb
+
+//     // These are all the achievements that have a specific weapon unlock assigned
+//     if (Achievements.reach_wave_2.reached) count += 2; //turret and bomber drone
+//     if (Achievements.reach_wave_5.reached) count += 2;  //freeze and cluster bomb
+//     if (Achievements.reach_wave_10.reached) count++;
+//     if (Achievements.complete_easy_mode.reached) count++;
+//     if (Achievements.complete_normal_mode.reached) count++;
+//     if (Achievements.complete_hard_mode.reached) count++;
+//     if (Achievements.complete_hero_mode.reached) count++;
+//     if (Achievements.acid_bomb_damage.reached) count++;
+//     if (Achievements.destroy_100_asteroids.reached) count++;
+//     if (Achievements.destroy_1000_asteroids.reached) count++;
+
+//     if (Achievements.kill_5_aliens.reached) count++;
+//     if (Achievements.kill_50_aliens.reached) count++;
+//     if (Achievements.kill_500_aliens.reached) count++;
+//     if (Achievements.no_lives_lost.reached) count++;
+//     if (Achievements.death_ray_damage.reached) count++;
+//     if (Achievements.complete_meteor_normal_mode.reached) count++;
+//     if (Achievements.complete_meteor_hard_mode.reached) count++;
+//     if (Achievements.complete_meteor_hero_mode.reached) count++;
+
+
+//     if (Achievements.complete_planet_easy_mode.reached) count++;
+//     if (Achievements.complete_planet_normal_mode.reached) count++;
+//     if (Achievements.complete_planet_hard_mode.reached) count++;
+//     if (Achievements.complete_planet_hero_mode.reached) count++;
+//     if (Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached) count++;
+
+//     if (Achievements.drone_damage.reached) count++;
+//     if (Achievements.laser_damage.reached) count++;
+//     if (Achievements.wave_60_endless.reached) count++;
+
+//     if (Achievements.wave_120_endless.reached) count++;
+//     if (Achievements.million_score.reached) count++;
+//     if (Achievements.all_modes.reached) count++;
+
+//     // if (Achievements.space_potato.reached) count++;
+//     if (Achievements.space_pizza.reached) count++;
+
+//     // if (Achievements.space_monkey.reached) count++;
+//     if (Achievements.pink_pixie.reached) count++;
+//     if (Achievements.purple_pixie.reached) count++;
+//     if (Achievements.gold_pixie.reached) count++;
+
+//     if (Achievements.space_pickle.reached) count++;
+//     if (Achievements.dark_side.reached) count++;
+
+//     if (Achievements.alien_supermegaboss_killed.reached) count++;
+//     if (Achievements.alien_octopus_killed.reached) count++;
+//     if (Achievements.alien_megaboss_killed.reached) count++;
+
+//     // 8 ship types to be unlocked  (including basic).
+
+//     // Check the conditions of each ship
+//     for (const ship in ships) {
+//         if (ships.hasOwnProperty(ship)) {
+//             if (ships[ship].condition()) count++;
+//         }
+//     }
+//     // think we are at 41
+//     return count;
+// }
+
 function countTechnologies() {
-    let count = 2; // laser + bomb
+    // Start with 2 for laser and bomb
+    let count = 3;
 
-    // These are all the achievements that have a specific weapon unlock assigned
-    if (Achievements.reach_wave_2.reached) count += 2; //turret and bomber drone
-    if (Achievements.reach_wave_5.reached) count += 2;  //freeze and cluster bomb
-    if (Achievements.reach_wave_10.reached) count++;
-    if (Achievements.complete_easy_mode.reached) count++;
-    if (Achievements.complete_normal_mode.reached) count++;
-    if (Achievements.complete_hard_mode.reached) count++;
-    if (Achievements.complete_hero_mode.reached) count++;
-    if (Achievements.acid_bomb_damage.reached) count++;
-    if (Achievements.destroy_100_asteroids.reached) count++;
-    if (Achievements.destroy_1000_asteroids.reached) count++;
+    if (Achievements.reach_wave_2.reached) count++; //turret and bomber drone
+    if (Achievements.reach_wave_5.reached) count++;  //freeze and cluster bomb
 
-    if (Achievements.kill_5_aliens.reached) count++;
-    if (Achievements.kill_50_aliens.reached) count++;
-    if (Achievements.kill_500_aliens.reached) count++;
-    if (Achievements.no_lives_lost.reached) count++;
-    if (Achievements.death_ray_damage.reached) count++;
-    if (Achievements.complete_meteor_normal_mode.reached) count++;
-    if (Achievements.complete_meteor_hard_mode.reached) count++;
-    if (Achievements.complete_meteor_hero_mode.reached) count++;
-
-
-    if (Achievements.complete_planet_easy_mode.reached) count++;
-    if (Achievements.complete_planet_normal_mode.reached) count++;
-    if (Achievements.complete_planet_hard_mode.reached) count++;
-    if (Achievements.complete_planet_hero_mode.reached) count++;
-    if (Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached) count++;
-
-    if (Achievements.drone_damage.reached) count++;
-    if (Achievements.laser_damage.reached) count++;
-    if (Achievements.wave_60_endless.reached) count++;
-
-    if (Achievements.wave_120_endless.reached) count++;
-    if (Achievements.million_score.reached) count++;
-    if (Achievements.all_modes.reached) count++;
-
-    // if (Achievements.space_potato.reached) count++;
-    if (Achievements.space_pizza.reached) count++;
-
-    // if (Achievements.space_monkey.reached) count++;
-    if (Achievements.pink_pixie.reached) count++;
-    if (Achievements.purple_pixie.reached) count++;
-    if (Achievements.gold_pixie.reached) count++;
-
-    if (Achievements.space_pickle.reached) count++;
-    if (Achievements.dark_side.reached) count++;
-
-    if (Achievements.alien_supermegaboss_killed.reached) count++;
-    if (Achievements.alien_octopus_killed.reached) count++;
-    if (Achievements.alien_megaboss_killed.reached) count++;
-
-    // 8 ship types to be unlocked  (including basic).
-
-    // Check the conditions of each ship
-    for (const ship in ships) {
-        if (ships.hasOwnProperty(ship)) {
-            if (ships[ship].condition()) count++;
+    // Count reached achievements
+    for (const achievement in Achievements) {
+        if (Achievements[achievement].reached) {
+            count++;
         }
     }
-    // think we are at 41
+
+    // Count unlocked ships (assuming ships is defined elsewhere)
+    // for (const ship in ships) {
+    //     if (ships.hasOwnProperty(ship) && ships[ship].condition()) {
+    //         count++;
+    //     }
+    // }
+
     return count;
 }
 
@@ -2124,7 +2148,9 @@ function populateAchievements() {
     // Update technologies count
     let count = countTechnologies();
     const technologiesCountElement = document.getElementById('technologiesCount');
-    let totalTechnologyCount = 44; // 8 ships + 22 weapons + 12 secondary  
+    const totalTechnologyCount = Object.keys(Achievements).length + 5;
+
+    // let totalTechnologyCount = 44; // 8 ships + 22 weapons + 12 secondary  
     // VERSION VERSION VERSION
     technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked`;
 
