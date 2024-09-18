@@ -267,7 +267,7 @@
             console.log(window.innerHeight);
             document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
           }
-
+        });
 
 
       </script>
@@ -455,675 +455,675 @@
   <!-- <button id="restartButton" style="display: none;">Home</button> -->
   <script>
 
-          const canvas = document.getElementById('gameCanvas');
-          let ctx = canvas.getContext('2d');
+    const canvas = document.getElementById('gameCanvas');
+    let ctx = canvas.getContext('2d');
 
   </script>
 
 
 
   <script>
-          // Get the canvas element
+    // Get the canvas element
 
 
 
-          // Event listeners for keyboard input
+    // Event listeners for keyboard input
 
 
 
 
-          document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
 
-            // updateMiniShipPreview();
-            // loadAchievements();
-            // populateAchievements();
-            if (isMobile()) {
+      // updateMiniShipPreview();
+      // loadAchievements();
+      // populateAchievements();
+      if (isMobile()) {
 
-              fpsThrottleMode = true;
-              const mobileControls = document.getElementById('mobile-controls');
-              if (mobileControls) mobileControls.style.display = 'block';
+        fpsThrottleMode = true;
+        const mobileControls = document.getElementById('mobile-controls');
+        if (mobileControls) mobileControls.style.display = 'block';
 
-              // document.getElementById('joystick').style.display = 'block';
-              document.getElementById('startScreen').style.display = 'flex';
-            } else {
-              // startGame();
-            }
+        // document.getElementById('joystick').style.display = 'block';
+        document.getElementById('startScreen').style.display = 'flex';
+      } else {
+        // startGame();
+      }
 
+    });
+
+
+    document.getElementById('viewAllLeaderboardsButton').addEventListener('click', async () => {
+      const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
+      allLeaderboardsContainer.innerHTML = ''; // Clear previous content
+
+      const allScores = await loadAllLeaderboards(gameId);
+
+      for (let mode in allScores) {
+        const leaderboardDiv = document.createElement('div');
+        leaderboardDiv.className = 'leaderboard-mode';
+        leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${mode}</h3>`;
+
+        allScores[mode].forEach((entry, index) => {
+          const formattedScore = entry.score.toLocaleString('en-US', {
+            maximumFractionDigits: 0
           });
+          const entryP = document.createElement('p');
+          entryP.textContent = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+          entryP.tabIndex = 0; // Make each entry focusable
+          leaderboardDiv.appendChild(entryP);
+        });
 
+        allLeaderboardsContainer.appendChild(leaderboardDiv);
+      }
 
-          document.getElementById('viewAllLeaderboardsButton').addEventListener('click', async () => {
-            const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
-            allLeaderboardsContainer.innerHTML = ''; // Clear previous content
+      const modal = document.getElementById('allLeaderboardsModal');
+      modal.style.display = 'block';
 
-            const allScores = await loadAllLeaderboards(gameId);
+      // Set focus to the first focusable element
+      const firstFocusableElement = modal.querySelector('[tabindex="0"]');
+      if (firstFocusableElement) {
+        firstFocusableElement.focus();
+      }
 
-            for (let mode in allScores) {
-              const leaderboardDiv = document.createElement('div');
-              leaderboardDiv.className = 'leaderboard-mode';
-              leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${mode}</h3>`;
+      // Add keyboard event listener
+      modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
+    });
 
-              allScores[mode].forEach((entry, index) => {
-                const formattedScore = entry.score.toLocaleString('en-US', {
-                  maximumFractionDigits: 0
-                });
-                const entryP = document.createElement('p');
-                entryP.textContent = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
-                entryP.tabIndex = 0; // Make each entry focusable
-                leaderboardDiv.appendChild(entryP);
-              });
+    document.getElementById('closeAllLeaderboards').addEventListener('click', () => {
+      const modal = document.getElementById('allLeaderboardsModal');
+      modal.style.display = 'none';
+      modal.removeEventListener('keydown', handleAllLeaderboardsKeydown);
+    });
 
-              allLeaderboardsContainer.appendChild(leaderboardDiv);
-            }
 
-            const modal = document.getElementById('allLeaderboardsModal');
-            modal.style.display = 'block';
+    function handleAllLeaderboardsKeydown(event) {
+      const modal = document.getElementById('allLeaderboardsModal');
+      const focusableElements = modal.querySelectorAll('[tabindex="0"]');
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
 
-            // Set focus to the first focusable element
-            const firstFocusableElement = modal.querySelector('[tabindex="0"]');
-            if (firstFocusableElement) {
-              firstFocusableElement.focus();
-            }
+      if (event.key === 'Tab') {
+        // Handle Tab key navigation
+        if (event.shiftKey && document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement.focus();
+        }
+      } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
+        let nextIndex;
 
-            // Add keyboard event listener
-            modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
-          });
+        if (event.key === 'ArrowDown') {
+          nextIndex = (currentIndex + 1) % focusableElements.length;
+        } else {
+          nextIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
+        }
 
-          document.getElementById('closeAllLeaderboards').addEventListener('click', () => {
-            const modal = document.getElementById('allLeaderboardsModal');
-            modal.style.display = 'none';
-            modal.removeEventListener('keydown', handleAllLeaderboardsKeydown);
-          });
+        focusableElements[nextIndex].focus();
+      } else if (event.key === 'Escape') {
+        document.getElementById('closeAllLeaderboards').click();
+      }
+    }
 
 
-          function handleAllLeaderboardsKeydown(event) {
-            const modal = document.getElementById('allLeaderboardsModal');
-            const focusableElements = modal.querySelectorAll('[tabindex="0"]');
-            const firstElement = focusableElements[0];
-            const lastElement = focusableElements[focusableElements.length - 1];
 
-            if (event.key === 'Tab') {
-              // Handle Tab key navigation
-              if (event.shiftKey && document.activeElement === firstElement) {
-                event.preventDefault();
-                lastElement.focus();
-              } else if (!event.shiftKey && document.activeElement === lastElement) {
-                event.preventDefault();
-                firstElement.focus();
-              }
-            } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-              event.preventDefault();
-              const currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
-              let nextIndex;
 
-              if (event.key === 'ArrowDown') {
-                nextIndex = (currentIndex + 1) % focusableElements.length;
-              } else {
-                nextIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
-              }
 
-              focusableElements[nextIndex].focus();
-            } else if (event.key === 'Escape') {
-              document.getElementById('closeAllLeaderboards').click();
-            }
-          }
 
 
 
+    function updateCoinsDisplay() {
+      coinsDisplay.textContent = coins;
+    }
 
 
 
+    function drawPixelatedExplosion(x, y, size) {
+      const canvas = document.createElement('canvas');
+      // const ctx = canvas.getContext('2d');
+      const pixelSize = 4; // Adjust pixel size to your preference
 
+      canvas.width = size;
+      canvas.height = size;
 
-          function updateCoinsDisplay() {
-            coinsDisplay.textContent = coins;
-          }
+      // Draw explosion on the off-screen canvas
+      ctx.fillStyle = 'orange';
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+      ctx.fill();
 
+      // Get the image data
+      const imageData = ctx.getImageData(0, 0, size, size);
 
+      // Create a new canvas for pixelated effect
+      const pixelCanvas = document.createElement('canvas');
+      const pixelCtx = pixelCanvas.getContext('2d');
 
-          function drawPixelatedExplosion(x, y, size) {
-            const canvas = document.createElement('canvas');
-            // const ctx = canvas.getContext('2d');
-            const pixelSize = 4; // Adjust pixel size to your preference
+      pixelCanvas.width = size;
+      pixelCanvas.height = size;
 
-            canvas.width = size;
-            canvas.height = size;
-
-            // Draw explosion on the off-screen canvas
-            ctx.fillStyle = 'orange';
-            ctx.beginPath();
-            ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Get the image data
-            const imageData = ctx.getImageData(0, 0, size, size);
-
-            // Create a new canvas for pixelated effect
-            const pixelCanvas = document.createElement('canvas');
-            const pixelCtx = pixelCanvas.getContext('2d');
-
-            pixelCanvas.width = size;
-            pixelCanvas.height = size;
-
-            // Draw pixelated effect
-            for (let y = 0; y < size; y += pixelSize) {
-              for (let x = 0; x < size; x += pixelSize) {
-                const pixelIndex = (y * size + x) * 4;
-                const r = imageData.data[pixelIndex];
-                const g = imageData.data[pixelIndex + 1];
-                const b = imageData.data[pixelIndex + 2];
-                const a = imageData.data[pixelIndex + 3];
-
-                pixelCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
-                pixelCtx.fillRect(x, y, pixelSize, pixelSize);
-              }
-            }
-
-            // Draw the pixelated explosion on the main canvas
-            ctx.drawImage(pixelCanvas, 0, 0);
-
-            // Draw the pixelated canvas onto the game canvas
-            ctx.drawImage(canvas, x - size / 2, y - size / 2);
-          }
-
-          // Usage
-          // drawPixelatedExplosion(100, 100, 64);
-
-
-
-
-
-          function showArrow(side) {
-            const leftArrow = document.getElementById('leftArrow');
-            const rightArrow = document.getElementById('rightArrow');
-
-            if (side === 'left') {
-              leftArrow.style.display = 'block';
-              rightArrow.style.display = 'none';
-            } else {
-              leftArrow.style.display = 'none';
-              rightArrow.style.display = 'block';
-            }
-
-            setTimeout(() => {
-              leftArrow.style.display = 'none';
-              rightArrow.style.display = 'none';
-              createAsteroids(side);
-            }, 700);
-          }
-
-
-          // Function to toggle mobile buttons visibility based on device type
-          function toggleMobileButtons() {
-            const mobileControls = document.getElementById('mobile-controls');
-
-            // Check if it's a mobile device
-            if (isMobile()) {
-              if (mobileControls) mobileControls.style.display = 'block';
-            } else {
-              if (mobileControls) mobileControls.style.display = 'none';
-            }
-          }
-
-          // Call this function on page load
-          // window.addEventListener('load', toggleMobileButtons);
-
-          // Also call this on window resize in case the device orientation changes
-          window.addEventListener('resize', toggleMobileButtons);
-
-          // Handle touch events for the buttons
-          document.getElementById('steer-left').addEventListener('touchstart', function (e) {
-            e.preventDefault();  // Prevent zooming
-            keys['ArrowLeft'] = true;
-          });
-
-          document.getElementById('steer-left').addEventListener('touchend', function (e) {
-            e.preventDefault();  // Prevent zooming
-            keys['ArrowLeft'] = false;
-          });
-
-          document.getElementById('steer-right').addEventListener('touchstart', function (e) {
-            e.preventDefault();  // Prevent zooming
-            keys['ArrowRight'] = true;
-          });
-
-          document.getElementById('steer-right').addEventListener('touchend', function (e) {
-            e.preventDefault();  // Prevent zooming
-            keys['ArrowRight'] = false;
-          });
-
-          document.getElementById('accelerate').addEventListener('touchstart', function (e) {
-            e.preventDefault();  // Prevent zooming
-            keys['ArrowUp'] = true;
-          });
-
-          document.getElementById('accelerate').addEventListener('touchend', function (e) {
-            e.preventDefault();  // Prevent zooming
-            keys['ArrowUp'] = false;
-          });
-
-
-          // joystick.addEventListener('touchstart', (e) => {
-          //   isTouchingJoystick = true;
-          //   joystickStartX = e.touches[0].clientX;
-          //   joystickStartY = e.touches[0].clientY;
-          // });
-
-
-          // joystick.addEventListener('touchmove', (e) => {
-          //   if (isTouchingJoystick) {
-          //     const touchX = e.touches[0].clientX;
-          //     const touchY = e.touches[0].clientY;
-          //     const deltaX = touchX - joystickStartX;
-          //     const deltaY = touchY - joystickStartY;
-
-          //     // Calculate angle and distance from the center
-          //     const angle = Math.atan2(deltaY, deltaX);
-          //     const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
-
-          //     // Update joystick handle position
-          //     joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
-
-          //     // Update ship rotation and speed based on joystick movement
-          //     ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
-          //     ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
-
-          //     e.preventDefault();
-          //   }
-          // });
-
-          // joystick.addEventListener('touchend', () => {
-          //   isTouchingJoystick = false;
-          //   ship.speed = 0;
-          //   joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
-          // });
-
-          function resetAllVariables() {
-            document.getElementById('endScreen').style.display = 'none';
-            startScreen.style.display = 'block';
-            document.getElementById('rouletteContainer').style.display = 'none';
-            // console.log(currentShip);
-
-            resetShip();
-            gravityStrength = 0;
-            meteorMode = false;
-            planetMode = false;
-            unclaimedLevelUps = 0;
-            fourthUpgradeUnlocked = false;
-            doubleTurret = false;
-            tripleTurret = false;
-            droneArmy = false;
-
-            collectedSpacePizza = false;
-            collectedPurplePixie = false;
-            collectedGoldPixie = false;
-            collectedPinkPixie = false;
-            collectedSpacePickle = false;
-            collectedDarkSide = false;
-
-
-
-            alienLasers = [];
-            explosions = [];
-            alienLaser = null;
-            activeMegaUpgrades = [];
-            ship.lasers = [];
-            lastRareAsteroids = [];
-            activeFloatingUpgrades = [];
-            floatingIsland.active = false;
-            explosiveRockets = [];
-            miniBossAlien = null;
-            aliens = [];
-
-            megaBossAlienSpawned = false;
-            superbossAlienSpawned = false;
-            octoBossSpawned = false;
-
-
-            flamethrower = {
-              cooldown: 10, // Cooldown time in frames
-              timer: 0, // Current cooldown timer
-              range: 100, // Range of the flamethrower
-              damage: 1, // Damage dealt per frame
-              active: false, // Flag to track if the flamethrower is active
-              damagePerSecond: 1 // Damage dealt per second
-            };
-
-            flamethrowerUpgrades = {
-              range: 1,
-              damage: 1,
-              cooldown: 1
-            };
-
-            resetPerformanceMonitoring();
-
-            turret = {
-              x: 0,
-              y: 0,
-              size: 10,
-              rotationSpeed: 2,
-              fireInterval: 120,
-              fireTimer: 0,
-              range: 400,
-              damage: 3,
-              color: 'cyan',
-              lasers: [] // Initialize the turret's lasers array
-            };
-
-            let count = countTechnologies();
-            const technologiesCountElement = document.getElementById('technologiesCount');
-            technologiesCountElement.textContent = `You have unlocked ${count} of 42 technologies`;
-            document.getElementById('technologiesCount').style.display = 'block';
-            // document.getElementById('shipType').style.display = 'block';
-
-            lives = 3;
-            score = 0;
-            wave = 1;
-            asteroidsKilled = 0;
-            aliensKilled = 0;
-
-            // Reset coins and XP
-            coins = 0;
-            level = 1;
-            xp = 0;
-            updateXPBar();
-
-            // Reset asteroids and drones
-            asteroids = [];
-            drones = [];
-            aliens = [];
-            miniBossAlien = null;
-            swarmingAliens = [];
-            superbossAlien = null;
-            megaBossAlien = null;
-            octoBoss = null;
-
-
-            alienLasers = [];
-            droppedGems = [];
-
-            // Reset turret upgrades
-            turret.bought = false;
-            // Reset active weapon classes
-            activeWeaponClasses = [];
-
-
-            comboFlameChainLightningActive = false;
-            comboExplosiveDroneActive = false;
-            comboSonicBoomerangActive = false;
-            comboCryoBombActive = false;
-            comboGravityBlastActive = false;
-
-            level = 1;
-            xp = 0;
-
-            acidBomb = {
-              cooldown: 300,
-              timer: 0,
-              duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
-              damagePerSecond: 1,
-              size: 50,
-              activeBombs: [],
-              activeAreas: []
-            };
-
-            acidBombUpgrades = {
-              duration: 1,
-              cooldown: 1,
-              size: 1
-            };
-
-            boomerang = {
-              x: canvas.width / 2,
-              y: canvas.height / 2,
-              size: 10,
-              speed: 2,
-              damage: 1,
-              dx: 3,
-              dy: 3,
-              active: false
-            };
-
-            boomerangUpgrades = {
-              speed: 1,
-              damage: 1
-            };
-
-            nanoswarm = {
-              cooldown: 300,
-              timer: 0,
-              speed: 2,
-              damage: 5,
-              activeMissiles: []
-            };
-
-            nanoswarmUpgrades = {
-              speed: 1,
-              damage: 1,
-              cooldown: 1
-            };
-
-            freezeEffect = {
-              cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
-              timer: 0,
-              duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
-              active: false,
-              remainingDuration: 0
-            };
-
-            freezeEffectUpgrades = {
-              duration: 1,
-              cooldown: 1
-            };
-
-            damageReport = {
-              lasers: 0,
-              explosive: 0,
-              drones: 0,
-              turret: 0,
-              sonicBlast: 0,
-              bomberDrones: 0,
-              deathRay: 0,
-              acid: 0,
-              freeze: 0,
-              boomerang: 0,
-              nano: 0,
-              fireAsteroid: 0,
-              acidAsteroid: 0,
-              lightningAsteroid: 0,
-              iceAsteroid: 0
-
-            };
-
-
-            deathRay = {
-              length: 1000,
-              width: 40,
-              cooldown: 300,
-              timer: 0
-            };
-
-
-            deathRayActive = false;
-
-            deathRayUpgrades = {
-              length: 1,
-              width: 1,
-              cooldown: 1
-            };
-
-
-
-            ship = {
-              x: canvas.width / 2,
-              y: canvas.height - 50,
-              size: 20,
-              speed: 0,
-              acceleration: 0.15,
-              deceleration: 0.96,
-              maxSpeed: 3,
-              rotation: 0,
-              rotationSpeed: 1.7,
-              lasers: [],
-              velocityX: 0,
-              velocityY: 0,
-              laserLevel: 2,
-              weaponSlots: 5,
-              upgradeSlots: 2,
-              accelerationLevel: 1,
-              rotationSpeedLevel: 1,
-              maxBulletsLevel: 70,
-              explosiveLaserLevel: 0,
-              laserCooldown: 30,
-              laserTimer: 0,
-              laserCooldownLevel: 1,
-
-            };
-
-            drone = {
-              x: canvas.width / 2,
-              y: canvas.height / 2,
-              size: 10,
-              speed: 0.0001,
-              direction: Math.random() * Math.PI * 2,
-              lasers: [],
-              laserSpeed: 3,
-              laserInterval: 80, // Fire lasers every 120 frames (2 second)
-              laserTimer: 0
-            };
-
-            turret = {
-              x: 0,
-              y: 0,
-              size: 10,
-              rotationSpeed: 2,
-              fireInterval: 120,
-              fireTimer: 0,
-              range: 400,
-              damage: 3,
-              color: 'cyan',
-              lasers: [] // Initialize the turret's lasers array
-            };
-
-            turretUpgrades = {
-              range: 1,
-              fireRate: 1,
-              damage: 1
-            };
-
-            sonicBlast = {
-              cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
-              timer: 0, // Current cooldown timer
-              range: 120, // Range of the sonic blast
-              speed: 2, // Speed of the sonic blast wave
-              damage: 1, // Damage dealt by the sonic blast
-              waves: [], // Array to store the active sonic blast waves
-              rangeLevel: 1,
-              damageLevel: 1,
-              cooldownLevel: 1
-
-            };
-
-            // Reset game state
-            invincible = true;
-            invincibilityTimer = invincibilityDuration;
-            // document.getElementById('leaderboard-container').style.display = 'none';
-
-            // Reset spawn variables
-            spawnTimer = spawnCooldown;
-            chanceForSmallAsteroid = 3;
-            chanceForVerySmallAsteroid = 1;
-            chanceForHardenedAsteroid = 5;
-            chanceForVeryHardenedAsteroid = 2;
-
-            // Reset ship position
-            // resetShip();
-
-            bomberDrones = [];
-
-            // activeWeapon.uses = 3;
-
-            // bomberDrones = [];
-            bomberDroneUpgrades = {
-              speed: 1,
-              bombRadiusLevel: 1,
-              bombRadius: 50,
-              bombDamage: 2
-            };
-
-            chainLightning = {
-              cooldown: 300, // Cooldown time in frames
-              timer: 0, // Current cooldown timer
-              range: 200, // Range of the chain lightning
-              damage: 5, // Damage dealt per hit
-              bounces: 2, // Number of bounces
-              active: false // Flag to track if the chain lightning is active
-            };
-
-            chainLightningUpgrades = {
-              range: 1,
-              damage: 1,
-              bounces: 1,
-              cooldown: 1
-            };
-
-            // console.log(currentShip);
-
-
-          }
-          mainMenuButton.addEventListener('click', () => {
-            // restartButton.style.display = 'none';
-            // console.log("restart click");
-
-            resetAllVariables();
-
-          });
-
-          restartButton.addEventListener('click', () => {
-            // restartButton.style.display = 'none';
-            // console.log("restart click");
-
-            resetAllVariables();
-            initializeGame(gameModes[currentGameModeIndex].id, true);
-
-
-
-          });
-
-
-
-
-
-
-          function toggleWeaponInfo() {
-            const weaponInfoDiv = document.getElementById('weaponInfo');
-
-            // console.log(weaponInfoDiv);
-            weaponInfoDiv.style.display = weaponInfoDiv.style.display === 'none' ? 'block' : 'none';
-            // console.log("toggle2");
-            if (weaponInfoDiv.style.display === 'none') {
-              resumeGame();
-            } else {
-              pauseGame();
-
-            }
-
-
-          }
-
-          function loadWeaponInfo() {
-            const weaponsContainer = document.getElementById('weaponsContainer');
-            weaponsContainer.innerHTML = '';
-            for (let i = 0; i < weapons.length; i += 2) {
-              const row = document.createElement('div');
-              row.className = 'weapon-row';
-
-              for (let j = i; j < i + 2 && j < weapons.length; j++) {
-                const weapon = weapons[j];
-                const weaponDiv = document.createElement('div');
-                weaponDiv.className = 'weapon';
-
-                weaponDiv.innerHTML = `
+      // Draw pixelated effect
+      for (let y = 0; y < size; y += pixelSize) {
+        for (let x = 0; x < size; x += pixelSize) {
+          const pixelIndex = (y * size + x) * 4;
+          const r = imageData.data[pixelIndex];
+          const g = imageData.data[pixelIndex + 1];
+          const b = imageData.data[pixelIndex + 2];
+          const a = imageData.data[pixelIndex + 3];
+
+          pixelCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
+          pixelCtx.fillRect(x, y, pixelSize, pixelSize);
+        }
+      }
+
+      // Draw the pixelated explosion on the main canvas
+      ctx.drawImage(pixelCanvas, 0, 0);
+
+      // Draw the pixelated canvas onto the game canvas
+      ctx.drawImage(canvas, x - size / 2, y - size / 2);
+    }
+
+    // Usage
+    // drawPixelatedExplosion(100, 100, 64);
+
+
+
+
+
+    function showArrow(side) {
+      const leftArrow = document.getElementById('leftArrow');
+      const rightArrow = document.getElementById('rightArrow');
+
+      if (side === 'left') {
+        leftArrow.style.display = 'block';
+        rightArrow.style.display = 'none';
+      } else {
+        leftArrow.style.display = 'none';
+        rightArrow.style.display = 'block';
+      }
+
+      setTimeout(() => {
+        leftArrow.style.display = 'none';
+        rightArrow.style.display = 'none';
+        createAsteroids(side);
+      }, 700);
+    }
+
+
+    // Function to toggle mobile buttons visibility based on device type
+    function toggleMobileButtons() {
+      const mobileControls = document.getElementById('mobile-controls');
+
+      // Check if it's a mobile device
+      if (isMobile()) {
+        if (mobileControls) mobileControls.style.display = 'block';
+      } else {
+        if (mobileControls) mobileControls.style.display = 'none';
+      }
+    }
+
+    // Call this function on page load
+    // window.addEventListener('load', toggleMobileButtons);
+
+    // Also call this on window resize in case the device orientation changes
+    window.addEventListener('resize', toggleMobileButtons);
+
+    // Handle touch events for the buttons
+    document.getElementById('steer-left').addEventListener('touchstart', function (e) {
+      e.preventDefault();  // Prevent zooming
+      keys['ArrowLeft'] = true;
+    });
+
+    document.getElementById('steer-left').addEventListener('touchend', function (e) {
+      e.preventDefault();  // Prevent zooming
+      keys['ArrowLeft'] = false;
+    });
+
+    document.getElementById('steer-right').addEventListener('touchstart', function (e) {
+      e.preventDefault();  // Prevent zooming
+      keys['ArrowRight'] = true;
+    });
+
+    document.getElementById('steer-right').addEventListener('touchend', function (e) {
+      e.preventDefault();  // Prevent zooming
+      keys['ArrowRight'] = false;
+    });
+
+    document.getElementById('accelerate').addEventListener('touchstart', function (e) {
+      e.preventDefault();  // Prevent zooming
+      keys['ArrowUp'] = true;
+    });
+
+    document.getElementById('accelerate').addEventListener('touchend', function (e) {
+      e.preventDefault();  // Prevent zooming
+      keys['ArrowUp'] = false;
+    });
+
+
+    // joystick.addEventListener('touchstart', (e) => {
+    //   isTouchingJoystick = true;
+    //   joystickStartX = e.touches[0].clientX;
+    //   joystickStartY = e.touches[0].clientY;
+    // });
+
+
+    // joystick.addEventListener('touchmove', (e) => {
+    //   if (isTouchingJoystick) {
+    //     const touchX = e.touches[0].clientX;
+    //     const touchY = e.touches[0].clientY;
+    //     const deltaX = touchX - joystickStartX;
+    //     const deltaY = touchY - joystickStartY;
+
+    //     // Calculate angle and distance from the center
+    //     const angle = Math.atan2(deltaY, deltaX);
+    //     const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
+
+    //     // Update joystick handle position
+    //     joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
+
+    //     // Update ship rotation and speed based on joystick movement
+    //     ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
+    //     ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
+
+    //     e.preventDefault();
+    //   }
+    // });
+
+    // joystick.addEventListener('touchend', () => {
+    //   isTouchingJoystick = false;
+    //   ship.speed = 0;
+    //   joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
+    // });
+
+    function resetAllVariables() {
+      document.getElementById('endScreen').style.display = 'none';
+      startScreen.style.display = 'block';
+      document.getElementById('rouletteContainer').style.display = 'none';
+      // console.log(currentShip);
+
+      resetShip();
+      gravityStrength = 0;
+      meteorMode = false;
+      planetMode = false;
+      unclaimedLevelUps = 0;
+      fourthUpgradeUnlocked = false;
+      doubleTurret = false;
+      tripleTurret = false;
+      droneArmy = false;
+
+      collectedSpacePizza = false;
+      collectedPurplePixie = false;
+      collectedGoldPixie = false;
+      collectedPinkPixie = false;
+      collectedSpacePickle = false;
+      collectedDarkSide = false;
+
+
+
+      alienLasers = [];
+      explosions = [];
+      alienLaser = null;
+      activeMegaUpgrades = [];
+      ship.lasers = [];
+      lastRareAsteroids = [];
+      activeFloatingUpgrades = [];
+      floatingIsland.active = false;
+      explosiveRockets = [];
+      miniBossAlien = null;
+      aliens = [];
+
+      megaBossAlienSpawned = false;
+      superbossAlienSpawned = false;
+      octoBossSpawned = false;
+
+
+      flamethrower = {
+        cooldown: 10, // Cooldown time in frames
+        timer: 0, // Current cooldown timer
+        range: 100, // Range of the flamethrower
+        damage: 1, // Damage dealt per frame
+        active: false, // Flag to track if the flamethrower is active
+        damagePerSecond: 1 // Damage dealt per second
+      };
+
+      flamethrowerUpgrades = {
+        range: 1,
+        damage: 1,
+        cooldown: 1
+      };
+
+      resetPerformanceMonitoring();
+
+      turret = {
+        x: 0,
+        y: 0,
+        size: 10,
+        rotationSpeed: 2,
+        fireInterval: 120,
+        fireTimer: 0,
+        range: 400,
+        damage: 3,
+        color: 'cyan',
+        lasers: [] // Initialize the turret's lasers array
+      };
+
+      let count = countTechnologies();
+      const technologiesCountElement = document.getElementById('technologiesCount');
+      technologiesCountElement.textContent = `You have unlocked ${count} of 42 technologies`;
+      document.getElementById('technologiesCount').style.display = 'block';
+      // document.getElementById('shipType').style.display = 'block';
+
+      lives = 3;
+      score = 0;
+      wave = 1;
+      asteroidsKilled = 0;
+      aliensKilled = 0;
+
+      // Reset coins and XP
+      coins = 0;
+      level = 1;
+      xp = 0;
+      updateXPBar();
+
+      // Reset asteroids and drones
+      asteroids = [];
+      drones = [];
+      aliens = [];
+      miniBossAlien = null;
+      swarmingAliens = [];
+      superbossAlien = null;
+      megaBossAlien = null;
+      octoBoss = null;
+
+
+      alienLasers = [];
+      droppedGems = [];
+
+      // Reset turret upgrades
+      turret.bought = false;
+      // Reset active weapon classes
+      activeWeaponClasses = [];
+
+
+      comboFlameChainLightningActive = false;
+      comboExplosiveDroneActive = false;
+      comboSonicBoomerangActive = false;
+      comboCryoBombActive = false;
+      comboGravityBlastActive = false;
+
+      level = 1;
+      xp = 0;
+
+      acidBomb = {
+        cooldown: 300,
+        timer: 0,
+        duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
+        damagePerSecond: 1,
+        size: 50,
+        activeBombs: [],
+        activeAreas: []
+      };
+
+      acidBombUpgrades = {
+        duration: 1,
+        cooldown: 1,
+        size: 1
+      };
+
+      boomerang = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: 10,
+        speed: 2,
+        damage: 1,
+        dx: 3,
+        dy: 3,
+        active: false
+      };
+
+      boomerangUpgrades = {
+        speed: 1,
+        damage: 1
+      };
+
+      nanoswarm = {
+        cooldown: 300,
+        timer: 0,
+        speed: 2,
+        damage: 5,
+        activeMissiles: []
+      };
+
+      nanoswarmUpgrades = {
+        speed: 1,
+        damage: 1,
+        cooldown: 1
+      };
+
+      freezeEffect = {
+        cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
+        timer: 0,
+        duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
+        active: false,
+        remainingDuration: 0
+      };
+
+      freezeEffectUpgrades = {
+        duration: 1,
+        cooldown: 1
+      };
+
+      damageReport = {
+        lasers: 0,
+        explosive: 0,
+        drones: 0,
+        turret: 0,
+        sonicBlast: 0,
+        bomberDrones: 0,
+        deathRay: 0,
+        acid: 0,
+        freeze: 0,
+        boomerang: 0,
+        nano: 0,
+        fireAsteroid: 0,
+        acidAsteroid: 0,
+        lightningAsteroid: 0,
+        iceAsteroid: 0
+
+      };
+
+
+      deathRay = {
+        length: 1000,
+        width: 40,
+        cooldown: 300,
+        timer: 0
+      };
+
+
+      deathRayActive = false;
+
+      deathRayUpgrades = {
+        length: 1,
+        width: 1,
+        cooldown: 1
+      };
+
+
+
+      ship = {
+        x: canvas.width / 2,
+        y: canvas.height - 50,
+        size: 20,
+        speed: 0,
+        acceleration: 0.15,
+        deceleration: 0.96,
+        maxSpeed: 3,
+        rotation: 0,
+        rotationSpeed: 1.7,
+        lasers: [],
+        velocityX: 0,
+        velocityY: 0,
+        laserLevel: 2,
+        weaponSlots: 5,
+        upgradeSlots: 2,
+        accelerationLevel: 1,
+        rotationSpeedLevel: 1,
+        maxBulletsLevel: 70,
+        explosiveLaserLevel: 0,
+        laserCooldown: 30,
+        laserTimer: 0,
+        laserCooldownLevel: 1,
+
+      };
+
+      drone = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: 10,
+        speed: 0.0001,
+        direction: Math.random() * Math.PI * 2,
+        lasers: [],
+        laserSpeed: 3,
+        laserInterval: 80, // Fire lasers every 120 frames (2 second)
+        laserTimer: 0
+      };
+
+      turret = {
+        x: 0,
+        y: 0,
+        size: 10,
+        rotationSpeed: 2,
+        fireInterval: 120,
+        fireTimer: 0,
+        range: 400,
+        damage: 3,
+        color: 'cyan',
+        lasers: [] // Initialize the turret's lasers array
+      };
+
+      turretUpgrades = {
+        range: 1,
+        fireRate: 1,
+        damage: 1
+      };
+
+      sonicBlast = {
+        cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
+        timer: 0, // Current cooldown timer
+        range: 120, // Range of the sonic blast
+        speed: 2, // Speed of the sonic blast wave
+        damage: 1, // Damage dealt by the sonic blast
+        waves: [], // Array to store the active sonic blast waves
+        rangeLevel: 1,
+        damageLevel: 1,
+        cooldownLevel: 1
+
+      };
+
+      // Reset game state
+      invincible = true;
+      invincibilityTimer = invincibilityDuration;
+      // document.getElementById('leaderboard-container').style.display = 'none';
+
+      // Reset spawn variables
+      spawnTimer = spawnCooldown;
+      chanceForSmallAsteroid = 3;
+      chanceForVerySmallAsteroid = 1;
+      chanceForHardenedAsteroid = 5;
+      chanceForVeryHardenedAsteroid = 2;
+
+      // Reset ship position
+      // resetShip();
+
+      bomberDrones = [];
+
+      // activeWeapon.uses = 3;
+
+      // bomberDrones = [];
+      bomberDroneUpgrades = {
+        speed: 1,
+        bombRadiusLevel: 1,
+        bombRadius: 50,
+        bombDamage: 2
+      };
+
+      chainLightning = {
+        cooldown: 300, // Cooldown time in frames
+        timer: 0, // Current cooldown timer
+        range: 200, // Range of the chain lightning
+        damage: 5, // Damage dealt per hit
+        bounces: 2, // Number of bounces
+        active: false // Flag to track if the chain lightning is active
+      };
+
+      chainLightningUpgrades = {
+        range: 1,
+        damage: 1,
+        bounces: 1,
+        cooldown: 1
+      };
+
+      // console.log(currentShip);
+
+
+    }
+    mainMenuButton.addEventListener('click', () => {
+      // restartButton.style.display = 'none';
+      // console.log("restart click");
+
+      resetAllVariables();
+
+    });
+
+    restartButton.addEventListener('click', () => {
+      // restartButton.style.display = 'none';
+      // console.log("restart click");
+
+      resetAllVariables();
+      initializeGame(gameModes[currentGameModeIndex].id, true);
+
+
+
+    });
+
+
+
+
+
+
+    function toggleWeaponInfo() {
+      const weaponInfoDiv = document.getElementById('weaponInfo');
+
+      // console.log(weaponInfoDiv);
+      weaponInfoDiv.style.display = weaponInfoDiv.style.display === 'none' ? 'block' : 'none';
+      // console.log("toggle2");
+      if (weaponInfoDiv.style.display === 'none') {
+        resumeGame();
+      } else {
+        pauseGame();
+
+      }
+
+
+    }
+
+    function loadWeaponInfo() {
+      const weaponsContainer = document.getElementById('weaponsContainer');
+      weaponsContainer.innerHTML = '';
+      for (let i = 0; i < weapons.length; i += 2) {
+        const row = document.createElement('div');
+        row.className = 'weapon-row';
+
+        for (let j = i; j < i + 2 && j < weapons.length; j++) {
+          const weapon = weapons[j];
+          const weaponDiv = document.createElement('div');
+          weaponDiv.className = 'weapon';
+
+          weaponDiv.innerHTML = `
                 <div class="weapon-icon ${weapon.icon}"></div>
                 <div class="weapon-info">
                     <h3>${weapon.name}</h3>
@@ -1131,40 +1131,40 @@
                 </div>
             `;
 
-                row.appendChild(weaponDiv);
-              }
+          row.appendChild(weaponDiv);
+        }
 
-              weaponsContainer.appendChild(row);
-            }
-          }
+        weaponsContainer.appendChild(row);
+      }
+    }
 
-          function populateUpgrades() {
-            const upgradesList = document.getElementById('upgradesList');
-            upgradesList.innerHTML = '';
+    function populateUpgrades() {
+      const upgradesList = document.getElementById('upgradesList');
+      upgradesList.innerHTML = '';
 
-            megaUpgrades.forEach(upgrade => {
-              const upgradeElement = document.createElement('div');
-              upgradeElement.classList.add('upgrade');
-              upgradeElement.style.opacity = upgrade.owned ? '1' : '0.5';
+      megaUpgrades.forEach(upgrade => {
+        const upgradeElement = document.createElement('div');
+        upgradeElement.classList.add('upgrade');
+        upgradeElement.style.opacity = upgrade.owned ? '1' : '0.5';
 
-              const icon = document.createElement('img');
-              icon.classList.add('upgrade-icon');
-              icon.src = upgrade.icon;
-              icon.alt = upgrade.name;
-              upgradeElement.appendChild(icon);
+        const icon = document.createElement('img');
+        icon.classList.add('upgrade-icon');
+        icon.src = upgrade.icon;
+        icon.alt = upgrade.name;
+        upgradeElement.appendChild(icon);
 
-              const description = document.createElement('span');
-              description.classList.add('upgrade-info');
+        const description = document.createElement('span');
+        description.classList.add('upgrade-info');
 
-              description.textContent = upgrade.description;
-              upgradeElement.appendChild(description);
+        description.textContent = upgrade.description;
+        upgradeElement.appendChild(description);
 
-              upgradesList.appendChild(upgradeElement);
-            });
-          }
+        upgradesList.appendChild(upgradeElement);
+      });
+    }
 
 
-          window.onload = loadWeaponInfo;
+    window.onload = loadWeaponInfo;
 
 
 
@@ -1187,1028 +1187,1028 @@
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
   <script>
 
-          let userId = "";
-          const firebaseConfig = {
-            apiKey: "AIzaSyCvgdn8c6D8RusKRr4vHAzFj1x4FNxrXVE",
-            authDomain: "infinite-games-9c69e.firebaseapp.com",
-            projectId: "infinite-games-9c69e",
-            storageBucket: "infinite-games-9c69e.appspot.com",
-            messagingSenderId: "602022483888",
-            appId: "1:602022483888:web:f967a6c1cb236ae66ba875",
-            measurementId: "G-9LE6E1BKZ7"
-          };
+    let userId = "";
+    const firebaseConfig = {
+      apiKey: "AIzaSyCvgdn8c6D8RusKRr4vHAzFj1x4FNxrXVE",
+      authDomain: "infinite-games-9c69e.firebaseapp.com",
+      projectId: "infinite-games-9c69e",
+      storageBucket: "infinite-games-9c69e.appspot.com",
+      messagingSenderId: "602022483888",
+      appId: "1:602022483888:web:f967a6c1cb236ae66ba875",
+      measurementId: "G-9LE6E1BKZ7"
+    };
 
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
   <script>
-          let sdkReady = false;
+    let sdkReady = false;
 
-          async function initializeCrazyGamesSDK() {
-            console.log('Attempting to initialize CrazyGames SDK...');
-            try {
-              await window.CrazyGames.SDK.init();
-              console.log('CrazyGames SDK initialized successfully');
-              if (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled") {
-                console.log('SDK disabled');
-                return;
-              } else {
-                sdkReady = true;
-                crazyGamesMode = true;
-                await checkCrazyUserStatus();
+    async function initializeCrazyGamesSDK() {
+      console.log('Attempting to initialize CrazyGames SDK...');
+      try {
+        await window.CrazyGames.SDK.init();
+        console.log('CrazyGames SDK initialized successfully');
+        if (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled") {
+          console.log('SDK disabled');
+          return;
+        } else {
+          sdkReady = true;
+          crazyGamesMode = true;
+          await checkCrazyUserStatus();
 
-              }
-            } catch (error) {
-              console.error('Error initializing CrazyGames SDK:', error);
-              handleSDKInitializationFailure();
-            }
-          }
+        }
+      } catch (error) {
+        console.error('Error initializing CrazyGames SDK:', error);
+        handleSDKInitializationFailure();
+      }
+    }
 
-          function handleSDKInitializationFailure() {
-            crazyGamesMode = false;
-            clearUserId();
-            // Fallback to your regular game initialization here
-            console.log('Falling back to standard mode due to SDK initialization failure');
-          }
+    function handleSDKInitializationFailure() {
+      crazyGamesMode = false;
+      clearUserId();
+      // Fallback to your regular game initialization here
+      console.log('Falling back to standard mode due to SDK initialization failure');
+    }
 
-          async function checkCrazyUserStatus() {
-            if (!sdkReady || (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled")) {
-              console.log('SDK not ready, cannot check user status');
-              return;
-            }
+    async function checkCrazyUserStatus() {
+      if (!sdkReady || (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled")) {
+        console.log('SDK not ready, cannot check user status');
+        return;
+      }
 
-            try {
-              // const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
+      try {
+        // const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
 
-              const user = await window.CrazyGames.SDK.user.getUser();
-              if (user && user.userId) {
-                console.log('User already signed in:', user);
-                saveUserId('cg_' + user.userId);
-                await handleUserLogin(userId, user.username);
-              } else {
-                console.log('No user signed in');
-                clearUserId();
-                // You might want to show a login button or prompt here
-              }
-            } catch (error) {
-              console.error('Error checking user status:', error);
-              clearUserId();
-            }
-          }
+        const user = await window.CrazyGames.SDK.user.getUser();
+        if (user && user.userId) {
+          console.log('User already signed in:', user);
+          saveUserId('cg_' + user.userId);
+          await handleUserLogin(userId, user.username);
+        } else {
+          console.log('No user signed in');
+          clearUserId();
+          // You might want to show a login button or prompt here
+        }
+      } catch (error) {
+        console.error('Error checking user status:', error);
+        clearUserId();
+      }
+    }
 
-          function saveUserId(id) {
-            userId = id;
-            localStorage.setItem('userId', id);
-            console.log('UserId saved:', id);
-          }
+    function saveUserId(id) {
+      userId = id;
+      localStorage.setItem('userId', id);
+      console.log('UserId saved:', id);
+    }
 
-          function loadUserId() {
-            const storedId = localStorage.getItem('userId');
-            if (storedId) {
-              userId = storedId;
-              console.log('UserId loaded from storage:', userId);
-            }
-            return userId;
-          }
+    function loadUserId() {
+      const storedId = localStorage.getItem('userId');
+      if (storedId) {
+        userId = storedId;
+        console.log('UserId loaded from storage:', userId);
+      }
+      return userId;
+    }
 
-          function clearUserId() {
-            userId = null;
-            localStorage.removeItem('userId');
-            console.log('UserId cleared');
-          }
+    function clearUserId() {
+      userId = null;
+      localStorage.removeItem('userId');
+      console.log('UserId cleared');
+    }
 
   </script>
   <script type="module">
 
-          // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-          // import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-          // import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-          import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-          import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-          import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-          // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-          import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    // import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    // import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
-          // Firebase configuration and initialization
-          const app = initializeApp(firebaseConfig);
-          const analytics = getAnalytics(app);
-          const auth = getAuth(app);
-          const db = getFirestore(app);
+    // Firebase configuration and initialization
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-          // await example
-          // try {
-          //   const user = await window.CrazyGames.SDK.user.getUser();
-          //   crazyGamesMode = true;
+    // await example
+    // try {
+    //   const user = await window.CrazyGames.SDK.user.getUser();
+    //   crazyGamesMode = true;
 
-          //   const crazyGameData = document.getElementById('crazyGameData');
+    //   const crazyGameData = document.getElementById('crazyGameData');
 
-          //   // if (crazyGamesDebugMode) {
-          //   crazyGameData.innerHTML = ''; // Clear previous content
-          //   crazyGameData.innerHTML = user;
-          //   // }
+    //   // if (crazyGamesDebugMode) {
+    //   crazyGameData.innerHTML = ''; // Clear previous content
+    //   crazyGameData.innerHTML = user;
+    //   // }
 
-          //   console.log(user);
-          // } catch (e) {
-
-
-          //   const crazyGameData = document.getElementById('crazyGameData');
-
-          //   // if (crazyGamesDebugMode) {
-          //   crazyGameData.innerHTML = ''; // Clear previous content
-          //   crazyGameData.innerHTML = e.message;
-          //   // }
+    //   console.log(user);
+    // } catch (e) {
 
 
+    //   const crazyGameData = document.getElementById('crazyGameData');
 
-
-          //   console.log("Get user error: ", e);
-          // }
-
-          // .then .catch example
-          // window.CrazyGames.SDK.user
-          //   .getUser()
-          //   .then((user) => console.log(user))
-          //   .catch((e) => console.log("Get user error: ", e));
+    //   // if (crazyGamesDebugMode) {
+    //   crazyGameData.innerHTML = ''; // Clear previous content
+    //   crazyGameData.innerHTML = e.message;
+    //   // }
 
 
 
 
+    //   console.log("Get user error: ", e);
+    // }
+
+    // .then .catch example
+    // window.CrazyGames.SDK.user
+    //   .getUser()
+    //   .then((user) => console.log(user))
+    //   .catch((e) => console.log("Get user error: ", e));
 
 
 
-          const loginLink = document.getElementById('login-link');
-          const aut = document.getElementById('auth-link');
 
-          const loginPopup = document.getElementById('loginPopup');
-          const loginForm = document.getElementById('loginForm');
-          const userInfo = document.getElementById('userInfo');
-          const userNickname = document.getElementById('userNickname');
-          const logoutLink = document.getElementById('logoutLink');
-          const loginContainer = document.getElementById('loginContainer');
-          const signupForm = document.getElementById('signupForm');
 
-          window.addEventListener('load', async () => {
-            console.log('Window loaded, initializing...');
-            loadUserId(); // Load any existing userId
 
-            try {
-              await window.CrazyGames.SDK.init();
-              console.log('CrazyGames SDK initialized successfully');
-              if (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled") {
-                return;
-                console.log('CrazyGames SDK disabled on this domain');
 
-              }
-              else {
-                sdkReady = true;
-                crazyGamesMode = true;
-                await checkAndHandleCrazyGamesUser();
+    const loginLink = document.getElementById('login-link');
+    const aut = document.getElementById('auth-link');
 
-              }
-            } catch (error) {
-              console.log('CrazyGames SDK not available, running in standard mode');
-              crazyGamesMode = false;
-              handleSDKInitializationFailure();
+    const loginPopup = document.getElementById('loginPopup');
+    const loginForm = document.getElementById('loginForm');
+    const userInfo = document.getElementById('userInfo');
+    const userNickname = document.getElementById('userNickname');
+    const logoutLink = document.getElementById('logoutLink');
+    const loginContainer = document.getElementById('loginContainer');
+    const signupForm = document.getElementById('signupForm');
+
+    window.addEventListener('load', async () => {
+      console.log('Window loaded, initializing...');
+      loadUserId(); // Load any existing userId
+
+      try {
+        await window.CrazyGames.SDK.init();
+        console.log('CrazyGames SDK initialized successfully');
+        if (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled") {
+          return;
+          console.log('CrazyGames SDK disabled on this domain');
+
+        }
+        else {
+          sdkReady = true;
+          crazyGamesMode = true;
+          await checkAndHandleCrazyGamesUser();
+
+        }
+      } catch (error) {
+        console.log('CrazyGames SDK not available, running in standard mode');
+        crazyGamesMode = false;
+        handleSDKInitializationFailure();
+      }
+    });
+
+
+    async function checkAndHandleCrazyGamesUser() {
+      if (sdkReady) {
+        try {
+          const user = await window.CrazyGames.SDK.user.getUser();
+          if (user && user.username) {
+            console.log('CrazyGames user already logged in:', user);
+            await handleUserLogin('cg_' + user.username, user.username);
+          } else {
+            console.log('No CrazyGames user logged in');
+          }
+        } catch (error) {
+          console.error('Error checking CrazyGames user:', error);
+        }
+      }
+    }
+
+
+    async function saveInitialData(userId, email, nickname) {
+      const initialData = {
+        email: email,
+        nickname: nickname,
+        coins: 100,
+        portfolio: {},
+        portfolioHistory: []
+      };
+      await setDoc(doc(db, 'users', userId), initialData);
+    }
+
+    async function showCrazyGamesAuthPrompt() {
+
+
+      try {
+        const user = await window.CrazyGames.SDK.user.showAuthPrompt();
+        console.log("Auth prompt result", user);
+
+
+      } catch (e) {
+        console.log("Error:", e);
+        // normal login as backup
+        loginFormOpen = true;
+        event.preventDefault();
+        pauseGame();
+        loginPopup.style.display = 'block';
+
+
+
+      }
+
+    }
+
+    // async function testCrazyGamesUserFlow() {
+
+    //   try {
+    //     cgUser = await window.CrazyGames.SDK.user.getUser();
+
+    //     console.log(cgUser);
+
+    //     const userToken = await window.CrazyGames.SDK.user.getUserToken();
+
+    //     console.log(userToken);
+
+    //     console.log(cgUser);
+    //     userNickname.textContent = cgUser.username;
+    //     userInfo.style.display = 'block';
+    //     loginLink.style.display = 'none';
+    //     console.log("userId");
+    //     // console.log(userId);
+    //     window.userId = "cg_" + cgUser.username;
+    //     console.log(window.userId);
+    //     // return "cg+" + cgUser.username;
+
+    //   } catch (e) {
+    //     console.log("Get user error: ", e);
+
+    //   }
+    // }
+
+    // window.testCrazyGamesUserFlow = testCrazyGamesUserFlow;
+
+    loginLink.addEventListener('click', async (event) => {
+      event.preventDefault();
+
+      if (crazyGamesMode && sdkReady) {
+        try {
+          await handleCrazyGamesLogin();
+        } catch (error) {
+          console.error('CrazyGames login failed:', error);
+          showFirebaseLoginPopup();
+        }
+      } else {
+        showFirebaseLoginPopup();
+      }
+    });
+
+    function showFirebaseLoginPopup() {
+      loginFormOpen = true;
+      pauseGame();
+      loginPopup.style.display = 'block';
+    }
+
+
+
+    async function handleCrazyGamesLogin() {
+      if (!sdkReady) {
+        throw new Error('CrazyGames SDK not ready');
+      }
+
+      console.log('Handling CrazyGames login...');
+
+      const user = await window.CrazyGames.SDK.user.getUser();
+      if (user && user.username) {
+        await handleUserLogin('cg_' + user.username, user.username);
+      } else {
+        const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
+        if (authResult && authResult.userObject && authResult.userObject.username) {
+          await handleUserLogin('cg_' + authResult.userObject.username, authResult.userObject.username);
+        } else {
+          throw new Error('CrazyGames authentication failed');
+        }
+      }
+    }
+
+
+
+
+    async function handleUserLogin(id, username) {
+      console.log('Handling user login for:', id, username);
+      if (!id) {
+        console.error('Invalid user ID received');
+        return;
+      }
+      userId = id;
+
+      try {
+        const db = getFirestore();
+        const userDocRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          username = userData.nickname || username; // Use the stored nickname if available
+          loadUserData(userId);
+        } else {
+          // If the user document doesn't exist, we might want to create it
+          await setDoc(userDocRef, {
+            nickname: username,
+            createdAt: new Date()
+          });
+        }
+
+        userNickname.textContent = username;
+        userInfo.style.display = 'block';
+        loginLink.style.display = 'none';
+
+        await loadOrInitializeUserData(id, username);
+      } catch (error) {
+        console.error('Error handling user login:', error);
+      }
+    }
+
+
+    function loadUserDataToGame(userData) {
+      coins = userData.coins || 0;
+      Object.assign(Achievements, userData.games?.[gameId]?.achievements || {});
+      // Load other game-specific data as needed
+      updateGameUI();
+    }
+
+
+    async function loadOrInitializeUserData(id, username) {
+      console.log('Loading or initializing user data for:', id);
+      // Implement your logic to load or initialize user data here
+      // This might involve fetching data from Firebase or initializing new user data
+    }
+
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        console.log(user);
+        console.log("username");
+
+        await handleUserLogin(user.uid, user.email.split('@')[0]);
+        loginPopup.style.display = 'none';
+        loginFormOpen = false;
+        resumeGame();
+      } catch (error) {
+        console.error('Error signing in:', error);
+        document.getElementById('loginError').textContent = error.message;
+      }
+    });
+
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = signupForm['signupEmail'].value;
+      const password = signupForm['signupPassword'].value;
+      const nickname = signupForm['signupNickname'].value;
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        userId = cred.user.uid;
+        await saveInitialData(userId, email, nickname);
+        signupForm.reset();
+        // document.getElementById('auth').classList.toggle('hidden');
+        loginPopup.style.display = 'none';
+        loginFormOpen = false;
+
+      } catch (error) {
+        const errorMessage = error.message;
+        document.getElementById('signupError').textContent = errorMessage; // Display the error message
+        console.error("Error creating user:", errorMessage);
+      }
+    });
+
+    document.getElementById('closeSignupPopup').addEventListener('click', () => {
+      loginPopup.style.display = 'none';
+      resumeGame(); // Resume the game if paused
+    });
+
+
+    logoutLink.addEventListener('click', async (event) => {
+      event.preventDefault();
+
+      if (crazyGamesMode) {
+        // CrazyGames doesn't have a logout function, so we just clear the local state
+        userId = null;
+        userInfo.style.display = 'none';
+        loginLink.style.display = 'block';
+      } else {
+        try {
+          await auth.signOut();
+          userId = null;
+          userInfo.style.display = 'none';
+          loginLink.style.display = 'block';
+        } catch (error) {
+          console.error('Error signing out:', error);
+        }
+      }
+    });
+
+
+    auth.onAuthStateChanged(user => {
+      if (user && !crazyGamesMode) {
+        handleUserLogin(user.uid, user.email.split('@')[0]);
+        if (score && score > 1000) {
+          const gameData = {
+            score: score
+          };
+          saveUserScore(gameData);
+        }
+      } else if (!user && !crazyGamesMode) {
+        userInfo.style.display = 'none';
+        loginContainer.style.display = 'block';
+        pauseGame();
+      }
+    });
+
+
+
+    async function loadUserData(userId) {
+      try {
+        const db = getFirestore();
+        const userDocRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          console.log("User data loaded from Firebase:", userData);
+
+          // Load achievements
+          const gameAchievements = userData.games?.[gameId]?.achievements || {};
+          Object.assign(Achievements, gameAchievements);
+
+          // Load scores and calculate totals
+          const userScores = userData.games?.[gameId]?.scores || [];
+          totalDamage = 0;
+          totalAsteroidsKilled = 0;
+          totalAliensKilled = 0;
+
+          userScores.forEach(score => {
+            // Check if topWeapons exists and is an array before using reduce
+            if (Array.isArray(score.topWeapons)) {
+              totalDamage += score.topWeapons.reduce((sum, weapon) => sum + (weapon.damage || 0), 0);
             }
+            totalAsteroidsKilled += score.asteroidsKilled || 0;
+            totalAliensKilled += score.aliensKilled || 0;
           });
 
+          const last10Scores = userScores.slice(-10).reverse();
 
-          async function checkAndHandleCrazyGamesUser() {
-            if (sdkReady) {
-              try {
-                const user = await window.CrazyGames.SDK.user.getUser();
-                if (user && user.username) {
-                  console.log('CrazyGames user already logged in:', user);
-                  await handleUserLogin('cg_' + user.username, user.username);
-                } else {
-                  console.log('No CrazyGames user logged in');
-                }
-              } catch (error) {
-                console.error('Error checking CrazyGames user:', error);
-              }
-            }
-          }
+          populateAchievements();
+          populateSelectors();
+          populateUserScores(last10Scores);
 
-
-          async function saveInitialData(userId, email, nickname) {
-            const initialData = {
-              email: email,
-              nickname: nickname,
-              coins: 100,
-              portfolio: {},
-              portfolioHistory: []
-            };
-            await setDoc(doc(db, 'users', userId), initialData);
-          }
-
-          async function showCrazyGamesAuthPrompt() {
-
-
-            try {
-              const user = await window.CrazyGames.SDK.user.showAuthPrompt();
-              console.log("Auth prompt result", user);
-
-
-            } catch (e) {
-              console.log("Error:", e);
-              // normal login as backup
-              loginFormOpen = true;
-              event.preventDefault();
-              pauseGame();
-              loginPopup.style.display = 'block';
-
-
-
-            }
-
-          }
-
-          // async function testCrazyGamesUserFlow() {
-
-          //   try {
-          //     cgUser = await window.CrazyGames.SDK.user.getUser();
-
-          //     console.log(cgUser);
-
-          //     const userToken = await window.CrazyGames.SDK.user.getUserToken();
-
-          //     console.log(userToken);
-
-          //     console.log(cgUser);
-          //     userNickname.textContent = cgUser.username;
-          //     userInfo.style.display = 'block';
-          //     loginLink.style.display = 'none';
-          //     console.log("userId");
-          //     // console.log(userId);
-          //     window.userId = "cg_" + cgUser.username;
-          //     console.log(window.userId);
-          //     // return "cg+" + cgUser.username;
-
-          //   } catch (e) {
-          //     console.log("Get user error: ", e);
-
-          //   }
-          // }
-
-          // window.testCrazyGamesUserFlow = testCrazyGamesUserFlow;
-
-          loginLink.addEventListener('click', async (event) => {
-            event.preventDefault();
-
-            if (crazyGamesMode && sdkReady) {
-              try {
-                await handleCrazyGamesLogin();
-              } catch (error) {
-                console.error('CrazyGames login failed:', error);
-                showFirebaseLoginPopup();
-              }
-            } else {
-              showFirebaseLoginPopup();
-            }
-          });
-
-          function showFirebaseLoginPopup() {
-            loginFormOpen = true;
-            pauseGame();
-            loginPopup.style.display = 'block';
-          }
-
-
-
-          async function handleCrazyGamesLogin() {
-            if (!sdkReady) {
-              throw new Error('CrazyGames SDK not ready');
-            }
-
-            console.log('Handling CrazyGames login...');
-
-            const user = await window.CrazyGames.SDK.user.getUser();
-            if (user && user.username) {
-              await handleUserLogin('cg_' + user.username, user.username);
-            } else {
-              const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
-              if (authResult && authResult.userObject && authResult.userObject.username) {
-                await handleUserLogin('cg_' + authResult.userObject.username, authResult.userObject.username);
-              } else {
-                throw new Error('CrazyGames authentication failed');
-              }
-            }
-          }
-
-
-
-
-          async function handleUserLogin(id, username) {
-            console.log('Handling user login for:', id, username);
-            if (!id) {
-              console.error('Invalid user ID received');
-              return;
-            }
-            userId = id;
-
-            try {
-              const db = getFirestore();
-              const userDocRef = doc(db, 'users', userId);
-              const userDoc = await getDoc(userDocRef);
-
-              if (userDoc.exists()) {
-                const userData = userDoc.data();
-                username = userData.nickname || username; // Use the stored nickname if available
-                loadUserData(userId);
-              } else {
-                // If the user document doesn't exist, we might want to create it
-                await setDoc(userDocRef, {
-                  nickname: username,
-                  createdAt: new Date()
-                });
-              }
-
-              userNickname.textContent = username;
-              userInfo.style.display = 'block';
-              loginLink.style.display = 'none';
-
-              await loadOrInitializeUserData(id, username);
-            } catch (error) {
-              console.error('Error handling user login:', error);
-            }
-          }
-
-
-          function loadUserDataToGame(userData) {
-            coins = userData.coins || 0;
-            Object.assign(Achievements, userData.games?.[gameId]?.achievements || {});
-            // Load other game-specific data as needed
-            updateGameUI();
-          }
-
-
-          async function loadOrInitializeUserData(id, username) {
-            console.log('Loading or initializing user data for:', id);
-            // Implement your logic to load or initialize user data here
-            // This might involve fetching data from Firebase or initializing new user data
-          }
-
-
-          loginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            try {
-              const userCredential = await signInWithEmailAndPassword(auth, email, password);
-              const user = userCredential.user;
-              console.log(user);
-              console.log("username");
-
-              await handleUserLogin(user.uid, user.email.split('@')[0]);
-              loginPopup.style.display = 'none';
-              loginFormOpen = false;
-              resumeGame();
-            } catch (error) {
-              console.error('Error signing in:', error);
-              document.getElementById('loginError').textContent = error.message;
-            }
-          });
-
-          signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = signupForm['signupEmail'].value;
-            const password = signupForm['signupPassword'].value;
-            const nickname = signupForm['signupNickname'].value;
-            try {
-              const cred = await createUserWithEmailAndPassword(auth, email, password);
-              userId = cred.user.uid;
-              await saveInitialData(userId, email, nickname);
-              signupForm.reset();
-              // document.getElementById('auth').classList.toggle('hidden');
-              loginPopup.style.display = 'none';
-              loginFormOpen = false;
-
-            } catch (error) {
-              const errorMessage = error.message;
-              document.getElementById('signupError').textContent = errorMessage; // Display the error message
-              console.error("Error creating user:", errorMessage);
-            }
-          });
-
-          document.getElementById('closeSignupPopup').addEventListener('click', () => {
-            loginPopup.style.display = 'none';
-            resumeGame(); // Resume the game if paused
-          });
-
-
-          logoutLink.addEventListener('click', async (event) => {
-            event.preventDefault();
-
-            if (crazyGamesMode) {
-              // CrazyGames doesn't have a logout function, so we just clear the local state
-              userId = null;
-              userInfo.style.display = 'none';
-              loginLink.style.display = 'block';
-            } else {
-              try {
-                await auth.signOut();
-                userId = null;
-                userInfo.style.display = 'none';
-                loginLink.style.display = 'block';
-              } catch (error) {
-                console.error('Error signing out:', error);
+          // You can add more data loading here as needed
+        } else {
+          console.log("No existing user document. Creating new user data.");
+          await setDoc(userDocRef, {
+            nickname: "New User", // Use a default nickname or prompt the user for one
+            games: {
+              [gameId]: {
+                achievements: {},
+                scores: []
               }
             }
           });
+        }
+      } catch (firebaseError) {
+        console.error("Error getting/setting user data in Firebase:", firebaseError);
+      }
+    }
+    function populateUserSessions(sessions) {
+      const pastSessionsList = document.getElementById('pastScoresList');
+      pastSessionsList.innerHTML = ''; // Clear previous content
 
+      sessions.forEach(session => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '20px';
 
-          auth.onAuthStateChanged(user => {
-            if (user && !crazyGamesMode) {
-              handleUserLogin(user.uid, user.email.split('@')[0]);
-              if (score && score > 1000) {
-                const gameData = {
-                  score: score
-                };
-                saveUserScore(gameData);
-              }
-            } else if (!user && !crazyGamesMode) {
-              userInfo.style.display = 'none';
-              loginContainer.style.display = 'block';
-              pauseGame();
-            }
-          });
-
-
-
-          async function loadUserData(userId) {
-            try {
-              const db = getFirestore();
-              const userDocRef = doc(db, 'users', userId);
-              const userDoc = await getDoc(userDocRef);
-
-              if (userDoc.exists()) {
-                const userData = userDoc.data();
-                console.log("User data loaded from Firebase:", userData);
-
-                // Load achievements
-                const gameAchievements = userData.games?.[gameId]?.achievements || {};
-                Object.assign(Achievements, gameAchievements);
-
-                // Load scores and calculate totals
-                const userScores = userData.games?.[gameId]?.scores || [];
-                totalDamage = 0;
-                totalAsteroidsKilled = 0;
-                totalAliensKilled = 0;
-
-                userScores.forEach(score => {
-                  // Check if topWeapons exists and is an array before using reduce
-                  if (Array.isArray(score.topWeapons)) {
-                    totalDamage += score.topWeapons.reduce((sum, weapon) => sum + (weapon.damage || 0), 0);
-                  }
-                  totalAsteroidsKilled += score.asteroidsKilled || 0;
-                  totalAliensKilled += score.aliensKilled || 0;
-                });
-
-                const last10Scores = userScores.slice(-10).reverse();
-
-                populateAchievements();
-                populateSelectors();
-                populateUserScores(last10Scores);
-
-                // You can add more data loading here as needed
-              } else {
-                console.log("No existing user document. Creating new user data.");
-                await setDoc(userDocRef, {
-                  nickname: "New User", // Use a default nickname or prompt the user for one
-                  games: {
-                    [gameId]: {
-                      achievements: {},
-                      scores: []
-                    }
-                  }
-                });
-              }
-            } catch (firebaseError) {
-              console.error("Error getting/setting user data in Firebase:", firebaseError);
-            }
-          }
-          function populateUserSessions(sessions) {
-            const pastSessionsList = document.getElementById('pastScoresList');
-            pastSessionsList.innerHTML = ''; // Clear previous content
-
-            sessions.forEach(session => {
-              const li = document.createElement('li');
-              li.style.marginBottom = '20px';
-
-              // Display score, game mode, and session length
-              li.innerHTML = `
+        // Display score, game mode, and session length
+        li.innerHTML = `
       <h3>Score: ${session.score}</h3>
       <p>Mode: ${getGameModeName(session.gameMode)}</p>
       <p>Session Length: ${formatSessionLength(session.sessionLength)}</p>
     `;
 
-              // Add a detailed damage report
-              const damageReport = document.createElement('ul');
-              damageReport.classList.add('damage-report');  // Add a class for custom styling
+        // Add a detailed damage report
+        const damageReport = document.createElement('ul');
+        damageReport.classList.add('damage-report');  // Add a class for custom styling
 
-              session.topWeapons.forEach(weaponData => {
-                const weapon = weaponData.weapon;
-                const damage = weaponData.damage;
+        session.topWeapons.forEach(weaponData => {
+          const weapon = weaponData.weapon;
+          const damage = weaponData.damage;
 
-                // Find weapon info based on weapon name
-                const weaponInfo = weapons.find(w => w.name === weapon);
+          // Find weapon info based on weapon name
+          const weaponInfo = weapons.find(w => w.name === weapon);
 
-                if (weaponInfo) {
-                  const weaponLi = document.createElement('li');
-                  weaponLi.style.display = 'flex';
-                  weaponLi.style.alignItems = 'center';
+          if (weaponInfo) {
+            const weaponLi = document.createElement('li');
+            weaponLi.style.display = 'flex';
+            weaponLi.style.alignItems = 'center';
 
-                  // Display weapon icon
-                  const icon = document.createElement('div');
-                  icon.classList.add('weaponClassIcon', weaponInfo.icon);
-                  icon.style.width = '24px';
-                  icon.style.height = '24px';
-                  icon.style.marginRight = '10px';
+            // Display weapon icon
+            const icon = document.createElement('div');
+            icon.classList.add('weaponClassIcon', weaponInfo.icon);
+            icon.style.width = '24px';
+            icon.style.height = '24px';
+            icon.style.marginRight = '10px';
 
-                  // Display weapon name and damage
-                  const text = document.createElement('span');
-                  text.textContent = `${weaponInfo.name}: ${damage}`;
+            // Display weapon name and damage
+            const text = document.createElement('span');
+            text.textContent = `${weaponInfo.name}: ${damage}`;
 
-                  weaponLi.appendChild(icon);
-                  weaponLi.appendChild(text);
-                  damageReport.appendChild(weaponLi);
-                }
+            weaponLi.appendChild(icon);
+            weaponLi.appendChild(text);
+            damageReport.appendChild(weaponLi);
+          }
+        });
+
+        li.appendChild(damageReport);
+        pastSessionsList.appendChild(li);
+      });
+    }
+
+
+    // document.getElementById('login-toggle').addEventListener('click', function (event) {
+    //   event.preventDefault();
+    //   document.getElementById('auth').classList.toggle('hidden');
+    // });
+
+
+    // async function saveUserScore(gameData) {
+    //   if (!userId) {
+    //     console.log('No user logged in, score not saved');
+    //     return;
+    //   }
+
+    //   const db = getFirestore();
+    //   const userDocRef = doc(db, 'users', userId);
+
+    //   try {
+    //     await setDoc(userDocRef, {
+    //       [`games.${gameId}.scores`]: arrayUnion({
+    //         score: gameData.score,
+    //         topWeapons: gameData.topWeapons,
+    //         sessionLength: gameData.sessionLength,
+    //         loginTime: new Date(),
+    //         gameMode: gameData.gameMode
+    //       }),
+    //       [`games.${gameId}.achievements`]: Achievements,
+    //       coins: coins
+    //     }, { merge: true });
+    //     console.log('User data saved successfully');
+    //   } catch (error) {
+    //     console.error('Error saving user data:', error);
+    //     console.error('Error details:', error.code, error.message);
+    //   }
+    // }
+
+
+
+    // Function to save user score for a specific game
+    // async function saveUserScore(userId, gameData) {
+    //   const db = getFirestore();
+    //   const userDocRef = doc(db, 'users', userId);
+
+    //   try {
+    //     // For CrazyGames users, we need to set the document if it doesn't exist
+    //     if (userId.startsWith('cg_')) {
+    //       await setDoc(userDocRef, {
+    //         [`games.${gameId}.scores`]: arrayUnion({
+    //           score: gameData.score,
+    //           topWeapons: gameData.topWeapons,
+    //           sessionLength: gameData.sessionLength,
+    //           loginTime: new Date(),
+    //           gameMode: gameData.gameMode
+    //         }),
+    //         [`games.${gameId}.achievements`]: Achievements,
+    //         coins: coins
+    //       }, { merge: true });
+    //     } else {
+    //       // For Firebase users, we can use updateDoc as before
+    //       await updateDoc(userDocRef, {
+    //         [`games.${gameId}.scores`]: arrayUnion({
+    //           score: gameData.score,
+    //           topWeapons: gameData.topWeapons,
+    //           sessionLength: gameData.sessionLength,
+    //           loginTime: new Date(),
+    //           gameMode: gameData.gameMode
+    //         }),
+    //         [`games.${gameId}.achievements`]: Achievements,
+    //         coins: coins
+    //       });
+    //     }
+    //     console.log('User data saved successfully');
+    //   } catch (error) {
+    //     console.error('Error saving user data:', error);
+    //     // Log more details about the error
+    //     console.error('Error details:', error.code, error.message);
+    //   }
+    // }
+    // window.saveUserScore = saveUserScore;
+
+    // async function saveUserScore(gameData) {
+    //   console.log('Saving user score, userId:', userId);
+    //   if (!userId || userId === 'cg_undefined') {
+    //     console.error('Invalid userId, score not saved');
+    //     return;
+    //   }
+
+    //   if (!gameData || typeof gameData !== 'object') {
+    //     console.error('Invalid gameData, score not saved');
+    //     return;
+    //   }
+
+    //   const db = getFirestore();
+    //   const userDocRef = doc(db, 'users', userId);
+
+    //   // Ensure all gameData properties are defined
+    //   const safeGameData = {
+    //     score: gameData.score || 0,
+    //     topWeapons: gameData.topWeapons || [],
+    //     sessionLength: gameData.sessionLength || 0,
+    //     loginTime: new Date(),
+    //     gameMode: gameData.gameMode || 'unknown'
+    //   };
+
+    //   try {
+    //     await setDoc(userDocRef, {
+    //       [`games.${gameId}.scores`]: arrayUnion(safeGameData),
+    //       [`games.${gameId}.achievements`]: Achievements || {},
+    //       coins: coins || 0
+    //     }, { merge: true });
+    //     console.log('User data saved successfully');
+    //   } catch (error) {
+    //     console.error('Error saving user data:', error);
+    //     console.error('Error details:', error.code, error.message);
+    //   }
+    // }
+
+
+    async function saveUserScore(gameData) {
+      // let userId;
+      // let username;
+
+      if (crazyGamesMode) {
+        const user = await window.CrazyGames.SDK.user.getUser();
+        if (user && user.username) {
+          userId = 'cg_' + user.username;
+          // username = user.username;
+        }
+        // } else {
+        // const currentUser = userId;
+        // if (currentUser) {
+        //   userId = currentUser.uid;
+        // }
+      }
+
+      if (!userId || !gameData) {
+        console.error('Invalid userId or gameData');
+        return;
+      }
+
+      const db = getFirestore();
+      const userDocRef = doc(db, 'users', userId);
+
+      const safeGameData = {
+        score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
+        topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
+        activeMegaUpgrades: Array.isArray(gameData.activeMegaUpgrades) ? gameData.activeMegaUpgrades : [],
+        sessionLength: gameData.sessionLength || 0,
+        loginTime: gameData.loginTime || new Date(),
+        endTime: gameData.endTime || new Date(),
+        gameMode: gameData.gameMode || 'unknown',
+        asteroidsKilled: gameData.asteroidsKilled || 0,
+        aliensKilled: gameData.aliensKilled || 0,
+        wave: gameData.wave || 1
+      };
+
+      console.log(safeGameData);
+      console.log(Achievements);
+
+      try {
+        await setDoc(userDocRef, {
+          games: {
+            InfiniteSpaceWar: {
+              scores: arrayUnion(safeGameData),
+              achievements: Achievements || {}
+            }
+          },
+          coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
+          lastUpdated: new Date()
+        }, { merge: true });
+        console.log('User score saved successfully:', safeGameData);
+      } catch (error) {
+        console.error('Error saving user score:', error);
+      }
+    } window.saveUserScore = saveUserScore;
+
+    // Function to save initial user data
+    async function saveUserData(userIdToSave = window.userId, gameName = gameId) {
+
+      console.log(window.CrazyGames.SDK.user);
+      console.log(userIdToSave);
+      console.log(gameName);
+
+      const db = getFirestore();
+      const userDocRef = doc(db, 'users', userIdToSave);
+      const userData = {
+        [`games.${gameName} `]: {
+          scores: [],
+          lastLogin: new Date()
+        }
+      };
+      await setDoc(userDocRef, userData, { merge: true });
+    }
+
+    window.saveUserData = saveUserData;
+
+
+    async function loadLeaderboard(gameName, gameMode, retryCount = 0) {
+      const maxRetries = 3;
+      const retryDelay = 2000; // 2 seconds
+
+      try {
+        const db = getFirestore();
+        const usersSnapshot = await getDocs(collection(db, 'users'));
+        const scores = [];
+        let userScore = null;
+
+        usersSnapshot.forEach(doc => {
+          const userData = doc.data();
+          const gameScores = userData.games?.[gameName]?.scores || [];
+          gameScores.forEach(session => {
+            if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === gameMode) {
+              const scoreEntry = {
+                nickname: userData.nickname || 'Unnamed',
+                score: session.score,
+                wave: session.wave,
+                isCurrentUser: doc.id === userId
+              };
+              scores.push(scoreEntry);
+
+              // Check if this is the current user's most recent score
+              if (scoreEntry.isCurrentUser && (!userScore || session.loginTime > userScore.loginTime)) {
+                userScore = scoreEntry;
+              }
+            }
+          });
+        });
+
+        scores.sort((a, b) => b.score - a.score);
+
+        const limitedScores = [];
+        const playerCounts = {};
+        let userScoreIncluded = false;
+
+        scores.forEach(score => {
+          if (!playerCounts[score.nickname]) {
+            playerCounts[score.nickname] = 0;
+          }
+          if (playerCounts[score.nickname] < 3 || (score.isCurrentUser && score.score === userScore.score)) {
+            limitedScores.push(score);
+            playerCounts[score.nickname]++;
+            if (score.isCurrentUser && score.score === userScore.score) {
+              userScoreIncluded = true;
+            }
+          }
+        });
+
+        // If user's score is not in top scores, add it at the end
+        if (!userScoreIncluded && userScore) {
+          limitedScores.push(userScore);
+        }
+
+        const topScores = limitedScores.slice(0, 13); // Increased to potentially include user's score
+
+        const leaderboard = document.getElementById('leaderboard');
+        leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gameMode)}</h2>`;
+        topScores.forEach((entry, index) => {
+          const formattedScore = entry.score.toLocaleString('en-US', {
+            maximumFractionDigits: 0
+          });
+          const scoreDiv = document.createElement('div');
+          scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+          scoreDiv.tabIndex = 0; // Make it focusable
+
+          if (entry.isCurrentUser && entry.score === userScore.score) {
+            scoreDiv.style.fontWeight = 'bold';
+            scoreDiv.style.color = '#FFD700'; // Gold color for user's score
+          }
+
+          leaderboard.appendChild(scoreDiv);
+        });
+
+        document.getElementById('leaderboard-container').appendChild(leaderboard);
+      } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        if (retryCount < maxRetries) {
+          console.log(`Retrying leaderboard load... (Attempt ${retryCount + 1})`);
+          setTimeout(() => loadLeaderboard(gameName, gameMode, retryCount + 1), retryDelay);
+        } else {
+          console.error('Max retries reached. Unable to load leaderboard.');
+          const leaderboard = document.getElementById('leaderboard');
+          leaderboard.innerHTML = '<h2>Leaderboard Unavailable</h2><p>Please try again later.</p>';
+        }
+      }
+    }
+
+
+
+
+    async function loadAllLeaderboards(gameName) {
+      const db = getFirestore();
+      const usersSnapshot = await getDocs(collection(db, 'users'));
+      const allScores = {};
+
+      usersSnapshot.forEach(doc => {
+        const userData = doc.data();
+        gameModes.forEach(mode => {
+          const gameScores = userData.games?.[gameName]?.scores || [];
+          gameScores.forEach(session => {
+            if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === mode.id) {
+              if (!allScores[mode.name]) {
+                allScores[mode.name] = [];
+              }
+              allScores[mode.name].push({
+                nickname: userData.nickname || 'Unnamed',
+                score: session.score,
+                wave: session.wave  // Assuming we also save the wave number
               });
+            }
+          });
+        });
+      });
 
-              li.appendChild(damageReport);
-              pastSessionsList.appendChild(li);
-            });
+      // Sort and limit scores for each mode
+      for (let mode in allScores) {
+        allScores[mode].sort((a, b) => b.score - a.score);
+
+        const playerCounts = {};
+        allScores[mode] = allScores[mode].filter(score => {
+          if (!playerCounts[score.nickname]) {
+            playerCounts[score.nickname] = 0;
           }
-
-
-          // document.getElementById('login-toggle').addEventListener('click', function (event) {
-          //   event.preventDefault();
-          //   document.getElementById('auth').classList.toggle('hidden');
-          // });
-
-
-          // async function saveUserScore(gameData) {
-          //   if (!userId) {
-          //     console.log('No user logged in, score not saved');
-          //     return;
-          //   }
-
-          //   const db = getFirestore();
-          //   const userDocRef = doc(db, 'users', userId);
-
-          //   try {
-          //     await setDoc(userDocRef, {
-          //       [`games.${gameId}.scores`]: arrayUnion({
-          //         score: gameData.score,
-          //         topWeapons: gameData.topWeapons,
-          //         sessionLength: gameData.sessionLength,
-          //         loginTime: new Date(),
-          //         gameMode: gameData.gameMode
-          //       }),
-          //       [`games.${gameId}.achievements`]: Achievements,
-          //       coins: coins
-          //     }, { merge: true });
-          //     console.log('User data saved successfully');
-          //   } catch (error) {
-          //     console.error('Error saving user data:', error);
-          //     console.error('Error details:', error.code, error.message);
-          //   }
-          // }
-
-
-
-          // Function to save user score for a specific game
-          // async function saveUserScore(userId, gameData) {
-          //   const db = getFirestore();
-          //   const userDocRef = doc(db, 'users', userId);
-
-          //   try {
-          //     // For CrazyGames users, we need to set the document if it doesn't exist
-          //     if (userId.startsWith('cg_')) {
-          //       await setDoc(userDocRef, {
-          //         [`games.${gameId}.scores`]: arrayUnion({
-          //           score: gameData.score,
-          //           topWeapons: gameData.topWeapons,
-          //           sessionLength: gameData.sessionLength,
-          //           loginTime: new Date(),
-          //           gameMode: gameData.gameMode
-          //         }),
-          //         [`games.${gameId}.achievements`]: Achievements,
-          //         coins: coins
-          //       }, { merge: true });
-          //     } else {
-          //       // For Firebase users, we can use updateDoc as before
-          //       await updateDoc(userDocRef, {
-          //         [`games.${gameId}.scores`]: arrayUnion({
-          //           score: gameData.score,
-          //           topWeapons: gameData.topWeapons,
-          //           sessionLength: gameData.sessionLength,
-          //           loginTime: new Date(),
-          //           gameMode: gameData.gameMode
-          //         }),
-          //         [`games.${gameId}.achievements`]: Achievements,
-          //         coins: coins
-          //       });
-          //     }
-          //     console.log('User data saved successfully');
-          //   } catch (error) {
-          //     console.error('Error saving user data:', error);
-          //     // Log more details about the error
-          //     console.error('Error details:', error.code, error.message);
-          //   }
-          // }
-          // window.saveUserScore = saveUserScore;
-
-          // async function saveUserScore(gameData) {
-          //   console.log('Saving user score, userId:', userId);
-          //   if (!userId || userId === 'cg_undefined') {
-          //     console.error('Invalid userId, score not saved');
-          //     return;
-          //   }
-
-          //   if (!gameData || typeof gameData !== 'object') {
-          //     console.error('Invalid gameData, score not saved');
-          //     return;
-          //   }
-
-          //   const db = getFirestore();
-          //   const userDocRef = doc(db, 'users', userId);
-
-          //   // Ensure all gameData properties are defined
-          //   const safeGameData = {
-          //     score: gameData.score || 0,
-          //     topWeapons: gameData.topWeapons || [],
-          //     sessionLength: gameData.sessionLength || 0,
-          //     loginTime: new Date(),
-          //     gameMode: gameData.gameMode || 'unknown'
-          //   };
-
-          //   try {
-          //     await setDoc(userDocRef, {
-          //       [`games.${gameId}.scores`]: arrayUnion(safeGameData),
-          //       [`games.${gameId}.achievements`]: Achievements || {},
-          //       coins: coins || 0
-          //     }, { merge: true });
-          //     console.log('User data saved successfully');
-          //   } catch (error) {
-          //     console.error('Error saving user data:', error);
-          //     console.error('Error details:', error.code, error.message);
-          //   }
-          // }
-
-
-          async function saveUserScore(gameData) {
-            // let userId;
-            // let username;
-
-            if (crazyGamesMode) {
-              const user = await window.CrazyGames.SDK.user.getUser();
-              if (user && user.username) {
-                userId = 'cg_' + user.username;
-                // username = user.username;
-              }
-              // } else {
-              // const currentUser = userId;
-              // if (currentUser) {
-              //   userId = currentUser.uid;
-              // }
-            }
-
-            if (!userId || !gameData) {
-              console.error('Invalid userId or gameData');
-              return;
-            }
-
-            const db = getFirestore();
-            const userDocRef = doc(db, 'users', userId);
-
-            const safeGameData = {
-              score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
-              topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
-              activeMegaUpgrades: Array.isArray(gameData.activeMegaUpgrades) ? gameData.activeMegaUpgrades : [],
-              sessionLength: gameData.sessionLength || 0,
-              loginTime: gameData.loginTime || new Date(),
-              endTime: gameData.endTime || new Date(),
-              gameMode: gameData.gameMode || 'unknown',
-              asteroidsKilled: gameData.asteroidsKilled || 0,
-              aliensKilled: gameData.aliensKilled || 0,
-              wave: gameData.wave || 1
-            };
-
-            console.log(safeGameData);
-            console.log(Achievements);
-
-            try {
-              await setDoc(userDocRef, {
-                games: {
-                  InfiniteSpaceWar: {
-                    scores: arrayUnion(safeGameData),
-                    achievements: Achievements || {}
-                  }
-                },
-                coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
-                lastUpdated: new Date()
-              }, { merge: true });
-              console.log('User score saved successfully:', safeGameData);
-            } catch (error) {
-              console.error('Error saving user score:', error);
-            }
-          } window.saveUserScore = saveUserScore;
-
-          // Function to save initial user data
-          async function saveUserData(userIdToSave = window.userId, gameName = gameId) {
-
-            console.log(window.CrazyGames.SDK.user);
-            console.log(userIdToSave);
-            console.log(gameName);
-
-            const db = getFirestore();
-            const userDocRef = doc(db, 'users', userIdToSave);
-            const userData = {
-              [`games.${gameName} `]: {
-                scores: [],
-                lastLogin: new Date()
-              }
-            };
-            await setDoc(userDocRef, userData, { merge: true });
+          if (playerCounts[score.nickname] < 3) {
+            playerCounts[score.nickname]++;
+            return true;
           }
+          return false;
+        }).slice(0, 12);
+      }
 
-          window.saveUserData = saveUserData;
+      return allScores;
+    }
 
 
-          async function loadLeaderboard(gameName, gameMode, retryCount = 0) {
-            const maxRetries = 3;
-            const retryDelay = 2000; // 2 seconds
+    function getGameModeName(mode) {
+      switch (mode) {
+        case GameModes.EASY: return "Easy";
+        case GameModes.NORMAL: return "Normal";
+        case GameModes.HARD: return "Hard";
+        case GameModes.HERO: return "Hero";
+        case GameModes.METEORSHOWEREASY: return "Meteor Shower Easy";
+        case GameModes.METEORSHOWERNORMAL: return "Meteor Shower Normal";
+        case GameModes.METEORSHOWERHARD: return "Meteor Shower Hard";
+        case GameModes.METEORSHOWERHERO: return "Meteor Shower Hero";
+        case GameModes.PLANETEASY: return "Planet Easy";
+        case GameModes.PLANETNORMAL: return "Planet Normal";
+        case GameModes.PLANETHARD: return "Planet Hard";
+        case GameModes.PLANETHERO: return "Planet Hero";
+        case GameModes.ENDLESS_SLOW: return "Endless Slow";
+        default: return "Unknown Mode";
+      }
+    }
 
-            try {
-              const db = getFirestore();
-              const usersSnapshot = await getDocs(collection(db, 'users'));
-              const scores = [];
-              let userScore = null;
+    window.loadLeaderboard = loadLeaderboard;
+    window.loadAllLeaderboards = loadAllLeaderboards;
 
-              usersSnapshot.forEach(doc => {
-                const userData = doc.data();
-                const gameScores = userData.games?.[gameName]?.scores || [];
-                gameScores.forEach(session => {
-                  if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === gameMode) {
-                    const scoreEntry = {
-                      nickname: userData.nickname || 'Unnamed',
-                      score: session.score,
-                      wave: session.wave,
-                      isCurrentUser: doc.id === userId
-                    };
-                    scores.push(scoreEntry);
 
-                    // Check if this is the current user's most recent score
-                    if (scoreEntry.isCurrentUser && (!userScore || session.loginTime > userScore.loginTime)) {
-                      userScore = scoreEntry;
-                    }
-                  }
-                });
-              });
+    // Function to load achievements from Firebase or localStorage
+    async function loadAchievements() {
+      const params = new URLSearchParams(window.location.search);
+      const userId = params.get('userId');
+      const db = getFirestore();
+      let loadedAchievements = {};
 
-              scores.sort((a, b) => b.score - a.score);
+      if (userId) {
+        const userDocRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userDocRef);
 
-              const limitedScores = [];
-              const playerCounts = {};
-              let userScoreIncluded = false;
+        if (userDoc.exists() && userDoc.data().achievements) {
+          loadedAchievements = userDoc.data().achievements;
+          console.log('loadach');
 
-              scores.forEach(score => {
-                if (!playerCounts[score.nickname]) {
-                  playerCounts[score.nickname] = 0;
-                }
-                if (playerCounts[score.nickname] < 3 || (score.isCurrentUser && score.score === userScore.score)) {
-                  limitedScores.push(score);
-                  playerCounts[score.nickname]++;
-                  if (score.isCurrentUser && score.score === userScore.score) {
-                    userScoreIncluded = true;
-                  }
-                }
-              });
-
-              // If user's score is not in top scores, add it at the end
-              if (!userScoreIncluded && userScore) {
-                limitedScores.push(userScore);
-              }
-
-              const topScores = limitedScores.slice(0, 13); // Increased to potentially include user's score
-
-              const leaderboard = document.getElementById('leaderboard');
-              leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gameMode)}</h2>`;
-              topScores.forEach((entry, index) => {
-                const formattedScore = entry.score.toLocaleString('en-US', {
-                  maximumFractionDigits: 0
-                });
-                const scoreDiv = document.createElement('div');
-                scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
-                scoreDiv.tabIndex = 0; // Make it focusable
-
-                if (entry.isCurrentUser && entry.score === userScore.score) {
-                  scoreDiv.style.fontWeight = 'bold';
-                  scoreDiv.style.color = '#FFD700'; // Gold color for user's score
-                }
-
-                leaderboard.appendChild(scoreDiv);
-              });
-
-              document.getElementById('leaderboard-container').appendChild(leaderboard);
-            } catch (error) {
-              console.error('Error loading leaderboard:', error);
-              if (retryCount < maxRetries) {
-                console.log(`Retrying leaderboard load... (Attempt ${retryCount + 1})`);
-                setTimeout(() => loadLeaderboard(gameName, gameMode, retryCount + 1), retryDelay);
-              } else {
-                console.error('Max retries reached. Unable to load leaderboard.');
-                const leaderboard = document.getElementById('leaderboard');
-                leaderboard.innerHTML = '<h2>Leaderboard Unavailable</h2><p>Please try again later.</p>';
-              }
-            }
+        } else {
+          const savedAchievements = localStorage.getItem('achievements');
+          if (savedAchievements) {
+            loadedAchievements = JSON.parse(savedAchievements);
           }
+        }
+      } else {
+        const savedAchievements = localStorage.getItem('achievements');
+        if (savedAchievements) {
+          loadedAchievements = JSON.parse(savedAchievements);
+        }
+      }
+      Object.assign(Achievements, loadedAchievements);
+
+      return Achievements;
+    }
 
 
 
+    window.loadAchievements = loadAchievements;
 
-          async function loadAllLeaderboards(gameName) {
-            const db = getFirestore();
-            const usersSnapshot = await getDocs(collection(db, 'users'));
-            const allScores = {};
+    function populateUserScores(scores) {
+      const pastScoresList = document.getElementById('pastScoresList');
+      pastScoresList.innerHTML = ''; // Clear previous content
 
-            usersSnapshot.forEach(doc => {
-              const userData = doc.data();
-              gameModes.forEach(mode => {
-                const gameScores = userData.games?.[gameName]?.scores || [];
-                gameScores.forEach(session => {
-                  if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === mode.id) {
-                    if (!allScores[mode.name]) {
-                      allScores[mode.name] = [];
-                    }
-                    allScores[mode.name].push({
-                      nickname: userData.nickname || 'Unnamed',
-                      score: session.score,
-                      wave: session.wave  // Assuming we also save the wave number
-                    });
-                  }
-                });
-              });
-            });
+      scores.forEach(scoreData => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '20px';
 
-            // Sort and limit scores for each mode
-            for (let mode in allScores) {
-              allScores[mode].sort((a, b) => b.score - a.score);
-
-              const playerCounts = {};
-              allScores[mode] = allScores[mode].filter(score => {
-                if (!playerCounts[score.nickname]) {
-                  playerCounts[score.nickname] = 0;
-                }
-                if (playerCounts[score.nickname] < 3) {
-                  playerCounts[score.nickname]++;
-                  return true;
-                }
-                return false;
-              }).slice(0, 12);
-            }
-
-            return allScores;
-          }
-
-
-          function getGameModeName(mode) {
-            switch (mode) {
-              case GameModes.EASY: return "Easy";
-              case GameModes.NORMAL: return "Normal";
-              case GameModes.HARD: return "Hard";
-              case GameModes.HERO: return "Hero";
-              case GameModes.METEORSHOWEREASY: return "Meteor Shower Easy";
-              case GameModes.METEORSHOWERNORMAL: return "Meteor Shower Normal";
-              case GameModes.METEORSHOWERHARD: return "Meteor Shower Hard";
-              case GameModes.METEORSHOWERHERO: return "Meteor Shower Hero";
-              case GameModes.PLANETEASY: return "Planet Easy";
-              case GameModes.PLANETNORMAL: return "Planet Normal";
-              case GameModes.PLANETHARD: return "Planet Hard";
-              case GameModes.PLANETHERO: return "Planet Hero";
-              case GameModes.ENDLESS_SLOW: return "Endless Slow";
-              default: return "Unknown Mode";
-            }
-          }
-
-          window.loadLeaderboard = loadLeaderboard;
-          window.loadAllLeaderboards = loadAllLeaderboards;
-
-
-          // Function to load achievements from Firebase or localStorage
-          async function loadAchievements() {
-            const params = new URLSearchParams(window.location.search);
-            const userId = params.get('userId');
-            const db = getFirestore();
-            let loadedAchievements = {};
-
-            if (userId) {
-              const userDocRef = doc(db, 'users', userId);
-              const userDoc = await getDoc(userDocRef);
-
-              if (userDoc.exists() && userDoc.data().achievements) {
-                loadedAchievements = userDoc.data().achievements;
-                console.log('loadach');
-
-              } else {
-                const savedAchievements = localStorage.getItem('achievements');
-                if (savedAchievements) {
-                  loadedAchievements = JSON.parse(savedAchievements);
-                }
-              }
-            } else {
-              const savedAchievements = localStorage.getItem('achievements');
-              if (savedAchievements) {
-                loadedAchievements = JSON.parse(savedAchievements);
-              }
-            }
-            Object.assign(Achievements, loadedAchievements);
-
-            return Achievements;
-          }
-
-
-
-          window.loadAchievements = loadAchievements;
-
-          function populateUserScores(scores) {
-            const pastScoresList = document.getElementById('pastScoresList');
-            pastScoresList.innerHTML = ''; // Clear previous content
-
-            scores.forEach(scoreData => {
-              const li = document.createElement('li');
-              li.style.marginBottom = '20px';
-
-              // Display score, game mode, and session length
-              li.innerHTML = `
+        // Display score, game mode, and session length
+        li.innerHTML = `
       <h3>Score: ${scoreData.score}</h3>
       <p>Mode: ${getGameModeName(scoreData.gameMode)}</p>
       <p>Session Length: ${formatSessionLength(scoreData.sessionLength)}</p>
     `;
 
-              // Add a detailed damage report
-              const damageReport = document.createElement('ul');
-              damageReport.classList.add('damage-report');  // Add a class for custom styling
-              // console.log(scoreData.topWeapons.length);
+        // Add a detailed damage report
+        const damageReport = document.createElement('ul');
+        damageReport.classList.add('damage-report');  // Add a class for custom styling
+        // console.log(scoreData.topWeapons.length);
 
-              scoreData.topWeapons.forEach(weaponData => {
-                const weapon = weaponData.weapon;
-                const damage = weaponData.damage;
-                // console.log(weapon);
+        scoreData.topWeapons.forEach(weaponData => {
+          const weapon = weaponData.weapon;
+          const damage = weaponData.damage;
+          // console.log(weapon);
 
-                // Find weapon info based on weapon name
-                const weaponInfo = weapons.find(w => w.name === weapon);
-                // console.log(weaponInfo);
+          // Find weapon info based on weapon name
+          const weaponInfo = weapons.find(w => w.name === weapon);
+          // console.log(weaponInfo);
 
-                // if (weaponInfo) {
-                const weaponLi = document.createElement('li');
-                weaponLi.style.display = 'flex';
-                weaponLi.style.alignItems = 'center';
+          // if (weaponInfo) {
+          const weaponLi = document.createElement('li');
+          weaponLi.style.display = 'flex';
+          weaponLi.style.alignItems = 'center';
 
-                // Display weapon icon
-                // const icon = document.createElement('div');
-                // icon.classList.add('weaponClassIcon', weaponInfo.icon);  // Use the class or image for the icon
-                // icon.style.width = '24px';
-                // icon.style.height = '24px';
-                // icon.style.marginRight = '10px';
+          // Display weapon icon
+          // const icon = document.createElement('div');
+          // icon.classList.add('weaponClassIcon', weaponInfo.icon);  // Use the class or image for the icon
+          // icon.style.width = '24px';
+          // icon.style.height = '24px';
+          // icon.style.marginRight = '10px';
 
-                // Display weapon name and damage
-                const text = document.createElement('span');
-                text.textContent = `${weapon}: ${damage}`;
+          // Display weapon name and damage
+          const text = document.createElement('span');
+          text.textContent = `${weapon}: ${damage}`;
 
-                // weaponLi.appendChild(icon);
-                weaponLi.appendChild(text);
-                damageReport.appendChild(weaponLi);
-                // }
-              });
+          // weaponLi.appendChild(icon);
+          weaponLi.appendChild(text);
+          damageReport.appendChild(weaponLi);
+          // }
+        });
 
-              li.appendChild(damageReport);
-              pastScoresList.appendChild(li);
-            });
-          }
-          // Helper function to format session length
-          function formatSessionLength(sessionLength) {
-            const minutes = Math.floor(sessionLength / 60000);
-            const seconds = ((sessionLength % 60000) / 1000).toFixed(0);
-            return `${minutes} min ${seconds < 10 ? '0' : ''}${seconds} sec`;
-          }
+        li.appendChild(damageReport);
+        pastScoresList.appendChild(li);
+      });
+    }
+    // Helper function to format session length
+    function formatSessionLength(sessionLength) {
+      const minutes = Math.floor(sessionLength / 60000);
+      const seconds = ((sessionLength % 60000) / 1000).toFixed(0);
+      return `${minutes} min ${seconds < 10 ? '0' : ''}${seconds} sec`;
+    }
 
-          window.populateAchievements = populateAchievements;
+    window.populateAchievements = populateAchievements;
 
-          // document.getElementById('viewPastScoresButton').addEventListener('click', () => {
-          //   const pastScoresModal = document.getElementById('pastScoresModal');
-          //   pastScoresModal.style.display = 'block';
-          // });
+    // document.getElementById('viewPastScoresButton').addEventListener('click', () => {
+    //   const pastScoresModal = document.getElementById('pastScoresModal');
+    //   pastScoresModal.style.display = 'block';
+    // });
 
-          // Close the modal
-          document.getElementById('closePastScoresModal').addEventListener('click', () => {
-            const pastScoresModal = document.getElementById('pastScoresModal');
-            pastScoresModal.style.display = 'none';
-          });
+    // Close the modal
+    document.getElementById('closePastScoresModal').addEventListener('click', () => {
+      const pastScoresModal = document.getElementById('pastScoresModal');
+      pastScoresModal.style.display = 'none';
+    });
 
   </script>
 
