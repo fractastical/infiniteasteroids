@@ -2387,6 +2387,9 @@ function claimLevelUps() {
             invincible = true;
             invincibilityTimer += invincibilityDuration;
 
+        } else {
+
+            waitAndClaimMode = true;
         }
 
     }
@@ -2425,7 +2428,7 @@ function levelUp() {
     if (!waitAndClaimMode) {
 
         pauseGame();
-        clearInterval(gameLoop);
+        // clearInterval(gameLoop);
 
         document.getElementById('leveluptitle').innerHTML = 'Level Up!';
 
@@ -2433,6 +2436,11 @@ function levelUp() {
 
         // Get random upgrades
         const upgrades = getRandomUpgrades(upgradesToRetrieve);
+        if (upgrades.length <= 2) {
+            waitAndClaimMode = true;
+            resumeGame();
+            break;
+        }
 
         // Display the level-up modal
         const levelUpModal = document.getElementById('levelUpModal');
@@ -2447,7 +2455,7 @@ function levelUp() {
             // Store upgrades in a global variable for later use
             window.levelUpgrades = upgrades;
             // Pause the game
-            pauseGame();
+            // pauseGame();
 
             // Activate temporary invincibility
             invincible = true;
