@@ -805,6 +805,9 @@ function update() {
 
     if (spawnTimer <= 0) {
         wave++;
+        if (wave == 10 && currentMode == GameModes.EASY)
+            updateAchievementsAtEnd();
+
         if (meteorMode) {
 
             const side = Math.random() < 0.5 ? 'left' : 'right';
@@ -841,8 +844,6 @@ function update() {
     drawShip();
 
     if (gameOver) endGame();
-    if (wave == 10 && currentMode == GameModes.EASY)
-        updateAchievementsAtEnd();
 
 
 
