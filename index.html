@@ -754,6 +754,15 @@
       tripleTurret = false;
       droneArmy = false;
 
+      explosiveRocket = {
+        cooldown: 120, // Cooldown time in frames (2 seconds at 60 FPS)
+        timer: 0, // Current cooldown timer
+        speed: 3, // Speed of the rocket
+        damage: 10, // Damage dealt by the rocket
+        radius: 100, // Explosion radius
+        active: false // Flag to track if the rocket is active
+      };
+
       collectedSpacePizza = false;
       collectedPurplePixie = false;
       collectedGoldPixie = false;

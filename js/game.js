@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9926"
+let version = "0.9929"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let cgUser = null;
@@ -1419,19 +1419,30 @@ function handleKeyDown(event) {
         event.preventDefault();
     }
 
-    if (event.key === 'ArrowDown') {
-        const visibleModal = document.querySelector('.modal:not([style*="display: none"])');
-        if (visibleModal) {
+    const visibleModal = document.querySelector('.modal:not([style*="display: none"])');
+    const endScreen = document.getElementById('endScreen');
+    const isEndScreenVisible = endScreen && endScreen.style.display !== 'none';
+
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        let targetElement = visibleModal || (isEndScreenVisible ? endScreen : null);
+
+        if (targetElement) {
             event.preventDefault();
-            const focusableElements = visibleModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            const focusableElements = Array.from(targetElement.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'));
             const firstElement = focusableElements[0];
             const lastElement = focusableElements[focusableElements.length - 1];
 
-            if (document.activeElement === lastElement || !visibleModal.contains(document.activeElement)) {
-                firstElement.focus();
+            if (!targetElement.contains(document.activeElement) ||
+                (event.key === 'ArrowDown' && document.activeElement === lastElement) ||
+                (event.key === 'ArrowUp' && document.activeElement === firstElement)) {
+                event.key === 'ArrowDown' ? firstElement.focus() : lastElement.focus();
             } else {
-                const currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
-                focusableElements[currentIndex + 1].focus();
+                const currentIndex = focusableElements.indexOf(document.activeElement);
+                const nextIndex = event.key === 'ArrowDown' ?
+                    (currentIndex + 1) % focusableElements.length :
+                    (currentIndex - 1 + focusableElements.length) % focusableElements.length;
+                focusableElements[nextIndex].focus();
             }
         }
     }
@@ -2113,7 +2124,7 @@ function populateAchievements() {
     // Update technologies count
     let count = countTechnologies();
     const technologiesCountElement = document.getElementById('technologiesCount');
-    let totalTechnologyCount = 42; // 5 ships + 17 weapons + 3 secondary  + 13 upgrades 
+    let totalTechnologyCount = 44; // 8 ships + 22 weapons + 12 secondary  
     // VERSION VERSION VERSION
     technologiesCountElement.textContent = `${count} of ${totalTechnologyCount} technologies unlocked`;
 
@@ -2723,6 +2734,7 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     // Add keyboard navigation
     endScreen.addEventListener('keydown', handleEndScreenKeydown);
 }
+
 
 function handleEndScreenKeydown(event) {
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
