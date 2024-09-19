@@ -952,8 +952,11 @@ const OctoBossArmState = {
 };
 
 
-function spawnOctoBoss() {
+// Define the health multiplier
+const OCTOBOSS_HP_MULTIPLIER = 1.0; // Adjust this value to change difficulty
 
+// Update the OctoBoss spawning function
+function spawnOctoBoss() {
     octoBossSpawned = true;
 
     if (!toggleMusicOff) {
@@ -963,30 +966,28 @@ function spawnOctoBoss() {
     if (!toggleSoundOff)
         playAlienLaughSound();
 
-
     octoBoss = {
         x: canvas.width / 2,
         y: 15,
         size: 260,
         bodyRadius: 120,
         speed: 0.1,
-        hitpoints: 20000,
+        hitpoints: 20000 * OCTOBOSS_HP_MULTIPLIER,
         armRegrowthTimer: 0,
-        armRegrowthInterval: 1000, // Time in frames (adjust as needed)
-        maxHitpoints: 20000,
+        armRegrowthInterval: 1000,
+        maxHitpoints: 20000 * OCTOBOSS_HP_MULTIPLIER,
         shootTimer: 0,
         shootInterval: 150,
         arms: [],
         specialAttackTimer: 0,
-        specialAttackInterval: Math.random() * 2000 + 2000, // Random interval between 5-10 seconds
+        specialAttackInterval: Math.random() * 2000 + 2000,
         isSpecialAttacking: false,
-        specialAttackDuration: 60, // Duration in frames (1 second at 60 FPS)
+        specialAttackDuration: 60,
         armReverseTimer: 0,
-        armReverseInterval: Math.random() * 300 + 300, // Random interval between 5-10 seconds (assuming 60 FPS)
+        armReverseInterval: Math.random() * 300 + 300,
         inkShootTimer: 0,
-        inkShootInterval: Math.random() * 200 + 200, // Random interval between 10-20 seconds
+        inkShootInterval: Math.random() * 200 + 200,
         isArmReversed: false
-
     };
 
     // Create 8 arms with 3 segments each
@@ -994,35 +995,57 @@ function spawnOctoBoss() {
         const baseAngle = (i * Math.PI) / 4;
         octoBoss.arms.push({
             segments: [
-                {
-                    angle: baseAngle,
-                    length: 100,
-                    maxLength: 350,
-                    state: OctoBossArmState.GROWING,
-                    hitpoints: 1000,
-                    growthRate: 0.01
-                },
-                {
-                    angle: baseAngle + Math.PI / 6,
-                    length: 120,
-                    maxLength: 300,
-                    state: OctoBossArmState.GROWING,
-                    hitpoints: 1000,
-                    growthRate: 0.01
-                },
-                {
-                    angle: baseAngle - Math.PI / 6,
-                    length: 70,
-                    maxLength: 200,
-                    state: OctoBossArmState.GROWING,
-                    hitpoints: 1000,
-                    growthRate: 0.004
-                }
+                createSegment(baseAngle, 10, 350, 1000 * OCTOBOSS_HP_MULTIPLIER),
+                createSegment(baseAngle + Math.PI / 6, 10, 300, 1000 * OCTOBOSS_HP_MULTIPLIER),
+                createSegment(baseAngle - Math.PI / 6, 10, 200, 1000 * OCTOBOSS_HP_MULTIPLIER)
             ]
         });
     }
 
     aliens.push(octoBoss);
+}
+
+// Update the segment creation function
+function createSegment(angle, initialLength, maxLength, initialHitpoints) {
+    return {
+        angle: Number(angle) || 0,
+        length: Number(initialLength) || 10,
+        maxLength: Number(maxLength) || 200,
+        state: OctoBossArmState.GROWING,
+        hitpoints: Number(initialHitpoints) || 500,
+        maxHitpoints: Number(initialHitpoints) || 500,
+        growthRate: 0.01
+    };
+}
+
+// Update the health calculation function
+function calculateTotalOctoBossHealth() {
+    if (!octoBoss) return { current: 0, max: 1 }; // Prevent division by zero
+
+    let totalHealth = octoBoss.hitpoints;
+    let totalMaxHealth = octoBoss.maxHitpoints;
+
+    octoBoss.arms.forEach(arm => {
+        arm.segments.forEach(segment => {
+            totalHealth += segment.hitpoints;
+            totalMaxHealth += segment.maxHitpoints;
+        });
+    });
+
+    return { current: totalHealth, max: totalMaxHealth };
+}
+
+// The drawOctoBossHitpointBar function remains the same
+function drawOctoBossHitpointBar() {
+    const xpBar = document.getElementById('xpBar');
+    const health = calculateTotalOctoBossHealth();
+    const hpPercentage = Math.round(100 * (health.current / health.max));
+
+    const gradient = `linear-gradient(90deg, red ${hpPercentage}%, purple ${hpPercentage}%)`;
+    xpBar.style.background = gradient;
+    xpBar.style.width = '100%';
+
+    xpBar.textContent = `${Math.round(health.current)}/${Math.round(health.max)}`;
 }
 
 function validateOctoBossState() {
@@ -1406,9 +1429,9 @@ function regenerateArm() {
         const baseAngle = (destroyedArmIndex * Math.PI) / 4;
         octoBoss.arms[destroyedArmIndex] = {
             segments: [
-                createSegment(baseAngle, 10, 150, 500),
-                createSegment(baseAngle + Math.PI / 6, 10, 120, 400),
-                createSegment(baseAngle - Math.PI / 6, 10, 100, 300)
+                createSegment(baseAngle, 10, 150, 500 * OCTOBOSS_HP_MULTIPLIER),
+                createSegment(baseAngle + Math.PI / 6, 10, 120, 400 * OCTOBOSS_HP_MULTIPLIER),
+                createSegment(baseAngle - Math.PI / 6, 10, 100, 300 * OCTOBOSS_HP_MULTIPLIER)
             ]
         };
     } else {
@@ -1416,18 +1439,6 @@ function regenerateArm() {
     }
 }
 
-
-function createSegment(angle, initialLength, maxLength, initialHitpoints) {
-    return {
-        angle: Number(angle) || 0,
-        length: Number(initialLength) || 10,
-        maxLength: Number(maxLength) || 200,
-        state: OctoBossArmState.GROWING,
-        hitpoints: Number(initialHitpoints) || 500,
-        maxHitpoints: Number(initialHitpoints) || 500,
-        growthRate: 0.01
-    };
-}
 
 
 
@@ -1482,12 +1493,14 @@ function pointToLineDistance(x, y, x1, y1, x2, y2) {
     return Math.sqrt(dx * dx + dy * dy);
 }
 
-function drawOctoBossHitpointBar() {
-    const xpBar = document.getElementById('xpBar');
-    const hpPercentage = Math.round(100 * (octoBoss.hitpoints / octoBoss.maxHitpoints));
-    xpBar.style.backgroundColor = 'purple';
-    xpBar.style.width = hpPercentage + '%';
-}
+// function drawOctoBossHitpointBar() {
+//     const xpBar = document.getElementById('xpBar');
+//     const hpPercentage = Math.round(100 * (octoBoss.hitpoints / octoBoss.maxHitpoints));
+//     xpBar.style.backgroundColor = 'purple';
+//     xpBar.style.width = hpPercentage + '%';
+
+
+// }
 
 function destroyOctoBoss() {
     createExplosion(octoBoss.x, octoBoss.y);
