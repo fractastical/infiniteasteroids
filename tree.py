@@ -7,8 +7,11 @@ from PIL import Image
 import io
 import base64
 import re
-import ast
+import json
 import logging
+import csv
+from io import StringIO
+
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -32,7 +35,6 @@ def ensure_utc(dt):
     if dt.tzinfo is None or dt.tzinfo.utcoffset(dt) is None:
         return dt.replace(tzinfo=timezone.utc)
     return dt.astimezone(timezone.utc)
-
 
 def calculate_radius(line_count):
     return 5 + (math.log10(line_count + 1) / math.log10(10000)) * 20
@@ -101,6 +103,11 @@ def analyze_project(root_dir):
                     'creation_date': creation_date
                 })
 
+    # Read the todo_list.json file
+    todo_list_path = os.path.join(root_dir, 'todo_list.json')
+    with open(todo_list_path, 'r') as f:
+        todo_data = f.read()
+
     return {
         'js_files': js_files, 
         'html_files': html_files, 
@@ -112,12 +119,35 @@ def analyze_project(root_dir):
             'weapons': weapons_count,
             'game_modes': game_modes_count,
             'achievements': achievements_count
-        }
+        },
+        'todo_data': todo_data
     }
 
+def sanitize_text(text):
+    # Remove control characters
+    text = ''.join(char for char in text if ord(char) >= 32 or char in '\n\r\t')
+    # Replace &, <, >, ", and ' with their XML entity equivalents
+    text = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    text = text.replace('"', '&quot;').replace("'", '&apos;')
+    return text
+
 def generate_svg(data):
-    width, height = 1500, 1200
-    margin = {'top': 50, 'right': 50, 'bottom': 100, 'left': 50}
+    width, height = 1500, 1800  # Increased height to accommodate the new chart
+    margin = {'top': 50, 'right': 50, 'bottom': 300, 'left': 50}  # Increased bottom margin
+
+    # Parse the JSON data
+    todo_data = json.loads(data['todo_data'])
+    
+    # Extract IA tasks
+    ia_tasks = todo_data['subcategories'].get('ia', [])
+    ia_tasks.extend([task for category in todo_data['subcategories'].values() for task in category 
+                     if 'ia' in task['task'].lower() or 'asteroids' in task['task'].lower()])
+    
+    # Filter completed tasks and sort by completion date
+    completed_ia_tasks = sorted(
+        [task for task in ia_tasks if task['completed']],
+        key=lambda x: datetime.fromisoformat(x['completed'])
+    )
 
     all_files = data['js_files'] + data['html_files'] + data['image_files']
     if not all_files:
@@ -132,7 +162,9 @@ def generate_svg(data):
         time_range = 24 * 60 * 60  # 1 day in seconds
 
     x_scale = (width - margin['left'] - margin['right']) / time_range
-    y_scale_js = (height - margin['top'] - margin['bottom']) / len(data['js_files'])
+    y_scale_js = (height - margin['top'] - margin['bottom']) * 0.4 / len(data['js_files'])
+    y_scale_ia = (height - margin['top'] - margin['bottom']) * 0.2 / (len(completed_ia_tasks) or 1)
+    y_scale_image = (height - margin['top'] - margin['bottom']) * 0.2 / (len(data['image_files']) or 1)
 
     svg = ET.Element('svg', {
         'width': str(width),
@@ -167,12 +199,7 @@ def generate_svg(data):
             'font-size': '10',
             'text-anchor': 'middle'
         })
-        text.text = date.strftime('%Y-%m-%d')
-
-    # Find index.html
-    index_html = next((f for f in data['html_files'] if os.path.basename(f['path']) == 'index.html'), None)
-    index_x = calc_x(index_html['creation_date']) if index_html else margin['left']
-    index_y = height - margin['bottom'] - 50
+        text.text = sanitize_text(date.strftime('%Y-%m-%d'))
 
     # Draw JS file circles and variable circles
     for index, file in enumerate(data['js_files']):
@@ -205,7 +232,7 @@ def generate_svg(data):
             'font-size': '10',
             'text-anchor': 'middle'
         })
-        text.text = os.path.basename(file['path'])
+        text.text = sanitize_text(os.path.basename(file['path']))
 
     # Draw lines between related JS files
     for i, file1 in enumerate(data['js_files']):
@@ -218,90 +245,151 @@ def generate_svg(data):
                 common_vars = set(file1['variable_references'].keys()) & set(file2['variable_references'].keys())
                 if common_vars:
                     ET.SubElement(svg, 'line', {
-                        'x1': str(x1),
-                        'y1': str(y1),
-                        'x2': str(x2),
-                        'y2': str(y2),
+                        'x1': str(x1 + 10),
+                        'y1': str(y1 - 10),
+                        'x2': str(x2 + 10),
+                        'y2': str(y2 - 10),
                         'stroke': 'rgba(128, 0, 128, 0.3)',
-                        'stroke-width': '1'
+                        'stroke-width': '0.5',
                     })
 
-    # Draw Image file thumbnails
-    image_size = 20
-    image_margin = 5
-    max_image_stack = 10  # Maximum number of images to stack vertically
-    image_positions = {}
+    # Draw IA task line graph
+    ia_graph_start_y = margin['top'] + len(data['js_files']) * y_scale_js + 50
+    for index, task in enumerate(completed_ia_tasks):
+        x = calc_x(datetime.fromisoformat(task['completed']))
+        y = ia_graph_start_y + index * y_scale_ia
 
-    for file in sorted(data['image_files'], key=lambda x: x['creation_date']):
-        x = calc_x(file['creation_date'])
-        date_key = file['creation_date'].date()
-        
-        if date_key not in image_positions:
-            image_positions[date_key] = []
-
-        stack_position = len(image_positions[date_key])
-        if stack_position < max_image_stack:
-            y = height - margin['bottom'] - (stack_position + 1) * (image_size + image_margin)
-            image_positions[date_key].append((x, y))
-
-            try:
-                with Image.open(file['path']) as img:
-                    img.thumbnail((image_size, image_size))
-                    buffered = io.BytesIO()
-                    img.save(buffered, format="PNG")
-                    img_str = base64.b64encode(buffered.getvalue()).decode()
-
-                    image = ET.SubElement(svg, 'image', {
-                        'x': str(x - image_size // 2),
-                        'y': str(y),
-                        'width': str(image_size),
-                        'height': str(image_size),
-                        'xlink:href': f"data:image/png;base64,{img_str}"
-                    })
-            except Exception as e:
-                logger.error(f"Error processing image {file['path']}: {e}")
-                ET.SubElement(svg, 'rect', {
-                    'x': str(x - image_size // 2),
-                    'y': str(y),
-                    'width': str(image_size),
-                    'height': str(image_size),
-                    'fill': 'red',
-                    'opacity': '0.7'
-                })
-
-    # Draw HTML file representations
-    for html_file in data['html_files']:
-        x = calc_x(html_file['creation_date'])
-        y = index_y
-        
-        ET.SubElement(svg, 'rect', {
-            'x': str(x - 25),
-            'y': str(y - 15),
-            'width': '50',
-            'height': '30',
-            'fill': 'green',
-            'opacity': '0.7'
+        # Draw point
+        ET.SubElement(svg, 'circle', {
+            'cx': str(x),
+            'cy': str(y),
+            'r': '3',
+            'fill': 'red',
         })
-        text = ET.SubElement(svg, 'text', {
-            'x': str(x),
-            'y': str(y + 5),
-            'font-size': '10',
-            'text-anchor': 'middle'
-        })
-        text.text = os.path.basename(html_file['path'])
 
-        # Draw lines from HTML to JS files
-        for js_file in data['js_files']:
-            js_x = calc_x(js_file['creation_date'])
-            js_y = margin['top'] + data['js_files'].index(js_file) * y_scale_js
+        # Draw line to next point
+        if index < len(completed_ia_tasks) - 1:
+            next_task = completed_ia_tasks[index + 1]
+            next_x = calc_x(datetime.fromisoformat(next_task['completed']))
+            next_y = ia_graph_start_y + (index + 1) * y_scale_ia
             ET.SubElement(svg, 'line', {
                 'x1': str(x),
                 'y1': str(y),
-                'x2': str(js_x),
-                'y2': str(js_y),
-                'stroke': 'rgba(0, 128, 0, 0.3)',
-                'stroke-width': '1'
+                'x2': str(next_x),
+                'y2': str(next_y),
+                'stroke': 'red',
+                'stroke-width': '1',
             })
+
+        # Add task name
+        text = ET.SubElement(svg, 'text', {
+            'x': str(x + 5),
+            'y': str(y - 5),
+            'font-size': '8',
+            'transform': f'rotate(-45, {x}, {y})',
+        })
+        text.text = sanitize_text(task['task'][:20] + ('...' if len(task['task']) > 20 else ''))
+
+    # Draw Image file thumbnails
+    image_size = 22
+    image_start_y = ia_graph_start_y + len(completed_ia_tasks) * y_scale_ia + 50
+    for index, file in enumerate(data['image_files']):
+        x = calc_x(file['creation_date'])
+        y = image_start_y + index * y_scale_image
+
+        try:
+            with Image.open(file['path']) as img:
+                img.thumbnail((image_size, image_size))
+                buffered = io.BytesIO()
+                img.save(buffered, format="PNG")
+                img_str = base64.b64encode(buffered.getvalue()).decode()
+
+                image = ET.SubElement(svg, 'image', {
+                    'x': str(x - image_size // 2),
+                    'y': str(y - image_size // 2),
+                    'width': str(image_size),
+                    'height': str(image_size),
+                    'xlink:href': f"data:image/png;base64,{img_str}"
+                })
+        except Exception as e:
+            logger.error(f"Error processing image {file['path']}: {e}")
+            ET.SubElement(svg, 'rect', {
+                'x': str(x - image_size // 2),
+                'y': str(y - image_size // 2),
+                'width': str(image_size),
+                'height': str(image_size),
+                'fill': 'red',
+                'opacity': '0.7'
+            })
+
+    # Parse CSV data
+    csv_data = csv.reader(StringIO(data['daily_session_data']))
+    next(csv_data)  # Skip header
+    session_data = [(datetime.strptime(row[0], '%Y-%m-%d'), int(row[1]), int(row[2])) 
+                    for row in csv_data]
+    session_data.sort(key=lambda x: x[0])  # Sort by date
+
+    # Calculate scales for session data
+    session_height = 200  # Height allocated for session data chart
+    session_y_scale = session_height / max(row[1] for row in session_data)  # Scale for number of sessions
+    time_y_scale = session_height / max(row[2] for row in session_data)  # Scale for total time
+
+    # Draw session data chart
+    chart_start_y = height - margin['bottom'] - session_height
+    for date, sessions, time in session_data:
+        x = calc_x(date)
+        
+        # Bar for number of sessions
+        session_height = sessions * session_y_scale
+        ET.SubElement(svg, 'rect', {
+            'x': str(x - 2),
+            'y': str(chart_start_y + session_height - session_height),
+            'width': '2',
+            'height': str(session_height),
+            'fill': 'blue',
+            'opacity': '0.7'
+        })
+        
+        # Bar for total time
+        time_height = (time / 1000000) * time_y_scale  # Convert ms to seconds and scale
+        ET.SubElement(svg, 'rect', {
+            'x': str(x + 2),
+            'y': str(chart_start_y + session_height - time_height),
+            'width': '2',
+            'height': str(time_height),
+            'fill': 'green',
+            'opacity': '0.7'
+        })
+
+    # Add legend for session data chart
+    legend_y = height - margin['bottom'] + 10
+    ET.SubElement(svg, 'rect', {
+        'x': str(margin['left']),
+        'y': str(legend_y),
+        'width': '10',
+        'height': '10',
+        'fill': 'blue',
+        'opacity': '0.7'
+    })
+    ET.SubElement(svg, 'text', {
+        'x': str(margin['left'] + 15),
+        'y': str(legend_y + 10),
+        'font-size': '12',
+    }).text = 'Number of Sessions'
+
+    ET.SubElement(svg, 'rect', {
+        'x': str(margin['left'] + 150),
+        'y': str(legend_y),
+        'width': '10',
+        'height': '10',
+        'fill': 'green',
+        'opacity': '0.7'
+    })
+    ET.SubElement(svg, 'text', {
+        'x': str(margin['left'] + 165),
+        'y': str(legend_y + 10),
+        'font-size': '12',
+    }).text = 'Total Time (seconds)'
 
     # Add summary section
     summary_y = height - margin['bottom'] + 40
@@ -315,7 +403,7 @@ def generate_svg(data):
         'y': str(summary_y),
         'font-size': '12',
     })
-    text.text = summary_text.strip()
+    text.text = sanitize_text(summary_text.strip())
 
     return ET.tostring(svg, encoding='unicode')
 
