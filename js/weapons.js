@@ -270,7 +270,7 @@ function applyUpgrade(upgrade) {
         case 'Decrease Laser Cooldown':
             ship.laserCooldownLevel++;
             ship.maxBulletsLevel++;
-            ship.laserCooldown = Math.max(5, ship.laserCooldown - 3);
+            ship.laserCooldown = Math.max(5, ship.laserCooldown - 2);
             break;
         case 'Max Speed':
             ship.maxspeed++;
