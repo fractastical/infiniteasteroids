@@ -23,18 +23,18 @@ function shootTripleLaser() {
     const baseRotation = ship.rotation;
     // console.log("tripple");
     // Center laser
-    const centerLaserX = ship.x + 100 * Math.sin(baseRotation * Math.PI / 180);
-    const centerLaserY = ship.y - 100 * Math.cos(baseRotation * Math.PI / 180);
+    const centerLaserX = ship.x + 25 * Math.sin(baseRotation * Math.PI / 180);
+    const centerLaserY = ship.y - 25 * Math.cos(baseRotation * Math.PI / 180);
     ship.lasers.push({ x: centerLaserX, y: centerLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
 
     // Left laser
-    const leftLaserX = ship.x + 100 * Math.sin((baseRotation - 10) * Math.PI / 180);
-    const leftLaserY = ship.y - 100 * Math.cos((baseRotation - 10) * Math.PI / 180);
-    ship.lasers.push({ x: leftLaserX, y: leftLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
+    const leftLaserX = ship.x + 25 * Math.sin((baseRotation - 10) * Math.PI / 180);
+    const leftLaserY = ship.y - 25 * Math.cos((baseRotation - 10) * Math.PI / 180);
+    ship.lasers.push({ x: leftLaserX, y: leftLaserY, rotatiotn: baseRotation, size: (ship.laserLevel / 2) + 2 });
 
     // Right laser
-    const rightLaserX = ship.x + 100 * Math.sin((baseRotation + 10) * Math.PI / 180);
-    const rightLaserY = ship.y - 100 * Math.cos((baseRotation + 10) * Math.PI / 180);
+    const rightLaserX = ship.x + 25 * Math.sin((baseRotation + 10) * Math.PI / 180);
+    const rightLaserY = ship.y - 25 * Math.cos((baseRotation + 10) * Math.PI / 180);
     ship.lasers.push({ x: rightLaserX, y: rightLaserY, rotation: baseRotation, size: (ship.laserLevel / 2) + 2 });
 
     // Set the laser timer
