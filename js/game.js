@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9946"
+let version = "0.9947"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -1869,26 +1869,57 @@ function populateAchievementsModal() {
     const totalPages = Math.ceil(totalAchievements / achievementsPerPage);
 
     // Event listener for next button
-    document.getElementById('nextAchievement').addEventListener('click', function () {
+    // document.getElementById('nextAchievement').addEventListener('click', function () {
+    //     if (currentAchievementPage < totalPages - 1) {
+    //         currentAchievementPage++;
+    //         displayAchievementPage(currentAchievementPage);
+    //     }
+    // });
+
+    // // Event listener for previous button
+    // document.getElementById('prevAchievement').addEventListener('click', function () {
+    //     if (currentAchievementPage > 0) {
+    //         currentAchievementPage--;
+    //         displayAchievementPage(currentAchievementPage);
+    //     }
+    // });
+
+
+    // Event listener for next button
+    const nextButton = document.getElementById('nextAchievement');
+    const prevButton = document.getElementById('prevAchievement');
+
+    // Remove existing event listeners to avoid duplicates
+    nextButton.removeEventListener('click', handleNextAchievement);
+    prevButton.removeEventListener('click', handlePrevAchievement);
+
+    // Define the functions to handle next/previous page
+    function handleNextAchievement() {
         if (currentAchievementPage < totalPages - 1) {
             currentAchievementPage++;
             displayAchievementPage(currentAchievementPage);
         }
-    });
+    }
 
-    // Event listener for previous button
-    document.getElementById('prevAchievement').addEventListener('click', function () {
+    function handlePrevAchievement() {
         if (currentAchievementPage > 0) {
             currentAchievementPage--;
             displayAchievementPage(currentAchievementPage);
         }
-    });
+    }
+
+    // Add new event listeners
+    nextButton.addEventListener('click', handleNextAchievement);
+    prevButton.addEventListener('click', handlePrevAchievement);
+
 
     // Initial display of the first page
     displayAchievementPage(currentAchievementPage);
 
     // console.log('Achievements modal populated:', achievementsDisplay.innerHTML);
 }
+
+
 
 function displayAchievementPage(page) {
     const paginatedAchievements = document.getElementById('paginatedAchievements');
