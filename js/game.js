@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9945"
+let version = "0.9946"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -2697,8 +2697,8 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
 
             const text = document.createElement('span');
             const roundedDamage = Math.round(damage);
-            // const roundedDPM = Math.round(weaponDPM[weapon] || 0);  // Use 0 if DPM is undefined
-            text.textContent = `${weaponInfo.name}: ${roundedDamage} (DPM: ${DPM[weapon]})`;
+            const roundedDPM = Math.round(weaponDPM[weapon] || 0);  // Use 0 if DPM is undefined
+            text.textContent = `${weaponInfo.name}: ${roundedDamage} (DPM: ${roundedDPM})`;
 
             li.appendChild(icon);
             li.appendChild(text);
