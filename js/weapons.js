@@ -820,7 +820,7 @@ function updateExplosiveRockets() {
 
         // Check for collision with asteroids
         for (let j = 0; j < asteroids.length; j++) {
-            if (isColliding(rocket, asteroids[j])) {
+            if (isColliding(asteroids[j], rocket)) {
                 collided = true;
                 break;
             }
