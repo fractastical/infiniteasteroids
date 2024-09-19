@@ -1043,8 +1043,8 @@ function updateFlamethrower() {
     if (!flamethrower.active) return;
 
     const flameRange = flamethrower.range;
-    const rotationRad = ship.rotation * Math.PI / 180;
     const sideFlameOffset = Math.PI / 2;  // Offset for side flames, perpendicular to ship
+    const rotationRad = ship.rotation * Math.PI / 180;
 
     // Calculate positions for left and right side flames
     const leftSideFlameX = ship.x + flameRange * Math.sin(rotationRad - sideFlameOffset);
@@ -1052,18 +1052,29 @@ function updateFlamethrower() {
     const rightSideFlameX = ship.x + flameRange * Math.sin(rotationRad + sideFlameOffset);
     const rightSideFlameY = ship.y - flameRange * Math.cos(rotationRad + sideFlameOffset);
 
-    // Reusable vector calculations for side flames
-    function isWithinSideFlame(asteroid, sideX, sideY) {
-        const dx = asteroid.x - sideX;
-        const dy = asteroid.y - sideY;
+    // Collision detection for side flames
+    function isInSideFlameCone(asteroidX, asteroidY, flameX, flameY) {
+        const dx = asteroidX - ship.x;
+        const dy = asteroidY - ship.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        return distance < flameRange;  // Only check if it's within range of the side flame
+
+        if (distance > flameRange) return false; // Out of range
+
+        // Calculate angle between ship's position and the asteroid
+        const angleToAsteroid = Math.atan2(dy, dx);
+        const flameAngle = Math.atan2(flameY - ship.y, flameX - ship.x);
+
+        // Check if asteroid is within a narrow angle in the direction of the side flames
+        const angleDifference = Math.abs(angleToAsteroid - flameAngle);
+        return angleDifference < Math.PI / 10;  // Narrow cone (adjust this value for width)
     }
 
-    // Check for collisions with side flames
+    // Check for collisions with left and right side flames
     asteroids.forEach(asteroid => {
-        if (isWithinSideFlame(asteroid, leftSideFlameX, leftSideFlameY) ||
-            isWithinSideFlame(asteroid, rightSideFlameX, rightSideFlameY)) {
+        const inLeftFlame = isInSideFlameCone(asteroid.x, asteroid.y, leftSideFlameX, leftSideFlameY);
+        const inRightFlame = isInSideFlameCone(asteroid.x, asteroid.y, rightSideFlameX, rightSideFlameY);
+
+        if (inLeftFlame || inRightFlame) {
             asteroid.isOnFire = true;
             asteroid.fireTimer = 0;
             asteroid.distanceFromCenter = Math.hypot(asteroid.x - ship.x, asteroid.y - ship.y);
