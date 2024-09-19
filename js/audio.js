@@ -111,6 +111,7 @@ const spinSounds = [
 ];
 
 
+
 function playSpinSound() {
     if (!toggleSoundOff) {
         const randomIndex = Math.floor(Math.random() * spinSounds.length);
@@ -119,10 +120,10 @@ function playSpinSound() {
 }
 
 function stopSpinSound() {
-    if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * spinSounds.length);
-        spinSounds[randomIndex].play();
-    }
+
+    const randomIndex = Math.floor(Math.random() * spinSounds.length);
+    spinSounds[randomIndex].pause();
+
 }
 
 // Function to play a random shot sound
