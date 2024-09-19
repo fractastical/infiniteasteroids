@@ -1,6 +1,6 @@
 import os
 import subprocess
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import math
 import xml.etree.ElementTree as ET
 from PIL import Image
@@ -8,10 +8,10 @@ import io
 import base64
 import re
 import json
-import logging
 import csv
 from io import StringIO
-
+from collections import defaultdict
+import logging
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -30,11 +30,14 @@ def get_file_creation_date(file_path):
         return None
 
 def ensure_utc(dt):
-    if isinstance(dt, str):
-        dt = datetime.fromisoformat(dt)
-    if dt.tzinfo is None or dt.tzinfo.utcoffset(dt) is None:
-        return dt.replace(tzinfo=timezone.utc)
-    return dt.astimezone(timezone.utc)
+    if isinstance(dt, datetime):
+        if dt.tzinfo is None or dt.tzinfo.utcoffset(dt) is None:
+            return dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
+    elif isinstance(dt, date):
+        return datetime.combine(dt, datetime.min.time()).replace(tzinfo=timezone.utc)
+    else:
+        raise ValueError(f"Unsupported type for ensure_utc: {type(dt)}")
 
 def calculate_radius(line_count):
     return 5 + (math.log10(line_count + 1) / math.log10(10000)) * 20
@@ -49,6 +52,12 @@ def find_variable_references(content):
     variables = [var for _, var in declarations]
     references = {var: [m.start() for m in re.finditer(r'\b' + var + r'\b', content)] for var in set(variables)}
     return references
+
+def get_commit_data(repo_path):
+    command = ['git', '-C', repo_path, 'log', '--pretty=format:%aI']
+    result = subprocess.run(command, capture_output=True, text=True)
+    commits = result.stdout.strip().split('\n')
+    return [{'date': commit} for commit in commits]
 
 def analyze_project(root_dir):
     logger.debug(f"Analyzing project in directory: {root_dir}")
@@ -103,10 +112,13 @@ def analyze_project(root_dir):
                     'creation_date': creation_date
                 })
 
-    # Read the todo_list.json file
-    todo_list_path = os.path.join(root_dir, 'todo_list.json')
-    with open(todo_list_path, 'r') as f:
+    with open('todo_list.json', 'r') as f:
         todo_data = f.read()
+
+    with open('daily_session_data.csv', 'r') as f:
+        daily_session_data = f.read()
+
+    commits = get_commit_data(root_dir)
 
     return {
         'js_files': js_files, 
@@ -120,7 +132,9 @@ def analyze_project(root_dir):
             'game_modes': game_modes_count,
             'achievements': achievements_count
         },
-        'todo_data': todo_data
+        'todo_data': todo_data,
+        'daily_session_data': daily_session_data,
+        'commits': commits
     }
 
 def sanitize_text(text):
@@ -132,8 +146,8 @@ def sanitize_text(text):
     return text
 
 def generate_svg(data):
-    width, height = 1500, 1800  # Increased height to accommodate the new chart
-    margin = {'top': 50, 'right': 50, 'bottom': 300, 'left': 50}  # Increased bottom margin
+    width, height = 1500, 1800
+    margin = {'top': 50, 'right': 50, 'bottom': 300, 'left': 50}
 
     # Parse the JSON data
     todo_data = json.loads(data['todo_data'])
@@ -148,6 +162,12 @@ def generate_svg(data):
         [task for task in ia_tasks if task['completed']],
         key=lambda x: datetime.fromisoformat(x['completed'])
     )
+
+    # Parse commit data
+    commit_data = defaultdict(int)
+    for commit in data['commits']:
+        date = datetime.fromisoformat(commit['date']).date()
+        commit_data[date] += 1
 
     all_files = data['js_files'] + data['html_files'] + data['image_files']
     if not all_files:
@@ -174,6 +194,8 @@ def generate_svg(data):
     })
 
     def calc_x(date):
+        if isinstance(date, str):
+            date = datetime.fromisoformat(date)
         return margin['left'] + (
             ensure_utc(date) - 
             ensure_utc(all_files[0]['creation_date'])
@@ -253,8 +275,11 @@ def generate_svg(data):
                         'stroke-width': '0.5',
                     })
 
-    # Draw IA task line graph
+    # Draw IA task line graph and commit overlay
     ia_graph_start_y = margin['top'] + len(data['js_files']) * y_scale_js + 50
+    ia_graph_height = len(completed_ia_tasks) * y_scale_ia
+    commit_y_scale = ia_graph_height / (max(commit_data.values()) or 1)
+
     for index, task in enumerate(completed_ia_tasks):
         x = calc_x(datetime.fromisoformat(task['completed']))
         y = ia_graph_start_y + index * y_scale_ia
@@ -290,8 +315,20 @@ def generate_svg(data):
         })
         text.text = sanitize_text(task['task'][:20] + ('...' if len(task['task']) > 20 else ''))
 
+    # Draw commit overlay
+    for date, count in commit_data.items():
+        x = calc_x(datetime.combine(date, datetime.min.time()))
+        bar_height = count * commit_y_scale
+        ET.SubElement(svg, 'rect', {
+            'x': str(x - 1),
+            'y': str(ia_graph_start_y + ia_graph_height - bar_height),
+            'width': '2',
+            'height': str(bar_height),
+            'fill': 'rgba(0, 255, 0, 0.5)',  # Semi-transparent green
+        })
+        
     # Draw Image file thumbnails
-    image_size = 22
+    image_size = 13
     image_start_y = ia_graph_start_y + len(completed_ia_tasks) * y_scale_ia + 50
     for index, file in enumerate(data['image_files']):
         x = calc_x(file['creation_date'])
@@ -322,7 +359,7 @@ def generate_svg(data):
                 'opacity': '0.7'
             })
 
-    # Parse CSV data
+    # Parse CSV data for daily sessions
     csv_data = csv.reader(StringIO(data['daily_session_data']))
     next(csv_data)  # Skip header
     session_data = [(datetime.strptime(row[0], '%Y-%m-%d'), int(row[1]), int(row[2])) 
@@ -361,7 +398,7 @@ def generate_svg(data):
             'opacity': '0.7'
         })
 
-    # Add legend for session data chart
+    # Add legend
     legend_y = height - margin['bottom'] + 10
     ET.SubElement(svg, 'rect', {
         'x': str(margin['left']),
@@ -390,6 +427,19 @@ def generate_svg(data):
         'y': str(legend_y + 10),
         'font-size': '12',
     }).text = 'Total Time (seconds)'
+
+    ET.SubElement(svg, 'rect', {
+        'x': str(margin['left'] + 300),
+        'y': str(legend_y),
+        'width': '10',
+        'height': '10',
+        'fill': 'rgba(0, 255, 0, 0.5)',
+    })
+    ET.SubElement(svg, 'text', {
+        'x': str(margin['left'] + 315),
+        'y': str(legend_y + 10),
+        'font-size': '12',
+    }).text = 'Commits per Day'
 
     # Add summary section
     summary_y = height - margin['bottom'] + 40
