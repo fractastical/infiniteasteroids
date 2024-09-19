@@ -1101,8 +1101,10 @@ function updateFlamethrower() {
     const bosses = [miniBossAlien, superbossAlien, megaBossAlien, octoBoss].filter(boss => boss != null);
 
     bosses.forEach(boss => {
-        if (isInFlameCone(boss.x, boss.y, leftSideFlameX, leftSideFlameY) ||
-            isInFlameCone(boss.x, boss.y, rightSideFlameX, rightSideFlameY)) {
+        console.log("checking");
+
+        if (isInSideFlameCone(boss.x, boss.y, leftSideFlameX, leftSideFlameY) ||
+            isInSideFlameCone(boss.x, boss.y, rightSideFlameX, rightSideFlameY)) {
             setBossOnFire(boss);
         }
     });
