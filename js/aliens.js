@@ -332,6 +332,41 @@ function updateAliens() {
     }
 }
 
+function setBossOnFire(boss) {
+    boss.isOnFire = true;
+    boss.fireTimer = 0;
+    boss.fireDuration = 300; // 5 seconds at 60 FPS
+}
+
+function updateBossFire() {
+    const bosses = [miniBossAlien, superbossAlien, megaBossAlien, octoBoss].filter(boss => boss != null);
+
+    bosses.forEach(boss => {
+        if (boss.isOnFire) {
+            boss.fireTimer++;
+
+            if (boss.fireTimer % 60 === 0) { // Apply damage every second
+                const fireDamage = flamethrower.damagePerSecond * 0.5; // Reduced damage for bosses
+                boss.hitpoints -= fireDamage;
+                damageReport.flamethrower += fireDamage;
+            }
+
+            if (boss.fireTimer >= boss.fireDuration) {
+                boss.isOnFire = false;
+                boss.fireTimer = 0;
+            }
+
+            if (boss.hitpoints <= 0) {
+                if (boss === miniBossAlien) destroyBossAlien();
+                else if (boss === superbossAlien) destroySuperBossAlien();
+                else if (boss === megaBossAlien) destroyMegaBossAlien();
+                else if (boss === octoBoss) destroyOctoBoss();
+            }
+        }
+    });
+}
+
+
 function spawnSuperBossAlien() {
     superbossAlienSpawned = true;
 
@@ -419,6 +454,8 @@ function drawSuperBossAlien() {
     ctx.drawImage(superBossAlienImage, -superbossAlien.size / 2, -superbossAlien.size / 2, superbossAlien.size, superbossAlien.size);
     ctx.restore();
     drawSuperBossHitpointBar();
+    drawBossWithFireEffect(superbossAlien);
+
 }
 
 function spawnMegaBossAlien() {
@@ -513,7 +550,33 @@ function drawMegaBossAlien() {
     ctx.drawImage(megaBossAlienImage, -megaBossAlien.size / 2, -megaBossAlien.size / 2, megaBossAlien.size, megaBossAlien.size);
     ctx.restore();
     drawMegaBossHitpointBar();
+
+    drawBossWithFireEffect(megaBossAlien);
+
 }
+
+function drawBossWithFireEffect(boss) {
+    // ... (existing boss drawing code)
+
+    if (boss.isOnFire) {
+        ctx.save();
+        ctx.globalAlpha = 0.7;
+        ctx.fillStyle = 'orange';
+        ctx.beginPath();
+        // Draw flickering flames around the boss
+        for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2 + (Date.now() % 1000) / 1000 * Math.PI;
+            const x = boss.x + Math.cos(angle) * (boss.size / 2 + 10);
+            const y = boss.y + Math.sin(angle) * (boss.size / 2 + 10);
+            ctx.moveTo(boss.x, boss.y);
+            ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+    }
+}
+
 
 function updateBossAlien() {
     if (!miniBossAlien) return;
@@ -816,6 +879,8 @@ function drawBossAlienLaser() {
     ctx.beginPath();
     ctx.arc(alienLaser.x, alienLaser.y, 6, 0, Math.PI * 2);
     ctx.fill();
+    drawBossWithFireEffect(miniBossAlien);
+
 }
 
 function updateBossAlienLaser() {
@@ -1049,6 +1114,8 @@ function drawOctoBossHitpointBar() {
     xpBar.style.width = '100%';
 
     xpBar.textContent = `${Math.round(health.current)}/${Math.round(health.max)}`;
+    drawBossWithFireEffect(octoBoss);
+
 }
 
 function validateOctoBossState() {
@@ -1546,7 +1613,7 @@ function destroyOctoBoss() {
     if (!toggleMusicOff) {
 
         octoBossBackgroundMusic.pause();
-        backgroundMusic.play();
+        backgroundMusic3.play();
     }
     // Add any additional logic for when the OctoBoss is destroyed (e.g., score, powerups)
 }

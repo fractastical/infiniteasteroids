@@ -1098,6 +1098,16 @@ function updateFlamethrower() {
         }
     });
 
+    const bosses = [miniBossAlien, superbossAlien, megaBossAlien, octoBoss].filter(boss => boss != null);
+
+    bosses.forEach(boss => {
+        if (isInFlameCone(boss.x, boss.y, leftSideFlameX, leftSideFlameY) ||
+            isInFlameCone(boss.x, boss.y, rightSideFlameX, rightSideFlameY)) {
+            setBossOnFire(boss);
+        }
+    });
+
+
     // Draw the side flamethrower effect
     ctx.save();
 
@@ -2385,6 +2395,8 @@ function checkAlienDamage(weapon) {
             createExplosion(superbossAlien.x, superbossAlien.y, 50);
             createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
             superbossAlien = null; // Destroy alien
+            superMegabossBackgroundMusic.pause();
+            backgroundMusic2.play();
             playBossDieSound();
 
             if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
@@ -2420,9 +2432,13 @@ function checkAlienDamage(weapon) {
             createExplosion(megaBossAlien.x, megaBossAlien.y, 50);
             megaBossAlien = null; // Destroy alien
             createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
+
             aliensKilled++;
             // Achievements.alien_megaboss_killed.reached = true;
             playBossDieSound();
+            megabossBackgroundMusic.pause();
+            backgroundMusic2.play();
+
 
             increaseXP(30 * 20);
             score += 100000;
@@ -2513,6 +2529,9 @@ function checkLaserCollisions(lasers, isShip) {
                 createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
 
                 superbossAlien = null; // Destroy alien
+                superMegabossBackgroundMusic.pause();
+                backgroundMusic2.play();
+
                 aliensKilled++;
                 // addAchievement('alien_supermegaboss_killed');
                 increaseXP(30 * 20);
@@ -2572,6 +2591,9 @@ function checkLaserCollisions(lasers, isShip) {
                 createExplosion(megaBossAlien.x, megaBossAlien.y, 50);
                 createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
                 megaBossAlien = null; // Destroy alien
+                megabossBackgroundMusic.pause();
+                playBossDieSound();
+                backgroundMusic2.play();
                 aliensKilled++;
                 // addAchievement('alien_supermegaboss_killed');
 

@@ -4,6 +4,9 @@
 let currentVolume = 8;
 
 const backgroundMusic = document.getElementById('background-music');
+const backgroundMusic2 = document.getElementById('background-music2');
+const backgroundMusic3 = document.getElementById('background-music3');
+
 const megabossBackgroundMusic = document.getElementById('megaboss-background-music');
 const superMegabossBackgroundMusic = document.getElementById('supermegaboss-background-music');
 const octoBossBackgroundMusic = document.getElementById('octoboss-background-music');
@@ -289,6 +292,8 @@ const allSounds = [
     ...bossTakeDamageSounds,
     ...bossDieSounds,
     backgroundMusic,
+    backgroundMusic2,
+    backgroundMusic3,
     megabossBackgroundMusic,
     superMegabossBackgroundMusic,
     octoBossBackgroundMusic
