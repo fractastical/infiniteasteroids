@@ -2399,6 +2399,8 @@ function claimLevelUps() {
         } else {
 
             waitAndClaimMode = true;
+            resumeGame();
+
         }
 
     }
