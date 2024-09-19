@@ -481,7 +481,8 @@ resizeCanvas();
 function toggleMusic() {
     if (!toggleMusicOff)
         toggleMusicOff = true;
-    backgroundMusic.pause();
+
+    pauseAllMusic();
 
     if (isMusicPlaying) {
         backgroundMusic.pause();
@@ -2607,10 +2608,7 @@ function endGame() {
     xp = 0;
     pauseGame();
     // clearInterval(gameLoop);
-    backgroundMusic.pause(); // Stop al background music
-    megabossBackgroundMusic.pause();
-    superMegabossBackgroundMusic.pause();
-    octoBossBackgroundMusic.pause();
+    pauseAllMusic();
 
 
     if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {

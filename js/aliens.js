@@ -333,6 +333,7 @@ function updateAliens() {
 }
 
 function setBossOnFire(boss) {
+    console.log("setting boss");
     boss.isOnFire = true;
     boss.fireTimer = 0;
     boss.fireDuration = 300; // 5 seconds at 60 FPS
@@ -370,13 +371,12 @@ function updateBossFire() {
 function spawnSuperBossAlien() {
     superbossAlienSpawned = true;
 
-    if (!toggleMusicOff) {
-        backgroundMusic.pause();
-    }
     if (!toggleSoundOff)
         playAlienLaughSound();
     if (!toggleMusicOff) {
         superMegabossBackgroundMusic.play();
+        backgroundMusic.pause();
+
     }
 
 

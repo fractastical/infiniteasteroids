@@ -321,6 +321,17 @@ function setVolume(volume) {
     currentVolume = volume;
 }
 
+function pauseAllMusic() {
+    backgroundMusic.pause(); // Stop al background music
+    megabossBackgroundMusic.pause();
+    superMegabossBackgroundMusic.pause();
+    octoBossBackgroundMusic.pause();
+    backgroundMusic2.pause();
+    backgroundMusic3.pause();
+
+
+}
+
 // Event listener for volume slider
 document.getElementById('volumeSlider').addEventListener('input', function () {
     const volume = this.value;
