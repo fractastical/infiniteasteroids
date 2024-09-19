@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9947"
+let version = "0.9948"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -821,6 +821,9 @@ function update() {
 
     if (spawnTimer <= 0) {
         wave++;
+
+        spawnTimer = spawnCooldown;
+
         if (wave == 10 && currentMode == GameModes.EASY)
             updateAchievementsAtEnd();
 
@@ -834,7 +837,6 @@ function update() {
 
         spawnAliens(wave); // Spawn aliens based on the current wave
         checkForUpgradeSpawn();
-        spawnTimer = spawnCooldown;
         recordWeaponDamageForWave(); // Record the weapon damage for this wave
 
 

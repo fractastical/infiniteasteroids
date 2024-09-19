@@ -224,10 +224,10 @@ function multiplierCalculator(mode) {
             modeScoreMultiplier = 7.2;
             break;
         case GameModes.ENDLESS_SLOW:
+            spawnCooldown = 10;
             asteroidDifficultySpeedMultiplier = 0.2; // Very slow asteroids
             levelUpXPMultiplier = 1.1;
             modeScoreMultiplier = 2;
-            spawnCooldown = 6;
             break;
 
 
