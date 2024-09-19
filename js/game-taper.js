@@ -140,13 +140,13 @@ function multiplierCalculator(mode) {
             break;
         case GameModes.NORMAL:
             asteroidDifficultySpeedMultiplier = 0.9;
-            levelUpXPMultiplier = 1.12;
+            levelUpXPMultiplier = 1.13;
             invincibilityDuration = 180;
             modeScoreMultiplier = 4;
             break;
         case GameModes.HARD:
             asteroidDifficultySpeedMultiplier = 1.1;
-            levelUpXPMultiplier = 1.27;
+            levelUpXPMultiplier = 1.26;
             invincibilityDuration = 140;
             modeScoreMultiplier = 6;
             break;
@@ -211,7 +211,6 @@ function multiplierCalculator(mode) {
             gravityStrength = 120;
             planetMode = true;
             invincibilityDuration = 140;
-
             modeScoreMultiplier = 5.4;
             break;
         case GameModes.PLANETHERO:
