@@ -948,6 +948,10 @@ let activeRotationLeft = 0;
 function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
     let angle = ship.rotation * Math.PI / 180;
 
+    if (keys[shootKey] && ship.laserTimer === 0) {
+        shootLasers(ship);
+    }
+
     if (keys[leftKey]) {
         ship.rotation -= ship.rotationSpeed;
         activeRotationLeft = ship.rotationSpeed;
@@ -1014,9 +1018,6 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
 
     // if (keys[shootKey] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
 
-    if (keys[shootKey] && ship.laserTimer === 0) {
-        shootLasers(ship);
-    }
 
     ship.x += ship.velocityX;
     ship.y += ship.velocityY;
