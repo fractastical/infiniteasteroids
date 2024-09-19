@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9941"
+let version = "0.9942"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -2366,7 +2366,7 @@ function claimLevelUps() {
 
         // Get random upgrades
         const upgrades = getRandomUpgrades(upgradesToRetrieve);
-        if (upgrades.length >= 2) {
+        if (upgrades.length >= 1) {
 
             document.getElementById('leveluptitle').innerHTML = 'Claim ' + unclaimedLevelUps + ' upgrades';
 
