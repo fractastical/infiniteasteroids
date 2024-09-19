@@ -1,6 +1,6 @@
 import os
 import subprocess
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone, date
 import math
 import xml.etree.ElementTree as ET
 from PIL import Image

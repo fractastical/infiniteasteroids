@@ -1,6 +1,6 @@
 import os
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 import numpy as np
@@ -17,6 +17,8 @@ from tree import (
     sanitize_text
 )
 
+from datetime import datetime, timedelta, timezone
+
 def load_data(root_dir):
     # Use the analyze_project function from the original script
     data = analyze_project(root_dir)
@@ -29,15 +31,29 @@ def load_data(root_dir):
     ia_tasks.extend([task for category in todo_data['subcategories'].values() for task in category 
                      if 'ia' in task['task'].lower() or 'asteroids' in task['task'].lower()])
     
+    # Ensure completed dates are timezone-aware
+    for task in ia_tasks:
+        if task['completed']:
+            if isinstance(task['completed'], str):
+                task['completed'] = ensure_utc(datetime.fromisoformat(task['completed']))
+            elif isinstance(task['completed'], datetime):
+                task['completed'] = ensure_utc(task['completed'])
+            else:
+                raise TypeError(f"Unexpected type for 'completed': {type(task['completed'])}")
+    
     # Parse session data
     csv_data = csv.reader(data['daily_session_data'].splitlines())
     next(csv_data)  # Skip header
-    session_data = [(datetime.strptime(row[0], '%Y-%m-%d'), int(row[1]), int(row[2])) 
+    session_data = [(ensure_utc(datetime.strptime(row[0], '%Y-%m-%d')), int(row[1]), int(row[2])) 
                     for row in csv_data]
     
     # Add parsed data to the dictionary
     data['ia_tasks'] = ia_tasks
     data['session_data'] = session_data
+    
+    # Ensure all datetime objects are timezone-aware
+    data['js_files'] = [{**file, 'creation_date': ensure_utc(file['creation_date'])} for file in data['js_files']]
+    data['commits'] = [ensure_utc(commit['date']) for commit in data['commits']]
     
     return data
 
@@ -51,12 +67,12 @@ def create_frame(data, start_date, end_date, frame_number):
             ax1.annotate(os.path.basename(file['path']), (file['creation_date'], file['line_count']), fontsize=8)
 
     # Plot IA tasks
-    completed_tasks = [task for task in data['ia_tasks'] if task['completed'] and start_date <= datetime.fromisoformat(task['completed']) <= end_date]
+    completed_tasks = [task for task in data['ia_tasks'] if task['completed'] and start_date <= task['completed'] <= end_date]
     if completed_tasks:
-        ax1.plot([datetime.fromisoformat(task['completed']) for task in completed_tasks], 
+        ax1.plot([task['completed'] for task in completed_tasks], 
                  range(len(completed_tasks)), 'r-')
         for i, task in enumerate(completed_tasks):
-            ax1.annotate(task['task'][:20], (datetime.fromisoformat(task['completed']), i), fontsize=8)
+            ax1.annotate(task['task'][:20], (task['completed'], i), fontsize=8)
 
     ax1.set_ylabel('JS File Lines / IA Tasks')
     ax1.set_title(f'Project Timeline: {start_date.date()} to {end_date.date()}')
@@ -80,19 +96,6 @@ def create_frame(data, start_date, end_date, frame_number):
     plt.close()
 
     return frame_path
-
-def generate_video(frame_paths, output_path, fps=5):
-    frame = cv2.imread(frame_paths[0])
-    height, width, layers = frame.shape
-
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    video = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
-
-    for frame_path in frame_paths:
-        video.write(cv2.imread(frame_path))
-
-    cv2.destroyAllWindows()
-    video.release()
 
 def main():
     root_dir = os.getcwd()
