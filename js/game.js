@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9940"
+let version = "0.9941"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -367,7 +367,7 @@ function startGame() {
     turret.bought = false;
     resetShip();
     invincibilityTimer += invincibilityDuration;
-    clearInterval(gameLoop);
+    // clearInterval(gameLoop);
     // if (mode == GameModes.ENDLESS_SLOW)
     //   spawnCooldown = 6;
 
@@ -453,7 +453,8 @@ function startGame() {
 
     }
 
-    gameLoop = setInterval(update, 1000 / 60); // 60 FPS
+    resumeGame();
+
     if (!toggleMusicOff)
         backgroundMusic.play(); // Play the background music
     isMusicPlaying = true;
@@ -2437,7 +2438,7 @@ function levelUp() {
     if (!waitAndClaimMode) {
 
         pauseGame();
-        clearInterval(gameLoop);
+        // clearInterval(gameLoop);
 
         document.getElementById('leveluptitle').innerHTML = 'Level Up!';
 
@@ -2568,7 +2569,8 @@ function endGame() {
     // document.getElementById('loginContainer').style.display = 'block';
     document.getElementById('userInfo').style.display = 'block';
     xp = 0;
-    clearInterval(gameLoop);
+    pauseGame();
+    // clearInterval(gameLoop);
     backgroundMusic.pause(); // Stop al background music
     megabossBackgroundMusic.pause();
     superMegabossBackgroundMusic.pause();
