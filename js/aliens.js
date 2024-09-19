@@ -14,6 +14,11 @@ megaBossAlienImage.src = 'icons/aliens/alien_boss_ship_6.png';
 const octoBossImage = new Image();
 octoBossImage.src = 'icons/aliens/alien_boss_ship_17.png';
 
+const OCTOBOSS_HP_MULTIPLIER = 0.7; // Adjust this value to change difficulty
+const OCTOBOSS_REGEN_THRESHOLD = 0.25; // 25% health threshold
+const OCTOBOSS_ARM_REGEN_PERCENT = 0.7; // 70% of original hitpoints
+let octobossRegenerated = false; // 70% of original hitpoints
+
 // Load swarming alien images
 const swarmingAlienImages = [];
 for (let i = 1; i <= 9; i++) {
@@ -738,6 +743,7 @@ function drawAlienLasers(time = currentTime) {
             ctx.fill();
         }
 
+
         // Reset alpha back to full for subsequent drawings
         ctx.globalAlpha = 1;
         ctx.restore();
@@ -952,8 +958,6 @@ const OctoBossArmState = {
 };
 
 
-// Define the health multiplier
-const OCTOBOSS_HP_MULTIPLIER = 1.0; // Adjust this value to change difficulty
 
 // Update the OctoBoss spawning function
 function spawnOctoBoss() {
@@ -995,9 +999,9 @@ function spawnOctoBoss() {
         const baseAngle = (i * Math.PI) / 4;
         octoBoss.arms.push({
             segments: [
-                createSegment(baseAngle, 10, 350, 1000 * OCTOBOSS_HP_MULTIPLIER),
-                createSegment(baseAngle + Math.PI / 6, 10, 300, 1000 * OCTOBOSS_HP_MULTIPLIER),
-                createSegment(baseAngle - Math.PI / 6, 10, 200, 1000 * OCTOBOSS_HP_MULTIPLIER)
+                createSegment(baseAngle, 150, 350, 1000 * OCTOBOSS_HP_MULTIPLIER),
+                createSegment(baseAngle + Math.PI / 6, 100, 300, 1000 * OCTOBOSS_HP_MULTIPLIER),
+                createSegment(baseAngle - Math.PI / 6, 50, 200, 1000 * OCTOBOSS_HP_MULTIPLIER)
             ]
         });
     }
@@ -1005,13 +1009,12 @@ function spawnOctoBoss() {
     aliens.push(octoBoss);
 }
 
-// Update the segment creation function
 function createSegment(angle, initialLength, maxLength, initialHitpoints) {
     return {
         angle: Number(angle) || 0,
-        length: Number(initialLength) || 10,
+        length: Number(initialLength) || 200,
         maxLength: Number(maxLength) || 200,
-        state: OctoBossArmState.GROWING,
+        state: OctoBossArmState.ACTIVE, // Start as active instead of growing
         hitpoints: Number(initialHitpoints) || 500,
         maxHitpoints: Number(initialHitpoints) || 500,
         growthRate: 0.01
@@ -1084,6 +1087,12 @@ function updateOctoBoss() {
         octoBoss.specialAttackTimer = 0;
         octoBoss.specialAttackInterval = Math.random() * 2000 + 1000; // Set next interval
         octoBoss.specialAttackDuration = 60; // Reset duration
+    }
+
+    const totalHealth = calculateTotalOctoBossHealth();
+    if (!octobossRegenerated && (totalHealth.current / totalHealth.max <= OCTOBOSS_REGEN_THRESHOLD)) {
+        regenerateAllArms();
+        octobossRegenerated = true;
     }
 
     if (octoBoss.isSpecialAttacking) {
@@ -1173,6 +1182,25 @@ function updateOctoBoss() {
     }
 }
 
+function regenerateAllArms() {
+    console.log("OctoBoss is regenerating all arms!");
+    octoBoss.arms.forEach((arm, index) => {
+        const baseAngle = (index * Math.PI) / 4;
+        arm.segments = [
+            createSegment(baseAngle, 50, 350, 1000 * OCTOBOSS_HP_MULTIPLIER * OCTOBOSS_ARM_REGEN_PERCENT),
+            createSegment(baseAngle + Math.PI / 6, 100, 300, 1000 * OCTOBOSS_HP_MULTIPLIER * OCTOBOSS_ARM_REGEN_PERCENT),
+            createSegment(baseAngle - Math.PI / 6, 50, 200, 1000 * OCTOBOSS_HP_MULTIPLIER * OCTOBOSS_ARM_REGEN_PERCENT)
+        ];
+    });
+
+    if (!toggleSoundOff)
+        playAlienLaughSound();
+
+    // Play a regeneration sound or create a visual effect
+    // playRegenerationSound();
+    // createRegenerationEffect();
+}
+
 function performSpecialAttack() {
     const targetAngle = Math.atan2(ship.y - octoBoss.y, ship.x - octoBoss.x);
 
@@ -1199,8 +1227,9 @@ function performSpecialAttack() {
             });
         }
     });
-    playAlienLaserSound();
+    playBossLaserSound();
 }
+
 function drawOctoBoss() {
     if (!octoBoss) return;
 
@@ -1507,6 +1536,12 @@ function destroyOctoBoss() {
     aliens = aliens.filter(alien => alien !== octoBoss);
     octoBoss = null;
     playBossDieSound();
+
+    const xpBar = document.getElementById('xpBar');
+    xpBar.style.background = 'green'; // Reset background to solid green
+    xpBar.style.backgroundColor = 'green'; // Reset background to solid green
+    xpBar.style.width = '100%'; // Reset the width to full
+    xpBar.textContent = ''; // Display defeat message
 
     if (!toggleMusicOff) {
 
