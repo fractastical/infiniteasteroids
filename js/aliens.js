@@ -966,7 +966,7 @@ function spawnOctoBoss() {
 
     octoBoss = {
         x: canvas.width / 2,
-        y: 5,
+        y: 15,
         size: 260,
         bodyRadius: 120,
         speed: 0.1,
