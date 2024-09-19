@@ -163,7 +163,7 @@ function updateIconPositions(angle) {
 
 function startRoulette() {
 
-    clearInterval(gameLoop);
+    // clearInterval(gameLoop);
     pauseGame();
 
     const rouletteContainer = document.getElementById('rouletteContainer');
@@ -218,7 +218,7 @@ function startRoulette() {
 
         if (angle >= totalSpins) {
             clearInterval(interval);
-            spinSound.pause();
+            stopSpinSound();
 
             // Remove the planet from the canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);

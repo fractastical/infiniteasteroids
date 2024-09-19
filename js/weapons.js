@@ -717,8 +717,17 @@ const damageReportMapping = {
     acid: 'Acid Bomb',
     freeze: 'Freeze Ray',
     boomerang: 'Boomerang',
-    nano: 'Nano Swarm'
+    nano: 'Nano Swarm',
+    flamethrower: 'Flamethrower',
+    chainlightning: 'Chain Lightning',
+    fireasteroid: 'Fire Asteroid',
+    acidAsteroid: 'Acid Asteroid',
+    lightningAsteroid: 'Lightning  Asteroid'
+
+
 };
+
+
 
 
 

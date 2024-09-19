@@ -118,6 +118,12 @@ function playSpinSound() {
     }
 }
 
+function stopSpinSound() {
+    if (!toggleSoundOff) {
+        const randomIndex = Math.floor(Math.random() * spinSounds.length);
+        spinSounds[randomIndex].play();
+    }
+}
 
 // Function to play a random shot sound
 function playRandomShotSound() {

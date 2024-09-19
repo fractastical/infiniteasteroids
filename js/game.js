@@ -2,12 +2,13 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9943"
+let version = "0.9944"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
 let cgUser = null;
 
+let testMode = false;
 
 let activeMegaUpgrades = [];
 let lastActivatedWave = 0;
@@ -278,7 +279,6 @@ let asteroids = [];
 let gameLoop;
 let explosions = [];
 let lives = 3;
-let testMode = false;
 
 if (testMode)
     lives = 1;
@@ -2677,10 +2677,12 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     // Clear and set damage report
     damageReportList.innerHTML = '';
     const weaponDPM = calculateWeaponDPM();
-    topWeapons.forEach(({ weapon, damage }, index) => {
+
+    Object.entries(damageReport).forEach(([weapon, damage]) => {
         const weaponName = damageReportMapping[weapon];
         const weaponInfo = weapons.find(w => w.name === weaponName);
-        if (weaponInfo) {
+
+        if (weaponInfo && damage > 0) {  // Only create elements for weapons with damage > 0
             const li = document.createElement('li');
             li.style.display = 'flex';
             li.style.alignItems = 'center';
@@ -2693,14 +2695,15 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
             icon.style.marginRight = '10px';
 
             const text = document.createElement('span');
-            text.textContent = `${weaponInfo.name}: ${damage} (DPM: ${weaponDPM[weapon]})`;
+            const roundedDamage = Math.round(damage);
+            // const roundedDPM = Math.round(weaponDPM[weapon] || 0);  // Use 0 if DPM is undefined
+            text.textContent = `${weaponInfo.name}: ${roundedDamage} (DPM: ${DPM[weapon]})`;
 
             li.appendChild(icon);
             li.appendChild(text);
             damageReportList.appendChild(li);
         }
     });
-
 
 
     // Clear and set recently unlocked weapons
