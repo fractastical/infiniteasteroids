@@ -1105,6 +1105,8 @@ function updateFlamethrower() {
 
         if (isInSideFlameCone(boss.x, boss.y, leftSideFlameX, leftSideFlameY) ||
             isInSideFlameCone(boss.x, boss.y, rightSideFlameX, rightSideFlameY)) {
+            console.log("bossincone");
+
             setBossOnFire(boss);
         }
     });

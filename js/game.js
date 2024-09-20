@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9952"
+let version = "0.9953"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -815,7 +815,7 @@ function update() {
     updateAndDrawParticles();
     updateAndDrawShockwaves();
     drawAlienLasers();
-
+    updateBossFire();
 
 
     spawnTimer -= 1 / 60; // Assuming 60 FPS

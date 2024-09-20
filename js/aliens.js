@@ -338,7 +338,7 @@ function setBossOnFire(boss) {
     console.log("setting boss");
     boss.isOnFire = true;
     boss.fireTimer = 0;
-    boss.fireDuration = 300; // 5 seconds at 60 FPS
+    boss.fireDuration = 600; // 10 seconds at 60 FPS
 }
 
 function updateBossFire() {
@@ -349,8 +349,9 @@ function updateBossFire() {
             boss.fireTimer++;
 
             if (boss.fireTimer % 60 === 0) { // Apply damage every second
-                const fireDamage = flamethrower.damagePerSecond * 0.5; // Reduced damage for bosses
-                boss.hitpoints -= fireDamage;
+                const fireDamage = flamethrower.damagePerSecond;
+                // double fire damage for bosses
+                boss.hitpoints -= fireDamage * 2;
                 damageReport.flamethrower += fireDamage;
             }
 
@@ -360,10 +361,10 @@ function updateBossFire() {
             }
 
             if (boss.hitpoints <= 0) {
-                if (boss === miniBossAlien) destroyBossAlien();
-                else if (boss === superbossAlien) destroySuperBossAlien();
-                else if (boss === megaBossAlien) destroyMegaBossAlien();
-                else if (boss === octoBoss) destroyOctoBoss();
+                // if (boss === miniBossAlien) destroyBossAlien();
+                // else if (boss === superbossAlien) destroySuperBossAlien();
+                // else if (boss === megaBossAlien) destroyMegaBossAlien();
+                // else if (boss === octoBoss) destroyOctoBoss();
             }
         }
     });
@@ -562,22 +563,30 @@ function drawBossWithFireEffect(boss) {
     // ... (existing boss drawing code)
 
     if (boss.isOnFire) {
+        console.log("drawing bossflame");
         ctx.save();
-        ctx.globalAlpha = 0.7;
+        ctx.globalAlpha = 0.7;  // Adjust transparency if needed
         ctx.fillStyle = 'orange';
-        ctx.beginPath();
+
         // Draw flickering flames around the boss
         for (let i = 0; i < 8; i++) {
+            // Create an angle for each flame and add some flicker by using a time-based offset
             const angle = (i / 8) * Math.PI * 2 + (Date.now() % 1000) / 1000 * Math.PI;
-            const x = boss.x + Math.cos(angle) * (boss.size / 2 + 10);
-            const y = boss.y + Math.sin(angle) * (boss.size / 2 + 10);
-            ctx.moveTo(boss.x, boss.y);
-            ctx.lineTo(x, y);
+
+            // Calculate the position of each flame around the boss
+            const flameX = boss.x + Math.cos(angle) * (boss.size / 2 + Math.random() * 10);  // Random offset for flickering
+            const flameY = boss.y + Math.sin(angle) * (boss.size / 2 + Math.random() * 10);
+
+            // Draw a small flame as a flickering circle
+            ctx.beginPath();
+            ctx.arc(flameX, flameY, Math.random() * 5 + 5, 0, Math.PI * 2);  // Random size for flickering effect
+            ctx.closePath();
+            ctx.fill();
         }
-        ctx.closePath();
-        ctx.fill();
+
         ctx.restore();
     }
+
 }
 
 
@@ -1032,7 +1041,7 @@ function spawnOctoBoss() {
     octoBossSpawned = true;
 
     if (!toggleMusicOff) {
-        backgroundMusic.pause();
+        pauseAllMusic();
         bossMusicEnabled = true;
         octoBossBackgroundMusic.play();
     }
