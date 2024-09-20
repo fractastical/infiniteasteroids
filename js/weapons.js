@@ -2057,7 +2057,9 @@ function updateDrones() {
 
         if (distance > 250) {
             const angleToShip = Math.atan2(dy, dx);
-            drone.direction = angleToShip;
+            // Add randomization to the direction, +/- 10 degrees
+            const randomAngle = (Math.random() - 0.5) * (20 * Math.PI / 180);
+            drone.direction = angleToShip + randomAngle;
         }
 
         drone.x += Math.cos(drone.direction) * drone.speed;
