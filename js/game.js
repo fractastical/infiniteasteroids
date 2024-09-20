@@ -3,6 +3,7 @@
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
 let version = "0.9954"
+//  "0.9954" is the submitted version.
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
