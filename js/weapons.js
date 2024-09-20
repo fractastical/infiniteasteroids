@@ -1834,7 +1834,7 @@ function activateBoomerang() {
 
 
 function shootLasers() {
-    if (!toggleMusicOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
+    // if (!toggleMusicOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
 
     // Use the custom shoot function if it exists, otherwise use default shooting
     if (ships[currentShip] && typeof ships[currentShip].shoot === 'function') {
@@ -2397,8 +2397,10 @@ function checkAlienDamage(weapon) {
             createExplosion(superbossAlien.x, superbossAlien.y, 50);
             createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
             superbossAlien = null; // Destroy alien
-            superMegabossBackgroundMusic.pause();
-            backgroundMusic2.play();
+            if (superMegabossBackgroundMusic)
+                superMegabossBackgroundMusic.pause();
+            if (backgroundMusic2)
+                backgroundMusic2.play();
             playBossDieSound();
 
             if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {

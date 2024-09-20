@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9950"
+let version = "0.9951"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -997,7 +997,7 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
         }
 
         if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
-            if (!toggleMusicOff) backgroundMusic.play();
+            // if (!toggleMusicOff) backgroundMusic.play();
             playRandomThrusterSound();
 
             const initialBackwardAcceleration = ship.acceleration * 1.5;
