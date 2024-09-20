@@ -1626,7 +1626,7 @@ function destroyOctoBoss() {
     if (!toggleMusicOff) {
 
         pauseAllMusic();
-        backgroundMusic3.play();
+        backgroundMusic2.play();
     }
     // Add any additional logic for when the OctoBoss is destroyed (e.g., score, powerups)
 }

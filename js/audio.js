@@ -5,7 +5,7 @@ let currentVolume = 8;
 
 const backgroundMusic = document.getElementById('background-music');
 const backgroundMusic2 = document.getElementById('background-music2');
-const backgroundMusic3 = document.getElementById('background-music3');
+// const backgroundMusic3 = document.getElementById('background-music3');
 
 const megabossBackgroundMusic = document.getElementById('megaboss-background-music');
 const superMegabossBackgroundMusic = document.getElementById('supermegaboss-background-music');
@@ -293,7 +293,7 @@ const allSounds = [
     ...bossDieSounds,
     backgroundMusic,
     backgroundMusic2,
-    backgroundMusic3,
+    // backgroundMusic3,
     megabossBackgroundMusic,
     superMegabossBackgroundMusic,
     octoBossBackgroundMusic
@@ -332,8 +332,8 @@ function pauseAllMusic() {
         octoBossBackgroundMusic.pause();
     if (backgroundMusic2)
         backgroundMusic2.pause();
-    if (backgroundMusic3)
-        backgroundMusic3.pause();
+    // if (backgroundMusic3)
+    //     backgroundMusic3.pause();
 
 
 }
