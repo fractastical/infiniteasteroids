@@ -2397,8 +2397,7 @@ function checkAlienDamage(weapon) {
             createExplosion(superbossAlien.x, superbossAlien.y, 50);
             createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
             superbossAlien = null; // Destroy alien
-            if (superMegabossBackgroundMusic)
-                superMegabossBackgroundMusic.pause();
+            pauseAllMusic();
             if (backgroundMusic2)
                 backgroundMusic2.play();
             playBossDieSound();
@@ -2440,7 +2439,7 @@ function checkAlienDamage(weapon) {
             aliensKilled++;
             // Achievements.alien_megaboss_killed.reached = true;
             playBossDieSound();
-            megabossBackgroundMusic.pause();
+            pauseAllMusic();
             backgroundMusic2.play();
 
 
@@ -2533,7 +2532,7 @@ function checkLaserCollisions(lasers, isShip) {
                 createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
 
                 superbossAlien = null; // Destroy alien
-                superMegabossBackgroundMusic.pause();
+                pauseAllMusic();
                 backgroundMusic2.play();
 
                 aliensKilled++;
@@ -2595,7 +2594,7 @@ function checkLaserCollisions(lasers, isShip) {
                 createExplosion(megaBossAlien.x, megaBossAlien.y, 50);
                 createBossExplosion(megaBossAlien.x, megaBossAlien.y, 250);
                 megaBossAlien = null; // Destroy alien
-                megabossBackgroundMusic.pause();
+                pauseAllMusic();
                 playBossDieSound();
                 backgroundMusic2.play();
                 aliensKilled++;

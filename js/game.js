@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9951"
+let version = "0.9952"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -485,7 +485,7 @@ function toggleMusic() {
     pauseAllMusic();
 
     if (isMusicPlaying) {
-        backgroundMusic.pause();
+        pauseAllMusic();
     } else {
         backgroundMusic.play();
     }
@@ -1493,7 +1493,8 @@ function handleKeyDown(event) {
         } else if (event.key === 'e' || event.key === 'E') {
             fireSecondaryWeapon(); // Use the selected secondary weapon
         } else if ((event.key === 'r' || event.key === 'R')) {
-            claimLevelUps(); // Claim level ups
+            if (!gameOver)
+                claimLevelUps(); // Claim level ups
         } else if ((event.key === 'o' || event.key === 'O') && normalDebugMode) {
 
             const pastScoresModal = document.getElementById('pastScoresModal');
