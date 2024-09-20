@@ -19,6 +19,8 @@ const OCTOBOSS_REGEN_THRESHOLD = 0.25; // 25% health threshold
 const OCTOBOSS_ARM_REGEN_PERCENT = 0.7; // 70% of original hitpoints
 let octobossRegenerated = false; // 70% of original hitpoints
 
+let bossMusicEnabled = false;
+
 // Load swarming alien images
 const swarmingAlienImages = [];
 for (let i = 1; i <= 9; i++) {
@@ -374,8 +376,9 @@ function spawnSuperBossAlien() {
     if (!toggleSoundOff)
         playAlienLaughSound();
     if (!toggleMusicOff) {
+        pauseAllMusic();
+        bossMusicEnabled = true;
         superMegabossBackgroundMusic.play();
-        backgroundMusic.pause();
 
     }
 
@@ -387,6 +390,7 @@ function spawnSuperBossAlien() {
         speed: 0.3,
         direction: Math.random() * Math.PI * 2,
         shootTimer: 0,
+        radius: 20,
         spawnTimer: 0,
         hitpoints: 5000,
         maxHitpoints: 5000,
@@ -463,14 +467,13 @@ function spawnMegaBossAlien() {
     megaBossAlienSpawned = true;
 
     if (!toggleMusicOff) {
-        backgroundMusic.pause();
+        pauseAllMusic();
+        bossMusicEnabled = true;
+        megabossBackgroundMusic.play();
+
     }
     if (!toggleSoundOff)
-        if (!toggleSoundOff)
-            playAlienLaughSound();
-    if (!toggleMusicOff) {
-        megabossBackgroundMusic.play();
-    }
+        playAlienLaughSound();
 
 
 
@@ -483,7 +486,7 @@ function spawnMegaBossAlien() {
         shootTimer: 0,
         spawnTimer: 0,
         hitpoints: 10000,
-        radius: 80,
+        radius: 30,
         maxHitpoints: 10000,
         shootInterval: 100 // Adjust this value as needed
     };
@@ -1030,6 +1033,7 @@ function spawnOctoBoss() {
 
     if (!toggleMusicOff) {
         backgroundMusic.pause();
+        bossMusicEnabled = true;
         octoBossBackgroundMusic.play();
     }
     if (!toggleSoundOff)
@@ -1612,7 +1616,7 @@ function destroyOctoBoss() {
 
     if (!toggleMusicOff) {
 
-        octoBossBackgroundMusic.pause();
+        pauseAllMusic();
         backgroundMusic3.play();
     }
     // Add any additional logic for when the OctoBoss is destroyed (e.g., score, powerups)

@@ -322,12 +322,18 @@ function setVolume(volume) {
 }
 
 function pauseAllMusic() {
-    backgroundMusic.pause(); // Stop al background music
-    megabossBackgroundMusic.pause();
-    superMegabossBackgroundMusic.pause();
-    octoBossBackgroundMusic.pause();
-    backgroundMusic2.pause();
-    backgroundMusic3.pause();
+    if (backgroundMusic)
+        backgroundMusic.pause(); // Stop al background music
+    if (megabossBackgroundMusic)
+        megabossBackgroundMusic.pause();
+    if (superMegabossBackgroundMusic)
+        superMegabossBackgroundMusic.pause();
+    if (octoBossBackgroundMusic)
+        octoBossBackgroundMusic.pause();
+    if (backgroundMusic2)
+        backgroundMusic2.pause();
+    if (backgroundMusic3)
+        backgroundMusic3.pause();
 
 
 }

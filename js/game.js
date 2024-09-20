@@ -969,7 +969,8 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
     }
 
     if (keys[upKey] || (ship === ship && touchAccelerating)) {
-        if (!toggleMusicOff) backgroundMusic.play();
+
+        if (!toggleMusicOff && !bossMusicEnabled) backgroundMusic.play();
         playRandomThrusterSound();
 
         let accelerationAmount = ship.acceleration;

@@ -2518,7 +2518,7 @@ function checkLaserCollisions(lasers, isShip) {
         }
 
 
-        if (superbossAlien && isColliding(laser, superbossAlien)) {
+        if (superbossAlien && isColliding(superbossAlien, laser)) {
 
             let damage = isShip ? ship.laserLevel : 1; // Damage based on laserLevel for ship lasers
             let actualDamage = Math.min(damage + damageBooster * pixieBoost, superbossAlien.hitpoints); // Ensure we don't overkill the asteroid
