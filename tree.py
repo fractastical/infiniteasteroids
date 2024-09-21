@@ -30,6 +30,17 @@ def get_file_creation_date(file_path):
         return None
 
 def ensure_utc(dt):
+    if isinstance(dt, str):
+        # Try parsing the string as an ISO format datetime
+        try:
+            dt = datetime.fromisoformat(dt)
+        except ValueError:
+            # If that fails, try parsing it as a date
+            try:
+                dt = datetime.strptime(dt, '%Y-%m-%d')
+            except ValueError:
+                raise ValueError(f"Unable to parse date string: {dt}")
+    
     if isinstance(dt, datetime):
         if dt.tzinfo is None or dt.tzinfo.utcoffset(dt) is None:
             return dt.replace(tzinfo=timezone.utc)
@@ -37,7 +48,7 @@ def ensure_utc(dt):
     elif isinstance(dt, date):
         return datetime.combine(dt, datetime.min.time()).replace(tzinfo=timezone.utc)
     else:
-        raise ValueError(f"Unsupported type for ensure_utc: {type(dt)}")
+        raise TypeError(f"Unsupported type for ensure_utc: {type(dt)}")
 
 def calculate_radius(line_count):
     return 5 + (math.log10(line_count + 1) / math.log10(10000)) * 20
