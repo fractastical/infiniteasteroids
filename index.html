@@ -234,107 +234,6 @@
   </div>
   </div> -->
 
-
-  <div id="startScreen">
-    <img height="60px" src="icons/ia-logo2.png" />
-
-    <div>
-      <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
-      <canvas id="animationCanvas"></canvas>
-      <script src="js/retro-infinite-asteroids-animation.js"></script>
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          InfiniteAsteroidsAnimation.init('animationCanvas');
-          populateAchievements();
-          populateSelectors();
-          handleSelections();
-          updateShipPreview();
-          document.getElementById('versionInfo').innerHTML = "Version v " + version;
-          console.log("innerHeight");
-          console.log(window.innerHeight);
-
-          if (window.innerHeight < 500) {
-            document.getElementById('gameModeHeader').remove();
-            console.log(window.innerHeight);
-            document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
-          }
-        });
-
-
-      </script>
-
-
-      <table>
-        <tr>
-          <td rowspan="2">
-            <div id="shipCustomizationSection">
-              <div class="ship-preview">
-                <canvas id="shipPreviewCanvas" width="60" height="60"></canvas>
-              </div>
-              <div class="option-group">
-                <h4>Select Ship:</h4>
-                <div class="selector">
-                  <button id="prevShipButton">&#60;</button>
-                  <span id="selectedShip">Basic</span>
-                  <button id="nextShipButton">></button>
-                </div>
-              </div>
-
-              <div class="option-group">
-                <h4 id="secondaryWeaponHeader">Select Secondary:</h4>
-                <div class="selector">
-                  <button id="prevSecondaryWeaponButton">&#60;</button>
-                  <span id="selectedSecondaryWeapon">Bomb</span>
-                  <button id="nextSecondaryWeaponButton">></button>
-                </div>
-              </div>
-            </div>
-
-            <div id="gameModeSection">
-              <button>&#60;</button>
-
-              <h4 id="gameModeHeader">Select Game Mode</h4>
-
-              <div class="selector">
-                <button>&#60;</button>
-
-                <span id="selectedGameMode">Deep Space</span>
-                <button id="gameModeButton">></button>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td><span id="crazyGameData"></span>
-            <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
-            <BR /><button id="settings" onclick="toggleVolumeScreen()">Settings</button><BR />
-            <button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
-            <button id="Achievements" onclick="openAchievementsModal()">My Achievements</button>
-            <!-- <button id="viewPastScoresButton">View Stats</button> -->
-          </td>
-          <td style="min-width: 250px;">
-            <div id="achievementIconsList"></div>
-          </td>
-        </tr>
-      </table>
-
-      <div id="achievementsContainer" style="display:none">
-
-        <!-- <h3>Your Achievements</h3> -->
-        <div id="achievementsList"></div>
-      </div>
-      <!-- <h3>Your Upgrades</h3> -->
-      <div id="upgradesList"></div>
-
-
-      <!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
-        <button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button> -->
-      <!-- <p>Tap lower left for store.</p> -->
-      <!-- <p>Tap with two fingers to fire.</p> -->
-      <!-- <button onclick="startGame()">Start Game</button> -->
-    </div>
-  </div>
-
   <div id="joystick">
     <div id="joystickHandle"></div>
 
@@ -454,6 +353,107 @@
   <audio id="megaboss-background-music" src="sounds/boss1.mp3" loop></audio>
   <audio id="supermegaboss-background-music" src="sounds/boss2.mp3" loop></audio>
   <audio id="octoboss-background-music" src="sounds/boss3.mp3" loop></audio>
+
+
+  <div id="startScreen">
+    <img height="60px" src="icons/ia-logo2.png" />
+
+    <div>
+      <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
+      <canvas id="animationCanvas"></canvas>
+      <script src="js/retro-infinite-asteroids-animation.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          InfiniteAsteroidsAnimation.init('animationCanvas');
+          populateAchievements();
+          populateSelectors();
+          handleSelections();
+          updateShipPreview();
+          document.getElementById('versionInfo').innerHTML = "Version v " + version;
+          console.log("innerHeight");
+          console.log(window.innerHeight);
+
+          if (window.innerHeight < 500) {
+            document.getElementById('gameModeHeader').remove();
+            console.log(window.innerHeight);
+            document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
+          }
+        });
+
+
+      </script>
+
+
+      <table>
+        <tr>
+          <td rowspan="2">
+            <div id="shipCustomizationSection">
+              <div class="ship-preview">
+                <canvas id="shipPreviewCanvas" width="60" height="60"></canvas>
+              </div>
+              <div class="option-group">
+                <h4 id="selectShipHeader">Select Ship:</h4>
+                <div class="selector">
+                  <button id="prevShipButton">&#60;</button>
+                  <span id="selectedShip">Basic</span>
+                  <button id="nextShipButton">></button>
+                </div>
+              </div>
+
+              <div class="option-group">
+                <h4 id="secondaryWeaponHeader">Select Secondary:</h4>
+                <div class="selector">
+                  <button id="prevSecondaryWeaponButton">&#60;</button>
+                  <span id="selectedSecondaryWeapon">Bomb</span>
+                  <button id="nextSecondaryWeaponButton">></button>
+                </div>
+              </div>
+            </div>
+
+            <div id="gameModeSection">
+              <button>&#60;</button>
+
+              <h4 id="gameModeHeader">Select Game Mode</h4>
+
+              <div class="selector">
+                <button>&#60;</button>
+
+                <span id="selectedGameMode">Deep Space</span>
+                <button id="gameModeButton">></button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><span id="crazyGameData"></span>
+            <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
+            <BR /><button id="settings" onclick="toggleVolumeScreen()">Settings</button><BR />
+            <button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
+            <button id="Achievements" onclick="openAchievementsModal()">My Achievements</button>
+            <!-- <button id="viewPastScoresButton">View Stats</button> -->
+          </td>
+          <td style="min-width: 250px;">
+            <div id="achievementIconsList"></div>
+          </td>
+        </tr>
+      </table>
+
+      <div id="achievementsContainer" style="display:none">
+
+        <!-- <h3>Your Achievements</h3> -->
+        <div id="achievementsList"></div>
+      </div>
+      <!-- <h3>Your Upgrades</h3> -->
+      <div id="upgradesList"></div>
+
+
+      <!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
+        <button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button> -->
+      <!-- <p>Tap lower left for store.</p> -->
+      <!-- <p>Tap with two fingers to fire.</p> -->
+      <!-- <button onclick="startGame()">Start Game</button> -->
+    </div>
+  </div>
 
 
   <!-- <button id="restartButton" style="display: none;">Home</button> -->
@@ -2285,7 +2285,30 @@
 
 
 
-  <script> resizeCanvas();
+  <script>
+
+    function isFirefox() {
+      return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    }
+
+    // Function to hide the ship selection area
+    function hideShipHeader() {
+      const shipCustomizationSection = document.getElementById('selectShipHeader');
+      if (shipCustomizationSection) {
+        shipCustomizationSection.style.display = 'none';
+      }
+    }
+
+    // Check if it's Firefox and hide the ship selection when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function () {
+      if (isFirefox()) {
+        hideShipHeader();
+        console.log('Firefox detected. Ship selection hidden.');
+      }
+    });
+
+
+    resizeCanvas();
   </script>
 
 </body>
