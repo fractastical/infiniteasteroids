@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9956"
+let version = "0.9957"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -1241,7 +1241,13 @@ function increaseXP(amount, isGem = false) {
     updateXPBar();
 
     if (xp >= xpToNextLevel && (currTimeInMS > (lastLevelUp + 8000) || isGem)) {
-        levelUp();
+        const upgradeModal = document.getElementById('upgradeModal');
+        // only display levelup if upgrade modal is not open
+        if (!upgradeModal || upgradeModal.style.display == "block") {
+            levelUp();
+
+        }
+
     }
 }
 
@@ -2560,6 +2566,7 @@ function levelUp() {
 
             pauseGame();
 
+
             // Display the level-up modal
             const levelUpModal = document.getElementById('levelUpModal');
             const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
@@ -2581,6 +2588,8 @@ function levelUp() {
                 invincible = true;
                 invincibilityTimer += invincibilityDuration;
             }
+
+
         }
 
     }

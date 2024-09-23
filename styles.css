@@ -1488,3 +1488,15 @@ hr {
     height: 400px;
     background-color: #000;
 }
+
+.element {
+    scrollbar-width: none;
+}
+
+.element {
+    -ms-overflow-style: none;
+}
+
+body {
+    scrollbar-width: none;
+}
