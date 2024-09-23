@@ -1157,6 +1157,9 @@
       const upgradesList = document.getElementById('upgradesList');
       upgradesList.innerHTML = '';
 
+      const container = document.getElementById('activeWeaponClassesContainer');
+      container.style.display = "none";
+
       megaUpgrades.forEach(upgrade => {
         const upgradeElement = document.createElement('div');
         upgradeElement.classList.add('upgrade');
@@ -2282,10 +2285,9 @@
 
 
 
-  <!-- #INFINITEGAMES JS START -->
-  <script src="infinite/js/48_leaderboard_20240919000321.js"></script>
-  <script src="infinite/js/48_firebase_20240919000321.js"></script>
-  <!-- #INFINITEGAMES JS END -->
+  <script> resizeCanvas();
+  </script>
+
 </body>
 
 </html>

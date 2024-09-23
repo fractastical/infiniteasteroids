@@ -433,6 +433,9 @@ function openUpgradeOptions() {
         // floatingIsland.x = 0;
         // floatingIsland.y = 0;
 
+        const container = document.getElementById('activeWeaponClassesContainer');
+        container.style.display = "none";
+
         const upgradeModal = document.createElement('div');
         upgradeModal.id = 'upgradeModal';
         upgradeModal.innerHTML = `

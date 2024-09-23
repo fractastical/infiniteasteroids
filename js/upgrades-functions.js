@@ -500,12 +500,12 @@ function findNearestAsteroid() {
     return nearestAsteroid;
 }
 
-const potatoImage = new Image();
-potatoImage.src = 'icons/upgrades/potatoroid_10.png';
-let potatoImageLoaded = false;
-potatoImage.onload = function () {
-    potatoImageLoaded = true;
-};
+// const potatoImage = new Image();
+// potatoImage.src = 'icons/upgrades/potatoroid_10.png';
+// let potatoImageLoaded = false;
+// potatoImage.onload = function () {
+//     potatoImageLoaded = true;
+// };
 
 const spacePotato = {
     x: 0,

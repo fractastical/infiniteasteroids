@@ -2,13 +2,13 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9953"
+let version = "0.9955"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
 let cgUser = null;
 
-let testMode = false;
+let testMode = true;
 
 let activeMegaUpgrades = [];
 let lastActivatedWave = 0;
@@ -44,6 +44,8 @@ let toggleSoundOff = false;
 
 
 let currentMode = GameModes.EASY; // Start with Easy mode by default
+
+
 let modesUnlocked = {
     easy: true,
     normal: false,
@@ -461,21 +463,68 @@ function startGame() {
 }
 
 // TEMP:(?) disable resize
-const resizeCanvas = () => {
+
+function resizeCanvas() {
+    const oldWidth = canvas.width;
+    const oldHeight = canvas.height;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+
     resetShip();
-    // Scale the canvas to handle high DPI screens
-    // ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-    // // Reposition the ship to the center of the canvas
-    // ship.x = canvas.width / 2 / window.devicePixelRatio;
-    // ship.y = canvas.height - 50 / window.devicePixelRatio;
-};
-resizeCanvas();
+    const widthRatio = canvas.width / oldWidth;
+    const heightRatio = canvas.height / oldHeight;
 
-// window.addEventListener('resize', resizeCanvas);
+    // Update ship position
+    if (ship) {
+        ship.x *= widthRatio;
+        ship.y *= heightRatio;
+
+        // Update ship's lasers
+        ship.lasers.forEach(laser => {
+            laser.x *= widthRatio;
+            laser.y *= heightRatio;
+        });
+    }
+
+    // Update aliens positions
+    aliens.forEach(alien => {
+        alien.x *= widthRatio;
+        alien.y *= heightRatio;
+    });
+
+    // Update asteroids positions
+    asteroids.forEach(asteroid => {
+        asteroid.x *= widthRatio;
+        asteroid.y *= heightRatio;
+    });
+
+    // Update alien lasers
+    alienLasers.forEach(laser => {
+        laser.x *= widthRatio;
+        laser.y *= heightRatio;
+    });
+
+    // Update explosions
+    explosions.forEach(explosion => {
+        explosion.x *= widthRatio;
+        explosion.y *= heightRatio;
+        // If explosion size is stored, you might want to scale it too
+        if (explosion.size) {
+            explosion.size *= (widthRatio + heightRatio) / 2;
+        }
+    });
+
+    // Optionally, adjust speeds if they're dependent on canvas size
+    // const speedRatio = (widthRatio + heightRatio) / 2;
+    // adjustGameSpeeds(speedRatio);
+
+}
+
+
+
+window.addEventListener('resize', resizeCanvas);
 
 
 function toggleMusic() {
@@ -1312,8 +1361,18 @@ function drawScore() {
 function pauseGame() {
     // console.log("p");
     if (!isPaused) {
-        // console.log("p2");
 
+        // const modals = document.querySelectorAll('.modal');
+        // const openModals = Array.from(modals).filter(modal => {
+        //     return window.getComputedStyle(modal).display !== 'none';
+        // });
+
+        // const openModals = document.querySelectorAll('.modal:not([style*="display: none"])');    
+        // if (openModals.length > 0 && !gameOver) {
+        //     const container = document.getElementById('activeWeaponClassesContainer');
+        //     container.style.display = "none";
+        // }
+        // console.log("p2");
         clearInterval(gameLoop);
         isPaused = true;
         if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
@@ -1341,6 +1400,9 @@ function resumeGame() {
     console.log(openModals.length);
 
     if (openModals.length === 0 && !gameOver) {
+        const container = document.getElementById('activeWeaponClassesContainer');
+        container.style.display = "block";
+
         clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
@@ -1465,6 +1527,7 @@ function handleKeyDown(event) {
 
         if (event.key === 'Enter') {
             if (document.getElementById('rouletteContainer').style.display == 'block') {
+
                 startRoulette();
 
             }
@@ -1497,8 +1560,10 @@ function handleKeyDown(event) {
                 claimLevelUps(); // Claim level ups
         } else if ((event.key === 'o' || event.key === 'O') && normalDebugMode) {
 
+
             const pastScoresModal = document.getElementById('pastScoresModal');
             pastScoresModal.style.display = 'block';
+
 
         } else if (event.key === 'u' || event.key === 'U') {
 
@@ -2422,6 +2487,9 @@ function claimLevelUps() {
                 document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
 
             // Show the modal
+            const container = document.getElementById('activeWeaponClassesContainer');
+            container.style.display = "none";
+
             levelUpModal.style.display = 'block';
             // Store upgrades in a global variable for later use
             window.levelUpgrades = upgrades;
@@ -2498,6 +2566,8 @@ function levelUp() {
             if (document.getElementById('upgradeOptions')) {
 
                 document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
+                const container = document.getElementById('activeWeaponClassesContainer');
+                container.style.display = "none";
 
                 // Show the modal
                 levelUpModal.style.display = 'block';
@@ -2920,6 +2990,8 @@ function drawDamageReport() {
         }
     });
 }
+
+
 
 
 
