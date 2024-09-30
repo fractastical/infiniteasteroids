@@ -589,6 +589,10 @@ function update() {
     }
 
     // drawWarpedGrid();
+    if (tutorialActive) {
+        updateTutorial();
+        highlightTutorialAsteroid();
+    }
 
 
     // document.getElementById('leaderboard-container').style.display = 'none';
@@ -945,6 +949,10 @@ function processPlayerDeath() {
 function initializeGame(mode, replay = false) {
     handleSelections();
     multiplierCalculator(mode);
+
+    if (!Achievements.reach_wave_2.reached)
+        initializeTutorial();
+
     if (replay)
         currentShip = lastCurrentShip;
     // console.log(currentShip);

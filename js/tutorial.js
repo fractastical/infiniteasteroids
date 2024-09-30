@@ -50,33 +50,12 @@ const tutorialSteps = [
     }
 ];
 
-// Initialize game
-function initGame() {
-    ship = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        radius: 20,
-        angle: 0,
-        rotationSpeed: 0.1,
-        speed: 0,
-        maxSpeed: 5
-    };
-    asteroids = [];
-    lasers = [];
-    keys = {};
-    score = 0;
-    lives = 3;
-    gameSpeed = 1;
-
-    initializeTutorial();
-    gameLoop = setInterval(update, 1000 / 60); // 60 FPS
-}
 
 // Tutorial functions
 function initializeTutorial() {
-    if (localStorage.getItem('tutorialCompleted')) {
-        return; // Skip tutorial if already completed
-    }
+    // if (localStorage.getItem('tutorialCompleted')) {
+    //     return; // Skip tutorial if already completed
+    // }
 
     tutorialActive = true;
     currentTutorialStep = 0;
@@ -84,7 +63,6 @@ function initializeTutorial() {
     showCurrentTutorialStep();
     createTutorialAsteroid();
 
-    gameSpeed = 0.2; // Slow down the game during tutorial
 }
 
 function createTutorialOverlay() {
@@ -195,159 +173,3 @@ function endTutorial() {
     gameSpeed = 1;
 }
 
-// Game update function
-function update() {
-    // Clear canvas
-    // Update tutorial if active
-    if (tutorialActive) {
-        updateTutorial();
-        highlightTutorialAsteroid();
-    }
-}
-
-// Ship functions
-function updateShip() {
-    if (keys['ArrowLeft']) ship.angle -= ship.rotationSpeed * gameSpeed;
-    if (keys['ArrowRight']) ship.angle += ship.rotationSpeed * gameSpeed;
-
-    if (keys['ArrowUp']) {
-        ship.speed += 0.1 * gameSpeed;
-        if (ship.speed > ship.maxSpeed) ship.speed = ship.maxSpeed;
-    } else {
-        ship.speed *= 0.98;
-    }
-
-    ship.x += Math.cos(ship.angle) * ship.speed * gameSpeed;
-    ship.y += Math.sin(ship.angle) * ship.speed * gameSpeed;
-
-    // Wrap around screen
-    if (ship.x < 0) ship.x = canvas.width;
-    if (ship.x > canvas.width) ship.x = 0;
-    if (ship.y < 0) ship.y = canvas.height;
-    if (ship.y > canvas.height) ship.y = 0;
-}
-
-function drawShip() {
-    ctx.save();
-    ctx.translate(ship.x, ship.y);
-    ctx.rotate(ship.angle);
-    ctx.beginPath();
-    ctx.moveTo(20, 0);
-    ctx.lineTo(-10, 10);
-    ctx.lineTo(-10, -10);
-    ctx.closePath();
-    ctx.fillStyle = 'white';
-    ctx.fill();
-    ctx.restore();
-}
-
-// Asteroid functions
-function updateAsteroids() {
-    for (let asteroid of asteroids) {
-        asteroid.x += Math.cos(asteroid.angle) * asteroid.speed * gameSpeed;
-        asteroid.y += Math.sin(asteroid.angle) * asteroid.speed * gameSpeed;
-
-        // Wrap around screen
-        if (asteroid.x < 0) asteroid.x = canvas.width;
-        if (asteroid.x > canvas.width) asteroid.x = 0;
-        if (asteroid.y < 0) asteroid.y = canvas.height;
-        if (asteroid.y > canvas.height) asteroid.y = 0;
-
-        // Draw asteroid
-        ctx.beginPath();
-        ctx.arc(asteroid.x, asteroid.y, asteroid.radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'gray';
-        ctx.fill();
-    }
-}
-
-// Laser functions
-function updateLasers() {
-    for (let i = lasers.length - 1; i >= 0; i--) {
-        let laser = lasers[i];
-        laser.x += Math.cos(laser.angle) * laser.speed * gameSpeed;
-        laser.y += Math.sin(laser.angle) * laser.speed * gameSpeed;
-
-        // Remove laser if off screen
-        if (laser.x < 0 || laser.x > canvas.width || laser.y < 0 || laser.y > canvas.height) {
-            lasers.splice(i, 1);
-            continue;
-        }
-
-        // Draw laser
-        ctx.beginPath();
-        ctx.arc(laser.x, laser.y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = 'red';
-        ctx.fill();
-    }
-}
-
-// Collision detection
-function checkCollisions() {
-    // Check laser-asteroid collisions
-    for (let i = lasers.length - 1; i >= 0; i--) {
-        for (let j = asteroids.length - 1; j >= 0; j--) {
-            if (distance(lasers[i], asteroids[j]) < asteroids[j].radius) {
-                // Destroy asteroid
-                if (asteroids[j].isTutorialAsteroid) {
-                    tutorialAsteroidDestroyed = true;
-                }
-                asteroids.splice(j, 1);
-                lasers.splice(i, 1);
-                score += 10;
-                break;
-            }
-        }
-    }
-
-    // Check ship-asteroid collisions
-    for (let asteroid of asteroids) {
-        if (distance(ship, asteroid) < ship.radius + asteroid.radius) {
-            // Game over logic
-            lives--;
-            if (lives <= 0) {
-                // End game
-                clearInterval(gameLoop);
-                alert('Game Over! Your score: ' + score);
-                initGame(); // Restart game
-            } else {
-                // Reset ship position
-                ship.x = canvas.width / 2;
-                ship.y = canvas.height / 2;
-                ship.speed = 0;
-            }
-        }
-    }
-}
-
-// Utility functions
-function distance(obj1, obj2) {
-    return Math.sqrt((obj1.x - obj2.x) ** 2 + (obj1.y - obj2.y) ** 2);
-}
-
-function drawUI() {
-    ctx.fillStyle = 'white';
-    ctx.font = '20px Arial';
-    ctx.fillText('Score: ' + score, 10, 30);
-    ctx.fillText('Lives: ' + lives, 10, 60);
-}
-
-// Event listeners
-document.addEventListener('keydown', (e) => {
-    keys[e.key] = true;
-    if (e.key === ' ') { // Spacebar
-        lasers.push({
-            x: ship.x + Math.cos(ship.angle) * 20,
-            y: ship.y + Math.sin(ship.angle) * 20,
-            angle: ship.angle,
-            speed: 5
-        });
-    }
-});
-
-document.addEventListener('keyup', (e) => {
-    keys[e.key] = false;
-});
-
-// Start the game
-initGame();
