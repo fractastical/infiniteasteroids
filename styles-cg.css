@@ -1,0 +1,107 @@
+:root {
+    --base-font-size: 16px;
+    --min-font-size: 10px;
+    --max-font-size: 18px;
+    --modal-width: 80vw;
+    --modal-height: 489px;
+}
+
+/* General modal styles */
+.modal {
+    position: fixed;
+    z-index: 100;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--modal-width);
+    max-width: 400px;
+    height: var(--modal-height);
+    background-color: #111;
+    border: 3px solid #4e15ac;
+    color: #0f0;
+    padding: 15px;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    opacity: 0.95;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+/* Media query for larger screens */
+@media screen and (min-height: 600px) {
+    :root {
+        --modal-height: clamp(489px, 80vh, 700px);
+    }
+}
+
+/* Styles for modal content */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    font-size: clamp(var(--min-font-size), calc(var(--base-font-size) * 0.8), var(--max-font-size));
+}
+
+/* Dynamic text sizing for different elements */
+.modal h2 {
+    font-size: clamp(calc(var(--min-font-size) * 1.2), calc(var(--base-font-size) * 1.2), calc(var(--max-font-size) * 1.2));
+    margin-bottom: 10px;
+}
+
+.modal p,
+.modal li {
+    font-size: clamp(var(--min-font-size), calc(var(--base-font-size) * 0.9), var(--max-font-size));
+}
+
+.modal button {
+    font-size: clamp(calc(var(--min-font-size) * 0.9), calc(var(--base-font-size) * 0.9), calc(var(--max-font-size) * 0.9));
+    padding: 8px 15px;
+    margin-top: 10px;
+}
+
+/* Adjustments for specific modals */
+#levelUpModal h4,
+#upgradeShopModal h2,
+#shipCustomizationModal h2,
+#pastScoresModal h2,
+#achievementsModal h2,
+#allLeaderboardsModal h2,
+#weaponDamageChartModal h2 {
+    font-size: clamp(calc(var(--min-font-size) * 1.1), calc(var(--base-font-size) * 1.1), calc(var(--max-font-size) * 1.1));
+}
+
+/* Style adjustments for content areas */
+#upgradeShopModal .upgrade-container,
+#shipCustomizationModal #shipPreview,
+#pastScoresModal #pastScoresList,
+#achievementsModal #achievementsDisplay,
+#allLeaderboardsModal #allLeaderboardsContainer,
+#weaponDamageChartModal #weaponDamageChartContainer {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Ensure chart fits within modal */
+#weaponDamageChart {
+    max-height: calc(var(--modal-height) * 0.6);
+    width: 100%;
+}
+
+/* Adjust content for better fit */
+.upgrade-option,
+.achievement,
+.leaderboard-mode {
+    margin-bottom: 5px;
+    font-size: clamp(calc(var(--min-font-size) * 0.9), calc(var(--base-font-size) * 0.9), calc(var(--max-font-size) * 0.9));
+}
+
+/* JavaScript-controlled class for text adjustment */
+.adjust-text-size {
+    transition: font-size 0.3s ease;
+}
