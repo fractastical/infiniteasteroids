@@ -1,8 +1,4 @@
 // Canvas setup
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
 
 // Game variables
 // let ship, asteroids, lasers, gameLoop, gameSpeed, keys, score, lives;
@@ -15,25 +11,33 @@ let currentTutorialStep = 0;
 const tutorialSteps = [
     {
         text: "Use arrow keys to move your ship",
-        position: { top: '50%', left: '50%' },
-        arrowPosition: { top: '60%', left: '50%' },
+        position: { top: '30%', left: '50%' },
+        arrowPosition: { top: '40%', left: '50%' },
         arrowRotation: 180,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
     {
         text: "Press SPACE to shoot lasers",
-        position: { top: '50%', left: '50%' },
-        arrowPosition: { top: '60%', left: '50%' },
+        position: { top: '40%', left: '70%' },
+        arrowPosition: { top: '50%', left: '70%' },
         arrowRotation: 180,
         condition: () => keys[' '] // Space key pressed
     },
     {
-        text: "Shoot the highlighted asteroid",
+        text: "Shoot the highlighted asteroid to get XP!",
         position: { top: '20%', left: '50%' },
         arrowPosition: { top: '30%', left: '50%' },
         arrowRotation: 180,
         condition: () => tutorialAsteroidDestroyed
     },
+    {
+        text: "Pick an upgrade with XP!",
+        position: { top: '20%', left: '50%' },
+        arrowPosition: { top: '30%', left: '50%' },
+        arrowRotation: 180,
+        condition: () => tutorialAsteroidDestroyed
+    },
+
     {
         text: "Press E to use your bomb (secondary weapon)",
         position: { top: '80%', left: '20%' },
@@ -42,11 +46,18 @@ const tutorialSteps = [
         condition: () => keys['e'] // E key pressed
     },
     {
+        text: "Here is how many you have left)",
+        position: { top: '10%', left: '25%' },
+        arrowPosition: { top: '6%', right: '12%' },
+        arrowRotation: 0,
+        condition: () => keys['f'] // E key pressed
+    },
+    {
         text: "This is your health. Don't let it reach zero!",
         position: { top: '10%', right: '20%' },
-        arrowPosition: { top: '20%', right: '20%' },
+        arrowPosition: { top: '20%', right: '4%' },
         arrowRotation: 180,
-        condition: () => true // Auto-complete this step
+        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     }
 ];
 
@@ -84,9 +95,14 @@ function createTutorialOverlay() {
     stepElement.style.cssText = `
         position: absolute;
         background-color: white;
+        color: black; // Add this line to set the text color
         padding: 10px;
         border-radius: 5px;
         max-width: 200px;
+        font-family: Arial, sans-serif; // Add this for better readability
+        font-size: 14px; // Add this to set an appropriate font size
+        text-align: center; // Center the text
+        box-shadow: 0 0 10px rgba(0,0,0,0.5); // Add a subtle shadow for better visibility
     `;
 
     const arrowElement = document.createElement('div');
@@ -117,19 +133,24 @@ function showCurrentTutorialStep() {
 }
 
 function createTutorialAsteroid() {
-    const asteroidDistance = 150;
+    const asteroidDistance = 10;
     const angle = Math.random() * Math.PI * 2;
 
     tutorialAsteroid = {
-        x: ship.x + Math.cos(angle) * asteroidDistance,
-        y: ship.y + Math.sin(angle) * asteroidDistance,
-        radius: 30,
+        x: ship.x,
+        y: ship.y - 80,
+        size: 20,
         speed: 0,
+        dx: 0,
+        dy: 0,
         angle: Math.random() * Math.PI * 2,
         rotationSpeed: 0.02,
         hitpoints: 1,
-        isTutorialAsteroid: true
+        initialHitpoints: 1,
+        isTutorialAsteroid: true,
+        type: 'normal'
     };
+
 
     asteroids.push(tutorialAsteroid);
 }
