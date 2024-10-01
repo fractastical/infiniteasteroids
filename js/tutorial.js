@@ -11,8 +11,8 @@ let currentTutorialStep = 0;
 const tutorialSteps = [
     {
         text: "Use arrow keys to move your ship",
-        position: { top: '30%', left: '50%' },
-        arrowPosition: { top: '40%', left: '50%' },
+        position: { top: '30%', left: '42%' },
+        arrowPosition: { top: '40%', left: '49%' },
         arrowRotation: 180,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
@@ -25,8 +25,8 @@ const tutorialSteps = [
     },
     {
         text: "Shoot the highlighted asteroid to get XP!",
-        position: { top: '20%', left: '50%' },
-        arrowPosition: { top: '30%', left: '50%' },
+        position: { top: '15%', left: '50%' },
+        arrowPosition: { top: '25%', left: '50%' },
         arrowRotation: 180,
         condition: () => tutorialAsteroidDestroyed
     },
@@ -46,17 +46,17 @@ const tutorialSteps = [
         condition: () => keys['e'] // E key pressed
     },
     {
-        text: "Here is how many you have left)",
-        position: { top: '10%', left: '25%' },
-        arrowPosition: { top: '6%', right: '12%' },
+        text: "Here is how many uses you have left",
+        position: { top: '10%', left: '15%' },
+        arrowPosition: { top: '12%', left: '8%' },
         arrowRotation: 0,
         condition: () => keys['f'] // E key pressed
     },
     {
         text: "This is your health. Don't let it reach zero!",
         position: { top: '10%', right: '20%' },
-        arrowPosition: { top: '20%', right: '4%' },
-        arrowRotation: 180,
+        arrowPosition: { top: '6%', right: '10px' },
+        arrowRotation: 0,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     }
 ];
@@ -96,7 +96,7 @@ function createTutorialOverlay() {
         position: absolute;
         background-color: white;
         color: black; // Add this line to set the text color
-        padding: 10px;
+        padding: 10px !important;
         border-radius: 5px;
         max-width: 200px;
         font-family: Arial, sans-serif; // Add this for better readability
@@ -104,6 +104,17 @@ function createTutorialOverlay() {
         text-align: center; // Center the text
         box-shadow: 0 0 10px rgba(0,0,0,0.5); // Add a subtle shadow for better visibility
     `;
+
+    stepElement.style.position = 'absolute';
+    stepElement.style.backgroundColor = 'white';
+    stepElement.style.color = 'black';
+    stepElement.style.padding = '7px';  // Add padding explicitly
+    stepElement.style.borderRadius = '5px';
+    stepElement.style.maxWidth = '200px';
+    stepElement.style.fontFamily = 'Arial, sans-serif';
+    stepElement.style.fontSize = '14px';
+    stepElement.style.textAlign = 'center';
+    stepElement.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
 
     const arrowElement = document.createElement('div');
     arrowElement.id = 'tutorialArrow';
