@@ -1,16 +1,6 @@
-/* Root variables for text sizing */
-:root {
-    --base-font-size: 16px;
-    --min-font-size: 10px;
-    --max-font-size: 18px;
-    --modal-width: 80vw;
-    --modal-height: 489px;
-}
-
 /* General modal styles */
 .modal {
     display: none;
-    /* Hide modals by default */
     position: fixed;
     z-index: 100;
     left: 50%;
@@ -27,61 +17,33 @@
     text-align: center;
     font-family: 'Press Start 2P', cursive;
     opacity: 0.95;
-    flex-direction: column;
-    justify-content: space-between;
     overflow: hidden;
 }
 
 /* Class to show modal when needed */
 .modal.show {
     display: flex;
-}
-
-/* Media query for larger screens */
-@media screen and (min-height: 600px) {
-    :root {
-        --modal-height: clamp(489px, 80vh, 700px);
-    }
+    flex-direction: column;
 }
 
 /* Styles for modal content */
 .modal-content {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     height: 100%;
     font-size: clamp(var(--min-font-size), calc(var(--base-font-size) * 0.8), var(--max-font-size));
 }
 
-/* Dynamic text sizing for different elements */
-.modal h2 {
-    font-size: clamp(calc(var(--min-font-size) * 1.2), calc(var(--base-font-size) * 1.2), calc(var(--max-font-size) * 1.2));
+/* Adjust spacing for headers */
+.modal h2,
+.modal h4 {
+    margin-top: 0;
     margin-bottom: 10px;
+    font-size: clamp(calc(var(--min-font-size) * 1.2), calc(var(--base-font-size) * 1.2), calc(var(--max-font-size) * 1.2));
 }
 
-.modal p,
-.modal li {
-    font-size: clamp(var(--min-font-size), calc(var(--base-font-size) * 0.9), var(--max-font-size));
-}
-
-.modal button {
-    font-size: clamp(calc(var(--min-font-size) * 0.9), calc(var(--base-font-size) * 0.9), calc(var(--max-font-size) * 0.9));
-    padding: 8px 15px;
-    margin-top: 10px;
-}
-
-/* Adjustments for specific modals */
-#levelUpModal h4,
-#upgradeShopModal h2,
-#shipCustomizationModal h2,
-#pastScoresModal h2,
-#achievementsModal h2,
-#allLeaderboardsModal h2,
-#weaponDamageChartModal h2 {
-    font-size: clamp(calc(var(--min-font-size) * 1.1), calc(var(--base-font-size) * 1.1), calc(var(--max-font-size) * 1.1));
-}
-
-/* Style adjustments for content areas */
+/* Adjust spacing for content areas */
+#upgradeOptions,
 #upgradeShopModal .upgrade-container,
 #shipCustomizationModal #shipPreview,
 #pastScoresModal #pastScoresList,
@@ -91,16 +53,12 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding-top: 10px;
 }
 
-/* Ensure chart fits within modal */
-#weaponDamageChart {
-    max-height: calc(var(--modal-height) * 0.6);
-    width: 100%;
-}
-
-/* Adjust content for better fit */
+/* Style for upgrade options and similar items */
 .upgrade-option,
 .achievement,
 .leaderboard-mode {
@@ -108,7 +66,9 @@
     font-size: clamp(calc(var(--min-font-size) * 0.9), calc(var(--base-font-size) * 0.9), calc(var(--max-font-size) * 0.9));
 }
 
-/* JavaScript-controlled class for text adjustment */
-.adjust-text-size {
-    transition: font-size 0.3s ease;
+/* Ensure buttons are at the bottom */
+.modal-content button {
+    margin-top: auto;
+    padding: 8px 15px;
+    font-size: clamp(calc(var(--min-font-size) * 0.9), calc(var(--base-font-size) * 0.9), calc(var(--max-font-size) * 0.9));
 }

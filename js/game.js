@@ -589,10 +589,6 @@ function update() {
     }
 
     // drawWarpedGrid();
-    if (tutorialActive) {
-        updateTutorial();
-        highlightTutorialAsteroid();
-    }
 
 
     // document.getElementById('leaderboard-container').style.display = 'none';
@@ -635,6 +631,7 @@ function update() {
         }
 
     }
+
 
 
 
@@ -826,6 +823,11 @@ function update() {
     updateAsteroids();
     drawAsteroids();
 
+    if (tutorialActive) {
+        updateTutorial();
+        highlightTutorialAsteroid();
+    }
+
     if (!invincible) {
         for (let i = 0; i < asteroids.length; i++) {
             if (isColliding(ship, asteroids[i])) {
@@ -907,6 +909,7 @@ function update() {
     // drawEdgeOverlay();
     drawLives();
     drawScore();
+
 
     // if (gameOver) drawDamageReport();
     updateAndDrawFloatingUpgrades();

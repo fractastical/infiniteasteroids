@@ -6,6 +6,7 @@ let tutorialActive = false;
 let tutorialAsteroid = null;
 let tutorialAsteroidDestroyed = false;
 let currentTutorialStep = 0;
+let firstLevelUpRedeemed = false;
 
 // Tutorial steps
 const tutorialSteps = [
@@ -35,22 +36,15 @@ const tutorialSteps = [
         position: { top: '20%', left: '50%' },
         arrowPosition: { top: '30%', left: '50%' },
         arrowRotation: 180,
-        condition: () => tutorialAsteroidDestroyed
+        condition: () => level > 1
     },
 
     {
-        text: "Press E to use your bomb (secondary weapon)",
+        text: "Press E to use your bomb (secondary weapon). Only three uses!",
         position: { top: '80%', left: '20%' },
-        arrowPosition: { top: '70%', left: '20%' },
-        arrowRotation: 0,
-        condition: () => keys['e'] // E key pressed
-    },
-    {
-        text: "Here is how many uses you have left",
-        position: { top: '10%', left: '15%' },
         arrowPosition: { top: '12%', left: '8%' },
         arrowRotation: 0,
-        condition: () => keys['f'] // E key pressed
+        condition: () => keys['e'] // E key pressed
     },
     {
         text: "This is your health. Don't let it reach zero!",
@@ -182,8 +176,9 @@ function updateTutorial() {
         }
     }
 
-    if (tutorialAsteroid && !asteroids.includes(tutorialAsteroid)) {
+    if (tutorialAsteroid && !asteroids.includes(tutorialAsteroid) && !tutorialAsteroidDestroyed) {
         tutorialAsteroidDestroyed = true;
+        levelUp();
     }
 }
 
