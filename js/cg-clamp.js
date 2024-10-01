@@ -13,3 +13,16 @@ function adjustTextSize(modalId) {
 
     content.classList.remove('adjust-text-size');
 }
+
+
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.add('show');
+    adjustTextSize(modalId); // Call this if you're using the dynamic text sizing function
+}
+
+function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('show');
+}
+
