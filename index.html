@@ -95,7 +95,8 @@
   </div>
 
   <div class="top-right hidden" id="userInfo">
-    <span id="userNickname"></span> | <a href="#" id="logoutLink">Logout</a>
+    <span id="userNickname"></span>
+    <!-- | <a href="#" id="logoutLink">Logout</a> -->
   </div>
 
 
@@ -1619,26 +1620,29 @@
       resumeGame(); // Resume the game if paused
     });
 
+    if (logoutLink) {
 
-    logoutLink.addEventListener('click', async (event) => {
-      event.preventDefault();
+      logoutLink.addEventListener('click', async (event) => {
+        event.preventDefault();
 
-      if (crazyGamesMode) {
-        // CrazyGames doesn't have a logout function, so we just clear the local state
-        userId = null;
-        userInfo.style.display = 'none';
-        loginLink.style.display = 'block';
-      } else {
-        try {
-          await auth.signOut();
+        if (crazyGamesMode) {
+          // CrazyGames doesn't have a logout function, so we just clear the local state
           userId = null;
           userInfo.style.display = 'none';
           loginLink.style.display = 'block';
-        } catch (error) {
-          console.error('Error signing out:', error);
+        } else {
+          try {
+            await auth.signOut();
+            userId = null;
+            userInfo.style.display = 'none';
+            loginLink.style.display = 'block';
+          } catch (error) {
+            console.error('Error signing out:', error);
+          }
         }
-      }
-    });
+      });
+
+    }
 
 
     auth.onAuthStateChanged(user => {

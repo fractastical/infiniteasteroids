@@ -1392,15 +1392,16 @@ function pauseGame() {
         // console.log("p2");
         clearInterval(gameLoop);
         isPaused = true;
-        if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
-            try {
-                window.CrazyGames.SDK.game.gameplayStop();
+        // removed at CG request
+        // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+        //     try {
+        //         window.CrazyGames.SDK.game.gameplayStop();
 
-            } catch (error) {
-                console.log(error);
-            }
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
 
-        }
+        // }
 
 
     }
@@ -1423,14 +1424,15 @@ function resumeGame() {
         clearInterval(gameLoop);
         gameLoop = setInterval(update, 1000 / 60);
         isPaused = false;
-        if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
-            try {
-                window.CrazyGames.SDK.game.gameplayStart();
+        // Removed at CG request
+        // if (crazyGamesMode && window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+        //     try {
+        //         window.CrazyGames.SDK.game.gameplayStart();
 
-            } catch (error) {
-                console.log(error);
-            }
-        }
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
     }
 }
 
