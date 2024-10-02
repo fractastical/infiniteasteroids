@@ -567,9 +567,11 @@ function isMobile() {
 
 }
 
-
+let randomSeed = Math.random();
 
 function update() {
+
+    randomSeed = Math.random();
 
     calculateAndAdjustFPS(); //optimize.js
 
@@ -1001,10 +1003,10 @@ function handleTouch(e) {
         //     shootLasers();
         // }
         fireSecondaryWeapon();
-        secondaryWeaponUsed = true;
+        secondaryWeaponUsedOnMobile = true;
     }
 }
-let secondaryWeaponUsed = false;
+let secondaryWeaponUsedOnMobile = false;
 
 let activeRotationRight = 0;
 let activeRotationLeft = 0;

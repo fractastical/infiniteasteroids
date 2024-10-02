@@ -574,12 +574,12 @@ function drawBossWithFireEffect(boss) {
             const angle = (i / 8) * Math.PI * 2 + (Date.now() % 1000) / 1000 * Math.PI;
 
             // Calculate the position of each flame around the boss
-            const flameX = boss.x + Math.cos(angle) * (boss.size / 2 + Math.random() * 10);  // Random offset for flickering
+            const flameX = boss.x + Math.cos(angle) * (boss.size / 2 + randomSeed * 10);  // Random offset for flickering
             const flameY = boss.y + Math.sin(angle) * (boss.size / 2 + Math.random() * 10);
 
             // Draw a small flame as a flickering circle
             ctx.beginPath();
-            ctx.arc(flameX, flameY, Math.random() * 5 + 5, 0, Math.PI * 2);  // Random size for flickering effect
+            ctx.arc(flameX, flameY, randomSeed * 5 + 5, 0, Math.PI * 2);  // Random size for flickering effect
             ctx.closePath();
             ctx.fill();
         }
@@ -1165,7 +1165,7 @@ function updateOctoBoss() {
     if (octoBoss.specialAttackTimer >= octoBoss.specialAttackInterval) {
         octoBoss.isSpecialAttacking = true;
         octoBoss.specialAttackTimer = 0;
-        octoBoss.specialAttackInterval = Math.random() * 2000 + 1000; // Set next interval
+        octoBoss.specialAttackInterval = randomSeed * 2000 + 1000; // Set next interval
         octoBoss.specialAttackDuration = 60; // Reset duration
     }
 
@@ -1687,8 +1687,8 @@ function lineCircleIntersection(x1, y1, x2, y2, cx, cy, r) {
 function shootInk() {
     const inkCount = 20; // Number of ink particles
     for (let i = 0; i < inkCount; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 2 + .5;
+        const angle = randomSeed * Math.PI * 2;
+        const speed = randomSeed * 2 + .5;
         alienLasers.push({
             x: octoBoss.x,
             y: octoBoss.y,
