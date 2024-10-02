@@ -9,7 +9,7 @@ let currentTutorialStep = 0;
 let firstLevelUpRedeemed = false;
 
 // Tutorial steps
-const tutorialSteps = [
+const desktopTutorialSteps = [
     {
         text: "Use arrow keys to move your ship",
         position: { top: '30%', left: '42%' },
@@ -33,27 +33,85 @@ const tutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '20%', left: '50%' },
-        arrowPosition: { top: '30%', left: '50%' },
+        position: { top: '10%', left: '50%' },
+        arrowPosition: { top: '15%', left: '50%' },
         arrowRotation: 180,
         condition: () => level > 1
     },
 
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
-        position: { top: '80%', left: '20%' },
-        arrowPosition: { top: '12%', left: '8%' },
+        position: { top: '40px', right: '24px' },
+        arrowPosition: { top: '45px', right: '10px' },
         arrowRotation: 0,
         condition: () => keys['e'] // E key pressed
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '10%', right: '20%' },
-        arrowPosition: { top: '6%', right: '10px' },
+        position: { top: '55px', right: '18px' },
+        arrowPosition: { top: '50px', right: '9px' },
         arrowRotation: 0,
-        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
+        condition: () => keys['ArrowUp'] || keys['ArrowDown']
     }
 ];
+
+
+const mobileTutorialSteps = [
+    {
+        text: "Use the left and right buttons to steer your ship",
+        position: { top: '240px', left: '400px' },
+        arrowPosition: { top: '320px', left: '470px' },
+        arrowRotation: 180,
+        condition: () => keys['ArrowLeft'] || keys['ArrowRight']
+    },
+    {
+        text: "Use the up button to accelerate",
+        position: { top: '320px', left: '672px' },
+        arrowPosition: { top: '400px', left: '672px' },
+        arrowRotation: 180,
+        condition: () => keys['ArrowUp']
+    },
+    {
+        text: "Your ship fires automatically. Just aim!",
+        position: { top: '120px', left: '480px' },
+        arrowPosition: { top: '200px', left: '480px' },
+        arrowRotation: 180,
+        condition: () => ship.lasers.length > 0
+    },
+    {
+        text: "Destroy the highlighted asteroid to get XP!",
+        position: { top: '120px', left: '480px' },
+        arrowPosition: { top: '200px', left: '480px' },
+        arrowRotation: 180,
+        condition: () => tutorialAsteroidDestroyed
+    },
+    {
+        text: "Pick an upgrade with XP!",
+        position: { top: '160px', left: '480px' },
+        arrowPosition: { top: '240px', left: '480px' },
+        arrowRotation: 180,
+        condition: () => level > 1 || document.getElementById('levelUpModal').style.display === 'block'
+    },
+    {
+        text: "Use two fingers to activate your bomb (secondary weapon). Only three uses!",
+        position: { top: '640px', left: '192px' },
+        arrowPosition: { top: '96px', left: '77px' },
+        arrowRotation: 0,
+        condition: () => secondaryWeaponUsedOnMobile // You'll need to implement this flag
+    },
+    {
+        text: "This is your health. Don't let it reach zero!",
+        position: { top: '80px', right: '192px' },
+        arrowPosition: { top: '48px', right: '10px' },
+        arrowRotation: 0,
+        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp']
+    }
+];
+
+function getTutorialSteps() {
+    return isMobile() ? mobileTutorialSteps : desktopTutorialSteps;
+}
+
 
 
 // Tutorial functions
@@ -66,7 +124,7 @@ function initializeTutorial() {
     currentTutorialStep = 0;
     createTutorialOverlay();
     showCurrentTutorialStep();
-    createTutorialAsteroid();
+    createTutorialAsteroidAndAddSecondary();
 
 }
 
@@ -127,7 +185,8 @@ function createTutorialOverlay() {
 }
 
 function showCurrentTutorialStep() {
-    const step = tutorialSteps[currentTutorialStep];
+    const steps = getTutorialSteps();
+    const step = steps[currentTutorialStep];
     const stepElement = document.getElementById('tutorialStep');
     const arrowElement = document.getElementById('tutorialArrow');
 
@@ -137,7 +196,7 @@ function showCurrentTutorialStep() {
     arrowElement.style.transform = `rotate(${step.arrowRotation}deg)`;
 }
 
-function createTutorialAsteroid() {
+function createTutorialAsteroidAndAddSecondary() {
     const asteroidDistance = 10;
     const angle = Math.random() * Math.PI * 2;
 
@@ -158,20 +217,39 @@ function createTutorialAsteroid() {
 
 
     asteroids.push(tutorialAsteroid);
+
+    const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
+    if (activeWeapon) {
+        activeWeapon.uses = activeWeapon.uses + 1;
+    }
+
 }
 
 function updateTutorial() {
     if (!tutorialActive) return;
 
-    const currentStep = tutorialSteps[currentTutorialStep];
-    if (currentStep.condition()) {
+    const steps = getTutorialSteps();
+    const currentStep = steps[currentTutorialStep];
+
+    // Check if the current step is the "Pick an upgrade" step
+    if (currentStep.text === "Pick an upgrade with XP!") {
+        // If the level-up modal is about to be shown, consider this step completed
+        if (level > 1 || document.getElementById('levelUpModal').style.display === 'block') {
+            currentTutorialStep++;
+            if (currentTutorialStep >= steps.length) {
+                endTutorial();
+            } else {
+                showCurrentTutorialStep();
+            }
+        }
+    } else if (currentStep.condition()) {
         currentTutorialStep++;
-        if (currentTutorialStep >= tutorialSteps.length) {
+        if (currentTutorialStep >= steps.length) {
             endTutorial();
         } else {
             showCurrentTutorialStep();
-            if (currentTutorialStep === 2) { // "Shoot the asteroid" step
-                createTutorialAsteroid();
+            if (currentTutorialStep === 2) { // "Destroy the asteroid" step
+                createTutorialAsteroidAndAddSecondary();
             }
         }
     }

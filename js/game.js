@@ -1001,9 +1001,10 @@ function handleTouch(e) {
         //     shootLasers();
         // }
         fireSecondaryWeapon();
+        secondaryWeaponUsed = true;
     }
 }
-
+let secondaryWeaponUsed = false;
 
 let activeRotationRight = 0;
 let activeRotationLeft = 0;
@@ -2550,74 +2551,47 @@ function toggleRedeemMode() {
 
 
 function levelUp() {
-
-
     level++;
     unclaimedLevelUps++;
     let prevLevelUp = lastLevelUp;
     lastLevelUp = Date.now();
-    // console.log(lastLevelUp - prevLevelUp);
     bonusLevelUpCalculator();
 
-
-    // Determine number of upgrades to show
     if (!waitAndClaimMode) {
-
         pauseGame();
-        // clearInterval(gameLoop);
-
         document.getElementById('leveluptitle').innerHTML = 'Level Up!';
 
         let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
-
-        // Get random upgrades
         const upgrades = getRandomUpgrades(upgradesToRetrieve);
+
         if (upgrades.length <= 2) {
             waitAndClaimMode = true;
             resumeGame();
         } else {
-
             pauseGame();
 
+            // Update tutorial before showing the level-up modal
+            updateTutorial();
 
-            // Display the level-up modal
             const levelUpModal = document.getElementById('levelUpModal');
             const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
             if (document.getElementById('upgradeOptions')) {
-
                 document.getElementById('upgradeOptions').innerHTML = upgradeOptionsHTML;
                 const container = document.getElementById('activeWeaponClassesContainer');
                 container.style.display = "none";
 
-                // Show the modal
                 levelUpModal.style.display = 'block';
-
-                // Store upgrades in a global variable for later use
                 window.levelUpgrades = upgrades;
-                // Pause the game
-                // pauseGame();
 
-                // Activate temporary invincibility
                 invincible = true;
                 invincibilityTimer += invincibilityDuration;
             }
-
-
         }
-
     }
 
-    xp = 0;  // Reset XP
+    xp = 0;
     xpToNextLevel = levelXPCalculator();
     updateXPBar();
-
-    // Play level up sound (if you have one)
-    // playSound('levelUpSound');
-
-    // Update UI to reflect new level
-    // updateLevelDisplay();
-
-    // Reset flag for upgrade application
     mostRecentUpgradeApplied = false;
 }
 
