@@ -366,15 +366,24 @@
       <canvas id="animationCanvas"></canvas>
       <script src="js/retro-infinite-asteroids-animation.js"></script>
       <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        let preloadedLeaderboards = null; // Variable to store preloaded leaderboards
+
+        document.addEventListener('DOMContentLoaded', async () => {
+
+          preloadedLeaderboards = await loadAllLeaderboards(gameId);
+
           InfiniteAsteroidsAnimation.init('animationCanvas');
           populateAchievements();
           populateSelectors();
           handleSelections();
           updateShipPreview();
           document.getElementById('versionInfo').innerHTML = "Version v " + version;
-          console.log("innerHeight");
-          console.log(window.innerHeight);
+          // console.log("innerHeight");
+          // console.log(window.innerHeight);
+
+          document.getElementById('viewAllLeaderboardsButton').addEventListener('click', () => {
+            populateLeaderboardsModal(preloadedLeaderboards);
+          });
 
           if (window.innerHeight < 500) {
             document.getElementById('gameModeHeader').remove();
@@ -499,11 +508,9 @@
     });
 
 
-    document.getElementById('viewAllLeaderboardsButton').addEventListener('click', async () => {
+    function populateLeaderboardsModal(allScores) {
       const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
       allLeaderboardsContainer.innerHTML = ''; // Clear previous content
-
-      const allScores = await loadAllLeaderboards(gameId);
 
       for (let mode in allScores) {
         const leaderboardDiv = document.createElement('div');
@@ -525,16 +532,51 @@
 
       const modal = document.getElementById('allLeaderboardsModal');
       modal.style.display = 'block';
-
-      // Set focus to the first focusable element
       const firstFocusableElement = modal.querySelector('[tabindex="0"]');
       if (firstFocusableElement) {
         firstFocusableElement.focus();
       }
 
-      // Add keyboard event listener
       modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
-    });
+    }
+
+
+    // document.getElementById('viewAllLeaderboardsButton').addEventListener('click', async () => {
+    //   const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
+    //   allLeaderboardsContainer.innerHTML = ''; // Clear previous content
+
+    //   const allScores = await loadAllLeaderboards(gameId);
+
+    //   for (let mode in allScores) {
+    //     const leaderboardDiv = document.createElement('div');
+    //     leaderboardDiv.className = 'leaderboard-mode';
+    //     leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${mode}</h3>`;
+
+    //     allScores[mode].forEach((entry, index) => {
+    //       const formattedScore = entry.score.toLocaleString('en-US', {
+    //         maximumFractionDigits: 0
+    //       });
+    //       const entryP = document.createElement('p');
+    //       entryP.textContent = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+    //       entryP.tabIndex = 0; // Make each entry focusable
+    //       leaderboardDiv.appendChild(entryP);
+    //     });
+
+    //     allLeaderboardsContainer.appendChild(leaderboardDiv);
+    //   }
+
+    //   const modal = document.getElementById('allLeaderboardsModal');
+    //   modal.style.display = 'block';
+
+    //   // Set focus to the first focusable element
+    //   const firstFocusableElement = modal.querySelector('[tabindex="0"]');
+    //   if (firstFocusableElement) {
+    //     firstFocusableElement.focus();
+    //   }
+
+    //   // Add keyboard event listener
+    //   modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
+    // });
 
     document.getElementById('closeAllLeaderboards').addEventListener('click', () => {
       const modal = document.getElementById('allLeaderboardsModal');
