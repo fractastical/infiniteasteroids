@@ -1,5 +1,6 @@
 let HARDCAPONASTEROIDEXPLOSIONS = 100;
 let FRACTALLIGHTNINGDEPTH = 4;
+let MAXPARTICLES = 10;
 
 const desiredFPS = 60;
 let lastFrameTime = performance.now();
@@ -68,6 +69,7 @@ function applyThrottleMode() {
     // Implement more aggressive performance optimizations
     HARDCAPONASTEROIDEXPLOSIONS *= .5; // Reduce by 50%
     FRACTALLIGHTNINGDEPTH -= 1; // Reduce by 1 level
+    MAXPARTICLES *= .5;
     // Add other throttling measures as needed
     baseSizeIncrease *= 1.3;
     lastThrottleThreshold = totalFpsDrops;

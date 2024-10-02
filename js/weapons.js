@@ -1048,7 +1048,8 @@ function generateFlameParticles(startX, startY, endX, endY, flameWidth) {
             maxLife: 30,
             color: `hsl(${Math.random() * 60 + 180}, 100%, ${Math.random() * 50 + 50}%)` // Blue to cyan flame particles
         };
-        particles.push(particle);
+        if (particles.length < MAXPARTICLES)
+            particles.push(particle);
     }
 }
 function updateFlamethrower() {

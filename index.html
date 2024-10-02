@@ -495,7 +495,10 @@
       // populateAchievements();
       if (isMobile()) {
 
-        fpsThrottleMode = true;
+        // fpsThrottleMode = true;
+        // cut twice to start
+        applyThrottleMode();
+        applyThrottleMode();
         const mobileControls = document.getElementById('mobile-controls');
         if (mobileControls) mobileControls.style.display = 'block';
 
