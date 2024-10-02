@@ -3,7 +3,7 @@ function drawAcidBombs() {
 
     ctx.save();
 
-    if (fps >= 45) {
+    if (!fpsThrottleMode) {
         // High-performance effect
         ctx.shadowBlur = 10;
         ctx.shadowColor = 'rgba(0, 255, 0, 0.5)';
@@ -54,7 +54,7 @@ function drawAcidBombs() {
 
 function drawFlameParticles() {
     ctx.save();
-    let intensityFactor = fps >= 45 ? 1 : 0.5; // Scale effect based on FPS
+    let intensityFactor = !fpsThrottleMode ? 1 : 0.5; // Scale effect based on FPS
     particles.forEach((particle, index) => {
         ctx.globalAlpha = (particle.life / particle.maxLife) * intensityFactor;
         ctx.fillStyle = particle.color;
@@ -85,7 +85,7 @@ function drawSonicBlast() {
         const wave = sonicBlast.waves[i];
         const opacityFactor = Math.max(0.1, 1 - wave.radius / wave.maxRadius);
 
-        if (simplifiedMode) {
+        if (fpsThrottleMode) {
             // Simplified mode: single layer, medium blue
             ctx.strokeStyle = wave.color;
             ctx.beginPath();
