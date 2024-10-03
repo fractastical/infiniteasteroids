@@ -59,7 +59,7 @@ const desktopTutorialSteps = [
 const mobileTutorialSteps = [
     {
         text: "Use the left and right buttons to steer your ship (we suggest landscape mode)",
-        position: { top: '60%', left: '75%' },
+        position: { top: '50%', left: '75%' },
         arrowPosition: { top: '70%', left: '89%' },
         arrowRotation: 180,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight']
