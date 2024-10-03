@@ -496,7 +496,8 @@
       if (isMobile()) {
 
         // fpsThrottleMode = true;
-        // cut twice to start
+        // cut three times to start
+        applyThrottleMode();
         applyThrottleMode();
         applyThrottleMode();
         const mobileControls = document.getElementById('mobile-controls');
