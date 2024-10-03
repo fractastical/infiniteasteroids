@@ -94,15 +94,15 @@ const mobileTutorialSteps = [
     },
     {
         text: "Use two fingers to activate your bomb (secondary weapon). Only three uses!",
-        position: { top: '25%', left: '11%' },
-        arrowPosition: { top: '18%', left: '13.5%' },
+        position: { top: '29%', left: '11%' },
+        arrowPosition: { top: '22%', left: '13.5%' },
         arrowRotation: 0,
         condition: () => secondaryWeaponUsedOnMobile // You'll need to implement this flag
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '24%', left: '5%' },
-        arrowPosition: { top: '18%', left: '7%' },
+        position: { top: '28%', left: '5%' },
+        arrowPosition: { top: '22%', left: '7%' },
         arrowRotation: 0,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp']
     }
