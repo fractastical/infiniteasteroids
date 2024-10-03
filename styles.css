@@ -1288,7 +1288,7 @@ select {
 .selector {
     display: flex;
     align-items: center;
-    margin-bottom: 2px;
+    margin-bottom: 15px;
 }
 
 #gameModeButton {

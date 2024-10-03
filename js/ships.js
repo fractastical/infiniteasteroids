@@ -661,6 +661,18 @@ function populateSelectors() {
             availableShips.push({ key: shipKey, name: ships[shipKey].name });
         }
     });
+    if (availableShips.length > 1) {
+
+        prevShipButton.style.display = 'block';
+        nextShipButton.style.display = 'block';
+
+    } else {
+        prevShipButton.style.display = 'none';
+        nextShipButton.style.display = 'none';
+
+
+    }
+
 
     // console.log("availableShips");
     // console.log(availableShips.length);

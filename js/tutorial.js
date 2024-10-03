@@ -58,7 +58,7 @@ const desktopTutorialSteps = [
 
 const mobileTutorialSteps = [
     {
-        text: "Use the left and right buttons to steer your ship",
+        text: "Use the left and right buttons to steer your ship (we suggest landscape mode)",
         position: { top: '60%', left: '75%' },
         arrowPosition: { top: '70%', left: '89%' },
         arrowRotation: 180,
@@ -94,15 +94,15 @@ const mobileTutorialSteps = [
     },
     {
         text: "Use two fingers to activate your bomb (secondary weapon). Only three uses!",
-        position: { top: '19%', left: '11%' },
-        arrowPosition: { top: '13%', left: '13.5%' },
+        position: { top: '25%', left: '11%' },
+        arrowPosition: { top: '18%', left: '13.5%' },
         arrowRotation: 0,
         condition: () => secondaryWeaponUsedOnMobile // You'll need to implement this flag
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '19%', left: '5%' },
-        arrowPosition: { top: '13%', left: '7%' },
+        position: { top: '24%', left: '5%' },
+        arrowPosition: { top: '18%', left: '7%' },
         arrowRotation: 0,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp']
     }
