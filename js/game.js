@@ -2672,7 +2672,7 @@ let timeTaken = 0;
 
 function endGame() {
     // Stop the game loop and background music
-
+    tutorialActive = false;
     // document.getElementById('loginContainer').style.display = 'block';
     document.getElementById('userInfo').style.display = 'block';
     xp = 0;

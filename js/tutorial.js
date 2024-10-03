@@ -41,15 +41,15 @@ const desktopTutorialSteps = [
 
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
-        position: { top: '9%', left: '6%' },
-        arrowPosition: { top: '6%', left: '7%' },
+        position: { top: '14%', left: '12%' },
+        arrowPosition: { top: '11%', left: '12%' },
         arrowRotation: 0,
         condition: () => keys['e'] // E key pressed
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '9%', left: '3%' },
-        arrowPosition: { top: '6%', left: '3.6%' },
+        position: { top: '14%', left: '6%' },
+        arrowPosition: { top: '11%', left: '6.6%' },
         arrowRotation: 0,
         condition: () => keys['ArrowUp'] || keys['ArrowDown']
     }
@@ -237,7 +237,7 @@ function createTutorialAsteroidAndAddSecondary() {
 
     const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
     if (activeWeapon) {
-        activeWeapon.uses = activeWeapon.uses + 1;
+        activeWeapon.uses = 4;
     }
 
 }
