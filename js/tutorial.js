@@ -41,15 +41,15 @@ const desktopTutorialSteps = [
 
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
-        position: { top: '40px', right: '24px' },
-        arrowPosition: { top: '45px', right: '10px' },
+        position: { top: '9%', left: '6%' },
+        arrowPosition: { top: '6%', left: '7%' },
         arrowRotation: 0,
         condition: () => keys['e'] // E key pressed
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '55px', right: '18px' },
-        arrowPosition: { top: '50px', right: '9px' },
+        position: { top: '9%', left: '3%' },
+        arrowPosition: { top: '6%', left: '3.6%' },
         arrowRotation: 0,
         condition: () => keys['ArrowUp'] || keys['ArrowDown']
     }
@@ -59,15 +59,15 @@ const desktopTutorialSteps = [
 const mobileTutorialSteps = [
     {
         text: "Use the left and right buttons to steer your ship",
-        position: { top: '240px', left: '400px' },
-        arrowPosition: { top: '320px', left: '470px' },
+        position: { top: '60%', left: '75%' },
+        arrowPosition: { top: '70%', left: '89%' },
         arrowRotation: 180,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight']
     },
     {
         text: "Use the up button to accelerate",
-        position: { top: '320px', left: '672px' },
-        arrowPosition: { top: '400px', left: '672px' },
+        position: { top: '60%', left: '2%' },
+        arrowPosition: { top: '70%', left: '5%' },
         arrowRotation: 180,
         condition: () => keys['ArrowUp']
     },
@@ -80,29 +80,29 @@ const mobileTutorialSteps = [
     },
     {
         text: "Destroy the highlighted asteroid to get XP!",
-        position: { top: '120px', left: '480px' },
-        arrowPosition: { top: '200px', left: '480px' },
+        position: { top: '15%', left: '50%' },
+        arrowPosition: { top: '25%', left: '50%' },
         arrowRotation: 180,
         condition: () => tutorialAsteroidDestroyed
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '160px', left: '480px' },
-        arrowPosition: { top: '240px', left: '480px' },
+        position: { top: '0%', left: '42%' },
+        arrowPosition: { top: '10%', left: '49.5%' },
         arrowRotation: 180,
         condition: () => level > 1 || document.getElementById('levelUpModal').style.display === 'block'
     },
     {
         text: "Use two fingers to activate your bomb (secondary weapon). Only three uses!",
-        position: { top: '640px', left: '192px' },
-        arrowPosition: { top: '96px', left: '77px' },
+        position: { top: '19%', left: '11%' },
+        arrowPosition: { top: '13%', left: '13.5%' },
         arrowRotation: 0,
         condition: () => secondaryWeaponUsedOnMobile // You'll need to implement this flag
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '80px', right: '192px' },
-        arrowPosition: { top: '48px', right: '10px' },
+        position: { top: '19%', left: '5%' },
+        arrowPosition: { top: '13%', left: '7%' },
         arrowRotation: 0,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp']
     }
