@@ -191,9 +191,26 @@ function showCurrentTutorialStep() {
     const arrowElement = document.getElementById('tutorialArrow');
 
     stepElement.textContent = step.text;
-    Object.assign(stepElement.style, step.position);
-    Object.assign(arrowElement.style, step.arrowPosition);
-    arrowElement.style.transform = `rotate(${step.arrowRotation}deg)`;
+
+    // Apply positions
+    for (const [key, value] of Object.entries(step.position)) {
+        stepElement.style[key] = value.endsWith('%') ? value : `${value}px`;
+    }
+    for (const [key, value] of Object.entries(step.arrowPosition)) {
+        arrowElement.style[key] = value.endsWith('%') ? value : `${value}px`;
+    }
+
+    // Center horizontally if left is 50%
+    if (step.position.left === '50%') {
+        stepElement.style.transform = 'translateX(-50%)';
+    } else {
+        stepElement.style.transform = '';
+    }
+    if (step.arrowPosition.left === '50%') {
+        arrowElement.style.transform = `translateX(-50%) rotate(${step.arrowRotation}deg)`;
+    } else {
+        arrowElement.style.transform = `rotate(${step.arrowRotation}deg)`;
+    }
 }
 
 function createTutorialAsteroidAndAddSecondary() {
