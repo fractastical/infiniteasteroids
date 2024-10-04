@@ -793,6 +793,9 @@ text-align: left;
 #allLeaderboardsContainer {
     max-height: 400px;
     overflow-y: auto;
+    scrollbar-width: thin;
+    /* For Firefox */
+
 }
 
 #achievementsList {
