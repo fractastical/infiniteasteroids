@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9974"
+let version = "0.9975"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -972,30 +972,30 @@ function initializeGame(mode, replay = false) {
 function handleTouch(e) {
     e.preventDefault(); // Prevent default touch behaviors
 
-    if (e.touches.length === 1) {
-        const touch = e.touches[0];
-        const touchX = touch.clientX;
-        const canvasWidth = canvas.width;
-        const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
+    // if (e.touches.length === 1) {
+    //     const touch = e.touches[0];
+    //     const touchX = touch.clientX;
+    //     const canvasWidth = canvas.width;
+    //     const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
 
-        if (touchX < partWidth) {
-            // Hard left turn
-            ship.rotation -= (ship.rotationSpeed * 3);
-        } else if (touchX < partWidth * 2) {
-            // Soft left turn
-            ship.rotation -= ship.rotationSpeed;
-        } else if (touchX < partWidth * 3) {
-            // Acceleration
-            touchAccelerating = true;
-        } else if (touchX < partWidth * 4) {
-            // Soft right turn
-            ship.rotation += ship.rotationSpeed;
-        } else {
-            // Hard right turn
-            ship.rotation += (ship.rotationSpeed * 3);
-        }
+    //     if (touchX < partWidth) {
+    //         // Hard left turn
+    //         ship.rotation -= (ship.rotationSpeed * 3);
+    //     } else if (touchX < partWidth * 2) {
+    //         // Soft left turn
+    //         ship.rotation -= ship.rotationSpeed;
+    //     } else if (touchX < partWidth * 3) {
+    //         // Acceleration
+    //         touchAccelerating = true;
+    //     } else if (touchX < partWidth * 4) {
+    //         // Soft right turn
+    //         ship.rotation += ship.rotationSpeed;
+    //     } else {
+    //         // Hard right turn
+    //         ship.rotation += (ship.rotationSpeed * 3);
+    //     }
 
-    }
+    // }
 
     if (e.target === canvas && e.touches.length === 2) {
         // Two-finger touch for firing
