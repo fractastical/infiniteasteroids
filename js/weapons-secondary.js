@@ -327,7 +327,7 @@ function displayWeaponInfo(startX, startY) {
     let finalX = startX;
     const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
     if (activeWeapon) {
-        document.getElementById('secondaryWeaponInfo').innerText = `${activeWeapon.name}: ${activeWeapon.uses} uses left`;
+        // document.getElementById('secondaryWeaponInfo').innerText = `${activeWeapon.name}: ${activeWeapon.uses} uses left`;
         ctx.fillStyle = 'blue';
 
         for (let i = 0; i < activeWeapon.uses; i++) {

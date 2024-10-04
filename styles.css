@@ -95,7 +95,7 @@ body {
 h1,
 h2 {
     margin-top: 0;
-    padding-top: 20px;
+    padding-top: 5px;
     font-size: 24px;
     color: #800080;
 }
@@ -890,7 +890,7 @@ text-align: left;
 
 .weapon-info p {
     margin: 0;
-    font-size: 10px;
+    font-size: 9px;
     color: #aaaaaa;
 }
 
