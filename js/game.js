@@ -1041,9 +1041,11 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
         if (ship === ship && touchAccelerating)
             accelerationAmount *= 2;
         ship.velocityX += accelerationAmount * Math.sin(angle);
-        ship.velocityY -= accelerationAmount * Math.cos(angle);
 
-        generateThrusterParticles(ship);
+        ship.velocityY -= accelerationAmount * Math.cos(angle);
+        if (!isMobile())
+            generateThrusterParticles(ship);
+
         ship.initialSlowDown = true;
 
     } else if (keys[downKey]) {
