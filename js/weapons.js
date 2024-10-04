@@ -1414,6 +1414,7 @@ function updateAcidAreas() {
         // Apply damage to asteroids within the area
         for (let j = asteroids.length - 1; j >= 0; j--) {
             let asteroid = asteroids[j];
+            //TODO: error on this line indicating one of these is entering without coordinates
             let dx = asteroid.x - area.x;
             let dy = asteroid.y - area.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
@@ -1979,6 +1980,7 @@ function updateSonicBlast() {
         wave.radius += sonicBlast.speed;
 
         for (let j = asteroids.length - 1; j >= 0; j--) {
+            //TODO: this one also is erroring, probalby because of the splicing.
             let asteroid = asteroids[j];
             let dx = asteroid.x - wave.x;
             let dy = asteroid.y - wave.y;
