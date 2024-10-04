@@ -247,7 +247,7 @@
     <div id="weaponsContainer">
       <!-- Weapon entries will be dynamically added here -->
     </div>
-    <div id="secondaryWeaponInfo"></div>
+    <!-- <div id="secondaryWeaponInfo"></div> -->
 
 
     <button id="closeButton" onclick="toggleWeaponInfo()">Close</button>
@@ -1942,20 +1942,11 @@
 
 
     async function saveUserScore(gameData) {
-      // let userId;
-      // let username;
-
       if (crazyGamesMode) {
         const user = await window.CrazyGames.SDK.user.getUser();
         if (user && user.username) {
           userId = 'cg_' + user.username;
-          // username = user.username;
         }
-        // } else {
-        // const currentUser = userId;
-        // if (currentUser) {
-        //   userId = currentUser.uid;
-        // }
       }
 
       if (!userId || !gameData) {
@@ -1979,9 +1970,6 @@
         wave: gameData.wave || 1
       };
 
-      console.log(safeGameData);
-      console.log(Achievements);
-
       try {
         await setDoc(userDocRef, {
           games: {
@@ -1991,14 +1979,23 @@
             }
           },
           coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
-          lastUpdated: new Date()
+          lastUpdated: new Date(),
+          // Add the new leaderboard field
+          leaderboard: {
+            [safeGameData.gameMode]: {
+              score: safeGameData.score,
+              wave: safeGameData.wave,
+              timestamp: safeGameData.endTime
+            }
+          }
         }, { merge: true });
         console.log('User score saved successfully:', safeGameData);
       } catch (error) {
         console.error('Error saving user score:', error);
       }
-    } window.saveUserScore = saveUserScore;
+    }
 
+    window.saveUserScore = saveUserScore;
     // Function to save initial user data
     async function saveUserData(userIdToSave = window.userId, gameName = gameId) {
 
@@ -2155,6 +2152,55 @@
 
       return allScores;
     }
+
+    // async function loadAllLeaderboards(gameId) {
+    //   try {
+    //     const db = getFirestore();
+    //     const usersSnapshot = await getDocs(collection(db, 'users'));
+    //     const allLeaderboards = {};
+
+    //     if (usersSnapshot.empty) {
+    //       console.log('No users found in the database');
+    //       return {};
+    //     }
+
+    //     usersSnapshot.forEach(doc => {
+    //       const userData = doc.data();
+    //       console.log('Processing user:', doc.id, userData);
+
+    //       const gameScores = userData.games?.[gameId]?.scores || [];
+    //       console.log('Game scores for user:', gameScores);
+
+    //       gameScores.forEach(session => {
+    //         if (session.score && isFinite(session.score) && session.score > 0 && session.gameMode) {
+    //           if (!allLeaderboards[session.gameMode]) {
+    //             allLeaderboards[session.gameMode] = [];
+    //           }
+    //           allLeaderboards[session.gameMode].push({
+    //             nickname: userData.nickname || 'Unnamed',
+    //             score: session.score,
+    //             wave: session.wave || 1
+    //           });
+    //           console.log('Added score to leaderboard:', session.gameMode, session.score);
+    //         } else {
+    //           console.log('Invalid score data:', session);
+    //         }
+    //       });
+    //     });
+
+    //     // Sort and limit each leaderboard
+    //     Object.keys(allLeaderboards).forEach(mode => {
+    //       allLeaderboards[mode].sort((a, b) => b.score - a.score);
+    //       allLeaderboards[mode] = allLeaderboards[mode].slice(0, 10);
+    //       console.log(`Sorted leaderboard for ${mode}:`, allLeaderboards[mode]);
+    //     });
+
+    //     return allLeaderboards;
+    //   } catch (error) {
+    //     console.error('Error loading leaderboards:', error);
+    //     return {};
+    //   }
+    // }
 
 
     function getGameModeName(mode) {
