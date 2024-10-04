@@ -48,7 +48,7 @@
 #shipCustomizationModal #shipPreview,
 #pastScoresModal #pastScoresList,
 #achievementsModal #achievementsDisplay,
-#allLeaderboardsModal #allLeaderboardsContainer,
+/* #allLeaderboardsModal #allLeaderboardsContainer, */
 #weaponDamageChartModal #weaponDamageChartContainer {
     flex-grow: 1;
     display: flex;
