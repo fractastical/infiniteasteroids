@@ -1060,30 +1060,33 @@ margin-bottom: 20px;
 }
 
 .upgrade-icon {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     margin-right: 15px;
+    /* Add space between icon and text */
+    flex-shrink: 0;
+    /* Prevent the icon from shrinking */
 }
 
 .upgrade-details {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    flex-grow: 1;
+    /* Make the details take up remaining space */
 }
 
 .upgrade-details h3 {
     margin: 0;
-    font-size: 16px;
+    font-size: 18px;
     color: #00FF00;
 }
 
 .upgrade-details p {
     margin: 5px 0 0 0;
-    font-size: 12px;
-    color: #ADFF2F;
 }
 
 .upgrade-name {
@@ -1101,7 +1104,7 @@ margin-bottom: 20px;
 
 .upgrade-description {
     font-size: 14px;
-    color: #ADFF2F;
+    color: #8dc53a;
 }
 
 
@@ -1134,7 +1137,6 @@ margin-bottom: 20px;
 
 .mega-upgrade-option {
     display: flex;
-    /* Make the upgrade option a flexbox container */
     align-items: center;
     margin: 10px;
     padding: 10px;
@@ -1142,15 +1144,26 @@ margin-bottom: 20px;
     border-radius: 5px;
     cursor: pointer;
     text-align: left;
-    /* Align the text to the left */
-    max-width: 600px;
-    /* Optional: Limit the width to ensure compactness */
+    width: 100%;
+    /* Ensure it takes up the full modal width */
+    box-sizing: border-box;
 }
 
 .mega-upgrade-option:hover {
     background-color: rgba(255, 255, 255, 0.2);
     transform: scale(1.05);
 }
+
+.upgrade-content {
+    display: flex;
+    align-items: center;
+    /* Align items in a row */
+    width: 100%;
+    /* Ensure content fills the container */
+}
+
+
+
 
 /* @keyframes flash {
 
