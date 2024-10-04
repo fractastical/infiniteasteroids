@@ -53,7 +53,7 @@ const megaUpgrades = [
     {
         name: 'Purple Pixie',
         description: 'Doubles the damage booster',
-        icon: 'icons/upgrades/orbs/purple_pixie_orb.png',
+        icon: 'icons/upgrades/orbs/purple_pixie_orb2.png',
         achievedKey: 'purple_pixie',
         effect: function () {
             purplePixie.activate();
