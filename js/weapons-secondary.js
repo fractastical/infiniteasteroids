@@ -207,11 +207,15 @@ function selectSecondaryWeapon(weaponName) {
 // });
 
 function fireSecondaryWeapon() {
-    console.log("firing secondary");
-    const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
-    if (activeWeapon) {
-        activeWeapon.useWeapon();
+    if (!isPaused) {
+
+        console.log("firing secondary");
+        const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
+        if (activeWeapon) {
+            activeWeapon.useWeapon();
+        }
     }
+
 }
 
 // Example of binding to a keypress (e.g., 'F' key for firing secondary weapon)
