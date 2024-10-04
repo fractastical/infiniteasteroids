@@ -1169,8 +1169,15 @@
       weaponInfoDiv.style.display = weaponInfoDiv.style.display === 'none' ? 'block' : 'none';
       // console.log("toggle2");
       if (weaponInfoDiv.style.display === 'none') {
+        const container = document.getElementById('activeWeaponClassesContainer');
+        container.style.display = "block";
+
         resumeGame();
+
       } else {
+        const container = document.getElementById('activeWeaponClassesContainer');
+        container.style.display = "none";
+
         pauseGame();
 
       }
