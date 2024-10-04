@@ -370,7 +370,6 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
 
-          preloadedLeaderboards = await loadAllLeaderboards(gameId);
 
           InfiniteAsteroidsAnimation.init('animationCanvas');
           populateAchievements();
@@ -380,16 +379,18 @@
           document.getElementById('versionInfo').innerHTML = "Version v " + version;
           // console.log("innerHeight");
           // console.log(window.innerHeight);
-
-          document.getElementById('viewAllLeaderboardsButton').addEventListener('click', () => {
-            populateLeaderboardsModal(preloadedLeaderboards);
-          });
-
           if (window.innerHeight < 500) {
             document.getElementById('gameModeHeader').remove();
             console.log(window.innerHeight);
             document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
           }
+
+          preloadedLeaderboards = await loadAllLeaderboards(gameId);
+
+          document.getElementById('viewAllLeaderboardsButton').addEventListener('click', () => {
+            populateLeaderboardsModal(preloadedLeaderboards);
+          });
+
         });
 
 
