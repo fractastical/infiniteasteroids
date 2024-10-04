@@ -481,10 +481,10 @@ function selectMegaUpgrade() {
 }
 
 
-function getRandomMegaUpgrades(upgrades, count) {
-    const shuffled = [...upgrades].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, Math.min(count, shuffled.length));
-}
+// function getRandomMegaUpgrades(upgrades, count) {
+//     const shuffled = [...upgrades].sort(() => 0.5 - Math.random());
+//     return shuffled.slice(0, Math.min(count, shuffled.length));
+// }
 
 
 
@@ -502,9 +502,13 @@ function displayMegaUpgradeOptions(megaUpgradeOptions) {
         const upgradeElement = document.createElement('div');
         upgradeElement.className = 'mega-upgrade-option';
         upgradeElement.innerHTML = `
-        <img src="${upgrade.icon}" alt="${upgrade.name}" class="upgrade-icon">
-        <h3>${index + 1}: ${upgrade.name}</h3>
-        <p>${upgrade.description}</p>
+        <div class="upgrade-content">
+            <img src="${upgrade.icon}" alt="${upgrade.name}" class="upgrade-icon">
+            <div class="upgrade-details">
+                <h3>${index + 1}: ${upgrade.name}</h3>
+                <p>${upgrade.description}</p>
+            </div>
+        </div>
       `;
         upgradeElement.addEventListener('click', () => applyMegaUpgrade(upgrade));  // Click selection still works
         upgradeModal.appendChild(upgradeElement);

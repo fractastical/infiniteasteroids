@@ -124,7 +124,7 @@ function initializeTutorial() {
     currentTutorialStep = 0;
     createTutorialOverlay();
     showCurrentTutorialStep();
-    createTutorialAsteroidAndAddSecondary();
+    // createTutorialAsteroidAndAddSecondary();
 
 }
 

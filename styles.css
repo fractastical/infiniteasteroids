@@ -180,7 +180,7 @@ button:hover {
 html {
     margin: 0;
     padding: 0;
-    /* overflow: clip; */
+    overflow: clip;
     /* Prevent scrolling */
 }
 
@@ -792,10 +792,13 @@ text-align: left;
 
 #allLeaderboardsContainer {
     max-height: 400px;
+    /* Set a fixed height or adjust as necessary */
     overflow-y: auto;
+    /* Enable vertical scrolling */
     scrollbar-width: thin;
-    /* For Firefox */
-
+    /* Optional: For Firefox */
+    -ms-overflow-style: auto;
+    /* Optional: For IE and Edge */
 }
 
 #achievementsList {
@@ -1009,12 +1012,12 @@ td {
     margin-left: auto;
 }
 
-display: flex;
+/* display: flex;
 flex-wrap: wrap;
 gap: 10px;
 margin-bottom: 20px;
 }
-
+ */
 #upgradeOptions {
     display: flex;
     flex-wrap: wrap;
@@ -1066,7 +1069,21 @@ margin-bottom: 20px;
 }
 
 .upgrade-details {
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.upgrade-details h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #00FF00;
+}
+
+.upgrade-details p {
+    margin: 5px 0 0 0;
+    font-size: 12px;
+    color: #ADFF2F;
 }
 
 .upgrade-name {
@@ -1116,18 +1133,23 @@ margin-bottom: 20px;
 }
 
 .mega-upgrade-option {
-    display: inline-block;
+    display: flex;
+    /* Make the upgrade option a flexbox container */
+    align-items: center;
     margin: 10px;
     padding: 10px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 5px;
     cursor: pointer;
+    text-align: left;
+    /* Align the text to the left */
+    max-width: 600px;
+    /* Optional: Limit the width to ensure compactness */
 }
 
 .mega-upgrade-option:hover {
     background-color: rgba(255, 255, 255, 0.2);
     transform: scale(1.05);
-
 }
 
 /* @keyframes flash {
