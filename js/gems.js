@@ -388,6 +388,12 @@ function checkGemCollection() {
                     break;
             }
 
+            // If this was the tutorial gem, update the tutorial
+            if (gem.label === 'Tutorial Gem') {
+                gemCollected = true;
+                updateTutorial();
+            }
+
             // Increase the XP and check for level up
             if (xpBoost > 0) {
                 increaseXP(xpBoost, true);

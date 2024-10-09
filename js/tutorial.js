@@ -325,6 +325,21 @@ function updateTutorial() {
     const steps = getTutorialSteps();
     const currentStep = steps[currentTutorialStep];
 
+    // Check for gem collection
+    if (!gemCollected) {
+        gemCollected = !droppedGems.some(gem => gem.label === 'Tutorial Gem');
+    }
+
+    // Check for elemental asteroid destruction
+    if (elementalAsteroidCreated && !elementalAsteroidDestroyed) {
+        elementalAsteroidDestroyed = !asteroids.some(asteroid => asteroid.isElemental);
+    }
+
+    // Check if tutorial asteroid is destroyed
+    if (tutorialAsteroid && !asteroids.includes(tutorialAsteroid) && !tutorialAsteroidDestroyed) {
+        tutorialAsteroidDestroyed = true;
+    }
+
     if (currentStep.condition()) {
         currentTutorialStep++;
         if (currentTutorialStep >= steps.length) {
@@ -332,20 +347,6 @@ function updateTutorial() {
         } else {
             showCurrentTutorialStep();
         }
-    }
-
-    // Check for elemental asteroid destruction
-    if (elementalAsteroidCreated && !elementalAsteroidDestroyed) {
-        elementalAsteroidDestroyed = asteroids.every(asteroid => !asteroid.isElemental);
-    }
-
-    // Check for gem collection
-    if (!gemCollected) {
-        gemCollected = droppedGems.length === 0;
-    }
-
-    if (tutorialAsteroid && !asteroids.includes(tutorialAsteroid) && !tutorialAsteroidDestroyed) {
-        tutorialAsteroidDestroyed = true;
     }
 }
 
