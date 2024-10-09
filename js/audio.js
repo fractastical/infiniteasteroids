@@ -303,7 +303,7 @@ const allSounds = [
 // Function to show/hide the volume screen
 //TODO: bizarre but can't figure out why this one modal won't consistently open
 function toggleVolumeScreen() {
-    console.log("vol");
+    // console.log("vol");
     const volumeScreen = document.getElementById('volumeScreen');
     volumeScreen.style.display = volumeScreen.style.display === 'none' ? 'block' : 'none';
     if (volumeScreen.style.display === 'block')
