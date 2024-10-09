@@ -207,7 +207,7 @@ canvas {
     /* Hide by default */
 }
 
-#settingsModal {
+/* #settingsModal {
 
     display: none;
     position: absolute;
@@ -221,24 +221,11 @@ canvas {
     padding: 20px;
     box-sizing: border-box;
 
-    /* display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px;
-    height: 200px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    text-align: center;
-    padding: 20px;
-    border-radius: 10px;
-    z-index: 305000; */
 }
 
 #settingsModal input[type="range"] {
     width: 80%;
-}
+} */
 
 #joystick-inner {
     position: absolute;
