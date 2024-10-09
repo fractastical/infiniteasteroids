@@ -331,9 +331,9 @@ function updateTutorial() {
     const currentStep = steps[currentTutorialStep];
 
     // Check for gem collection
-    if (!gemCollected) {
-        gemCollected = !droppedGems.some(gem => gem.label === 'Tutorial Gem');
-    }
+    // if (!gemCollected) {
+    //     gemCollected = !droppedGems.some(gem => gem.label === 'Tutorial Gem');
+    // }
 
     // Check for elemental asteroid destruction
     if (elementalAsteroidCreated && !elementalAsteroidDestroyed) {
