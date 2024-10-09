@@ -515,37 +515,6 @@ canvas {
     /* Smooth transition effect */
 }
 
-/* Styles for the level-up modal */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 100;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    max-width: 400px;
-    background-color: #111;
-    border: 3px solid #4e15ac;
-    color: #0f0;
-    padding: 20px;
-    box-sizing: border-box;
-    text-align: center;
-    font-family: 'Press Start 2P', cursive;
-    opacity: 0.95;
-}
-
-.modal-content button {
-    background-color: #222;
-    color: #0f0;
-    border: 2px solid #4e15ac;
-    padding: 10px;
-    margin: 10px 0;
-    width: 100%;
-    cursor: pointer;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 16px;
-}
 
 
 #startScreen button:disabled {
@@ -564,17 +533,6 @@ button {
     margin: 10px 0;
     font-family: 'Press Start 2P', cursive;
     font-size: 16px;
-}
-
-.modal-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-
-.modal-content button:hover {
-    background-color: #333;
 }
 
 .weaponClassIcon {
@@ -615,7 +573,7 @@ button {
 /* Position the bottom icons container */
 .bottom-icons {
     position: fixed;
-    bottom: 10px;
+    bottom: 20px;
     left: 50%;
     /* Center align horizontally */
     transform: translateX(-50%);
@@ -759,6 +717,7 @@ button {
     position: relative;
     display: inline-block;
     margin-right: 10px;
+
 }
 
 .upgradeCount {
@@ -1403,13 +1362,6 @@ h4 {
     max-width: 600px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-}
-
-.modal-navigation {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 20px;
 }
 
 .nav-btn {
