@@ -1,14 +1,9 @@
-// Canvas setup
+// Function to detect if the device is mobile
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
 
-// Game variables
-// let ship, asteroids, lasers, gameLoop, gameSpeed, keys, score, lives;
-let tutorialActive = false;
-let tutorialAsteroid = null;
-let tutorialAsteroidDestroyed = false;
-let currentTutorialStep = 0;
-let firstLevelUpRedeemed = false;
-
-// Tutorial steps
+// Tutorial steps for desktop
 const desktopTutorialSteps = [
     {
         text: "Use arrow keys to move your ship",
@@ -32,13 +27,26 @@ const desktopTutorialSteps = [
         condition: () => tutorialAsteroidDestroyed
     },
     {
+        text: "Watch out for glowing elemental asteroids! They have special effects when destroyed.",
+        position: { top: '20%', left: '50%' },
+        arrowPosition: { top: '30%', left: '50%' },
+        arrowRotation: 180,
+        condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
+    },
+    {
+        text: "Collect glowing gems for XP boosts and special upgrades!",
+        position: { top: '25%', left: '50%' },
+        arrowPosition: { top: '35%', left: '50%' },
+        arrowRotation: 180,
+        condition: () => gemCollected
+    },
+    {
         text: "Pick an upgrade with XP!",
         position: { top: '10%', left: '50%' },
         arrowPosition: { top: '15%', left: '50%' },
         arrowRotation: 180,
         condition: () => level > 1
     },
-
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
         position: { top: '14%', left: '12%' },
@@ -51,11 +59,11 @@ const desktopTutorialSteps = [
         position: { top: '14%', left: '6%' },
         arrowPosition: { top: '11%', left: '6.6%' },
         arrowRotation: 0,
-        condition: () => keys['ArrowUp'] || keys['ArrowDown']
+        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     }
 ];
 
-
+// Tutorial steps for mobile
 const mobileTutorialSteps = [
     {
         text: "Use the left and right buttons to steer your ship (we suggest landscape mode)",
@@ -86,6 +94,20 @@ const mobileTutorialSteps = [
         condition: () => tutorialAsteroidDestroyed
     },
     {
+        text: "Watch out for elemental asteroids! They have special effects when destroyed.",
+        position: { top: '20%', left: '50%' },
+        arrowPosition: { top: '30%', left: '50%' },
+        arrowRotation: 180,
+        condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
+    },
+    {
+        text: "Collect glowing gems for XP boosts and special upgrades!",
+        position: { top: '25%', left: '50%' },
+        arrowPosition: { top: '35%', left: '50%' },
+        arrowRotation: 180,
+        condition: () => gemCollected
+    },
+    {
         text: "Pick an upgrade with XP!",
         position: { top: '0%', left: '42%' },
         arrowPosition: { top: '10%', left: '49.5%' },
@@ -97,7 +119,7 @@ const mobileTutorialSteps = [
         position: { top: '29%', left: '11%' },
         arrowPosition: { top: '22%', left: '13.5%' },
         arrowRotation: 0,
-        condition: () => secondaryWeaponUsedOnMobile // You'll need to implement this flag
+        condition: () => secondaryWeaponUsedOnMobile
     },
     {
         text: "This is your health. Don't let it reach zero!",
@@ -108,118 +130,20 @@ const mobileTutorialSteps = [
     }
 ];
 
+// Function to get the appropriate tutorial steps
 function getTutorialSteps() {
-    return isMobile() ? mobileTutorialSteps : desktopTutorialSteps;
+    return isMobileDevice() ? mobileTutorialSteps : desktopTutorialSteps;
 }
 
-
-
-// Tutorial functions
-function initializeTutorial() {
-    // if (localStorage.getItem('tutorialCompleted')) {
-    //     return; // Skip tutorial if already completed
-    // }
-
-    tutorialActive = true;
-    currentTutorialStep = 0;
-    createTutorialOverlay();
-    showCurrentTutorialStep();
-    // createTutorialAsteroidAndAddSecondary();
-
-}
-
-function createTutorialOverlay() {
-    const overlay = document.createElement('div');
-    overlay.id = 'tutorialOverlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        pointer-events: none;
-    `;
-
-    const stepElement = document.createElement('div');
-    stepElement.id = 'tutorialStep';
-    stepElement.style.cssText = `
-        position: absolute;
-        background-color: white;
-        color: black; // Add this line to set the text color
-        padding: 10px !important;
-        border-radius: 5px;
-        max-width: 200px;
-        font-family: Arial, sans-serif; // Add this for better readability
-        font-size: 14px; // Add this to set an appropriate font size
-        text-align: center; // Center the text
-        box-shadow: 0 0 10px rgba(0,0,0,0.5); // Add a subtle shadow for better visibility
-    `;
-
-    stepElement.style.position = 'absolute';
-    stepElement.style.backgroundColor = 'white';
-    stepElement.style.color = 'black';
-    stepElement.style.padding = '7px';  // Add padding explicitly
-    stepElement.style.borderRadius = '5px';
-    stepElement.style.maxWidth = '200px';
-    stepElement.style.fontFamily = 'Arial, sans-serif';
-    stepElement.style.fontSize = '14px';
-    stepElement.style.textAlign = 'center';
-    stepElement.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
-
-    const arrowElement = document.createElement('div');
-    arrowElement.id = 'tutorialArrow';
-    arrowElement.style.cssText = `
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-bottom: 20px solid white;
-    `;
-
-    overlay.appendChild(stepElement);
-    overlay.appendChild(arrowElement);
-    document.body.appendChild(overlay);
-}
-
-function showCurrentTutorialStep() {
-    const steps = getTutorialSteps();
-    const step = steps[currentTutorialStep];
-    const stepElement = document.getElementById('tutorialStep');
-    const arrowElement = document.getElementById('tutorialArrow');
-
-    stepElement.textContent = step.text;
-
-    // Apply positions
-    for (const [key, value] of Object.entries(step.position)) {
-        stepElement.style[key] = value.endsWith('%') ? value : `${value}px`;
-    }
-    for (const [key, value] of Object.entries(step.arrowPosition)) {
-        arrowElement.style[key] = value.endsWith('%') ? value : `${value}px`;
-    }
-
-    // Center horizontally if left is 50%
-    if (step.position.left === '50%') {
-        stepElement.style.transform = 'translateX(-50%)';
-    } else {
-        stepElement.style.transform = '';
-    }
-    if (step.arrowPosition.left === '50%') {
-        arrowElement.style.transform = `translateX(-50%) rotate(${step.arrowRotation}deg)`;
-    } else {
-        arrowElement.style.transform = `rotate(${step.arrowRotation}deg)`;
-    }
-}
-
+// Update the createTutorialAsteroidAndAddSecondary function
 function createTutorialAsteroidAndAddSecondary() {
-    const asteroidDistance = 10;
+    const asteroidDistance = 80;
     const angle = Math.random() * Math.PI * 2;
 
+    // Create normal tutorial asteroid
     tutorialAsteroid = {
-        x: ship.x,
-        y: ship.y - 80,
+        x: ship.x + Math.cos(angle) * asteroidDistance,
+        y: ship.y + Math.sin(angle) * asteroidDistance,
         size: 20,
         speed: 0,
         dx: 0,
@@ -229,37 +153,94 @@ function createTutorialAsteroidAndAddSecondary() {
         hitpoints: 1,
         initialHitpoints: 1,
         isTutorialAsteroid: true,
-        type: 'normal'
+        type: 'normal',
+        color: 'gray'
     };
-
-
     asteroids.push(tutorialAsteroid);
+
+    // Create elemental asteroid
+    const elementalTypes = ['exploding', 'freezing', 'chainLightning', 'acid'];
+    const randomType = elementalTypes[Math.floor(Math.random() * elementalTypes.length)];
+    const elementalAsteroid = {
+        x: ship.x + Math.cos(angle + Math.PI) * asteroidDistance,
+        y: ship.y + Math.sin(angle + Math.PI) * asteroidDistance,
+        size: 30,
+        speed: 0,
+        dx: 0,
+        dy: 0,
+        angle: Math.random() * Math.PI * 2,
+        rotationSpeed: 0.02,
+        hitpoints: 5,
+        initialHitpoints: 5,
+        type: randomType,
+        isElemental: true,
+        isRare: true,
+        color: getElementalColor(randomType)
+    };
+    asteroids.push(elementalAsteroid);
+
+    // Create a tutorial gem
+    const tutorialGem = createTutorialGem();
+    droppedGems.push(tutorialGem);
+
+    elementalAsteroidCreated = true;
 
     const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
     if (activeWeapon) {
         activeWeapon.uses = 4;
     }
-
 }
 
+function getElementalColor(type) {
+    switch (type) {
+        case 'exploding': return '#FF0000'; // Red
+        case 'freezing': return '#00BFFF'; // Blue
+        case 'chainLightning': return '#FFFF00'; // Yellow
+        case 'acid': return '#00FF00'; // Green
+        default: return 'white';
+    }
+}
+
+
+// Function to create an elemental asteroid
+function createElementalAsteroid() {
+    const elementalTypes = ['fire', 'ice', 'electric'];
+    const randomType = elementalTypes[Math.floor(Math.random() * elementalTypes.length)];
+
+    return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: 30,
+        speed: 0.5,
+        dx: 0,
+        dy: Math.random() * 2 - 1,
+        angle: Math.random() * Math.PI * 2,
+        rotationSpeed: 0.02,
+        hitpoints: 3,
+        initialHitpoints: 3,
+        type: randomType,
+        isElemental: true
+    };
+}
+
+// Function to create a tutorial gem
+function createTutorialGem() {
+    return {
+        x: canvas.width / 2 + 30,
+        y: canvas.height / 2 + 30,
+        size: 20,
+        type: 'common'
+    };
+}
+
+// Update the updateTutorial function
 function updateTutorial() {
     if (!tutorialActive) return;
 
     const steps = getTutorialSteps();
     const currentStep = steps[currentTutorialStep];
 
-    // Check if the current step is the "Pick an upgrade" step
-    if (currentStep.text === "Pick an upgrade with XP!") {
-        // If the level-up modal is about to be shown, consider this step completed
-        if (level > 1 || document.getElementById('levelUpModal').style.display === 'block') {
-            currentTutorialStep++;
-            if (currentTutorialStep >= steps.length) {
-                endTutorial();
-            } else {
-                showCurrentTutorialStep();
-            }
-        }
-    } else if (currentStep.condition()) {
+    if (currentStep.condition()) {
         currentTutorialStep++;
         if (currentTutorialStep >= steps.length) {
             endTutorial();
@@ -271,27 +252,23 @@ function updateTutorial() {
         }
     }
 
+    // Check for elemental asteroid destruction
+    if (elementalAsteroidCreated && !elementalAsteroidDestroyed) {
+        elementalAsteroidDestroyed = asteroids.every(asteroid => !asteroid.isElemental);
+    }
+
+    // Check for gem collection
+    if (!gemCollected) {
+        gemCollected = droppedGems.length === 0;
+    }
+
     if (tutorialAsteroid && !asteroids.includes(tutorialAsteroid) && !tutorialAsteroidDestroyed) {
         tutorialAsteroidDestroyed = true;
         levelUp();
     }
 }
 
-function highlightTutorialAsteroid() {
-    if (!tutorialAsteroid) return;
-    ctx.save();
-    ctx.strokeStyle = 'yellow';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(tutorialAsteroid.x, tutorialAsteroid.y, tutorialAsteroid.radius + 5, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.restore();
-}
-
-function endTutorial() {
-    tutorialActive = false;
-    document.getElementById('tutorialOverlay').remove();
-    localStorage.setItem('tutorialCompleted', 'true');
-    gameSpeed = 1;
-}
-
+// Add these variables at the top of your script
+let elementalAsteroidCreated = false;
+let elementalAsteroidDestroyed = false;
+let gemCollected = false;
