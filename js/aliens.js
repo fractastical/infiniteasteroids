@@ -55,7 +55,7 @@ let octoBossSpawned = false;
 
 let swarmingAliens = [];
 
-let aliens = [];
+// let aliens = [];
 let alienLasers = [];
 let octoMode = false;
 

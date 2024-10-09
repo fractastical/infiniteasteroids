@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9993"
+let version = "0.9994"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -17,6 +17,7 @@ let overClockingAllowed = false;
 let totalDamage = 0;
 let totalAsteroidsKilled = 0;
 let totalAliensKilled = 0;
+let aliens = [];
 
 const joystick = document.getElementById('joystick');
 const joystickInner = document.getElementById('joystick-inner');
