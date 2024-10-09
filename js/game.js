@@ -834,7 +834,7 @@ function update() {
 
     if (tutorialActive) {
         updateTutorial();
-        highlightTutorialAsteroid();
+        // highlightTutorialAsteroid();
     } else {
 
     }
@@ -2784,6 +2784,13 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     } else {
         waveElement.textContent = `Wave: ${wave}`;
     }
+
+    if (isMobile()) {
+
+        const mobileControls = document.getElementById('mobile-controls');
+        if (mobileControls) mobileControls.style.display = 'none';
+    }
+
 
     if (currentMode === GameModes.COOP) {
         const totalScore = ship.score + ship2.score;

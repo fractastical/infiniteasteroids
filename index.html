@@ -378,7 +378,7 @@
           populateSelectors();
           handleSelections();
           updateShipPreview();
-          document.getElementById('versionInfo').innerHTML = "Version v " + version;
+          document.getElementById('versionInfo').innerHTML = "Version " + version;
           // console.log("innerHeight");
           // console.log(window.innerHeight);
           preloadedLeaderboards = await loadAllLeaderboards(gameId);
@@ -728,7 +728,7 @@
     // window.addEventListener('load', toggleMobileButtons);
 
     // Also call this on window resize in case the device orientation changes
-    window.addEventListener('resize', toggleMobileButtons);
+    // window.addEventListener('resize', toggleMobileButtons);
 
     // Handle touch events for the buttons
     document.getElementById('steer-left').addEventListener('touchstart', function (e) {
