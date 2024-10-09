@@ -8,7 +8,7 @@
     transform: translate(-50%, -50%);
     width: var(--modal-width, 80%);
     max-width: 600px;
-    height: 100vh;
+    height: 95vh;
     /* Full viewport height */
     background-color: #111;
     border: 3px solid #4e15ac;
@@ -67,7 +67,7 @@
 /* Adjustments for mobile landscape mode */
 @media only screen and (max-width: 768px) and (orientation: landscape) {
     .modal {
-        height: 100vh;
+        height: 95vh;
         /* Full viewport height in landscape mode */
         width: 100vw;
         /* Full viewport width */

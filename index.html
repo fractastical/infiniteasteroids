@@ -1149,13 +1149,24 @@
 
     });
 
-    restartButton.addEventListener('click', () => {
+    restartButton.addEventListener('click', async () => {
       // restartButton.style.display = 'none';
       // console.log("restart click");
 
       resetAllVariables();
-      initializeGame(gameModes[currentGameModeIndex].id, true);
+      const callbacks = {
+        adFinished: () => {
+          console.log("End midgame ad (callback)");
+          initializeGame(gameModes[currentGameModeIndex].id, true);
 
+        },
+        adError: (error, errorData) => console.log("Error midgame ad (callback)", error, errorData),
+        adStarted: () => console.log("Start midgame ad (callback)"),
+      };
+      if (crazyGamesMode)
+        window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
+      else
+        initializeGame(gameModes[currentGameModeIndex].id, true);
 
 
     });
