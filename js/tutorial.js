@@ -83,23 +83,23 @@ const desktopTutorialSteps = [
 const mobileTutorialSteps = [
     {
         text: "Use the left and right buttons to steer your ship",
-        position: { top: '80%', left: '25%' },
-        arrowPosition: { top: '75%', left: '25%' },
+        position: { bottom: '25%', left: '10%' },
+        arrowPosition: { bottom: '15%', left: '15%' },
         arrowRotation: 0,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight']
     },
     {
         text: "Use the up button to accelerate",
-        position: { top: '80%', left: '75%' },
-        arrowPosition: { top: '75%', left: '75%' },
+        position: { bottom: '25%', right: '10%' },
+        arrowPosition: { bottom: '15%', right: '15%' },
         arrowRotation: 0,
         condition: () => keys['ArrowUp']
     },
     {
         text: "Your ship fires automatically. Just aim!",
-        position: { top: '80%', left: '50%' },
-        arrowPosition: { top: '75%', left: '50%' },
-        arrowRotation: 0,
+        position: { top: '20%', left: '50%' },
+        arrowPosition: { top: '30%', left: '50%' },
+        arrowRotation: 180,
         condition: () => ship.lasers.length > 0
     },
     {
@@ -139,20 +139,19 @@ const mobileTutorialSteps = [
     },
     {
         text: "Use two fingers to activate your bomb (secondary weapon). Only three uses!",
-        position: { top: '29%', left: '11%' },
-        arrowPosition: { top: '22%', left: '13.5%' },
+        position: { top: '40px', right: '24px' },
+        arrowPosition: { top: '45px', right: '10px' },
         arrowRotation: 0,
         condition: () => secondaryWeaponUsedOnMobile
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '28%', left: '5%' },
-        arrowPosition: { top: '22%', left: '7%' },
+        position: { top: '55px', right: '18px' },
+        arrowPosition: { top: '50px', right: '9px' },
         arrowRotation: 0,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp']
     }
 ];
-
 // Function to get the appropriate tutorial steps
 function getTutorialSteps() {
     return isMobileDevice() ? mobileTutorialSteps : desktopTutorialSteps;
