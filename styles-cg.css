@@ -1,4 +1,4 @@
-/* General modal styles */
+/* Base modal styles */
 .modal {
     display: none;
     position: fixed;
@@ -6,18 +6,19 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: var(--modal-width);
+    width: 90vw;
+    /* Responsive width */
     max-width: 400px;
-    height: var(--modal-height);
     background-color: #111;
     border: 3px solid #4e15ac;
     color: #0f0;
-    padding: 15px;
+    padding: 20px;
     box-sizing: border-box;
     text-align: center;
     font-family: 'Press Start 2P', cursive;
     opacity: 0.95;
-    /* overflow: hidden; */
+    overflow-y: auto;
+    /* Enable scrolling inside modals */
 }
 
 /* Class to show modal when needed */
@@ -26,12 +27,20 @@
     flex-direction: column;
 }
 
-/* Styles for modal content */
+/* Modal content styling */
 .modal-content {
     display: flex;
     flex-direction: column;
     height: 100%;
     font-size: clamp(var(--min-font-size), calc(var(--base-font-size) * 0.8), var(--max-font-size));
+}
+
+/* Modal navigation buttons */
+.modal-navigation {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
 }
 
 /* Adjust spacing for headers */
@@ -42,13 +51,41 @@
     font-size: clamp(calc(var(--min-font-size) * 1.2), calc(var(--base-font-size) * 1.2), calc(var(--max-font-size) * 1.2));
 }
 
-/* Adjust spacing for content areas */
+/* Ensure buttons are at the bottom */
+.modal-content button {
+    margin-top: auto;
+    padding: 8px 15px;
+    font-size: clamp(calc(var(--min-font-size) * 0.9), calc(var(--base-font-size) * 0.9), calc(var(--max-font-size) * 0.9));
+    background-color: #222;
+    color: #0f0;
+    border: 2px solid #4e15ac;
+    width: 100%;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.modal-content button:hover {
+    background-color: #333;
+}
+
+/* Optimize modal for landscape view */
+@media only screen and (max-width: 800px) and (orientation: landscape) {
+    .modal {
+        width: 90vw;
+        /* Keep width similar */
+        height: 90vh;
+        /* Maximize vertical height in landscape */
+        font-size: 0.9em;
+        /* Optional font-size adjustment */
+    }
+}
+
+/* Adjust spacing for specific modals */
 #upgradeOptions,
 #upgradeShopModal .upgrade-container,
 #shipCustomizationModal #shipPreview,
 #pastScoresModal #pastScoresList,
 #achievementsModal #achievementsDisplay,
-/* #allLeaderboardsModal #allLeaderboardsContainer, */
 #weaponDamageChartModal #weaponDamageChartContainer {
     flex-grow: 1;
     display: flex;
@@ -66,9 +103,45 @@
     font-size: clamp(calc(var(--min-font-size) * 0.9), calc(var(--base-font-size) * 0.9), calc(var(--max-font-size) * 0.9));
 }
 
-/* Ensure buttons are at the bottom */
-.modal-content button {
-    margin-top: auto;
-    padding: 8px 15px;
-    font-size: clamp(calc(var(--min-font-size) * 0.9), calc(var(--base-font-size) * 0.9), calc(var(--max-font-size) * 0.9));
+/* Specific mega-upgrade styling */
+.mega-upgrade-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.mega-upgrade-option:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+/* Mega upgrade icon and details */
+.mega-upgrade-option .upgrade-icon {
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 15px;
+}
+
+.mega-upgrade-option .upgrade-details {
+    flex-grow: 1;
+}
+
+.mega-upgrade-option h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+    color: #00FF00;
+}
+
+.mega-upgrade-option p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #ADFF2F;
 }
