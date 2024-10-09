@@ -36,11 +36,18 @@ const desktopTutorialSteps = [
         condition: () => tutorialAsteroidDestroyed
     },
     {
+        text: "Collect glowing objects for an XP boost and special upgrades!",
+        position: { top: '75%', left: '50%' },
+        arrowPosition: { top: '70%', left: '50%' },
+        arrowRotation: 0,
+        condition: () => gemCollected
+    },
+    {
         text: "Pick an upgrade with XP!",
         position: { top: '10%', left: '50%' },
         arrowPosition: { top: '15%', left: '50%' },
         arrowRotation: 180,
-        condition: () => level > 1
+        condition: () => level > 1 || document.getElementById('levelUpModal').style.display === 'block'
     },
     {
         text: "This asteroid is elemental. It has a special effect when destroyed!",
@@ -54,13 +61,6 @@ const desktopTutorialSteps = [
         position: { top: '45%', left: '72%' },
         arrowPosition: { top: '39%', left: '74%' },
         condition: () => elementalAsteroidDestroyed
-    },
-    {
-        text: "Collect this glowing objects for an XP boost and special upgrades!",
-        position: { top: '75%', left: '50%' },
-        arrowPosition: { top: '70%', left: '50%' },
-        arrowRotation: 0,
-        condition: () => gemCollected
     },
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
@@ -102,11 +102,18 @@ const mobileTutorialSteps = [
         condition: () => ship.lasers.length > 0
     },
     {
-        text: "Destroy the highlighted tutorial asteroid to get XP!",
+        text: "Destroy the highlighted asteroid to get XP!",
         position: { top: '35%', left: '25%' },
         arrowPosition: { top: '30%', left: '25%' },
         arrowRotation: 0,
         condition: () => tutorialAsteroidDestroyed
+    },
+    {
+        text: "Collect glowing objects for an XP boost and special upgrade!",
+        position: { top: '75%', left: '50%' },
+        arrowPosition: { top: '70%', left: '50%' },
+        arrowRotation: 0,
+        condition: () => gemCollected
     },
     {
         text: "Pick an upgrade with XP!",
@@ -128,13 +135,6 @@ const mobileTutorialSteps = [
         arrowPosition: { top: '30%', left: '75%' },
         arrowRotation: 0,
         condition: () => elementalAsteroidDestroyed
-    },
-    {
-        text: "Collect glowing objects for an XP boost and special upgrade!",
-        position: { top: '75%', left: '50%' },
-        arrowPosition: { top: '70%', left: '50%' },
-        arrowRotation: 0,
-        condition: () => gemCollected
     },
 
     {
@@ -285,16 +285,6 @@ function createTutorialAsteroidAndAddSecondary() {
     };
     asteroids.push(elementalAsteroid);
 
-    // Create a tutorial gem
-    const tutorialGem = {
-        x: canvas.width * 0.5,
-        y: canvas.height * 0.7,
-        size: 20,
-        type: 'common',
-        label: 'Tutorial Gem'
-    };
-    droppedGems.push(tutorialGem);
-
     elementalAsteroidCreated = true;
 
     // Set ship position
@@ -305,6 +295,21 @@ function createTutorialAsteroidAndAddSecondary() {
     if (activeWeapon) {
         activeWeapon.uses = 4;
     }
+}
+
+function createTutorialGem() {
+
+    // Create a tutorial gem
+    const tutorialGem = {
+        x: canvas.width * 0.5,
+        y: canvas.height * 0.7,
+        size: 20,
+        type: 'common',
+        label: 'Tutorial Gem'
+    };
+    droppedGems.push(tutorialGem);
+
+
 }
 
 // Get color for elemental asteroids
@@ -338,6 +343,7 @@ function updateTutorial() {
     // Check if tutorial asteroid is destroyed
     if (tutorialAsteroid && !asteroids.includes(tutorialAsteroid) && !tutorialAsteroidDestroyed) {
         tutorialAsteroidDestroyed = true;
+        createTutorialGem();
     }
 
     if (currentStep.condition()) {
