@@ -29,7 +29,7 @@ const desktopTutorialSteps = [
         condition: () => keys[' '] // Space key pressed
     },
     {
-        text: "Shoot the highlighted tutorial asteroid to get XP!",
+        text: "Shoot the tutorial asteroid to get XP!",
         position: { top: '45%', left: '22%' },
         arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
@@ -82,16 +82,16 @@ const desktopTutorialSteps = [
 const mobileTutorialSteps = [
     {
         text: "Use the left and right buttons to steer your ship",
-        position: { bottom: '25%', left: '10%' },
-        arrowPosition: { bottom: '15%', left: '15%' },
-        arrowRotation: 0,
+        position: { bottom: '30%', left: '70%' },
+        arrowPosition: { bottom: '23%', left: '89%' },
+        arrowRotation: 180,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight']
     },
     {
         text: "Use the up button to accelerate",
-        position: { bottom: '25%', right: '10%' },
-        arrowPosition: { bottom: '15%', right: '15%' },
-        arrowRotation: 0,
+        position: { bottom: '30%', left: '3%' },
+        arrowPosition: { bottom: '23%', left: '5%' },
+        arrowRotation: 180,
         condition: () => keys['ArrowUp']
     },
     {
@@ -102,7 +102,7 @@ const mobileTutorialSteps = [
         condition: () => ship.lasers.length > 0
     },
     {
-        text: "Destroy the highlighted asteroid to get XP!",
+        text: "Destroy the asteroid to get XP!",
         position: { top: '35%', left: '25%' },
         arrowPosition: { top: '30%', left: '25%' },
         arrowRotation: 0,
