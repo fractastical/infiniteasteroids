@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "0.9992"
+let version = "0.9993"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -1582,7 +1582,7 @@ function handleKeyDown(event) {
             //     isPaused = true;
             //     document.getElementById('rouletteContainer').style.display = 'block';
         } else if (event.key === 't' || event.key === 'T') {
-            if (!loginFormOpen) toggleVolumeScreen();
+            if (!loginFormOpen) toggleSettings();
         } else if (event.key === 'e' || event.key === 'E') {
             fireSecondaryWeapon(); // Use the selected secondary weapon
         } else if ((event.key === 'r' || event.key === 'R')) {

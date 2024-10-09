@@ -207,7 +207,7 @@ canvas {
     /* Hide by default */
 }
 
-#volumeScreen {
+#settingsModal {
 
     display: none;
     position: absolute;
@@ -236,7 +236,7 @@ canvas {
     z-index: 305000; */
 }
 
-#volumeScreen input[type="range"] {
+#settingsModal input[type="range"] {
     width: 80%;
 }
 

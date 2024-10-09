@@ -189,11 +189,11 @@
         <button onclick="toggleFreezeEffect()">Toggle Freeze Effect</button>
     </div>
 
-    <div id="volumeScreen" style="display:none;">
+    <div id="settingsModal" class="modal" style="display:none;">
         <h2>Volume Control</h2>
         <input type="range" id="volumeSlider" min="1" max="10" value="5">
         <p>Volume: <span id="volumeValue">5</span></p>
-        <button onclick="toggleVolumeScreen()">Close</button>
+        <button onclick="toggleSettings()">Close</button>
     </div>
 
     <audio id="background-music" src="sounds/music_loop.mp3" loop></audio>
@@ -271,7 +271,7 @@
         Ship type: Basic&nbsp;&nbsp; &nbsp;
     </div>
 
-    <div id="activeWeaponClassesContainer" class="bottom-icons">
+    <div id="c" class="bottom-icons">
     </div>
 
 
