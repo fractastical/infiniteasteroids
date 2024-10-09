@@ -180,8 +180,8 @@ button:hover {
 html {
     margin: 0;
     padding: 0;
-    overflow: clip;
-    /* Prevent scrolling */
+    overflow: hidden
+        /* Prevent scrolling */
 }
 
 canvas {
