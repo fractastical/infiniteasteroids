@@ -16,44 +16,44 @@ function isMobileDevice() {
 const desktopTutorialSteps = [
     {
         text: "Use arrow keys to move your ship",
-        position: { top: '30%', left: '42%' },
-        arrowPosition: { top: '40%', left: '49%' },
-        arrowRotation: 180,
+        position: { top: '80%', left: '50%' },
+        arrowPosition: { top: '75%', left: '50%' },
+        arrowRotation: 0,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
     {
         text: "Press SPACE to shoot lasers",
-        position: { top: '40%', left: '70%' },
-        arrowPosition: { top: '50%', left: '70%' },
-        arrowRotation: 180,
+        position: { top: '80%', left: '50%' },
+        arrowPosition: { top: '75%', left: '50%' },
+        arrowRotation: 0,
         condition: () => keys[' '] // Space key pressed
     },
     {
-        text: "Shoot the highlighted asteroid to get XP!",
-        position: { top: '15%', left: '50%' },
-        arrowPosition: { top: '25%', left: '50%' },
-        arrowRotation: 180,
+        text: "Shoot the highlighted tutorial asteroid to get XP!",
+        position: { top: '35%', left: '25%' },
+        arrowPosition: { top: '30%', left: '25%' },
+        arrowRotation: 0,
         condition: () => tutorialAsteroidDestroyed
     },
     {
-        text: "Watch out for glowing elemental asteroids! They have special effects when destroyed.",
-        position: { top: '20%', left: '50%' },
-        arrowPosition: { top: '30%', left: '50%' },
-        arrowRotation: 180,
+        text: "This glowing asteroid is elemental. It has a special effect when destroyed!",
+        position: { top: '35%', left: '75%' },
+        arrowPosition: { top: '30%', left: '75%' },
+        arrowRotation: 0,
         condition: () => elementalAsteroidCreated && !elementalAsteroidDestroyed
     },
     {
         text: "Destroy the elemental asteroid to see its effect!",
-        position: { top: '25%', left: '50%' },
-        arrowPosition: { top: '35%', left: '50%' },
-        arrowRotation: 180,
+        position: { top: '35%', left: '75%' },
+        arrowPosition: { top: '30%', left: '75%' },
+        arrowRotation: 0,
         condition: () => elementalAsteroidDestroyed
     },
     {
-        text: "Collect glowing gems for XP boosts and special upgrades!",
-        position: { top: '30%', left: '50%' },
-        arrowPosition: { top: '40%', left: '50%' },
-        arrowRotation: 180,
+        text: "Collect this gem for an XP boost and special upgrade!",
+        position: { top: '75%', left: '50%' },
+        arrowPosition: { top: '70%', left: '50%' },
+        arrowRotation: 0,
         condition: () => gemCollected
     },
     {
@@ -82,58 +82,58 @@ const desktopTutorialSteps = [
 // Tutorial steps for mobile
 const mobileTutorialSteps = [
     {
-        text: "Use the left and right buttons to steer your ship (we suggest landscape mode)",
-        position: { top: '50%', left: '75%' },
-        arrowPosition: { top: '70%', left: '89%' },
-        arrowRotation: 180,
+        text: "Use the left and right buttons to steer your ship",
+        position: { top: '80%', left: '25%' },
+        arrowPosition: { top: '75%', left: '25%' },
+        arrowRotation: 0,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight']
     },
     {
         text: "Use the up button to accelerate",
-        position: { top: '60%', left: '2%' },
-        arrowPosition: { top: '70%', left: '5%' },
-        arrowRotation: 180,
+        position: { top: '80%', left: '75%' },
+        arrowPosition: { top: '75%', left: '75%' },
+        arrowRotation: 0,
         condition: () => keys['ArrowUp']
     },
     {
         text: "Your ship fires automatically. Just aim!",
-        position: { top: '120px', left: '480px' },
-        arrowPosition: { top: '200px', left: '480px' },
-        arrowRotation: 180,
+        position: { top: '80%', left: '50%' },
+        arrowPosition: { top: '75%', left: '50%' },
+        arrowRotation: 0,
         condition: () => ship.lasers.length > 0
     },
     {
-        text: "Destroy the highlighted asteroid to get XP!",
-        position: { top: '15%', left: '50%' },
-        arrowPosition: { top: '25%', left: '50%' },
-        arrowRotation: 180,
+        text: "Destroy the highlighted tutorial asteroid to get XP!",
+        position: { top: '35%', left: '25%' },
+        arrowPosition: { top: '30%', left: '25%' },
+        arrowRotation: 0,
         condition: () => tutorialAsteroidDestroyed
     },
     {
-        text: "Watch out for glowing elemental asteroids! They have special effects when destroyed.",
-        position: { top: '20%', left: '50%' },
-        arrowPosition: { top: '30%', left: '50%' },
-        arrowRotation: 180,
+        text: "This glowing asteroid is elemental. It has a special effect when destroyed!",
+        position: { top: '35%', left: '75%' },
+        arrowPosition: { top: '30%', left: '75%' },
+        arrowRotation: 0,
         condition: () => elementalAsteroidCreated && !elementalAsteroidDestroyed
     },
     {
         text: "Destroy the elemental asteroid to see its effect!",
-        position: { top: '25%', left: '50%' },
-        arrowPosition: { top: '35%', left: '50%' },
-        arrowRotation: 180,
+        position: { top: '35%', left: '75%' },
+        arrowPosition: { top: '30%', left: '75%' },
+        arrowRotation: 0,
         condition: () => elementalAsteroidDestroyed
     },
     {
-        text: "Collect glowing gems for XP boosts and special upgrades!",
-        position: { top: '30%', left: '50%' },
-        arrowPosition: { top: '40%', left: '50%' },
-        arrowRotation: 180,
+        text: "Collect this gem for an XP boost and special upgrade!",
+        position: { top: '75%', left: '50%' },
+        arrowPosition: { top: '70%', left: '50%' },
+        arrowRotation: 0,
         condition: () => gemCollected
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '0%', left: '42%' },
-        arrowPosition: { top: '10%', left: '49.5%' },
+        position: { top: '10%', left: '50%' },
+        arrowPosition: { top: '15%', left: '50%' },
         arrowRotation: 180,
         condition: () => level > 1 || document.getElementById('levelUpModal').style.display === 'block'
     },
@@ -245,24 +245,22 @@ function showCurrentTutorialStep() {
 
 // Create tutorial asteroid, elemental asteroid, and gem
 function createTutorialAsteroidAndAddSecondary() {
-    const asteroidDistance = 80;
-    const angle = Math.random() * Math.PI * 2;
-
     // Create normal tutorial asteroid
     tutorialAsteroid = {
-        x: ship.x + Math.cos(angle) * asteroidDistance,
-        y: ship.y + Math.sin(angle) * asteroidDistance,
+        x: canvas.width * 0.25,
+        y: canvas.height * 0.3,
         size: 20,
         speed: 0,
         dx: 0,
         dy: 0,
-        angle: Math.random() * Math.PI * 2,
+        angle: 0,
         rotationSpeed: 0.02,
         hitpoints: 1,
         initialHitpoints: 1,
         isTutorialAsteroid: true,
         type: 'normal',
-        color: 'gray'
+        color: 'gray',
+        label: 'Tutorial Asteroid'
     };
     asteroids.push(tutorialAsteroid);
 
@@ -270,27 +268,38 @@ function createTutorialAsteroidAndAddSecondary() {
     const elementalTypes = ['exploding', 'freezing', 'chainLightning', 'acid'];
     const randomType = elementalTypes[Math.floor(Math.random() * elementalTypes.length)];
     const elementalAsteroid = {
-        x: ship.x + Math.cos(angle + Math.PI) * asteroidDistance,
-        y: ship.y + Math.sin(angle + Math.PI) * asteroidDistance,
+        x: canvas.width * 0.75,
+        y: canvas.height * 0.3,
         size: 30,
         speed: 0,
         dx: 0,
         dy: 0,
-        angle: Math.random() * Math.PI * 2,
+        angle: 0,
         rotationSpeed: 0.02,
         hitpoints: 5,
         initialHitpoints: 5,
         type: randomType,
         isElemental: true,
-        color: getElementalColor(randomType)
+        color: getElementalColor(randomType),
+        label: 'Elemental Asteroid'
     };
     asteroids.push(elementalAsteroid);
 
     // Create a tutorial gem
-    const tutorialGem = createTutorialGem();
+    const tutorialGem = {
+        x: canvas.width * 0.5,
+        y: canvas.height * 0.7,
+        size: 20,
+        type: 'common',
+        label: 'Tutorial Gem'
+    };
     droppedGems.push(tutorialGem);
 
     elementalAsteroidCreated = true;
+
+    // Set ship position
+    ship.x = canvas.width * 0.5;
+    ship.y = canvas.height * 0.8;
 
     const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
     if (activeWeapon) {
@@ -307,16 +316,6 @@ function getElementalColor(type) {
         case 'acid': return '#00FF00'; // Green
         default: return 'white';
     }
-}
-
-// Create a tutorial gem
-function createTutorialGem() {
-    return {
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: 20,
-        type: 'common'
-    };
 }
 
 // Update the tutorial
@@ -370,3 +369,4 @@ function endTutorial() {
     gameSpeed = 1; // Reset game speed to normal
 }
 
+// We don't need to export anything if not using modules
