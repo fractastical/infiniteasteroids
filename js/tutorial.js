@@ -16,22 +16,22 @@ function isMobileDevice() {
 const desktopTutorialSteps = [
     {
         text: "Use arrow keys to move your ship",
-        position: { top: '80%', left: '50%' },
-        arrowPosition: { top: '75%', left: '50%' },
+        position: { top: '66%', left: '50%' },
+        arrowPosition: { top: '60%', left: '50%' },
         arrowRotation: 0,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
     {
         text: "Press SPACE to shoot lasers",
-        position: { top: '80%', left: '50%' },
-        arrowPosition: { top: '75%', left: '50%' },
+        position: { top: '66%', left: '50%' },
+        arrowPosition: { top: '60%', left: '50%' },
         arrowRotation: 0,
         condition: () => keys[' '] // Space key pressed
     },
     {
         text: "Shoot the highlighted tutorial asteroid to get XP!",
-        position: { top: '35%', left: '25%' },
-        arrowPosition: { top: '30%', left: '25%' },
+        position: { top: '45%', left: '22%' },
+        arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
         condition: () => tutorialAsteroidDestroyed
     },
@@ -51,9 +51,8 @@ const desktopTutorialSteps = [
     },
     {
         text: "Destroy the elemental asteroid to see its effect!",
-        position: { top: '35%', left: '75%' },
-        arrowPosition: { top: '30%', left: '75%' },
-        arrowRotation: 0,
+        position: { top: '45%', left: '72%' },
+        arrowPosition: { top: '39%', left: '74%' },
         condition: () => elementalAsteroidDestroyed
     },
     {
