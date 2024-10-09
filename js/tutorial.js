@@ -365,7 +365,8 @@ function highlightTutorialAsteroid() {
 // End the tutorial
 function endTutorial() {
     tutorialActive = false;
-    document.getElementById('tutorialOverlay').remove();
+    if (document.getElementById('tutorialOverlay'))
+        document.getElementById('tutorialOverlay').remove();
     localStorage.setItem('tutorialCompleted', 'true');
     gameSpeed = 1; // Reset game speed to normal
 }
