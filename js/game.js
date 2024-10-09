@@ -333,6 +333,12 @@ function startGame() {
         }
     }
 
+    if (isMobile()) {
+
+        const mobileControls = document.getElementById('mobile-controls');
+        if (mobileControls) mobileControls.style.display = 'block';
+    }
+
     if (document.getElementById('endScreen'))
         document.getElementById('endScreen').style.display = 'none';
     if (document.getElementById('loginContainer'))
@@ -2692,6 +2698,13 @@ function endGame() {
         }
 
     }
+
+    if (isMobile()) {
+
+        const mobileControls = document.getElementById('mobile-controls');
+        if (mobileControls) mobileControls.style.display = 'none';
+    }
+
 
     resetShip();
 
