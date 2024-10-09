@@ -370,10 +370,3 @@ function endTutorial() {
     gameSpeed = 1; // Reset game speed to normal
 }
 
-// Export necessary functions and variables
-export {
-    initializeTutorial,
-    updateTutorial,
-    highlightTutorialAsteroid,
-    tutorialActive
-};
