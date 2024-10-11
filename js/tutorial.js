@@ -50,7 +50,7 @@ const desktopTutorialSteps = [
         condition: () => level > 1
     },
     {
-        text: "This asteroid is elemental. It has a special effect when destroyed!",
+        text: "Destroy the elemental asteroid to see its effect!",
         position: { top: '35%', left: '75%' },
         arrowPosition: { top: '30%', left: '75%' },
         arrowRotation: 0,
