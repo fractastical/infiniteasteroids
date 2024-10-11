@@ -211,7 +211,7 @@ function fireSecondaryWeapon() {
 
         console.log("firing secondary");
         const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
-        if (activeWeapon) {
+        if (activeWeapon && activeWeapon.cooldown == 0) {
             activeWeapon.useWeapon();
         }
     }
