@@ -47,7 +47,7 @@ const desktopTutorialSteps = [
         position: { top: '10%', left: '50%' },
         arrowPosition: { top: '15%', left: '50%' },
         arrowRotation: 180,
-        condition: () => level > 1 || document.getElementById('levelUpModal').style.display === 'block'
+        condition: () => level > 1
     },
     {
         text: "This asteroid is elemental. It has a special effect when destroyed!",
@@ -118,7 +118,7 @@ const mobileTutorialSteps = [
         position: { top: '10%', left: '50%' },
         arrowPosition: { top: '15%', left: '50%' },
         arrowRotation: 180,
-        condition: () => level > 1 || document.getElementById('levelUpModal').style.display === 'block'
+        condition: () => level > 1
     },
     {
         text: "Colored asteroids are elemental. It has a special effect when destroyed!",
