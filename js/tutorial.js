@@ -123,16 +123,9 @@ const mobileTutorialSteps = [
         condition: () => level > 1
     },
     {
-        text: "Colored asteroids are elemental. It has a special effect when destroyed!",
+        text: "Destroy the elemental asteroid to see its effect!",
         position: { top: '48%', left: '72%' },
         arrowPosition: { top: '42%', left: '74%' },
-        arrowRotation: 0,
-        condition: () => elementalAsteroidCreated && !elementalAsteroidDestroyed
-    },
-    {
-        text: "Destroy the elemental asteroid to see its effect!",
-        position: { top: '35%', left: '75%' },
-        arrowPosition: { top: '30%', left: '75%' },
         arrowRotation: 0,
         condition: () => elementalAsteroidDestroyed
     },
