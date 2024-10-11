@@ -345,9 +345,21 @@ function createEndlessSlowAsteroids() {
 
 function getAsteroidColor(hitpoints) {
     const colors = [
-        'gray', 'darkgray', '#172727', '#0A1414', '#301934',
-        '#4B0082', '#483D8B', '#8A2BE2', '#9370DB', '#9400D3',
-        '#7B68EE', '#6A5ACD', '#8B0000', '#B22222', '#FF4500'
+        '#F8F8F8', // Very Light Gray
+        '#F0F0F0', // Light Gray
+        '#E8E8E8',
+        '#E0E0E0',
+        '#D8D8D8',
+        '#D0D0D0',
+        '#C8C8C8',
+        '#C0C0C0', // Silver
+        '#B8B8B8',
+        '#B0B0B0',
+        '#A8A8A8',
+        '#A0A0A0',
+        '#989898',
+        '#909090',
+        '#888888'  // Medium Gray
     ];
 
     if (hitpoints <= 2) return colors[0];
