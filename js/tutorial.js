@@ -82,17 +82,15 @@ const desktopTutorialSteps = [
 const mobileTutorialSteps = [
     {
         text: "Use the left and right buttons to steer your ship",
-        position: { bottom: '30%', left: '70%' },
-        arrowPosition: { bottom: '23%', left: '89%' },
+        position: { top: '58%', left: '70%' },
+        arrowPosition: { top: '73%', left: '89%' },
         arrowRotation: 180,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight']
     },
     {
         text: "Use the up button to accelerate",
-        position: { bottom: '30%', left: '3%' },
-        arrowPosition: { bottom: '23%', left: '5%' },
-        arrowRotation: 180,
-        condition: () => keys['ArrowUp']
+        position: { top: '58%', left: '3%' },
+        arrowPosition: { top: '70%', left: '5%' },
     },
     {
         text: "Your ship fires automatically. Just aim!",
