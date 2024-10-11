@@ -91,6 +91,8 @@ const mobileTutorialSteps = [
         text: "Use the up button to accelerate",
         position: { top: '58%', left: '3%' },
         arrowPosition: { top: '70%', left: '5%' },
+        arrowRotation: 180,
+        condition: () => keys['ArrowUp']
     },
     {
         text: "Your ship fires automatically. Just aim!",
