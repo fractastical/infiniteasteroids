@@ -103,8 +103,8 @@ const mobileTutorialSteps = [
     },
     {
         text: "Destroy the asteroid to get XP!",
-        position: { top: '35%', left: '25%' },
-        arrowPosition: { top: '30%', left: '25%' },
+        position: { top: '48%', left: '22%' },
+        arrowPosition: { top: '41%', left: '24%' },
         arrowRotation: 0,
         condition: () => tutorialAsteroidDestroyed
     },
@@ -123,9 +123,9 @@ const mobileTutorialSteps = [
         condition: () => level > 1 || document.getElementById('levelUpModal').style.display === 'block'
     },
     {
-        text: "Coloed asteroids iareelemental. It has a special effect when destroyed!",
-        position: { top: '35%', left: '75%' },
-        arrowPosition: { top: '30%', left: '75%' },
+        text: "Colored asteroids are elemental. It has a special effect when destroyed!",
+        position: { top: '48%', left: '72%' },
+        arrowPosition: { top: '42%', left: '74%' },
         arrowRotation: 0,
         condition: () => elementalAsteroidCreated && !elementalAsteroidDestroyed
     },
@@ -139,15 +139,15 @@ const mobileTutorialSteps = [
 
     {
         text: "Use two fingers to activate your bomb (secondary weapon). Only three uses!",
-        position: { top: '40px', right: '24px' },
-        arrowPosition: { top: '45px', right: '10px' },
+        position: { top: '20%', left: '10%' },
+        arrowPosition: { top: '14%', left: '13%' },
         arrowRotation: 0,
         condition: () => secondaryWeaponUsedOnMobile
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '55px', right: '18px' },
-        arrowPosition: { top: '50px', right: '9px' },
+        position: { top: '20%', left: '5%' },
+        arrowPosition: { top: '14%', left: '7%' },
         arrowRotation: 0,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp']
     }
