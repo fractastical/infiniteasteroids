@@ -57,12 +57,6 @@ const desktopTutorialSteps = [
         condition: () => elementalAsteroidCreated && !elementalAsteroidDestroyed
     },
     {
-        text: "Destroy the elemental asteroid to see its effect!",
-        position: { top: '45%', left: '72%' },
-        arrowPosition: { top: '39%', left: '74%' },
-        condition: () => elementalAsteroidDestroyed
-    },
-    {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
         position: { top: '14%', left: '12%' },
         arrowPosition: { top: '11%', left: '12%' },
