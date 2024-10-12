@@ -56,7 +56,7 @@ const desktopTutorialSteps = [
         position: { top: '35%', left: '75%' },
         arrowPosition: { top: '30%', left: '75%' },
         arrowRotation: 0,
-        condition: () => elementalAsteroidCreated && !elementalAsteroidDestroyed
+        condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
@@ -130,7 +130,7 @@ const mobileTutorialSteps = [
         position: { top: '48%', left: '72%' },
         arrowPosition: { top: '42%', left: '74%' },
         arrowRotation: 0,
-        condition: () => elementalAsteroidDestroyed
+        condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
@@ -174,7 +174,7 @@ function createTutorialAlien() {
         x: canvas.width * 0.75,
         y: canvas.height * 0.3,
         size: 40,
-        speed: 0.1,
+        speed: 0.2,
         hitpoints: 1,
         isTutorialAlien: true
     };
@@ -358,6 +358,9 @@ function updateTutorial() {
     // Check for elemental asteroid destruction
     if (elementalAsteroidCreated && !elementalAsteroidDestroyed) {
         elementalAsteroidDestroyed = !asteroids.some(asteroid => asteroid.isElemental);
+        if (elementalAsteroidDestroyed)
+            createTutorialAlien();
+
     }
 
     // Check if tutorial asteroid is destroyed
