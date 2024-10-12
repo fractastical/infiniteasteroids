@@ -46,8 +46,8 @@ const desktopTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '10%', left: '50%' },
-        arrowPosition: { top: '15%', left: '50%' },
+        position: { top: '5%', left: '50%' },
+        arrowPosition: { top: '10%', left: '50%' },
         arrowRotation: 180,
         condition: () => level > 1 && elementalAsteroidCreated
     },
@@ -120,8 +120,8 @@ const mobileTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '10%', left: '50%' },
-        arrowPosition: { top: '15%', left: '50%' },
+        position: { top: '5%', left: '50%' },
+        arrowPosition: { top: '10%', left: '50%' },
         arrowRotation: 180,
         condition: () => level > 1 && elementalAsteroidCreated
     },
@@ -192,7 +192,7 @@ function createTutorialOverlay() {
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.2);
         z-index: 1000;
         pointer-events: none;
     `;

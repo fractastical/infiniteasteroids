@@ -498,7 +498,7 @@ function applyUpgrades(upgrades) {
             // Example: applyUpgrade(upgrade); 
         });
     }
-    if (tutorialActive)
+    if (tutorialActive && !elementalAsteroidDestroyed)
         createTutorialElementalAsteroid();
 }
 
