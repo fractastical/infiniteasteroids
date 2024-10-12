@@ -4,6 +4,8 @@ let tutorialAsteroid = null;
 let tutorialAsteroidDestroyed = false;
 let elementalAsteroidCreated = false;
 let elementalAsteroidDestroyed = false;
+let tutorialAlienCreated = false;
+let tutorialAlienDestroyed = false;
 let gemCollected = false;
 let currentTutorialStep = 0;
 
@@ -55,6 +57,13 @@ const desktopTutorialSteps = [
         arrowPosition: { top: '30%', left: '75%' },
         arrowRotation: 0,
         condition: () => elementalAsteroidCreated && !elementalAsteroidDestroyed
+    },
+    {
+        text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
+        position: { top: '35%', left: '75%' },
+        arrowPosition: { top: '30%', left: '75%' },
+        arrowRotation: 0,
+        condition: () => tutorialAlienCreated && !tutorialAlienDestroyed
     },
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
@@ -123,7 +132,13 @@ const mobileTutorialSteps = [
         arrowRotation: 0,
         condition: () => elementalAsteroidDestroyed
     },
-
+    {
+        text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
+        position: { top: '48%', left: '72%' },
+        arrowPosition: { top: '42%', left: '74%' },
+        arrowRotation: 0,
+        condition: () => tutorialAlienCreated && !tutorialAlienDestroyed
+    },
     {
         text: "Use two fingers to activate your bomb (secondary weapon). Only three uses!",
         position: { top: '20%', left: '10%' },
@@ -152,6 +167,19 @@ function initializeTutorial() {
     createTutorialOverlay();
     showCurrentTutorialStep();
     createTutorialAsteroidAndAddSecondary();
+}
+
+function createTutorialAlien() {
+    const tutorialAlien = {
+        x: canvas.width * 0.75,
+        y: canvas.height * 0.3,
+        size: 40,
+        speed: 0.1,
+        hitpoints: 1,
+        isTutorialAlien: true
+    };
+    aliens.push(tutorialAlien);
+    tutorialAlienCreated = true;
 }
 
 // Create the tutorial overlay
@@ -336,6 +364,11 @@ function updateTutorial() {
     if (tutorialAsteroid && !asteroids.includes(tutorialAsteroid) && !tutorialAsteroidDestroyed) {
         tutorialAsteroidDestroyed = true;
         createTutorialGem();
+    }
+
+    // Check for tutorial alien destruction
+    if (tutorialAlienCreated && !tutorialAlienDestroyed) {
+        tutorialAlienDestroyed = !aliens.some(alien => alien.isTutorialAlien);
     }
 
     if (currentStep.condition()) {

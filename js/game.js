@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "1.00005"
+let version = "1.00006"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -469,7 +469,7 @@ function startGame() {
     isMusicPlaying = true;
 }
 
-// TEMP:(?) disable resize
+// TEMP:(?) disable resize. Re-enable for crazy games.
 
 function resizeCanvas() {
     const oldWidth = canvas.width;
@@ -478,7 +478,8 @@ function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    resetShip();
+    // TODO: not sure why we had this year
+    // resetShip();
 
     const widthRatio = canvas.width / oldWidth;
     const heightRatio = canvas.height / oldHeight;
