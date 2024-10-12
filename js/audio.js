@@ -306,10 +306,20 @@ function toggleSettings() {
     // console.log("vol");
     const settingsModal = document.getElementById('settingsModal');
     settingsModal.style.display = settingsModal.style.display === 'none' ? 'block' : 'none';
-    if (settingsModal.style.display === 'block')
-        pauseGame();
-    else
+    if (settingsModal.style.display === 'none') {
+        const container = document.getElementById('activeWeaponClassesContainer');
+        container.style.display = "block";
+
         resumeGame();
+
+    } else {
+        const container = document.getElementById('activeWeaponClassesContainer');
+        container.style.display = "none";
+
+        pauseGame();
+
+    }
+
     console.log(settingsModal.style.display);
 }
 
