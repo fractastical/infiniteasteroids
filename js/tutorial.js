@@ -46,8 +46,8 @@ const desktopTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '5%', left: '50%' },
-        arrowPosition: { top: '10%', left: '50%' },
+        position: { top: '0%', left: '33%' },
+        arrowPosition: { top: '8%', left: '33%' },
         arrowRotation: 180,
         condition: () => level > 1 && elementalAsteroidCreated
     },
