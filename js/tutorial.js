@@ -47,7 +47,7 @@ const desktopTutorialSteps = [
         position: { top: '10%', left: '50%' },
         arrowPosition: { top: '15%', left: '50%' },
         arrowRotation: 180,
-        condition: () => level > 1
+        condition: () => level > 1 && elementalAsteroidCreated
     },
     {
         text: "Destroy the elemental asteroid to see its effect!",
@@ -114,7 +114,7 @@ const mobileTutorialSteps = [
         position: { top: '10%', left: '50%' },
         arrowPosition: { top: '15%', left: '50%' },
         arrowRotation: 180,
-        condition: () => level > 1
+        condition: () => level > 1 && elementalAsteroidCreated
     },
     {
         text: "Destroy the elemental asteroid to see its effect!",
@@ -251,6 +251,19 @@ function createTutorialAsteroidAndAddSecondary() {
     };
     asteroids.push(tutorialAsteroid);
 
+
+    // Set ship position
+    ship.x = canvas.width * 0.5;
+    ship.y = canvas.height * 0.8;
+
+    const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
+    if (activeWeapon) {
+        activeWeapon.uses = 4;
+    }
+}
+
+function createTutorialElementalAsteroid() {
+
     // Create elemental asteroid
     const elementalTypes = ['exploding', 'freezing', 'chainLightning', 'acid'];
     const randomType = elementalTypes[Math.floor(Math.random() * elementalTypes.length)];
@@ -274,14 +287,6 @@ function createTutorialAsteroidAndAddSecondary() {
 
     elementalAsteroidCreated = true;
 
-    // Set ship position
-    ship.x = canvas.width * 0.5;
-    ship.y = canvas.height * 0.8;
-
-    const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
-    if (activeWeapon) {
-        activeWeapon.uses = 4;
-    }
 }
 
 function createTutorialGem() {

@@ -2,7 +2,7 @@ const secondaryWeapons = {
     invincibilityShield: {
         name: 'Invincibility Shield',
         duration: 300, // duration in frames (e.g., 5 seconds at 60 FPS)
-        cooldown: 600, // cooldown in frames (e.g., 10 seconds at 60 FPS)
+        cooldown: 50, // cooldown in frames (e.g., 10 seconds at 60 FPS)
         uses: 3,
         fullUses: 3,
         isActive: false,
@@ -17,7 +17,7 @@ const secondaryWeapons = {
             if (this.uses > 0) {
                 this.uses--;
                 activateInvincibility(this.duration);
-                this.cooldown = 600; // Reset cooldown after use
+                this.cooldown = 50; // Reset cooldown after use
             } else {
                 console.log('Cannot use Invincibility Shield right now.');
             }
@@ -27,7 +27,7 @@ const secondaryWeapons = {
         name: 'Basic Bomb',
         damage: 50,
         radius: 300, // radius of explosion
-        cooldown: 500,
+        cooldown: 50,
         fullUses: 3,
         uses: 3,
         isActive: true,
@@ -45,7 +45,7 @@ const secondaryWeapons = {
                 playRandomAcidBombSound();
                 createAreaDamage(ship.x, ship.y, this.radius, this.damage);
                 createExplosion(ship.x, ship.y, 50, 15);
-                this.cooldown = 500; // Reset cooldown after use
+                this.cooldown = 50; // Reset cooldown after use
             } else {
                 console.log('Cannot use Explosive Burst right now.');
             }
@@ -54,7 +54,7 @@ const secondaryWeapons = {
     piercingLaser: {
         name: 'Piercing Laser',
         damage: 1000,
-        cooldown: 400,
+        cooldown: 50,
         uses: 3,
         fullUses: 3,
         isActive: false,
@@ -70,7 +70,7 @@ const secondaryWeapons = {
                 this.uses--;
                 shootPiercingLaser(ship.x, ship.y, ship.rotation, this.damage);
                 playRandomShotSound();
-                this.cooldown = 400; // Reset cooldown after use
+                this.cooldown = 50; // Reset cooldown after use
             } else {
                 console.log('Cannot use Piercing Laser right now.');
             }
@@ -80,7 +80,7 @@ const secondaryWeapons = {
         name: 'Elo Bomb',
         damage: 25,
         radius: 250, // radius of explosion
-        cooldown: 500,
+        cooldown: 50,
         fullUses: 3,
         uses: 3,
         isActive: true,
@@ -119,7 +119,7 @@ const secondaryWeapons = {
                     createAcidExplosion(x, y, 25, 800); // smaller radius, longer duration
                 }
 
-                this.cooldown = 500; // Reset cooldown after use
+                this.cooldown = 50; // Reset cooldown after use
             } else {
                 console.log('Cannot use elo bomb right now.');
             }
@@ -129,7 +129,7 @@ const secondaryWeapons = {
         name: 'Cluster Bomb',
         damage: 25,
         radius: 140, // radius of explosion
-        cooldown: 500,
+        cooldown: 50,
         fullUses: 3,
         uses: 3,
         isActive: true,
@@ -168,7 +168,7 @@ const secondaryWeapons = {
                     createExplosion(x, y, 10, 2);
                 }
 
-                this.cooldown = 500; // Reset cooldown after use
+                this.cooldown = 50; // Reset cooldown after use
             } else {
                 console.log('Cannot use cluster bomb right now.');
             }

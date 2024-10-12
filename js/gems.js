@@ -498,6 +498,8 @@ function applyUpgrades(upgrades) {
             // Example: applyUpgrade(upgrade); 
         });
     }
+    if (tutorialActive)
+        createTutorialElementalAsteroid();
 }
 
 // Call positionIcons to initially position the icons around the roulette wheel

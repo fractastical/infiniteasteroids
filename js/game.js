@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "1.00003"
+let version = "1.00005"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -825,6 +825,8 @@ function update() {
         updateBomberDrones();
         drawBomberDrones();
     }
+
+    updateSecondaryWeapons();
 
     updateDrones();
     drawDrones();
