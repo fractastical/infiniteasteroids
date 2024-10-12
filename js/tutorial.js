@@ -60,8 +60,8 @@ const desktopTutorialSteps = [
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '35%', left: '75%' },
-        arrowPosition: { top: '30%', left: '75%' },
+        position: { top: '65%', left: '75%' },
+        arrowPosition: { top: '60%', left: '75%' },
         arrowRotation: 0,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
@@ -134,8 +134,8 @@ const mobileTutorialSteps = [
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '48%', left: '72%' },
-        arrowPosition: { top: '42%', left: '74%' },
+        position: { top: '68%', left: '72%' },
+        arrowPosition: { top: '62%', left: '74%' },
         arrowRotation: 0,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
@@ -172,7 +172,7 @@ function initializeTutorial() {
 function createTutorialAlien() {
     const tutorialAlien = {
         x: canvas.width * 0.75,
-        y: canvas.height * 0.3,
+        y: canvas.height * 0.50,
         size: 40,
         speed: 0.2,
         hitpoints: 1,
