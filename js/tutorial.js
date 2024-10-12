@@ -63,7 +63,7 @@ const desktopTutorialSteps = [
         position: { top: '35%', left: '75%' },
         arrowPosition: { top: '30%', left: '75%' },
         arrowRotation: 0,
-        condition: () => tutorialAlienCreated && !tutorialAlienDestroyed
+        condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
@@ -137,7 +137,7 @@ const mobileTutorialSteps = [
         position: { top: '48%', left: '72%' },
         arrowPosition: { top: '42%', left: '74%' },
         arrowRotation: 0,
-        condition: () => tutorialAlienCreated && !tutorialAlienDestroyed
+        condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
         text: "Use two fingers to activate your bomb (secondary weapon). Only three uses!",
