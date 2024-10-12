@@ -53,8 +53,8 @@ const desktopTutorialSteps = [
     },
     {
         text: "Destroy the elemental asteroid to see its effect!",
-        position: { top: '35%', left: '75%' },
-        arrowPosition: { top: '30%', left: '75%' },
+        position: { top: '45%', left: '72%' },
+        arrowPosition: { top: '39%', left: '74%' },
         arrowRotation: 0,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
@@ -127,8 +127,8 @@ const mobileTutorialSteps = [
     },
     {
         text: "Destroy the elemental asteroid to see its effect!",
-        position: { top: '45%', left: '72%' },
-        arrowPosition: { top: '39%', left: '74%' },
+        position: { top: '48%', left: '72%' },
+        arrowPosition: { top: '42%', left: '74%' },
         arrowRotation: 0,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
