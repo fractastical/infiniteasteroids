@@ -162,7 +162,7 @@ const fullscreenTutorialSteps = [
         position: { top: '57%', left: '50%' },
         arrowPosition: { top: '54%', left: '50%' },
         arrowRotation: 0,
-        condition: () => keys['ArrowLeft']  keys['ArrowRight']  keys['ArrowUp'] || keys['ArrowDown']
+        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
     {
         text: "Press SPACE to shoot lasers",
@@ -218,7 +218,7 @@ const fullscreenTutorialSteps = [
         position: { top: '9%', left: '2%' },
         arrowPosition: { top: '6%', left: '3.5%' },
         arrowRotation: 0,
-        condition: () => keys['ArrowLeft']  keys['ArrowRight']  keys['ArrowUp'] || keys['ArrowDown']
+        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     }
 ];
 
