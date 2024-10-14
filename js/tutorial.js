@@ -8,6 +8,7 @@ let tutorialAlienCreated = false;
 let tutorialAlienDestroyed = false;
 let gemCollected = false;
 let currentTutorialStep = 0;
+let fullScreenMode = true;
 
 // Function to detect if the device is mobile
 function isMobileDevice() {
@@ -155,9 +156,78 @@ const mobileTutorialSteps = [
     }
 ];
 
+const fullscreenTutorialSteps = [
+    {
+        text: "Use arrow keys to move your ship",
+        position: { top: '57%', left: '50%' },
+        arrowPosition: { top: '54%', left: '50%' },
+        arrowRotation: 0,
+        condition: () => keys['ArrowLeft']  keys['ArrowRight']  keys['ArrowUp'] || keys['ArrowDown']
+    },
+    {
+        text: "Press SPACE to shoot lasers",
+        position: { top: '57%', left: '50%' },
+        arrowPosition: { top: '54%', left: '50%' },
+        arrowRotation: 0,
+        condition: () => keys[' '] // Space key pressed
+    },
+    {
+        text: "Shoot the tutorial asteroid to get XP!",
+        position: { top: '37%', left: '22%' },
+        arrowPosition: { top: '34%', left: '24.5%' },
+        arrowRotation: 0,
+        condition: () => tutorialAsteroidDestroyed
+    },
+    {
+        text: "Collect glowing objects for an XP boost and special upgrades!",
+        position: { top: '73%', left: '50%' },
+        arrowPosition: { top: '70%', left: '50%' },
+        arrowRotation: 0,
+        condition: () => gemCollected
+    },
+    {
+        text: "Pick an upgrade with XP!",
+        position: { top: '1%', left: '37%' },
+        arrowPosition: { top: '5%', left: '41%' },
+        arrowRotation: 180,
+        condition: () => level > 1 && elementalAsteroidCreated
+    },
+    {
+        text: "Destroy the elemental asteroid to see its effect!",
+        position: { top: '38%', left: '72%' },
+        arrowPosition: { top: '35%', left: '74.5%' },
+        arrowRotation: 0,
+        condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
+    },
+    {
+        text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
+        position: { top: '57%', left: '73%' },
+        arrowPosition: { top: '54%', left: '74.5%' },
+        arrowRotation: 0,
+        condition: () => tutorialAlienCreated && tutorialAlienDestroyed
+    },
+    {
+        text: "Press E to use your bomb (secondary weapon). Only three uses!",
+        position: { top: '9%', left: '5%' },
+        arrowPosition: { top: '6%', left: '6.5%' },
+        arrowRotation: 0,
+        condition: () => keys['e'] // E key pressed
+    },
+    {
+        text: "This is your health. Don't let it reach zero!",
+        position: { top: '9%', left: '2%' },
+        arrowPosition: { top: '6%', left: '3.5%' },
+        arrowRotation: 0,
+        condition: () => keys['ArrowLeft']  keys['ArrowRight']  keys['ArrowUp'] || keys['ArrowDown']
+    }
+];
+
 // Function to get the appropriate tutorial steps
 function getTutorialSteps() {
-    return isMobileDevice() ? mobileTutorialSteps : desktopTutorialSteps;
+    if (!fullScreenMode)
+        return isMobileDevice() ? mobileTutorialSteps : desktopTutorialSteps;
+    else
+        return fullscreenTutorialSteps;
 }
 
 // Initialize the tutorial

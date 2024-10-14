@@ -2,7 +2,7 @@
 
 // for leaderboard and telegram API 
 let gameId = "InfiniteSpaceWar";
-let version = "1.0001"
+let version = "1.002"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -480,6 +480,10 @@ function resizeCanvas() {
 
     // TODO: not sure why we had this year
     // resetShip();
+    if (window.innerWidth > 1200)
+        fullScreenMode = true;
+    else
+        fullScreenMode = false;
 
     const widthRatio = canvas.width / oldWidth;
     const heightRatio = canvas.height / oldHeight;
