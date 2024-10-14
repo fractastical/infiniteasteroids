@@ -47,7 +47,7 @@ const desktopTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '0%', left: '33%' },
+        position: { top: '0%', left: '25%' },
         arrowPosition: { top: '8%', left: '33%' },
         arrowRotation: 180,
         condition: () => level > 1 && elementalAsteroidCreated
@@ -107,8 +107,8 @@ const mobileTutorialSteps = [
     },
     {
         text: "Destroy the asteroid to get XP!",
-        position: { top: '48%', left: '22%' },
-        arrowPosition: { top: '41%', left: '24%' },
+        position: { top: '0%', left: '33%' },
+        arrowPosition: { top: '9%', left: '33%' },
         arrowRotation: 0,
         condition: () => tutorialAsteroidDestroyed
     },
