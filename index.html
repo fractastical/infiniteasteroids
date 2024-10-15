@@ -381,7 +381,7 @@
           document.getElementById('versionInfo').innerHTML = "Version " + version;
           // console.log("innerHeight");
           // console.log(window.innerHeight);
-          preloadedLeaderboards = await loadAllLeaderboards(gameId);
+          preloadedLeaderboards = await loadAllLeaderboardsOptimized(gameId);
 
           document.getElementById('viewAllLeaderboardsButton').addEventListener('click', () => {
             populateLeaderboardsModal(preloadedLeaderboards);
@@ -1379,7 +1379,7 @@
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection, orderBy, limit, where, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
@@ -2121,6 +2121,54 @@
     }
 
 
+    async function loadLeaderboardOptimized(gameName, gameMode, limit = 10) {
+      try {
+        const db = getFirestore();
+        const usersCollection = collection(db, 'users');
+
+        // Query to get users with the top scores for the selected game mode
+        const scoresQuery = query(
+          usersCollection,
+          where(`games.${gameName}.scores.gameMode`, '==', gameMode),
+          orderBy(`games.${gameName}.scores.score`, 'desc'),
+          limit(limit)  // Limit to the top N scores
+        );
+
+        const usersSnapshot = await getDocs(scoresQuery);
+        const leaderboardData = [];
+        let userScore = null;
+
+        usersSnapshot.forEach(doc => {
+          const userData = doc.data();
+          const gameScores = userData.games?.[gameName]?.scores || [];
+
+          gameScores.forEach(session => {
+            if (session.score && session.gameMode === gameMode) {
+              const scoreEntry = {
+                nickname: userData.nickname || 'Unnamed',
+                score: session.score,
+                wave: session.wave,
+                isCurrentUser: doc.id === userId
+              };
+              leaderboardData.push(scoreEntry);
+
+              // Check if this is the current user's most recent score
+              if (scoreEntry.isCurrentUser) {
+                userScore = scoreEntry;
+              }
+            }
+          });
+        });
+
+        const sortedScores = leaderboardData.sort((a, b) => b.score - a.score);
+
+        // Display the sorted leaderboard
+        displayLeaderboard(sortedScores, userScore);
+
+      } catch (error) {
+        console.error('Error loading leaderboard:', error);
+      }
+    }
 
 
     async function loadAllLeaderboards(gameName) {
@@ -2166,6 +2214,52 @@
 
       return allScores;
     }
+
+
+    async function loadAllLeaderboardsOptimized(gameName, limitCount = 10) {
+      try {
+        const db = getFirestore();
+        const allScores = {};
+
+        // Loop through each game mode
+        for (let mode of gameModes) {
+          const leaderboardQuery = query(
+            collection(db, 'users'),
+            where(`games.${gameName}.scores`, 'array-contains', { gameMode: mode.id }),
+            orderBy(`games.${gameName}.scores.score`, 'desc'),
+            limit(limitCount)
+          );
+
+          const querySnapshot = await getDocs(leaderboardQuery);
+          allScores[mode.name] = [];
+
+          querySnapshot.forEach((doc) => {
+            const userData = doc.data();
+            const gameScores = userData.games?.[gameName]?.scores || [];
+
+            gameScores
+              .filter((session) => session.gameMode === mode.id)
+              .forEach((session) => {
+                allScores[mode.name].push({
+                  nickname: userData.nickname || 'Unnamed',
+                  score: session.score,
+                  wave: session.wave || 1,
+                });
+              });
+          });
+
+          // Sort and limit scores for each mode
+          allScores[mode.name].sort((a, b) => b.score - a.score);
+          allScores[mode.name] = allScores[mode.name].slice(0, limitCount); // Limit the result
+        }
+
+        return allScores;
+      } catch (error) {
+        console.error('Error loading leaderboards:', error);
+        return {};
+      }
+    }
+
 
     // async function loadAllLeaderboards(gameId) {
     //   try {
@@ -2236,8 +2330,8 @@
       }
     }
 
-    window.loadLeaderboard = loadLeaderboard;
-    window.loadAllLeaderboards = loadAllLeaderboards;
+    window.loadLeaderboardOptimized = loadLeaderboardOptimized;
+    window.loadAllLeaderboardsOptimized = loadAllLeaderboardsOptimized;
 
 
     // Function to load achievements from Firebase or localStorage

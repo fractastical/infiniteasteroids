@@ -1,8 +1,8 @@
 
 
 // for leaderboard and telegram API 
-let gameId = "InfiniteSpaceWar";
-let version = "1.006"
+let gameId = "InfiniteAsteroids";
+let version = "1.007"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -471,6 +471,9 @@ function startGame() {
 
 // TEMP:(?) disable resize. Re-enable for crazy games.
 
+let widthRatio = 1;
+let heightRatio = 1;
+
 function resizeCanvas() {
     const oldWidth = canvas.width;
     const oldHeight = canvas.height;
@@ -485,8 +488,8 @@ function resizeCanvas() {
     else
         fullScreenMode = false;
 
-    const widthRatio = canvas.width / oldWidth;
-    const heightRatio = canvas.height / oldHeight;
+    widthRatio = canvas.width / oldWidth;
+    heightRatio = canvas.height / oldHeight;
 
     // Update ship position
     if (ship) {
@@ -508,6 +511,11 @@ function resizeCanvas() {
 
     // Update asteroids positions
     asteroids.forEach(asteroid => {
+        asteroid.x *= widthRatio;
+        asteroid.y *= heightRatio;
+    });
+
+    droppedGems.forEach(asteroid => {
         asteroid.x *= widthRatio;
         asteroid.y *= heightRatio;
     });
@@ -2760,7 +2768,7 @@ function endGame() {
     }
 
     // Load and display the leaderboard
-    loadLeaderboard(gameId, currentMode);
+    loadLeaderboardOptimized(gameId, currentMode);
 
     populateSelectors();
 
@@ -2911,7 +2919,7 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     levelUpModal.style.display = 'none';
 
     // Load and display the leaderboard
-    loadLeaderboard(gameId, currentMode);
+    loadLeaderboardOptimized(gameId, currentMode);
 
     // Set focus to the first focusable element in the end screen
     const firstFocusableElement = endScreen.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');

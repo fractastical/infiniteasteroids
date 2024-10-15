@@ -324,7 +324,7 @@
                     const userData = doc.data();
                     console.log(`User ${index + 1} ID:`, doc.id);
 
-                    const gameSessions = userData.games?.InfiniteSpaceWar?.scores || [];
+                    const gameSessions = userData.games?.InfiniteAsteroids?.scores || [];
                     console.log(`User ${index + 1} total sessions:`, gameSessions.length);
 
                     let earliestLoginTime = null;
