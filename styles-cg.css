@@ -8,7 +8,7 @@
     transform: translate(-50%, -50%);
     width: var(--modal-width, 80%);
     max-width: 600px;
-    height: 95vh;
+    /* height: 95vh; */
     /* Full viewport height */
     background-color: #111;
     border: 3px solid #4e15ac;
