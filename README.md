@@ -1,3 +1,9 @@
+
+# Description
+
+Roguelike verision of asteroids with 22 weapon types and passives unlocked via 40+ achievements. Implemented in vanilla javascript with a firebase backend and customizations for crazygames.
+
+
 # Project Analysis Visualization
 
 ![Project Analysis](project_analysis.svg)
