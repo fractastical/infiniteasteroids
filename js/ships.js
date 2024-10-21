@@ -513,9 +513,9 @@ function updateShipPreview(shipKey = "basic") {
 
     // console.log(`Canvas dimensions: ${canvas.width}x${canvas.height}`);
 
-    const previewCtx = canvas.getContext('2d');
+    const previewCtx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
     let oldContext = ctx;
-    ctx = canvas.getContext('2d');
+    ctx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
 
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -761,7 +761,7 @@ function handleSelections() {
 function updateMiniShipPreview() {
     // currentShip = shipKey;
     const canvas = document.getElementById('miniShipPreview');
-    const miniCtx = canvas.getContext('2d');
+    const miniCtx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
 
     // Clear the canvas
     miniCtx.clearRect(0, 0, canvas.width, canvas.height);

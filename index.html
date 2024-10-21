@@ -476,7 +476,7 @@
   <script>
 
     const canvas = document.getElementById('gameCanvas');
-    let ctx = canvas.getContext('2d');
+    let ctx = canvas.getContext('2d' ,  { alpha: false });
 
   </script>
 
@@ -642,7 +642,7 @@
 
     function drawPixelatedExplosion(x, y, size) {
       const canvas = document.createElement('canvas');
-      // const ctx = canvas.getContext('2d');
+      // const ctx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
       const pixelSize = 4; // Adjust pixel size to your preference
 
       canvas.width = size;
@@ -659,7 +659,7 @@
 
       // Create a new canvas for pixelated effect
       const pixelCanvas = document.createElement('canvas');
-      const pixelCtx = pixelCanvas.getContext('2d');
+      const pixelCtx = pixelCanvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
 
       pixelCanvas.width = size;
       pixelCanvas.height = size;

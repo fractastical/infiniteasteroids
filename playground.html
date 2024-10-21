@@ -368,7 +368,7 @@
     <script>
 
         const canvas = document.getElementById('gameCanvas');
-        let ctx = canvas.getContext('2d');
+        let ctx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
 
     </script>
 

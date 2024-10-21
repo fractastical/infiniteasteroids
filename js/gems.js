@@ -70,7 +70,7 @@ let activeGemUpgrades = null;
 const unlockSound = new Audio('sounds/levelup.mp3');
 
 // const canvas = document.getElementById('gameCanvas');
-// const ctx = canvas.getContext('2d');
+// const ctx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
 
 let droppedGems = [];
 

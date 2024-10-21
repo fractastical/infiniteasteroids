@@ -99,13 +99,13 @@ function createEndGameDamageChart() {
         return;
     }
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
     if (!ctx) {
         console.error('Unable to get 2D context from canvas');
         return;
     }
 
-    // const ctx = document.getElementById('endGameDamageChartContainer').getContext('2d');
+    // const ctx = document.getElementById('endGameDamageChartContainer').getContext('2d' , { alpha: false  , willReadFrequently: true});
     const endGameDamageChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -181,7 +181,7 @@ function getRandomColor() {
 
 
 function initializeDamageChart() {
-    const ctx = document.getElementById('weaponDamageChart').getContext('2d');
+    const ctx = document.getElementById('weaponDamageChart').getContext('2d' , { alpha: false  , willReadFrequently: true});
     damageChart = new Chart(ctx, {
         type: 'line',
         data: {
