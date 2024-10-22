@@ -526,7 +526,8 @@
         const leaderboardDiv = document.createElement('div');
         leaderboardDiv.className = 'leaderboard-mode';
         leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${mode}</h3>`;
-
+        const entryWrapper = document.createElement('div');
+        entryWrapper.classList.add('entryWrapper');
         allScores[mode].forEach((entry, index) => {
           const formattedScore = entry.score.toLocaleString('en-US', {
             maximumFractionDigits: 0
@@ -534,9 +535,10 @@
           const entryP = document.createElement('p');
           entryP.textContent = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
           entryP.tabIndex = 0; // Make each entry focusable
-          leaderboardDiv.appendChild(entryP);
+          entryWrapper.appendChild(entryP);
         });
-
+        
+        leaderboardDiv.appendChild(entryWrapper);
         allLeaderboardsContainer.appendChild(leaderboardDiv);
       }
 
@@ -2262,47 +2264,51 @@ async function loadLeaderboardOptimized( gameName , gameMode, limitScore = 10, u
     }
 
 
-    async function loadAllLeaderboardsOptimized(gameName, limitCount = 10) {
+    async function loadAllLeaderboardsOptimized(gameName, limitScore = 10, userId = null) {
   try {
     const db = getFirestore();
-    const allScores = {};
+    const usersCollection = collection(db, 'users');
 
-    // Loop through each game mode
-    for (let mode of gameModes) {
-      const leaderboardQuery = query(
-        collection(db, 'users'),
-        where(`games.${gameName}.scores`, 'array-contains', { gameMode: mode.id }),
-        orderBy(`games.${gameName}.scores.score`, 'desc'),
-        limit(limitCount)
-      );
-
-      const querySnapshot = await getDocs(leaderboardQuery);
-      allScores[mode.name] = [];
-
-      querySnapshot.forEach((doc) => {
-        const userData = doc.data();
-        const gameScores = userData.games?.[gameName]?.scores || [];
-
-        gameScores
-          .filter((session) => session.gameMode === mode.id)
-          .forEach((session) => {
-            allScores[mode.name].push({
-              nickname: userData.nickname || 'Unnamed',
-              score: session.score,
-              wave: session.wave || 1,
-            });
-          });
+    // Fetch all users
+    const scoresQuery = query(usersCollection);
+    const usersSnapshot = await getDocs(scoresQuery);
+    const allScores = {};  // Object to store leaderboard data for each game mode
+    // Process each user document
+    usersSnapshot.forEach(doc => {
+      const userData = doc.data();
+      // Access the nested scores array for the given game
+      const gameScores = userData.games?.[gameName]?.scores || [];
+      // Process each score session
+      gameScores.forEach(session => {
+        const gameMode = session.gameMode;
+        // Initialize the leaderboard for this game mode if it doesn't exist
+        if (!allScores[gameMode]) {
+          allScores[gameMode] = [];
+        }
+        // Prepare the score entry
+        const scoreEntry = {
+          nickname: userData.nickname || 'Unnamed',
+          score: session.score,
+          wave: session.wave,  // Assuming `wave` exists in session
+          isCurrentUser: doc.id === userId  // Flag current user
+        };
+        // Add score entry to the leaderboard for the respective game mode
+        allScores[gameMode].push(scoreEntry);
       });
+    });
 
-      // Sort and limit scores for each mode
-      allScores[mode.name].sort((a, b) => b.score - a.score);
-      allScores[mode.name] = allScores[mode.name].slice(0, limitCount); // Limit the result
-    }
+    // Sort each game mode's leaderboard by score and limit to top N entries
+    Object.keys(allScores).forEach(gameMode => {
+      allScores[gameMode].sort((a, b) => b.score - a.score);  // Sort by score descending
+      allScores[gameMode] = allScores[gameMode].slice(0, limitScore);  // Limit to top N scores
+    });
 
+    // Return allScores for further use
     return allScores;
+
   } catch (error) {
-    console.error('Error loading leaderboards:', error);
-    return {};
+    console.error('Error loading leaderboards for all game modes:', error);
+    return null;  // Return null in case of an error
   }
 }
 
