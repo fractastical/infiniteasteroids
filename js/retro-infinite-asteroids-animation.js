@@ -413,7 +413,7 @@ const InfiniteAsteroidsAnimation = (function () {
             if (!canvas) {
                 throw new Error(`Canvas with id '${canvasId}' not found`);
             }
-            ctx = canvas.getContext('2d');
+            ctx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
 
             canvas.width = 840;
             canvas.height = 60;
