@@ -522,10 +522,25 @@
       const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
       allLeaderboardsContainer.innerHTML = ''; // Clear previous content
 
+      const IndexedGameModes = {
+      [GameModes.EASY]: "Deep Space Easy",
+      [GameModes.NORMAL]: "Deep Space Normal",
+      [GameModes.HARD]: "Deep Space Hard",
+      [GameModes.HERO]: "Deep Space Hero",
+      [GameModes.METEORSHOWEREASY]: "Meteor Shower Easy",
+      [GameModes.METEORSHOWERNORMAL]: "Meteor Shower Normal",
+      [GameModes.METEORSHOWERHARD]: "Meteor Shower Hard",
+      [GameModes.METEORSHOWERHERO]: "Meteor Shower Hero",
+      [GameModes.PLANETEASY]: "Planet Easy",
+      [GameModes.PLANETNORMAL]: "Planet Normal",
+      [GameModes.PLANETHARD]: "Planet Hard",
+      [GameModes.PLANETHERO]: "Planet Hero",
+      [GameModes.ENDLESS_SLOW]: "Endless Slow"
+      };
       for (let mode in allScores) {
         const leaderboardDiv = document.createElement('div');
         leaderboardDiv.className = 'leaderboard-mode';
-        leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${mode}</h3>`;
+        leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${IndexedGameModes[mode] || "unknown"}</h3>`;
         const entryWrapper = document.createElement('div');
         entryWrapper.classList.add('entryWrapper');
         allScores[mode].forEach((entry, index) => {
@@ -535,7 +550,7 @@
           const entryP = document.createElement('p');
           entryP.textContent = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
           entryP.tabIndex = 0; // Make each entry focusable
-          entryWrapper.appendChild(entryP);
+          entryWrapper.appendChild(entryP)
         });
         
         leaderboardDiv.appendChild(entryWrapper);
