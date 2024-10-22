@@ -2120,56 +2120,102 @@
       }
     }
 
+  function displayLeaderboard(scores, userScore , gamemode) {
+  const leaderboard = document.getElementById('leaderboard');
+  leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gamemode || '')}</h2>`;
+  
+  const limitedScores = [];
+  const playerCounts = {};
+  let userScoreIncluded = false;
 
-    async function loadLeaderboardOptimized(gameName, gameMode, limit = 10) {
-      try {
-        const db = getFirestore();
-        const usersCollection = collection(db, 'users');
-
-        // Query to get users with the top scores for the selected game mode
-        const scoresQuery = query(
-          usersCollection,
-          where(`games.${gameName}.scores.gameMode`, '==', gameMode),
-          orderBy(`games.${gameName}.scores.score`, 'desc'),
-          limit(limit)  // Limit to the top N scores
-        );
-
-        const usersSnapshot = await getDocs(scoresQuery);
-        const leaderboardData = [];
-        let userScore = null;
-
-        usersSnapshot.forEach(doc => {
-          const userData = doc.data();
-          const gameScores = userData.games?.[gameName]?.scores || [];
-
-          gameScores.forEach(session => {
-            if (session.score && session.gameMode === gameMode) {
-              const scoreEntry = {
-                nickname: userData.nickname || 'Unnamed',
-                score: session.score,
-                wave: session.wave,
-                isCurrentUser: doc.id === userId
-              };
-              leaderboardData.push(scoreEntry);
-
-              // Check if this is the current user's most recent score
-              if (scoreEntry.isCurrentUser) {
-                userScore = scoreEntry;
-              }
-            }
-          });
-        });
-
-        const sortedScores = leaderboardData.sort((a, b) => b.score - a.score);
-
-        // Display the sorted leaderboard
-        displayLeaderboard(sortedScores, userScore);
-
-      } catch (error) {
-        console.error('Error loading leaderboard:', error);
+  scores.forEach(score => {
+    if (!playerCounts[score.nickname]) {
+      playerCounts[score.nickname] = 0;
+    }
+    if (playerCounts[score.nickname] < 3 || (score.isCurrentUser && score.score === userScore?.score)) {
+      limitedScores.push(score);
+      playerCounts[score.nickname]++;
+      if (score.isCurrentUser && score.score === userScore?.score) {
+        userScoreIncluded = true;
       }
     }
+  });
 
+  // If user's score is not in top scores, add it at the end
+  if (!userScoreIncluded && userScore) {
+    limitedScores.push(userScore);
+  }
+
+  const topScores = limitedScores.slice(0, 13); // Display a maximum of 13 scores
+
+  topScores.forEach((entry, index) => {
+    const formattedScore = entry.score.toLocaleString('en-US', {
+      maximumFractionDigits: 0
+    });
+    const scoreDiv = document.createElement('div');
+    scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+    scoreDiv.tabIndex = 0; // Make it focusable
+
+    if (entry.isCurrentUser && entry.score === userScore?.score) {
+      scoreDiv.style.fontWeight = 'bold';
+      scoreDiv.style.color = '#FFD700'; // Gold color for user's score
+    }
+
+    leaderboard.appendChild(scoreDiv);
+  });
+
+  document.getElementById('leaderboard-container').appendChild(leaderboard);
+}
+
+
+async function loadLeaderboardOptimized( gameName , gameMode, limitScore = 10, userId = null) {
+  try {
+    const db = getFirestore();
+    const usersCollection = collection(db, 'users');
+
+    // Fetch all users
+    const scoresQuery = query(usersCollection);
+    const usersSnapshot = await getDocs(scoresQuery);
+    const leaderboardData = [];
+    let userScore = null;
+
+    // Process each user document
+    usersSnapshot.forEach(doc => {
+      const userData = doc.data();
+      console.log('User Data:', userData);
+      // Access nested scores array for the given game
+      const gameScores = userData.games?.[gameName]?.scores || [];
+
+      // Filter scores by game mode
+      const userTopScore = gameScores
+        .filter(session => session.gameMode === gameMode)  // Match gameMode
+        .sort((a, b) => b.score - a.score)[0];  // Get the highest score
+
+      if (userTopScore) {
+        const scoreEntry = {
+          nickname: userData.nickname || 'Unnamed',
+          score: userTopScore.score,
+          wave: userTopScore.wave,  // Assuming `wave` exists in session
+          isCurrentUser: doc.id === userId  // Flag current user
+        };
+        leaderboardData.push(scoreEntry);
+        // Capture the current user's score
+        if (scoreEntry.isCurrentUser) {
+          userScore = scoreEntry;
+        }
+      }
+    });
+
+    // Sort leaderboard by score in descending order
+    leaderboardData.sort((a, b) => b.score - a.score);
+
+    // Display the leaderboard data
+    displayLeaderboard(leaderboardData.slice(0, limitScore), userScore, gameMode);
+
+  } catch (error) {
+    console.error('Error loading leaderboard:', error);
+  }
+}
 
     async function loadAllLeaderboards(gameName) {
       const db = getFirestore();
@@ -2217,48 +2263,48 @@
 
 
     async function loadAllLeaderboardsOptimized(gameName, limitCount = 10) {
-      try {
-        const db = getFirestore();
-        const allScores = {};
+  try {
+    const db = getFirestore();
+    const allScores = {};
 
-        // Loop through each game mode
-        for (let mode of gameModes) {
-          const leaderboardQuery = query(
-            collection(db, 'users'),
-            where(`games.${gameName}.scores`, 'array-contains', { gameMode: mode.id }),
-            orderBy(`games.${gameName}.scores.score`, 'desc'),
-            limit(limitCount)
-          );
+    // Loop through each game mode
+    for (let mode of gameModes) {
+      const leaderboardQuery = query(
+        collection(db, 'users'),
+        where(`games.${gameName}.scores`, 'array-contains', { gameMode: mode.id }),
+        orderBy(`games.${gameName}.scores.score`, 'desc'),
+        limit(limitCount)
+      );
 
-          const querySnapshot = await getDocs(leaderboardQuery);
-          allScores[mode.name] = [];
+      const querySnapshot = await getDocs(leaderboardQuery);
+      allScores[mode.name] = [];
 
-          querySnapshot.forEach((doc) => {
-            const userData = doc.data();
-            const gameScores = userData.games?.[gameName]?.scores || [];
+      querySnapshot.forEach((doc) => {
+        const userData = doc.data();
+        const gameScores = userData.games?.[gameName]?.scores || [];
 
-            gameScores
-              .filter((session) => session.gameMode === mode.id)
-              .forEach((session) => {
-                allScores[mode.name].push({
-                  nickname: userData.nickname || 'Unnamed',
-                  score: session.score,
-                  wave: session.wave || 1,
-                });
-              });
+        gameScores
+          .filter((session) => session.gameMode === mode.id)
+          .forEach((session) => {
+            allScores[mode.name].push({
+              nickname: userData.nickname || 'Unnamed',
+              score: session.score,
+              wave: session.wave || 1,
+            });
           });
+      });
 
-          // Sort and limit scores for each mode
-          allScores[mode.name].sort((a, b) => b.score - a.score);
-          allScores[mode.name] = allScores[mode.name].slice(0, limitCount); // Limit the result
-        }
-
-        return allScores;
-      } catch (error) {
-        console.error('Error loading leaderboards:', error);
-        return {};
-      }
+      // Sort and limit scores for each mode
+      allScores[mode.name].sort((a, b) => b.score - a.score);
+      allScores[mode.name] = allScores[mode.name].slice(0, limitCount); // Limit the result
     }
+
+    return allScores;
+  } catch (error) {
+    console.error('Error loading leaderboards:', error);
+    return {};
+  }
+}
 
 
     // async function loadAllLeaderboards(gameId) {

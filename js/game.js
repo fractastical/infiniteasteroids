@@ -1,7 +1,7 @@
 
 
 // for leaderboard and telegram API 
-let gameId = "InfiniteAsteroids";
+let gameId = "InfiniteSpaceWar";
 let version = "1.009"
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
@@ -2762,7 +2762,7 @@ function endGame() {
 
     // Ensure we have a valid userId before saving
     if (userId) {
-        saveUserScore(userId, gameData);
+        saveUserScore(gameData);
     } else {
         console.error('No valid userId available, unable to save score');
     }
