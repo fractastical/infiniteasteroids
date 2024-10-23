@@ -1990,7 +1990,8 @@
   const scoresCollectionRef = collection(db, 'scores');
 
   const userDocRef = doc(db, 'users', userId);
-
+  const userDoc = await getDoc(userDocRef);
+  const loadedUserData = userDoc.data()
   const safeGameData = {
     score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
     topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
@@ -2003,11 +2004,11 @@
     aliensKilled: gameData.aliensKilled || 0,
     wave: gameData.wave || 1
   };
-
   try {
     // Add a new document to the 'scores' collection with an auto-generated ID
     await addDoc(scoresCollectionRef, {
       userId: userId,
+      username: loadedUserData.nickname || loadedUserData.username || "Unnamed",
       gameName: 'InfiniteSpaceWar',
       score: safeGameData.score,
       wave: safeGameData.wave,
@@ -2157,97 +2158,54 @@
       }
     }
 
-  function displayLeaderboard(scores, userScore , gamemode) {
+  function displayLeaderboard(scores , gamemode) {
   const leaderboard = document.getElementById('leaderboard');
   leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gamemode || '')}</h2>`;
-  
-  const limitedScores = [];
-  const playerCounts = {};
-  let userScoreIncluded = false;
-
-  scores.forEach(score => {
-    if (!playerCounts[score.nickname]) {
-      playerCounts[score.nickname] = 0;
-    }
-    if (playerCounts[score.nickname] < 3 || (score.isCurrentUser && score.score === userScore?.score)) {
-      limitedScores.push(score);
-      playerCounts[score.nickname]++;
-      if (score.isCurrentUser && score.score === userScore?.score) {
-        userScoreIncluded = true;
-      }
-    }
-  });
-
-  // If user's score is not in top scores, add it at the end
-  if (!userScoreIncluded && userScore) {
-    limitedScores.push(userScore);
-  }
-
-  const topScores = limitedScores.slice(0, 13); // Display a maximum of 13 scores
-
-  topScores.forEach((entry, index) => {
+  scores.forEach((entry, index) => {
     const formattedScore = entry.score.toLocaleString('en-US', {
       maximumFractionDigits: 0
     });
     const scoreDiv = document.createElement('div');
-    scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+    scoreDiv.innerText = `${index + 1}. ${entry.nickname || entry.username}: ${formattedScore} points`;
     scoreDiv.tabIndex = 0; // Make it focusable
-
-    if (entry.isCurrentUser && entry.score === userScore?.score) {
+    if (entry?.userId === userId) {
       scoreDiv.style.fontWeight = 'bold';
       scoreDiv.style.color = '#FFD700'; // Gold color for user's score
     }
-
     leaderboard.appendChild(scoreDiv);
   });
-
   document.getElementById('leaderboard-container').appendChild(leaderboard);
 }
 
 
-async function loadLeaderboardOptimized( gameName , gameMode, limitScore = 10, userId = null) {
+async function loadLeaderboardOptimized(gameName, gameMode, limitScore = 10, userId = null) {
   try {
     const db = getFirestore();
-    const usersCollection = collection(db, 'users');
+    const scoresCollection = collection(db, 'scores');
 
-    // Fetch all users
-    const scoresQuery = query(usersCollection);
+    const scoresQuery = query(
+      scoresCollection,
+      where('gameMode', '==', gameMode), // Filter by gameMode
+      limit(limitScore) 
+    );
+
+    // Fetch the results based on the query
     const usersSnapshot = await getDocs(scoresQuery);
     const leaderboardData = [];
     let userScore = null;
 
     // Process each user document
     usersSnapshot.forEach(doc => {
-      const userData = doc.data();
-      console.log('User Data:', userData);
-      // Access nested scores array for the given game
-      const gameScores = userData.games?.[gameName]?.scores || [];
-
-      // Filter scores by game mode
-      const userTopScore = gameScores
-        .filter(session => session.gameMode === gameMode)  // Match gameMode
-        .sort((a, b) => b.score - a.score)[0];  // Get the highest score
-
-      if (userTopScore) {
-        const scoreEntry = {
-          nickname: userData.nickname || 'Unnamed',
-          score: userTopScore.score,
-          wave: userTopScore.wave,  // Assuming `wave` exists in session
-          isCurrentUser: doc.id === userId  // Flag current user
-        };
-        leaderboardData.push(scoreEntry);
-        // Capture the current user's score
-        if (scoreEntry.isCurrentUser) {
-          userScore = scoreEntry;
-        }
+      const scoreData = doc.data();
+      console.log('User Data:', scoreData);
+      if(scoreData){
+        leaderboardData.push(scoreData)
       }
     });
-
     // Sort leaderboard by score in descending order
     leaderboardData.sort((a, b) => b.score - a.score);
-
     // Display the leaderboard data
-    displayLeaderboard(leaderboardData.slice(0, limitScore), userScore, gameMode);
+    displayLeaderboard(leaderboardData.slice(0, limitScore), gameMode);
 
   } catch (error) {
     console.error('Error loading leaderboard:', error);
