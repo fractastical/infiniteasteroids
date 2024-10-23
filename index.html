@@ -1396,7 +1396,7 @@
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection, orderBy, limit, where, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection, orderBy, limit, where, query , addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
@@ -1972,59 +1972,79 @@
     // }
 
 
-    async function saveUserScore(gameData) {
-      if (crazyGamesMode) {
-        const user = await window.CrazyGames.SDK.user.getUser();
-        if (user && user.username) {
-          userId = 'cg_' + user.username;
+  async function saveUserScore(gameData) {
+  if (crazyGamesMode) {
+    const user = await window.CrazyGames.SDK.user.getUser();
+    if (user && user.username) {
+      userId = 'cg_' + user.username;
+    }
+  }
+
+  if (!userId || !gameData) {
+    console.error('Invalid userId or gameData');
+    return;
+  }
+
+  const db = getFirestore();
+
+  const scoresCollectionRef = collection(db, 'scores');
+
+  const userDocRef = doc(db, 'users', userId);
+
+  const safeGameData = {
+    score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
+    topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
+    activeMegaUpgrades: Array.isArray(gameData.activeMegaUpgrades) ? gameData.activeMegaUpgrades : [],
+    sessionLength: gameData.sessionLength || 0,
+    loginTime: gameData.loginTime || new Date(),
+    endTime: gameData.endTime || new Date(),
+    gameMode: gameData.gameMode || 'unknown',
+    asteroidsKilled: gameData.asteroidsKilled || 0,
+    aliensKilled: gameData.aliensKilled || 0,
+    wave: gameData.wave || 1
+  };
+
+  try {
+    // Add a new document to the 'scores' collection with an auto-generated ID
+    await addDoc(scoresCollectionRef, {
+      userId: userId,
+      gameName: 'InfiniteSpaceWar',
+      score: safeGameData.score,
+      wave: safeGameData.wave,
+      timestamp: safeGameData.endTime,  // Use endTime as the timestamp
+      topWeapons: safeGameData.topWeapons,
+      activeMegaUpgrades: safeGameData.activeMegaUpgrades,
+      sessionLength: safeGameData.sessionLength,
+      asteroidsKilled: safeGameData.asteroidsKilled,
+      aliensKilled: safeGameData.aliensKilled,
+      gameMode: safeGameData.gameMode,
+      loginTime: safeGameData.loginTime
+    });
+
+    // Update the user document by adding the score to their existing list of scores
+    await setDoc(userDocRef, {
+      games: {
+        InfiniteSpaceWar: {
+          scores: arrayUnion(safeGameData),
+          achievements: Achievements || {}
+        }
+      },
+      coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
+      lastUpdated: new Date(),
+          // Add the new leaderboard field
+      leaderboard: {
+        [safeGameData.gameMode]: {
+          score: safeGameData.score,
+          wave: safeGameData.wave,
+          timestamp: safeGameData.endTime
         }
       }
-
-      if (!userId || !gameData) {
-        console.error('Invalid userId or gameData');
-        return;
-      }
-
-      const db = getFirestore();
-      const userDocRef = doc(db, 'users', userId);
-
-      const safeGameData = {
-        score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
-        topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
-        activeMegaUpgrades: Array.isArray(gameData.activeMegaUpgrades) ? gameData.activeMegaUpgrades : [],
-        sessionLength: gameData.sessionLength || 0,
-        loginTime: gameData.loginTime || new Date(),
-        endTime: gameData.endTime || new Date(),
-        gameMode: gameData.gameMode || 'unknown',
-        asteroidsKilled: gameData.asteroidsKilled || 0,
-        aliensKilled: gameData.aliensKilled || 0,
-        wave: gameData.wave || 1
-      };
-
-      try {
-        await setDoc(userDocRef, {
-          games: {
-            InfiniteSpaceWar: {
-              scores: arrayUnion(safeGameData),
-              achievements: Achievements || {}
-            }
-          },
-          coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
-          lastUpdated: new Date(),
-          // Add the new leaderboard field
-          leaderboard: {
-            [safeGameData.gameMode]: {
-              score: safeGameData.score,
-              wave: safeGameData.wave,
-              timestamp: safeGameData.endTime
-            }
-          }
-        }, { merge: true });
-        console.log('User score saved successfully:', safeGameData);
-      } catch (error) {
-        console.error('Error saving user score:', error);
-      }
-    }
+    }, { merge: true });
+    console.log('User score saved successfully:', safeGameData);
+  } catch (error) {
+    console.error('Error saving user score:', error);
+  }
+}
 
     window.saveUserScore = saveUserScore;
     // Function to save initial user data
