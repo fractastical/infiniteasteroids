@@ -542,13 +542,13 @@
         leaderboardDiv.className = 'leaderboard-mode';
         leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${IndexedGameModes[mode] || "unknown"}</h3>`;
         const entryWrapper = document.createElement('div');
-        entryWrapper.classList.add('entryWrapper');
+        entryWrapper.classList.add('entryWrapper')
         allScores[mode].forEach((entry, index) => {
           const formattedScore = entry.score.toLocaleString('en-US', {
             maximumFractionDigits: 0
           });
           const entryP = document.createElement('p');
-          entryP.textContent = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+          entryP.textContent = `${index + 1}. ${entry.nickname || entry.username}: ${formattedScore} points`;
           entryP.tabIndex = 0; // Make each entry focusable
           entryWrapper.appendChild(entryP)
         });
@@ -2183,27 +2183,27 @@ async function loadLeaderboardOptimized(gameName, gameMode, limitScore = 10, use
     const db = getFirestore();
     const scoresCollection = collection(db, 'scores');
 
+
     const scoresQuery = query(
-      scoresCollection,
-      where('gameMode', '==', gameMode), // Filter by gameMode
-      limit(limitScore) 
-    );
+        scoresCollection,
+        where('gameMode', '==', gameMode), // Filter by gameMode
+        orderBy('score', 'desc'), // Order by score descending
+        limit(limitScore) // Limit to top N scores
+      );
 
     // Fetch the results based on the query
-    const usersSnapshot = await getDocs(scoresQuery);
+    const scoresSnapShot = await getDocs(scoresQuery);
     const leaderboardData = [];
     let userScore = null;
 
     // Process each user document
-    usersSnapshot.forEach(doc => {
+    scoresSnapShot.forEach(doc => {
       const scoreData = doc.data();
       console.log('User Data:', scoreData);
       if(scoreData){
         leaderboardData.push(scoreData)
       }
     });
-    // Sort leaderboard by score in descending order
-    leaderboardData.sort((a, b) => b.score - a.score);
     // Display the leaderboard data
     displayLeaderboard(leaderboardData.slice(0, limitScore), gameMode);
 
@@ -2260,41 +2260,42 @@ async function loadLeaderboardOptimized(gameName, gameMode, limitScore = 10, use
     async function loadAllLeaderboardsOptimized(gameName, limitScore = 10, userId = null) {
   try {
     const db = getFirestore();
-    const usersCollection = collection(db, 'users');
+    const scoresCollection = collection(db, 'scores');
 
-    // Fetch all users
-    const scoresQuery = query(usersCollection);
-    const usersSnapshot = await getDocs(scoresQuery);
+    const GameModes = {
+      EASY: 'easy',
+      NORMAL: 'normal',
+      HARD: 'hard',
+      HERO: 'heroic',
+      METEORSHOWEREASY: 'meteorshowereasy',
+      METEORSHOWERNORMAL: 'meteorshowernormal',
+      METEORSHOWERHARD: 'meteorshowerhard',
+      METEORSHOWERHERO: 'meteorshowerhero',
+      PLANETEASY: 'planeteasy',
+      PLANETNORMAL: 'planetnormal',
+      PLANETHARD: 'planethard',
+      PLANETHERO: 'planethero',
+      ENDLESS_SLOW: 'endless_slow',
+      COOP: 'coop'
+    };
+
     const allScores = {};  // Object to store leaderboard data for each game mode
-    // Process each user document
-    usersSnapshot.forEach(doc => {
-      const userData = doc.data();
-      // Access the nested scores array for the given game
-      const gameScores = userData.games?.[gameName]?.scores || [];
-      // Process each score session
-      gameScores.forEach(session => {
-        const gameMode = session.gameMode;
-        // Initialize the leaderboard for this game mode if it doesn't exist
-        if (!allScores[gameMode]) {
-          allScores[gameMode] = [];
-        }
-        // Prepare the score entry
-        const scoreEntry = {
-          nickname: userData.nickname || 'Unnamed',
-          score: session.score,
-          wave: session.wave,  // Assuming `wave` exists in session
-          isCurrentUser: doc.id === userId  // Flag current user
-        };
-        // Add score entry to the leaderboard for the respective game mode
-        allScores[gameMode].push(scoreEntry);
-      });
-    });
-
-    // Sort each game mode's leaderboard by score and limit to top N entries
-    Object.keys(allScores).forEach(gameMode => {
-      allScores[gameMode].sort((a, b) => b.score - a.score);  // Sort by score descending
-      allScores[gameMode] = allScores[gameMode].slice(0, limitScore);  // Limit to top N scores
-    });
+    
+    // Process each game mode
+    await Promise.all(Object.values(GameModes).map(async (mode) => {
+      const scoresQuery = query(
+        scoresCollection,
+        where('gameMode', '==', mode), // Filter by gameMode
+        orderBy('score', 'desc'), // Order by score descending
+        limit(limitScore) // Limit to top N scores
+      );
+      
+      const scoresSnapShot = await getDocs(scoresQuery);
+      
+      if (scoresSnapShot.size > 0) {
+        allScores[mode] = scoresSnapShot.docs.map(doc => doc.data()); // Push scores data directly
+      }
+    }));
 
     // Return allScores for further use
     return allScores;
