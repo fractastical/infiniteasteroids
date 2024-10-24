@@ -563,6 +563,10 @@
       if (firstFocusableElement) {
         firstFocusableElement.focus();
       }
+      // scroll for leaderbaord
+      allLeaderboardsContainer.addEventListener('wheel', function(event) {
+        allLeaderboardsContainer.scrollTop += event.deltaY;
+      });
 
       modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
     }
