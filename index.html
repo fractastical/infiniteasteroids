@@ -2178,22 +2178,27 @@
 }
 
 
-async function loadLeaderboardOptimized(gameName, gameMode, limitScore = 10, userId = null) {
+async function loadLeaderboardOptimized(gameName, gameMode, gameData ,  limitScore = 10,) {
   try {
     const db = getFirestore();
     const scoresCollection = collection(db, 'scores');
-
+    
+    const currentGameData = {
+      username: userNickname.textContent,
+      score : gameData.score,
+      userId
+    }
 
     const scoresQuery = query(
         scoresCollection,
         where('gameMode', '==', gameMode), // Filter by gameMode
         orderBy('score', 'desc'), // Order by score descending
         limit(limitScore) // Limit to top N scores
-      );
+    );
 
     // Fetch the results based on the query
     const scoresSnapShot = await getDocs(scoresQuery);
-    const leaderboardData = [];
+    const leaderboardData = [currentGameData];
     let userScore = null;
 
     // Process each user document
@@ -2204,6 +2209,9 @@ async function loadLeaderboardOptimized(gameName, gameMode, limitScore = 10, use
         leaderboardData.push(scoreData)
       }
     });
+
+    leaderboardData.sort((a, b) => b.score - a.score);
+    
     // Display the leaderboard data
     displayLeaderboard(leaderboardData.slice(0, limitScore), gameMode);
 
