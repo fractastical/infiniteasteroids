@@ -2762,13 +2762,13 @@ function endGame() {
 
     // Ensure we have a valid userId before saving
     if (userId) {
-        saveUserScore(gameData);
+       saveUserScore(gameData);
     } else {
         console.error('No valid userId available, unable to save score');
     }
 
     // Load and display the leaderboard
-    loadLeaderboardOptimized(gameId, currentMode);
+    // loadLeaderboardOptimized(gameId, currentMode);
 
     populateSelectors();
 
@@ -2776,10 +2776,10 @@ function endGame() {
     // const affordableUpgrades = getRandomAffordableUpgrades(coins);
 
     // Display the end game screen
-    displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons);
+    displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons , gameData);
 
 }
-function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
+function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, gameData , affordableUpgrades) {
     const endScreen = document.getElementById('endScreen');
     const waveElement = document.getElementById('wave');
     const scoreElement = document.getElementById('score');
@@ -2919,7 +2919,7 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     levelUpModal.style.display = 'none';
 
     // Load and display the leaderboard
-    loadLeaderboardOptimized(gameId, currentMode);
+    loadLeaderboardOptimized(gameId, currentMode , gameData);
 
     // Set focus to the first focusable element in the end screen
     const firstFocusableElement = endScreen.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
@@ -3029,10 +3029,3 @@ function drawDamageReport() {
         }
     });
 }
-
-
-
-
-
-
-
