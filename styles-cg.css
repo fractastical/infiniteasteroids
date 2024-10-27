@@ -65,7 +65,7 @@
 }
 
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-height: 520px) and (orientation:landscape) {
     .modal {
         height: 95vh;
     }
