@@ -730,6 +730,7 @@ function populateSelectors() {
     });
 
     prevSecondaryWeaponButton.addEventListener('click', () => {
+        console.log('availableSecondaryWeapons', availableSecondaryWeapons);
         currentSecondaryWeaponIndex = cycleOption(availableSecondaryWeapons, currentSecondaryWeaponIndex, 'prev');
         updateSecondaryWeaponDisplay();
     });
@@ -1073,5 +1074,3 @@ function shootHexShip() {
     // Set laser cooldown
     ship.laserTimer = ship.laserCooldown;
 }
-
-

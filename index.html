@@ -188,7 +188,7 @@
     <p id="score"></p>
     <p id="asteroidsDestroyed"></p>
 
-    <p><button id="restartButton">Play Again</button><button id="mainMenuButton">Main Menu</button></p>
+    <div style="gap: 10px; display: flex;"><button id="restartButton">Play Again</button><button id="mainMenuButton">Main Menu</button></div>
 
     <!-- <p id="bonusCoins"></p> -->
 
@@ -362,10 +362,10 @@
 
   <div id="startScreen">
     <img height="60px" src="icons/ia-logo2.png" />
+    <canvas id="animationCanvas"></canvas>
 
     <div>
       <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
-      <canvas id="animationCanvas"></canvas>
       <script src="js/retro-infinite-asteroids-animation.js"></script>
       <script>
         let preloadedLeaderboards = null; // Variable to store preloaded leaderboards
@@ -398,77 +398,72 @@
 
 
       </script>
-
-
-      <table>
-        <tr>
-          <td rowspan="2">
-            <div id="shipCustomizationSection">
-              <div class="ship-preview">
-                <canvas id="shipPreviewCanvas" width="60" height="60"></canvas>
-              </div>
-              <div class="option-group">
-                <h4 id="selectShipHeader">Select Ship:</h4>
-                <div class="selector">
-                  <button id="prevShipButton">&#60;</button>
-                  <span id="selectedShip">Basic</span>
-                  <button id="nextShipButton">></button>
-                </div>
-              </div>
-
-              <div class="option-group">
-                <h4 id="secondaryWeaponHeader">Select Secondary:</h4>
-                <div class="selector">
-                  <button id="prevSecondaryWeaponButton">&#60;</button>
-                  <span id="selectedSecondaryWeapon">Bomb</span>
-                  <button id="nextSecondaryWeaponButton">></button>
-                </div>
-              </div>
+      <div id="controlSection">
+        <div>
+          <div id="shipCustomizationSection">
+            <div class="ship-preview">
+              <canvas id="shipPreviewCanvas" width="60" height="60"></canvas>
             </div>
-
-            <div id="gameModeSection">
-              <!-- <button>&#60;</button> -->
-
-              <h4 id="gameModeHeader">Select Game Mode</h4>
-
+            <div class="option-group">
+              <h4 id="selectShipHeader">Select Ship:</h4>
               <div class="selector">
-                <button>&#60;</button>
-
-                <span id="selectedGameMode">Deep Space</span>
-                <button id="gameModeButton">></button>
+                <button id="prevShipButton">&#60;</button>
+                <span id="selectedShip">Basic</span>
+                <button id="nextShipButton">></button>
               </div>
             </div>
-          </td>
-        </tr>
-        <tr>
-          <td><span id="crazyGameData"></span>
-            <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
-            <BR /><button id="settings" onclick="toggleSettings()">Settings</button><BR />
-            <button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
-            <button id="Achievements" onclick="openAchievementsModal()">My Achievements</button>
-            <!-- <button id="viewPastScoresButton">View Stats</button> -->
-          </td>
-          <td style="min-width: 250px;">
-            <div id="achievementIconsList"></div>
-          </td>
-        </tr>
-      </table>
 
-      <div id="achievementsContainer" style="display:none">
+            <div class="option-group">
+              <h4 id="secondaryWeaponHeader">Select Secondary:</h4>
+              <div class="selector">
+                <button id="prevSecondaryWeaponButton">&#60;</button>
+                <span id="selectedSecondaryWeapon">Bomb</span>
+                <button id="nextSecondaryWeaponButton">></button>
+              </div>
+            </div>
+          </div>
 
-        <!-- <h3>Your Achievements</h3> -->
-        <div id="achievementsList"></div>
+          <div id="gameModeSection">
+            <!-- <button>&#60;</button> -->
+
+            <h4 id="gameModeHeader">Select Game Mode</h4>
+
+            <div class="selector">
+              <button>&#60;</button>
+
+              <span id="selectedGameMode">Deep Space</span>
+              <button id="gameModeButton">></button>
+            </div>
+          </div>
+        </div>
+        <div><span id="crazyGameData"></span>
+          <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
+          <BR /><button id="settings" onclick="toggleSettings()">Settings</button><BR />
+          <button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
+          <button id="Achievements" onclick="openAchievementsModal()">My Achievements</button>
+          <!-- <button id="viewPastScoresButton">View Stats</button> -->
+        </div>
+        <div>
+          <div id="achievementIconsList"></div>
+        </div>
       </div>
-      <!-- <h3>Your Upgrades</h3> -->
-      <div id="upgradesList"></div>
-
-
-      <!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
-        <button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button> -->
-      <!-- <p>Tap lower left for store.</p> -->
-      <!-- <p>Tap with two fingers to fire.</p> -->
-      <!-- <button onclick="startGame()">Start Game</button> -->
     </div>
+
+    <div id="achievementsContainer" style="display:none">
+
+      <!-- <h3>Your Achievements</h3> -->
+      <div id="achievementsList"></div>
+    </div>
+    <!-- <h3>Your Upgrades</h3> -->
+    <div id="upgradesList"></div>
+
+
+    <!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
+        <button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button> -->
+    <!-- <p>Tap lower left for store.</p> -->
+    <!-- <p>Tap with two fingers to fire.</p> -->
+    <!-- <button onclick="startGame()">Start Game</button> -->
+  </div>
   </div>
 
 
@@ -476,7 +471,7 @@
   <script>
 
     const canvas = document.getElementById('gameCanvas');
-    let ctx = canvas.getContext('2d' ,  { alpha: false });
+    let ctx = canvas.getContext('2d', { alpha: false });
 
   </script>
 
@@ -523,19 +518,19 @@
       allLeaderboardsContainer.innerHTML = ''; // Clear previous content
 
       const IndexedGameModes = {
-      [GameModes.EASY]: "Deep Space Easy",
-      [GameModes.NORMAL]: "Deep Space Normal",
-      [GameModes.HARD]: "Deep Space Hard",
-      [GameModes.HERO]: "Deep Space Hero",
-      [GameModes.METEORSHOWEREASY]: "Meteor Shower Easy",
-      [GameModes.METEORSHOWERNORMAL]: "Meteor Shower Normal",
-      [GameModes.METEORSHOWERHARD]: "Meteor Shower Hard",
-      [GameModes.METEORSHOWERHERO]: "Meteor Shower Hero",
-      [GameModes.PLANETEASY]: "Planet Easy",
-      [GameModes.PLANETNORMAL]: "Planet Normal",
-      [GameModes.PLANETHARD]: "Planet Hard",
-      [GameModes.PLANETHERO]: "Planet Hero",
-      [GameModes.ENDLESS_SLOW]: "Endless Slow"
+        [GameModes.EASY]: "Deep Space Easy",
+        [GameModes.NORMAL]: "Deep Space Normal",
+        [GameModes.HARD]: "Deep Space Hard",
+        [GameModes.HERO]: "Deep Space Hero",
+        [GameModes.METEORSHOWEREASY]: "Meteor Shower Easy",
+        [GameModes.METEORSHOWERNORMAL]: "Meteor Shower Normal",
+        [GameModes.METEORSHOWERHARD]: "Meteor Shower Hard",
+        [GameModes.METEORSHOWERHERO]: "Meteor Shower Hero",
+        [GameModes.PLANETEASY]: "Planet Easy",
+        [GameModes.PLANETNORMAL]: "Planet Normal",
+        [GameModes.PLANETHARD]: "Planet Hard",
+        [GameModes.PLANETHERO]: "Planet Hero",
+        [GameModes.ENDLESS_SLOW]: "Endless Slow"
       };
       for (let mode in allScores) {
         const leaderboardDiv = document.createElement('div');
@@ -552,7 +547,7 @@
           entryP.tabIndex = 0; // Make each entry focusable
           entryWrapper.appendChild(entryP)
         });
-        
+
         leaderboardDiv.appendChild(entryWrapper);
         allLeaderboardsContainer.appendChild(leaderboardDiv);
       }
@@ -564,7 +559,7 @@
         firstFocusableElement.focus();
       }
       // scroll for leaderbaord
-      allLeaderboardsContainer.addEventListener('wheel', function(event) {
+      allLeaderboardsContainer.addEventListener('wheel', function (event) {
         allLeaderboardsContainer.scrollTop += event.deltaY;
       });
 
@@ -680,7 +675,7 @@
 
       // Create a new canvas for pixelated effect
       const pixelCanvas = document.createElement('canvas');
-      const pixelCtx = pixelCanvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
+      const pixelCtx = pixelCanvas.getContext('2d', { alpha: false, willReadFrequently: true });
 
       pixelCanvas.width = size;
       pixelCanvas.height = size;
@@ -1400,7 +1395,7 @@
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection, orderBy, limit, where, query , addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection, orderBy, limit, where, query, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
@@ -1976,80 +1971,80 @@
     // }
 
 
-  async function saveUserScore(gameData) {
-  if (crazyGamesMode) {
-    const user = await window.CrazyGames.SDK.user.getUser();
-    if (user && user.username) {
-      userId = 'cg_' + user.username;
-    }
-  }
-
-  if (!userId || !gameData) {
-    console.error('Invalid userId or gameData');
-    return;
-  }
-
-  const db = getFirestore();
-
-  const scoresCollectionRef = collection(db, 'scores');
-
-  const userDocRef = doc(db, 'users', userId);
-  const userDoc = await getDoc(userDocRef);
-  const loadedUserData = userDoc.data()
-  const safeGameData = {
-    score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
-    topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
-    activeMegaUpgrades: Array.isArray(gameData.activeMegaUpgrades) ? gameData.activeMegaUpgrades : [],
-    sessionLength: gameData.sessionLength || 0,
-    loginTime: gameData.loginTime || new Date(),
-    endTime: gameData.endTime || new Date(),
-    gameMode: gameData.gameMode || 'unknown',
-    asteroidsKilled: gameData.asteroidsKilled || 0,
-    aliensKilled: gameData.aliensKilled || 0,
-    wave: gameData.wave || 1
-  };
-  try {
-    // Add a new document to the 'scores' collection with an auto-generated ID
-    await addDoc(scoresCollectionRef, {
-      userId: userId,
-      username: loadedUserData.nickname || loadedUserData.username || "Unnamed",
-      gameName: 'InfiniteSpaceWar',
-      score: safeGameData.score,
-      wave: safeGameData.wave,
-      timestamp: safeGameData.endTime,  // Use endTime as the timestamp
-      topWeapons: safeGameData.topWeapons,
-      activeMegaUpgrades: safeGameData.activeMegaUpgrades,
-      sessionLength: safeGameData.sessionLength,
-      asteroidsKilled: safeGameData.asteroidsKilled,
-      aliensKilled: safeGameData.aliensKilled,
-      gameMode: safeGameData.gameMode,
-      loginTime: safeGameData.loginTime
-    });
-
-    // Update the user document by adding the score to their existing list of scores
-    await setDoc(userDocRef, {
-      games: {
-        InfiniteSpaceWar: {
-          scores: arrayUnion(safeGameData),
-          achievements: Achievements || {}
-        }
-      },
-      coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
-      lastUpdated: new Date(),
-          // Add the new leaderboard field
-      leaderboard: {
-        [safeGameData.gameMode]: {
-          score: safeGameData.score,
-          wave: safeGameData.wave,
-          timestamp: safeGameData.endTime
+    async function saveUserScore(gameData) {
+      if (crazyGamesMode) {
+        const user = await window.CrazyGames.SDK.user.getUser();
+        if (user && user.username) {
+          userId = 'cg_' + user.username;
         }
       }
-    }, { merge: true });
-    console.log('User score saved successfully:', safeGameData);
-  } catch (error) {
-    console.error('Error saving user score:', error);
-  }
-}
+
+      if (!userId || !gameData) {
+        console.error('Invalid userId or gameData');
+        return;
+      }
+
+      const db = getFirestore();
+
+      const scoresCollectionRef = collection(db, 'scores');
+
+      const userDocRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userDocRef);
+      const loadedUserData = userDoc.data()
+      const safeGameData = {
+        score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
+        topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
+        activeMegaUpgrades: Array.isArray(gameData.activeMegaUpgrades) ? gameData.activeMegaUpgrades : [],
+        sessionLength: gameData.sessionLength || 0,
+        loginTime: gameData.loginTime || new Date(),
+        endTime: gameData.endTime || new Date(),
+        gameMode: gameData.gameMode || 'unknown',
+        asteroidsKilled: gameData.asteroidsKilled || 0,
+        aliensKilled: gameData.aliensKilled || 0,
+        wave: gameData.wave || 1
+      };
+      try {
+        // Add a new document to the 'scores' collection with an auto-generated ID
+        await addDoc(scoresCollectionRef, {
+          userId: userId,
+          username: loadedUserData.nickname || loadedUserData.username || "Unnamed",
+          gameName: 'InfiniteSpaceWar',
+          score: safeGameData.score,
+          wave: safeGameData.wave,
+          timestamp: safeGameData.endTime,  // Use endTime as the timestamp
+          topWeapons: safeGameData.topWeapons,
+          activeMegaUpgrades: safeGameData.activeMegaUpgrades,
+          sessionLength: safeGameData.sessionLength,
+          asteroidsKilled: safeGameData.asteroidsKilled,
+          aliensKilled: safeGameData.aliensKilled,
+          gameMode: safeGameData.gameMode,
+          loginTime: safeGameData.loginTime
+        });
+
+        // Update the user document by adding the score to their existing list of scores
+        await setDoc(userDocRef, {
+          games: {
+            InfiniteSpaceWar: {
+              scores: arrayUnion(safeGameData),
+              achievements: Achievements || {}
+            }
+          },
+          coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
+          lastUpdated: new Date(),
+          // Add the new leaderboard field
+          leaderboard: {
+            [safeGameData.gameMode]: {
+              score: safeGameData.score,
+              wave: safeGameData.wave,
+              timestamp: safeGameData.endTime
+            }
+          }
+        }, { merge: true });
+        console.log('User score saved successfully:', safeGameData);
+      } catch (error) {
+        console.error('Error saving user score:', error);
+      }
+    }
 
     window.saveUserScore = saveUserScore;
     // Function to save initial user data
@@ -2162,67 +2157,67 @@
       }
     }
 
-  function displayLeaderboard(scores , gamemode) {
-  const leaderboard = document.getElementById('leaderboard');
-  leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gamemode || '')}</h2>`;
-  scores.forEach((entry, index) => {
-    const formattedScore = entry.score.toLocaleString('en-US', {
-      maximumFractionDigits: 0
-    });
-    const scoreDiv = document.createElement('div');
-    scoreDiv.innerText = `${index + 1}. ${entry.nickname || entry.username}: ${formattedScore} points`;
-    scoreDiv.tabIndex = 0; // Make it focusable
-    if (entry?.userId === userId) {
-      scoreDiv.style.fontWeight = 'bold';
-      scoreDiv.style.color = '#FFD700'; // Gold color for user's score
-    }
-    leaderboard.appendChild(scoreDiv);
-  });
-  document.getElementById('leaderboard-container').appendChild(leaderboard);
-}
-
-
-async function loadLeaderboardOptimized(gameName, gameMode, gameData ,  limitScore = 10,) {
-  try {
-    const db = getFirestore();
-    const scoresCollection = collection(db, 'scores');
-    
-    const currentGameData = {
-      username: userNickname.textContent,
-      score : gameData.score,
-      userId
+    function displayLeaderboard(scores, gamemode) {
+      const leaderboard = document.getElementById('leaderboard');
+      leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gamemode || '')}</h2>`;
+      scores.forEach((entry, index) => {
+        const formattedScore = entry.score.toLocaleString('en-US', {
+          maximumFractionDigits: 0
+        });
+        const scoreDiv = document.createElement('div');
+        scoreDiv.innerText = `${index + 1}. ${entry.nickname || entry.username}: ${formattedScore} points`;
+        scoreDiv.tabIndex = 0; // Make it focusable
+        if (entry?.userId === userId) {
+          scoreDiv.style.fontWeight = 'bold';
+          scoreDiv.style.color = '#FFD700'; // Gold color for user's score
+        }
+        leaderboard.appendChild(scoreDiv);
+      });
+      document.getElementById('leaderboard-container').appendChild(leaderboard);
     }
 
-    const scoresQuery = query(
-        scoresCollection,
-        where('gameMode', '==', gameMode), // Filter by gameMode
-        orderBy('score', 'desc'), // Order by score descending
-        limit(limitScore) // Limit to top N scores
-    );
 
-    // Fetch the results based on the query
-    const scoresSnapShot = await getDocs(scoresQuery);
-    const leaderboardData = [currentGameData];
-    let userScore = null;
+    async function loadLeaderboardOptimized(gameName, gameMode, gameData, limitScore = 10,) {
+      try {
+        const db = getFirestore();
+        const scoresCollection = collection(db, 'scores');
 
-    // Process each user document
-    scoresSnapShot.forEach(doc => {
-      const scoreData = doc.data();
-      console.log('User Data:', scoreData);
-      if(scoreData){
-        leaderboardData.push(scoreData)
+        const currentGameData = {
+          username: userNickname.textContent,
+          score: gameData.score,
+          userId
+        }
+
+        const scoresQuery = query(
+          scoresCollection,
+          where('gameMode', '==', gameMode), // Filter by gameMode
+          orderBy('score', 'desc'), // Order by score descending
+          limit(limitScore) // Limit to top N scores
+        );
+
+        // Fetch the results based on the query
+        const scoresSnapShot = await getDocs(scoresQuery);
+        const leaderboardData = [currentGameData];
+        let userScore = null;
+
+        // Process each user document
+        scoresSnapShot.forEach(doc => {
+          const scoreData = doc.data();
+          console.log('User Data:', scoreData);
+          if (scoreData) {
+            leaderboardData.push(scoreData)
+          }
+        });
+
+        leaderboardData.sort((a, b) => b.score - a.score);
+
+        // Display the leaderboard data
+        displayLeaderboard(leaderboardData.slice(0, limitScore), gameMode);
+
+      } catch (error) {
+        console.error('Error loading leaderboard:', error);
       }
-    });
-
-    leaderboardData.sort((a, b) => b.score - a.score);
-    
-    // Display the leaderboard data
-    displayLeaderboard(leaderboardData.slice(0, limitScore), gameMode);
-
-  } catch (error) {
-    console.error('Error loading leaderboard:', error);
-  }
-}
+    }
 
     async function loadAllLeaderboards(gameName) {
       const db = getFirestore();
@@ -2270,53 +2265,53 @@ async function loadLeaderboardOptimized(gameName, gameMode, gameData ,  limitSco
 
 
     async function loadAllLeaderboardsOptimized(gameName, limitScore = 10, userId = null) {
-  try {
-    const db = getFirestore();
-    const scoresCollection = collection(db, 'scores');
+      try {
+        const db = getFirestore();
+        const scoresCollection = collection(db, 'scores');
 
-    const GameModes = {
-      EASY: 'easy',
-      NORMAL: 'normal',
-      HARD: 'hard',
-      HERO: 'heroic',
-      METEORSHOWEREASY: 'meteorshowereasy',
-      METEORSHOWERNORMAL: 'meteorshowernormal',
-      METEORSHOWERHARD: 'meteorshowerhard',
-      METEORSHOWERHERO: 'meteorshowerhero',
-      PLANETEASY: 'planeteasy',
-      PLANETNORMAL: 'planetnormal',
-      PLANETHARD: 'planethard',
-      PLANETHERO: 'planethero',
-      ENDLESS_SLOW: 'endless_slow',
-      COOP: 'coop'
-    };
+        const GameModes = {
+          EASY: 'easy',
+          NORMAL: 'normal',
+          HARD: 'hard',
+          HERO: 'heroic',
+          METEORSHOWEREASY: 'meteorshowereasy',
+          METEORSHOWERNORMAL: 'meteorshowernormal',
+          METEORSHOWERHARD: 'meteorshowerhard',
+          METEORSHOWERHERO: 'meteorshowerhero',
+          PLANETEASY: 'planeteasy',
+          PLANETNORMAL: 'planetnormal',
+          PLANETHARD: 'planethard',
+          PLANETHERO: 'planethero',
+          ENDLESS_SLOW: 'endless_slow',
+          COOP: 'coop'
+        };
 
-    const allScores = {};  // Object to store leaderboard data for each game mode
-    
-    // Process each game mode
-    await Promise.all(Object.values(GameModes).map(async (mode) => {
-      const scoresQuery = query(
-        scoresCollection,
-        where('gameMode', '==', mode), // Filter by gameMode
-        orderBy('score', 'desc'), // Order by score descending
-        limit(limitScore) // Limit to top N scores
-      );
-      
-      const scoresSnapShot = await getDocs(scoresQuery);
-      
-      if (scoresSnapShot.size > 0) {
-        allScores[mode] = scoresSnapShot.docs.map(doc => doc.data()); // Push scores data directly
+        const allScores = {};  // Object to store leaderboard data for each game mode
+
+        // Process each game mode
+        await Promise.all(Object.values(GameModes).map(async (mode) => {
+          const scoresQuery = query(
+            scoresCollection,
+            where('gameMode', '==', mode), // Filter by gameMode
+            orderBy('score', 'desc'), // Order by score descending
+            limit(limitScore) // Limit to top N scores
+          );
+
+          const scoresSnapShot = await getDocs(scoresQuery);
+
+          if (scoresSnapShot.size > 0) {
+            allScores[mode] = scoresSnapShot.docs.map(doc => doc.data()); // Push scores data directly
+          }
+        }));
+
+        // Return allScores for further use
+        return allScores;
+
+      } catch (error) {
+        console.error('Error loading leaderboards for all game modes:', error);
+        return null;  // Return null in case of an error
       }
-    }));
-
-    // Return allScores for further use
-    return allScores;
-
-  } catch (error) {
-    console.error('Error loading leaderboards for all game modes:', error);
-    return null;  // Return null in case of an error
-  }
-}
+    }
 
 
     // async function loadAllLeaderboards(gameId) {
