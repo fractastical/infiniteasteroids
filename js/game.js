@@ -1266,7 +1266,6 @@ function createAreaDamage(x, y, radius, damage = 1) {
 }
 function increaseXP(amount, isGem = false) {
     const currTimeInMS = Date.now();
-
     // Apply tapering based on wave number
     const taperingFactor = xpTaperingFactor();
     amount *= taperingFactor;
@@ -1290,7 +1289,9 @@ function increaseXP(amount, isGem = false) {
         const upgradeModal = document.getElementById('upgradeModal');
         // only display levelup if upgrade modal is not open
         if (!upgradeModal || upgradeModal.style.display == "block") {
-            levelUp();
+            if (!gameOver) {
+                levelUp();
+            }
 
         }
 
@@ -1610,8 +1611,9 @@ function handleKeyDown(event) {
         } else if (event.key === 'e' || event.key === 'E') {
             fireSecondaryWeapon(); // Use the selected secondary weapon
         } else if ((event.key === 'r' || event.key === 'R')) {
-            if (!gameOver)
+            if (!gameOver) {
                 claimLevelUps(); // Claim level ups
+            }
         } else if ((event.key === 'o' || event.key === 'O') && normalDebugMode) {
 
 
