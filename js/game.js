@@ -311,6 +311,9 @@ let droneUpgrades = {
 
 let lastCurrentShip = 'basic';
 
+function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
 
 // Game loop
 function startGame() {
@@ -464,9 +467,12 @@ function startGame() {
 
     resumeGame();
 
-    if (!toggleMusicOff)
-        backgroundMusic.play(); // Play the background music
-    isMusicPlaying = true;
+
+    if (!isMobile()) {
+        if (!toggleMusicOff)
+            backgroundMusic.play(); // Play the background music
+        isMusicPlaying = true;
+    }
 }
 
 // TEMP:(?) disable resize. Re-enable for crazy games.
@@ -1057,7 +1063,7 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
 
     if (keys[upKey] || (ship === ship && touchAccelerating)) {
 
-        if (!toggleMusicOff && !bossMusicEnabled) backgroundMusic.play();
+        // if (!toggleMusicOff && !bossMusicEnabled) backgroundMusic.play();
         playRandomThrusterSound();
 
         let accelerationAmount = ship.acceleration;
@@ -2768,7 +2774,7 @@ function endGame() {
     }
 
     // Load and display the leaderboard
-    loadLeaderboardOptimized(gameId, currentMode);
+    // loadLeaderboardOptimized(gameId, currentMode);
 
     populateSelectors();
 
@@ -2776,10 +2782,10 @@ function endGame() {
     // const affordableUpgrades = getRandomAffordableUpgrades(coins);
 
     // Display the end game screen
-    displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons);
+    displayEndGameScreen(topSixWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, gameData);
 
 }
-function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, affordableUpgrades) {
+function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlockedWeapons, gameData, affordableUpgrades) {
     const endScreen = document.getElementById('endScreen');
     const waveElement = document.getElementById('wave');
     const scoreElement = document.getElementById('score');
@@ -2919,7 +2925,7 @@ function displayEndGameScreen(topWeapons, newlyUnlockedAchievements, newlyUnlock
     levelUpModal.style.display = 'none';
 
     // Load and display the leaderboard
-    loadLeaderboardOptimized(gameId, currentMode);
+    loadLeaderboardOptimized(gameId, currentMode, gameData);
 
     // Set focus to the first focusable element in the end screen
     const firstFocusableElement = endScreen.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
@@ -3029,10 +3035,3 @@ function drawDamageReport() {
         }
     });
 }
-
-
-
-
-
-
-
