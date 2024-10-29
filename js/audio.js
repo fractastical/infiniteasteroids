@@ -367,6 +367,9 @@ function initializeSounds() {
     allSounds.forEach(sound => {
         sound.volume = currentVolume / 10;
     });
+    if (isMobile()) {
+        pauseAllMusic();
+    }
 }
 
 // Call this function once to set initial volumes
