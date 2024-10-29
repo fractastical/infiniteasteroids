@@ -730,6 +730,7 @@ function populateSelectors() {
     });
 
     prevSecondaryWeaponButton.addEventListener('click', () => {
+        console.log('availableSecondaryWeapons', availableSecondaryWeapons);
         currentSecondaryWeaponIndex = cycleOption(availableSecondaryWeapons, currentSecondaryWeaponIndex, 'prev');
         updateSecondaryWeaponDisplay();
     });

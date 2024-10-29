@@ -348,7 +348,7 @@ canvas {
 #startScreen {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     position: absolute;
     top: 0;
@@ -360,7 +360,6 @@ canvas {
     z-index: 10;
     background-color: #111;
     /* Dark background */
-    padding: 20px;
     color: #0f0;
     box-sizing: border-box;
     font-family: 'Press Start 2P', cursive;
@@ -369,7 +368,22 @@ canvas {
     overflow-y: auto;
 }
 
+#controlSection {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    margin:20px;
+    gap: 10px;
+}
 
+@media (max-width: 768px) {
+    #controlSection {
+        flex-direction: column;
+    }
+    #animationCanvas {
+        width: inherit;
+    }
+}
 
 #startScreen h2 {
     font-size: 3em;
