@@ -586,7 +586,6 @@ button {
     justify-content: center;
     /* Center align the icons */
     /* gap: 10px; /* Add spacing between icons */
-    */
 }
 
 
@@ -1309,7 +1308,7 @@ select {
 .selector button {
     width: 30px;
     height: 30px;
-    background-color: #purple;
+    background-color: purple;
     color: white;
     border: none;
     cursor: pointer;
@@ -1415,6 +1414,20 @@ h4 {
     font-size: 40px;
     pointer-events: all;
     outline: none;
+}
+
+#mobile-pause {
+    position: fixed;
+    z-index: 1000;
+    left: 13px;
+    top: 70px;
+    background: rgba(0, 0, 0, 0.5);
+
+    img {
+        width: 30px;
+        height: auto;
+        object-fit: contain;
+    }
 }
 
 #steer-left {
