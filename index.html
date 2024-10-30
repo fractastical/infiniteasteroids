@@ -7,6 +7,7 @@
   <link href="styles-cg.css" rel="stylesheet">
 
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
 </head>
@@ -22,7 +23,7 @@
   <div id="mobile-pause" style="display: none;" onclick="pauseToggle()">
     <img id="mobile-pause-img" src="/icons/pause.png" alt="pause">
   </div>
-  
+
   <div id="leftArrow" class="flashing-arrow" style="left: 20px; top: 50%;"></div>
   <div id="rightArrow" class="flashing-arrow" style="right: 20px; top: 50%;"></div>
 
@@ -192,7 +193,8 @@
     <p id="score"></p>
     <p id="asteroidsDestroyed"></p>
 
-    <div style="gap: 10px; display: flex;"><button id="restartButton">Play Again</button><button id="mainMenuButton">Main Menu</button></div>
+    <div style="gap: 10px; display: flex;"><button id="restartButton">Play Again</button><button
+        id="mainMenuButton">Main Menu</button></div>
 
     <!-- <p id="bonusCoins"></p> -->
 
@@ -365,91 +367,89 @@
 
 
   <div id="startScreen">
-    <img height="60px" src="icons/ia-logo2.png" />
+    <img height="60px" style="padding-top: 175px;" src="icons/ia-logo2.png" />
     <canvas id="animationCanvas"></canvas>
 
-    <div>
-      <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
-      <script src="js/retro-infinite-asteroids-animation.js"></script>
-      <script>
-        let preloadedLeaderboards = null; // Variable to store preloaded leaderboards
+    <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
+    <script src="js/retro-infinite-asteroids-animation.js"></script>
+    <script>
+      let preloadedLeaderboards = null; // Variable to store preloaded leaderboards
 
-        document.addEventListener('DOMContentLoaded', async () => {
-
-
-          InfiniteAsteroidsAnimation.init('animationCanvas');
-          populateAchievements();
-          populateSelectors();
-          handleSelections();
-          updateShipPreview();
-          document.getElementById('versionInfo').innerHTML = "Version " + version;
-          // console.log("innerHeight");
-          // console.log(window.innerHeight);
-          preloadedLeaderboards = await loadAllLeaderboardsOptimized(gameId);
-
-          document.getElementById('viewAllLeaderboardsButton').addEventListener('click', () => {
-            populateLeaderboardsModal(preloadedLeaderboards);
-          });
-
-          if (window.innerHeight < 500) {
-            document.getElementById('gameModeHeader').remove();
-            console.log(window.innerHeight);
-            document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
-          }
+      document.addEventListener('DOMContentLoaded', async () => {
 
 
+        InfiniteAsteroidsAnimation.init('animationCanvas');
+        populateAchievements();
+        populateSelectors();
+        handleSelections();
+        updateShipPreview();
+        document.getElementById('versionInfo').innerHTML = "Version " + version;
+        // console.log("innerHeight");
+        // console.log(window.innerHeight);
+        preloadedLeaderboards = await loadAllLeaderboardsOptimized(gameId);
+
+        document.getElementById('viewAllLeaderboardsButton').addEventListener('click', () => {
+          populateLeaderboardsModal(preloadedLeaderboards);
         });
 
+        if (window.innerHeight < 500) {
+          document.getElementById('gameModeHeader').remove();
+          console.log(window.innerHeight);
+          document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
+        }
 
-      </script>
-      <div id="controlSection">
-        <div>
-          <div id="shipCustomizationSection">
-            <div class="ship-preview">
-              <canvas id="shipPreviewCanvas" width="60" height="60"></canvas>
-            </div>
-            <div class="option-group">
-              <h4 id="selectShipHeader">Select Ship:</h4>
-              <div class="selector">
-                <button id="prevShipButton">&#60;</button>
-                <span id="selectedShip">Basic</span>
-                <button id="nextShipButton">></button>
-              </div>
-            </div>
 
-            <div class="option-group">
-              <h4 id="secondaryWeaponHeader">Select Secondary:</h4>
-              <div class="selector">
-                <button id="prevSecondaryWeaponButton">&#60;</button>
-                <span id="selectedSecondaryWeapon">Bomb</span>
-                <button id="nextSecondaryWeaponButton">></button>
-              </div>
-            </div>
+      });
+
+
+    </script>
+    <div id="controlSection">
+      <div>
+        <div id="shipCustomizationSection">
+          <div class="ship-preview">
+            <canvas id="shipPreviewCanvas" width="60" height="60"></canvas>
           </div>
-
-          <div id="gameModeSection">
-            <!-- <button>&#60;</button> -->
-
-            <h4 id="gameModeHeader">Select Game Mode</h4>
-
+          <div class="option-group">
+            <h4 id="selectShipHeader">Select Ship:</h4>
             <div class="selector">
-              <button>&#60;</button>
+              <button id="prevShipButton">&#60;</button>
+              <span id="selectedShip">Basic</span>
+              <button id="nextShipButton">></button>
+            </div>
+          </div>
 
-              <span id="selectedGameMode">Deep Space</span>
-              <button id="gameModeButton">></button>
+          <div class="option-group">
+            <h4 id="secondaryWeaponHeader">Select Secondary:</h4>
+            <div class="selector">
+              <button id="prevSecondaryWeaponButton">&#60;</button>
+              <span id="selectedSecondaryWeapon">Bomb</span>
+              <button id="nextSecondaryWeaponButton">></button>
             </div>
           </div>
         </div>
-        <div><span id="crazyGameData"></span>
-          <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
-          <BR /><button id="settings" onclick="toggleSettings()">Settings</button><BR />
-          <button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
-          <button id="Achievements" onclick="openAchievementsModal()">My Achievements</button>
-          <!-- <button id="viewPastScoresButton">View Stats</button> -->
+
+        <div id="gameModeSection">
+          <!-- <button>&#60;</button> -->
+
+          <h4 id="gameModeHeader">Select Game Mode</h4>
+
+          <div class="selector">
+            <button>&#60;</button>
+
+            <span id="selectedGameMode">Deep Space</span>
+            <button id="gameModeButton">></button>
+          </div>
         </div>
-        <div>
-          <div id="achievementIconsList"></div>
-        </div>
+      </div>
+      <div><span id="crazyGameData"></span>
+        <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
+        <BR /><button id="settings" onclick="toggleSettings()">Settings</button><BR />
+        <button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
+        <button id="Achievements" onclick="openAchievementsModal()">My Achievements</button>
+        <!-- <button id="viewPastScoresButton">View Stats</button> -->
+      </div>
+      <div>
+        <div id="achievementIconsList"></div>
       </div>
     </div>
 
