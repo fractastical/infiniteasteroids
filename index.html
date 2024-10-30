@@ -200,7 +200,7 @@
 
     <h3>Damage Report</h3>
     <ul id="damageReportList"></ul>
-    <p>Push "U" for more details</p>
+    <p id="push-u">Push "U" for more details</p>
 
     <h3 id="unlockedWeaponsHeader">Recently Unlocked Weapons</h3>
     <ul id="unlockedWeaponsList"></ul>
@@ -217,6 +217,19 @@
         <ol id="leaderboard-list"></ol>
       </div>
     </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+
+        if (isMobile()) {
+          console.log('is mobile', isMobile());
+          document.getElementById('push-u').style.display = 'none';
+        } else {
+          console.log('is mobile', isMobile());
+          document.getElementById('push-u').style.display = 'block';
+        }
+
+      });
+    </script>
   </div>
 
 
