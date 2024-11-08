@@ -1459,6 +1459,8 @@ function resumeGame() {
     // const openModals = document.querySelectorAll('.modal:not([style*="display: none"])');
     console.log(openModals.length);
 
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls) mobileControls.style.display = 'block';
     if (openModals.length === 0 && !gameOver) {
         const container = document.getElementById('activeWeaponClassesContainer');
         container.style.display = "block";
@@ -2593,12 +2595,13 @@ function toggleRedeemMode() {
 
 
 function levelUp() {
+    const mobileControls = document.getElementById('mobile-controls');
+    if (mobileControls) mobileControls.style.display = 'none';
     level++;
     unclaimedLevelUps++;
     let prevLevelUp = lastLevelUp;
     lastLevelUp = Date.now();
     bonusLevelUpCalculator();
-
     if (!waitAndClaimMode) {
         pauseGame();
         document.getElementById('leveluptitle').innerHTML = 'Level Up!';

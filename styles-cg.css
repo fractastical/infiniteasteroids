@@ -3,7 +3,7 @@
     display: none;
     position: fixed;
     z-index: 100;
-    left: 50%;
+    left: 48%;
     top: 50%;
     transform: translate(-50%, -50%);
     width: var(--modal-width, 80%);
@@ -13,7 +13,7 @@
     background-color: #111;
     border: 3px solid #4e15ac;
     color: #0f0;
-    padding: 15px;
+    padding: 10px;
     box-sizing: border-box;
     text-align: center;
     font-family: 'Press Start 2P', cursive;
@@ -67,7 +67,7 @@
 
 @media only screen and (max-width: 768px) {
     .modal {
-        height: 95vh;
+        height: 90vh;
     }
 }
 
@@ -76,7 +76,7 @@
 /* Adjustments for mobile landscape mode */
 @media only screen and (max-width: 768px) and (orientation: landscape) {
     .modal {
-        height: 95vh;
+        height: 90vh;
         /* Full viewport height in landscape mode */
         width: 100vw;
         /* Full viewport width */
@@ -136,7 +136,7 @@
     height: clamp(50px, 10vw, 70px);
     background-size: contain;
     background-repeat: no-repeat;
-    margin-right: 15px;
+    margin-right: 10px;
 }
 
 .upgrade-details {

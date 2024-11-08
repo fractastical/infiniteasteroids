@@ -368,6 +368,12 @@ canvas {
     overflow-y: auto;
 }
 
+@media (max-width: 768px) {
+    #startScreen {
+        height: unset;
+    }
+}
+
 #controlSection {
     align-items: center;
     justify-content: center;
@@ -984,6 +990,7 @@ margin-bottom: 20px;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
+    width: 100%;
 }
 
 
@@ -1006,16 +1013,17 @@ margin-bottom: 20px;
     display: flex;
     align-items: center;
     margin-bottom: 15px;
-    padding: 10px;
+    padding: 5px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 5px;
+    width: -webkit-fill-available;
 }
 
 .upgrade-number {
     font-size: 24px;
     font-weight: bold;
     color: #8B008B;
-    margin-right: 10px;
+    margin-right: 5px;
     min-width: 30px;
     text-align: center;
 }
@@ -1026,7 +1034,7 @@ margin-bottom: 20px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    margin-right: 15px;
+    margin-right: 10px;
     /* Add space between icon and text */
     flex-shrink: 0;
     /* Prevent the icon from shrinking */
@@ -1037,6 +1045,7 @@ margin-bottom: 20px;
     flex-direction: column;
     justify-content: flex-start;
     flex-grow: 1;
+    min-width: 0;
     /* Make the details take up remaining space */
 }
 
@@ -1048,12 +1057,15 @@ margin-bottom: 20px;
 
 .upgrade-details p {
     margin: 5px 0 0 0;
+    width: 100%;
 }
 
 .upgrade-name {
     font-size: 18px;
     color: #00FF00;
     margin-bottom: 5px;
+    word-wrap: break-word;
+    width: min-content;
 }
 
 .upgrade-name-small {
@@ -1066,6 +1078,8 @@ margin-bottom: 20px;
 .upgrade-description {
     font-size: 14px;
     color: #8dc53a;
+    word-wrap: break-word;
+    width: min-content;
 }
 
 
