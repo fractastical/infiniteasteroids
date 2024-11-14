@@ -1460,7 +1460,13 @@ function resumeGame() {
     console.log(openModals.length);
 
     const mobileControls = document.getElementById('mobile-controls');
-    if (mobileControls) mobileControls.style.display = 'block';
+
+    // Check if it's a mobile device
+    if (isMobile()) {
+      if (mobileControls) mobileControls.style.display = 'block';
+    } else {
+      if (mobileControls) mobileControls.style.display = 'none';
+    }
     if (openModals.length === 0 && !gameOver) {
         const container = document.getElementById('activeWeaponClassesContainer');
         container.style.display = "block";
