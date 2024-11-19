@@ -71,7 +71,9 @@
     }
 }
 
-
+#prevAchievement, #nextAchievement {
+    width: 70px;
+}
 
 /* Adjustments for mobile landscape mode */
 @media only screen and (max-width: 768px) and (orientation: landscape) {
