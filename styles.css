@@ -9,11 +9,8 @@ body {
     /* font-family: Arial, sans-serif; */
     flex-direction: column;
     font-family: 'Press Start 2P';
-
-
 }
 
-#technologiesCount,
 #loginInfo {
     position: absolute;
     top: 15px;
@@ -24,9 +21,46 @@ body {
 }
 
 #technologiesCount {
-    top: 9px;
-    right: 100px;
+    position: absolute;
+    top: 15px;
+    left: 70px;
     line-height: 2;
+    z-index: 20;
+    font-size: 10px;
+}
+
+@media (max-width: 768px) {
+    #technologiesCount {
+        position: absolute;
+        top: 120px;
+        line-height: 1;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 950px ) and (max-height: 530px ) {
+    #technologiesCount {
+        position: absolute;
+        top: 120px;
+        line-height: 1;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+    }
+}
+
+@media (max-aspect-ratio: 1/1) {
+    #technologiesCount {
+        position: absolute;
+        top: 100px;
+        line-height: 1;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+        text-align: center;
+    }
 }
 
 .top-left {
@@ -130,9 +164,6 @@ button:hover {
     background: #00cc00;
 }
 
-#technologiesCount {
-    right: 100px;
-}
 
 /* #shipType {
     left: 10px;
@@ -766,6 +797,11 @@ text-align: left;
     /* Optional: For Firefox */
     -ms-overflow-style: auto;
     /* Optional: For IE and Edge */
+}
+@media (max-height: 560px) {
+    #allLeaderboardsContainer {
+        height: 200px;
+    }
 }
 
 #achievementsList {
