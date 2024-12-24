@@ -211,8 +211,8 @@ button:hover {
 html {
     margin: 0;
     padding: 0;
-    overflow: hidden
-        /* Prevent scrolling */
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 canvas {
@@ -397,6 +397,7 @@ canvas {
     /* Arcade font */
     text-align: center;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 @media (max-width: 768px) {
