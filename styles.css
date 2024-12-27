@@ -1477,8 +1477,7 @@ h4 {
 
     img {
         width: 30px;
-        height: auto;
-        object-fit: contain;
+        height: 30px;
     }
 }
 

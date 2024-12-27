@@ -21,7 +21,7 @@
   </div>
 
   <div id="mobile-pause" style="display: none;" onclick="pauseToggle()">
-    <img id="mobile-pause-img" src="icons/pause.png" alt="pause">
+    <img id="mobile-pause-img" width="30px" height="30px" src="icons/pause.png" alt="pause">
   </div>
 
   <div id="leftArrow" class="flashing-arrow" style="left: 20px; top: 50%;"></div>
@@ -1176,7 +1176,7 @@
     restartButton.addEventListener('click', async () => {
       // restartButton.style.display = 'none';
       // console.log("restart click");
-
+      document.getElementById("mobile-pause-img").style.display = "block";
       resetAllVariables();
       const callbacks = {
         adFinished: () => {
