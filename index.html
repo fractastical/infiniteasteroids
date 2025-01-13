@@ -8,7 +8,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link rel="preload" as="image" href="icons/play.png">
 
 </head>
 
@@ -121,14 +121,13 @@
   <!-- ver version -->
   <div id="shipTypeContainer">
     <canvas id="miniShipPreview" width="40" height="40"></canvas>
-    </span>
   </div>
   <!-- <div id="shipType">
     Ship type: Basic&nbsp;&nbsp; &nbsp;
   </div> -->
 
 
-  <div id="technologiesCount">
+  <div id="technologiesCount1">
   </div>
   <!-- 
     <div id="result">
@@ -174,7 +173,7 @@
   <div id="activeWeaponClassesContainer" class="bottom-icons">
   </div>
 
-  <canvas id="gameCanvas" width="100" height="100"></canvas>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
 
   <div id="bottomContent">
     <div id="waveCounter"></div>
@@ -380,9 +379,13 @@
 
 
   <div id="startScreen">
-    <img height="60px" src="icons/ia-logo2.png" />
-    <canvas id="animationCanvas"></canvas>
-
+    <div id="technologiesCount">
+    </div>
+    <img height="50px" src="icons/ia-logo2.png" id="gameLogo"/>
+    <div id="canvasContainer">
+      <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
+      <canvas id="animationCanvas"></canvas>
+    </div>
     <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
     <script src="js/retro-infinite-asteroids-animation.js"></script>
     <script>
@@ -420,9 +423,9 @@
       <div>
         <div id="shipCustomizationSection">
           <div class="ship-preview">
-            <canvas id="shipPreviewCanvas" width="60" height="60"></canvas>
+            <canvas id="shipPreviewCanvas" width="50" height="50"></canvas>
           </div>
-          <div class="option-group">
+          <div class="option-group"  style="display: flex; justify-content: center; gap: 10px;">
             <h4 id="selectShipHeader">Select Ship:</h4>
             <div class="selector">
               <button id="prevShipButton">&#60;</button>
@@ -1176,7 +1179,7 @@
     restartButton.addEventListener('click', async () => {
       // restartButton.style.display = 'none';
       // console.log("restart click");
-      document.getElementById("mobile-pause-img").style.display = "block";
+
       resetAllVariables();
       const callbacks = {
         adFinished: () => {

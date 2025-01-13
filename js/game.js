@@ -152,6 +152,7 @@ let shipRelativeX = ship.x / canvas.width;
 let shipRelativeY = ship.y / canvas.height;
 
 function updateShipPositionAfterResize() {
+  console.log("ship position resize");
   ship.x = shipRelativeX * canvas.width;
   ship.y = shipRelativeY * canvas.height;
 }
@@ -652,6 +653,8 @@ function resizeCanvas() {
       laser.x *= widthRatio;
       laser.y *= heightRatio;
     });
+    invincible = true;
+    invincibilityTimer += 40;
   }
 
   // Update aliens positions
@@ -1108,43 +1111,46 @@ function initializeGame(mode, replay = false) {
 
   startGame();
 }
-
-function handleTouch(e) {
-  e.preventDefault(); // Prevent default touch behaviors
-
-  if (e.touches.length === 1) {
-    const touch = e.touches[0];
-    const touchX = touch.clientX;
-    const canvasWidth = canvas.width;
-    const partWidth = canvasWidth / 5; // Divide the canvas width into 5 parts
-
-    if (touchX < partWidth) {
-      // Hard left turn
-      ship.rotation -= ship.rotationSpeed * 3;
-    } else if (touchX < partWidth * 2) {
-      // Soft left turn
-      ship.rotation -= ship.rotationSpeed;
-    } else if (touchX < partWidth * 3) {
-      // Acceleration
-      touchAccelerating = true;
-    } else if (touchX < partWidth * 4) {
-      // Soft right turn
-      ship.rotation += ship.rotationSpeed;
-    } else {
-      // Hard right turn
-      ship.rotation += ship.rotationSpeed * 3;
-    }
-  }
-
-  if (e.target === canvas && e.touches.length === 2) {
-    // Two-finger touch for firing
-    // if (ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
-    //     shootLasers();
-    // }
-    fireSecondaryWeapon();
-    secondaryWeaponUsedOnMobile = true;
-  }
+function isEmulatedTouch() {
+  return (
+    window.matchMedia &&
+    window.matchMedia("(pointer: coarse)").matches &&
+    !("ontouchstart" in window)
+  );
 }
+let lastTapTime = 0;
+function handleTouch(e) {
+  e.preventDefault(); // Ngăn chặn hành vi mặc định
+
+  const currentTime = new Date().getTime(); // Thời gian hiện tại
+  const tapInterval = currentTime - lastTapTime; // Khoảng cách giữa hai lần chạm
+
+  if (tapInterval < 300 && tapInterval > 0) {
+    // Nếu khoảng thời gian giữa hai lần chạm nhỏ hơn 300ms -> double tap
+    console.log("Double tap detected!");
+    fireSecondaryWeapon(); // Kích hoạt vũ khí phụ
+  } else {
+    //   // Xử lý chạm 1 lần nếu cần
+    //   const touch = e.touches[0];
+    //   const touchX = touch.clientX;
+    //   const canvasWidth = canvas.width;
+    //   const partWidth = canvasWidth / 5; // Chia màn hình thành 5 phần
+    //   if (touchX < partWidth) {
+    //     ship.rotation -= ship.rotationSpeed * 3; // Quẹo trái mạnh
+    //   } else if (touchX < partWidth * 2) {
+    //     ship.rotation -= ship.rotationSpeed; // Quẹo trái nhẹ
+    //   } else if (touchX < partWidth * 3) {
+    //     touchAccelerating = true; // Tăng tốc
+    //   } else if (touchX < partWidth * 4) {
+    //     ship.rotation += ship.rotationSpeed; // Quẹo phải nhẹ
+    //   } else {
+    //     ship.rotation += ship.rotationSpeed * 3; // Quẹo phải mạnh
+    //   }
+  }
+
+  lastTapTime = currentTime; // Cập nhật thời gian chạm
+}
+
 let secondaryWeaponUsedOnMobile = false;
 
 let activeRotationRight = 0;
@@ -1388,7 +1394,7 @@ function increaseXP(amount, isGem = false) {
   }
 
   xp += amount;
-  document.getElementById("xpBarContainer").style.display = "block";
+  document.getElementById("xpBarContainer").style.display = "none";
 
   updateXPBar();
 
@@ -1528,11 +1534,17 @@ function drawScore() {
       document.getElementById("controlsInfo").textContent =
         "s[e]condary se[t]tings [p]ause [i]nfo";
   } else {
-    document.getElementById("controlsInfo").textContent = "";
+    if (waitAndClaimMode)
+      document.getElementById("controlsInfo").textContent =
+        "Double tap for secondary weapon";
+    else
+      document.getElementById("controlsInfo").textContent =
+        "Double tap for secondary weapon";
   }
 }
 
 function pauseGame() {
+  document.getElementById("mobile-pause-img").style.display = "none";
   // console.log("p");
   if (!isPaused) {
     // const modals = document.querySelectorAll('.modal');
@@ -1562,6 +1574,7 @@ function pauseGame() {
 }
 
 function resumeGame() {
+  document.getElementById("mobile-pause-img").style.display = "block";
   const modals = document.querySelectorAll(".modal");
   const openModals = Array.from(modals).filter((modal) => {
     return window.getComputedStyle(modal).display !== "none";
@@ -2789,7 +2802,6 @@ function levelUp() {
   if (!waitAndClaimMode) {
     pauseGame();
     document.getElementById("leveluptitle").innerHTML = "Level Up!";
-    document.getElementById("mobile-pause-img").style.display = "none";
 
     let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
     const upgrades = getRandomUpgrades(upgradesToRetrieve);
@@ -2797,8 +2809,6 @@ function levelUp() {
     if (upgrades.length <= 2) {
       waitAndClaimMode = true;
       resumeGame();
-      document.getElementById("mobile-pause-img").style.display = "none";
-      document.getElementById("mobile-pause-img").style.display = "block";
     } else {
       pauseGame();
 
@@ -3304,6 +3314,7 @@ function pauseToggle() {
     document.getElementById("mobile-pause-img").alt = "pause";
   } else {
     pauseGame();
+    document.getElementById("mobile-pause-img").style.display = "block";
     document.getElementById("mobile-pause-img").src = "icons/play.png";
     document.getElementById("mobile-pause-img").alt = "play";
   }

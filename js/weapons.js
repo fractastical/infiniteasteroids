@@ -1937,9 +1937,6 @@ function selectUpgrade(index) {
         applyUpgrades([selectedUpgrade.name]); // Pass the upgrade name as an array
         unclaimedLevelUps--;
         document.getElementById('leveluptitle').innerHTML = 'Claim ' + unclaimedLevelUps + ' upgrades';
-        if (isMobile()) {
-        document.getElementById("mobile-pause-img").style.display="block"
-          }
 
         // drawLives();
 
