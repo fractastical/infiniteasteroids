@@ -136,6 +136,11 @@ input {
 button:hover {
     background: #00cc00;
 }
+@media (hover: none) {
+    button:hover {
+        background: none;
+    }
+}
 
 
 /* #shipType {
@@ -461,6 +466,9 @@ canvas {
     /* Added margin for space between buttons */
 }
 
+#allLeaderboardsModal {
+    z-index: 1001;
+}
 #leaderboard-container {
     display: block;
     /* Hidden initially, will be shown by JS */

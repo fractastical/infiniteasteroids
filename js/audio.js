@@ -28,7 +28,9 @@ const shotSounds = [
 const thrusterSounds = [
     document.getElementById('thruster-sound-1'),
     document.getElementById('thruster-sound-2'),
-    document.getElementById('thruster-sound-3')
+    document.getElementById('thruster-sound-3'),
+    document.getElementById('thruster-sound-4'),
+
 ];
 
 
@@ -173,13 +175,39 @@ function playFreezeSound() {
 }
 
 
-// Function to play a random thruster sound
-function playRandomThrusterSound() {
-    if (!toggleSoundOff) {
-        const randomIndex = Math.floor(Math.random() * thrusterSounds.length);
-        thrusterSounds[randomIndex].play();
+const thrusterSound = thrusterSounds[3];
+thrusterSound.preload = "auto";
+
+let isThrusterSoundPlaying = false; // Track the sound state
+
+// Function to play the thruster sound
+function playThrusterSound() {
+    if (!isThrusterSoundPlaying && !toggleSoundOff) {
+        thrusterSound.play();
+        isThrusterSoundPlaying = true;
     }
 }
+
+// Function to stop the thruster sound
+function stopThrusterSound() {
+    if (isThrusterSoundPlaying ) {
+        thrusterSound.pause();
+        thrusterSound.currentTime = 0; // Reset to the start
+        isThrusterSoundPlaying = false;
+    }
+}
+
+// let thrusterSoundTimeout = null;
+
+
+
+// Function to play a random thruster sound
+// function playRandomThrusterSound() {
+//     if (!toggleSoundOff) {
+//         const randomIndex = Math.floor(Math.random() * thrusterSounds.length);
+//         thrusterSounds[randomIndex].play();
+//     }
+// }
 
 function playRandomMeteorDestroySound() {
     if (!toggleSoundOff) {

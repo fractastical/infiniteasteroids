@@ -1156,7 +1156,24 @@ let secondaryWeaponUsedOnMobile = false;
 let activeRotationRight = 0;
 let activeRotationLeft = 0;
 
+let moving=false;
+let called=false;
+let lastX=0;
+let lastY=0;
+
+
 function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
+  if(Math.abs(lastX-ship.x) >0.2 || Math.abs(lastY-ship.y)>0.2){
+    moving=true;
+    lastX=ship.x;
+    lastY=ship.y;
+  }
+  else {
+    moving=false;
+    lastX=ship.x;
+    lastY=ship.y;
+
+  }
   let angle = (ship.rotation * Math.PI) / 180;
 
   if (keys[shootKey] && ship.laserTimer === 0) {
@@ -1176,10 +1193,18 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
     activeRotationRight = 0;
   }
 
+  if (!moving){
+    stopThrusterSound();
+    called=false;
+  }
+
   if (keys[upKey] || (ship === ship && touchAccelerating)) {
     // if (!toggleMusicOff && !bossMusicEnabled) backgroundMusic.play();
-    playRandomThrusterSound();
-
+    // playRandomThrusterSound();
+    if(moving && !called){
+      playThrusterSound();
+      called=true;
+    }
     let accelerationAmount = ship.acceleration;
 
     if (ship === ship && touchAccelerating) accelerationAmount *= 2;
@@ -1189,7 +1214,7 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
     if (!isMobile()) generateThrusterParticles(ship);
 
     ship.initialSlowDown = true;
-  } else if (keys[downKey]) {
+  } else if (keys[downKey] && !isMobile()) {
     if (ship.initialSlowDown) {
       ship.velocityX *= 0.75;
       ship.velocityY *= 0.75;
@@ -1203,8 +1228,11 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
 
     if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
       // if (!toggleMusicOff) backgroundMusic.play();
-      playRandomThrusterSound();
-
+      // playRandomThrusterSound();
+      if(moving && !called){
+        playThrusterSound();
+        called=true;
+      }
       const initialBackwardAcceleration = ship.acceleration * 1.5;
       const backwardSpeed = ship.maxSpeed;
       ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
@@ -1544,6 +1572,7 @@ function drawScore() {
 }
 
 function pauseGame() {
+  stopThrusterSound();
   document.getElementById("mobile-pause-img").style.display = "none";
   // console.log("p");
   if (!isPaused) {
@@ -1574,6 +1603,9 @@ function pauseGame() {
 }
 
 function resumeGame() {
+  if(moving){
+    playThrusterSound();
+  }
   document.getElementById("mobile-pause-img").style.display = "block";
   const modals = document.querySelectorAll(".modal");
   const openModals = Array.from(modals).filter((modal) => {
