@@ -172,6 +172,7 @@ button:hover {
 }
 
 #miniShipPreview {
+    z-index: 1001;
     width: 40px;
     /* Set a fixed width */
     height: 40px;
@@ -1556,6 +1557,6 @@ body {
 }
 
 #levelUpModal{
-    z-index: 101;
+    z-index: 1001;
 }
 

@@ -341,6 +341,7 @@
   <audio id="thruster-sound-1" src="sounds/thruster1.mp3"></audio>
   <audio id="thruster-sound-2" src="sounds/thruster2.mp3"></audio>
   <audio id="thruster-sound-3" src="sounds/thruster3.mp3"></audio>
+  <audio id="thruster-sound-4" src="sounds/thruster3.mp3" loop></audio>
 
   <audio id="ship-destroyed" src="sounds/ship_destroyed.mp3"></audio>
 
@@ -761,32 +762,40 @@
     document.getElementById('steer-left').addEventListener('touchstart', function (e) {
       e.preventDefault();  // Prevent zooming
       keys['ArrowLeft'] = true;
+	  this.style.backgroundColor = '#00cc00';
+
     });
 
     document.getElementById('steer-left').addEventListener('touchend', function (e) {
       e.preventDefault();  // Prevent zooming
       keys['ArrowLeft'] = false;
+	  this.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
     });
 
     document.getElementById('steer-right').addEventListener('touchstart', function (e) {
       e.preventDefault();  // Prevent zooming
       keys['ArrowRight'] = true;
+	  this.style.backgroundColor = '#00cc00';
     });
 
     document.getElementById('steer-right').addEventListener('touchend', function (e) {
       e.preventDefault();  // Prevent zooming
       keys['ArrowRight'] = false;
-    });
+	  this.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	});
 
     document.getElementById('accelerate').addEventListener('touchstart', function (e) {
       e.preventDefault();  // Prevent zooming
       keys['ArrowUp'] = true;
-    });
+	  this.style.backgroundColor = '#00cc00';
+
+	});
 
     document.getElementById('accelerate').addEventListener('touchend', function (e) {
       e.preventDefault();  // Prevent zooming
       keys['ArrowUp'] = false;
-    });
+	  this.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	});
 
 
     // joystick.addEventListener('touchstart', (e) => {
