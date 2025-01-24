@@ -40,15 +40,15 @@ const desktopTutorialSteps = [
     },
     {
         text: "Collect glowing objects for an XP boost and special upgrades!",
-        position: { top: '75%', left: '50%' },
-        arrowPosition: { top: '70%', left: '50%' },
+        position: { top: '65%', left: '50%' },
+        arrowPosition: { top: '60%', left: '50%' },
         arrowRotation: 0,
         condition: () => gemCollected
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '0%', left: '25%' },
-        arrowPosition: { top: '8%', left: '33%' },
+        position: { top: '0%', left: '30%' },
+        arrowPosition: { top: '0%', left: '55%' },
         arrowRotation: 180,
         condition: () => level > 1 && elementalAsteroidCreated
     },
@@ -61,8 +61,8 @@ const desktopTutorialSteps = [
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '65%', left: '75%' },
-        arrowPosition: { top: '60%', left: '75%' },
+        position: { top: '58%', left: '22%' },
+        arrowPosition: { top: '54%', left: '24%' },
         arrowRotation: 0,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
@@ -114,15 +114,15 @@ const mobileTutorialSteps = [
     },
     {
         text: "Collect glowing objects for an XP boost and special upgrade!",
-        position: { top: '75%', left: '50%' },
-        arrowPosition: { top: '70%', left: '50%' },
+        position: { top: '65%', left: '50%' },
+        arrowPosition: { top: '60%', left: '50%' },
         arrowRotation: 0,
         condition: () => gemCollected
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '0%', left: '33%' },
-        arrowPosition: { top: '9%', left: '33%' },
+        position: { top: '4%', left: '30%' },
+        arrowPosition: { top: '12%', left: '40%' },
         arrowRotation: 180,
         condition: () => level > 1 && elementalAsteroidCreated
     },
@@ -135,8 +135,8 @@ const mobileTutorialSteps = [
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '68%', left: '72%' },
-        arrowPosition: { top: '62%', left: '74%' },
+        position: { top: '58%', left: '22%' },
+        arrowPosition: { top: '54%', left: '24%' },
         arrowRotation: 0,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
@@ -187,8 +187,8 @@ const fullscreenTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '1%', left: '37%' },
-        arrowPosition: { top: '5%', left: '41%' },
+        position: { top: '10%', left: '30%' },
+        arrowPosition: { top: '11%', left: '48%' },
         arrowRotation: 180,
         condition: () => level > 1 && elementalAsteroidCreated
     },
@@ -201,8 +201,8 @@ const fullscreenTutorialSteps = [
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '57%', left: '73%' },
-        arrowPosition: { top: '54%', left: '74.5%' },
+        position: { top: '58%', left: '22%' },
+        arrowPosition: { top: '54%', left: '24%' },
         arrowRotation: 0,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
@@ -241,8 +241,8 @@ function initializeTutorial() {
 
 function createTutorialAlien() {
     const tutorialAlien = {
-        x: canvas.width * 0.75,
-        y: canvas.height * 0.50,
+        x: canvas.width * 0.25,
+        y: canvas.height * 0.40,
         size: 40,
         speed: 0.2,
         hitpoints: 1,
@@ -263,7 +263,7 @@ function createTutorialOverlay() {
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.2);
-        z-index: 100;
+        z-index: 90;
         pointer-events: none;
     `;
 
@@ -326,6 +326,7 @@ function showCurrentTutorialStep() {
     } else {
         arrowElement.style.transform = `rotate(${step.arrowRotation}deg)`;
     }
+
 }
 
 // Create tutorial asteroid, elemental asteroid, and gem
@@ -392,7 +393,7 @@ function createTutorialGem() {
     // Create a tutorial gem
     const tutorialGem = {
         x: canvas.width * 0.5,
-        y: canvas.height * 0.7,
+        y: canvas.height * 0.6,
         size: 20,
         type: 'common',
         label: 'Tutorial Gem'
