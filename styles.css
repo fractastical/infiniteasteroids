@@ -378,7 +378,6 @@ canvas {
     font-family: 'Press Start 2P', cursive;
     /* Arcade font */
     text-align: center;
-    /*overflow-y: auto;*/
     overflow-y: hidden;
     overflow-x: hidden;
     scrollbar-width: thin;
@@ -1559,6 +1558,6 @@ body {
 }
 
 #levelUpModal{
-    z-index: 1001;
+    z-index: 101;
 }
 
