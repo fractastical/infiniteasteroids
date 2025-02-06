@@ -59,9 +59,10 @@ const desktopTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '0%', left: '25%' },
-        arrowPosition: { top: '8%', left: '33%' },
-        arrowRotation: 180,
+        position: { top: '40%', left: '0%' },
+        arrowPosition: { top: '50%', left: '0%' },
+        arrowRotation: 270,
+        textRotation: 90,
         condition: () => level > 1 && elementalAsteroidCreated
     },
     {
@@ -73,8 +74,8 @@ const desktopTutorialSteps = [
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '65%', left: '75%' },
-        arrowPosition: { top: '60%', left: '75%' },
+        position: { top: '45%', left: '22%' },
+        arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
@@ -133,9 +134,10 @@ const mobileTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '0%', left: '33%' },
-        arrowPosition: { top: '9%', left: '33%' },
-        arrowRotation: 180,
+        position: { top: '40%', left: '0%' },
+        arrowPosition: { top: '50%', left: '0%' },
+        arrowRotation: 270,
+        textRotation: 90,
         condition: () => level > 1 && elementalAsteroidCreated
     },
     {
@@ -147,13 +149,13 @@ const mobileTutorialSteps = [
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '68%', left: '72%' },
-        arrowPosition: { top: '62%', left: '74%' },
+        position: { top: '48%', left: '22%' },
+        arrowPosition: { top: '41%', left: '24%' },
         arrowRotation: 0,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
-        text: "Use two fingers to activate your bomb (secondary weapon). Only three uses!",
+        text: "Double tap to activate your bomb (secondary weapon). Only three uses!",
         position: { top: '20%', left: '10%' },
         arrowPosition: { top: '14%', left: '13%' },
         arrowRotation: 0,
@@ -199,9 +201,10 @@ const fullscreenTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '1%', left: '37%' },
-        arrowPosition: { top: '5%', left: '41%' },
-        arrowRotation: 180,
+        position: { top: '40%', left: '0%' },
+        arrowPosition: { top: '50%', left: '0%' },
+        arrowRotation: 270,
+        textRotation: 90,
         condition: () => level > 1 && elementalAsteroidCreated
     },
     {
@@ -213,8 +216,8 @@ const fullscreenTutorialSteps = [
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '57%', left: '73%' },
-        arrowPosition: { top: '54%', left: '74.5%' },
+        position: { top: '45%', left: '22%' },
+        arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
@@ -253,8 +256,8 @@ function initializeTutorial() {
 
 function createTutorialAlien() {
     const tutorialAlien = {
-        x: canvas.width * 0.75,
-        y: canvas.height * 0.50,
+        x: canvas.width * 0.25,
+        y: canvas.height * 0.3,
         size: 40,
         speed: 0.2,
         hitpoints: 1,
@@ -331,7 +334,37 @@ function showCurrentTutorialStep() {
     if (step.position.left === '50%') {
         stepElement.style.transform = 'translateX(-50%)';
     } else {
-        stepElement.style.transform = '';
+        console.log(step.textRotation);
+        if(step.textRotation !== undefined) {
+            const screenWidth = window.innerWidth;
+            if (screenWidth < 480) {
+                stepElement.style.translate = "99vw";
+                // arrowElement.style.translate = "9vw";
+
+            } else if (screenWidth < 768) {
+                stepElement.style.translate = "95vw";
+                // arrowElement.style.translate = "95vw";
+            } else if(screenWidth<1100){
+                stepElement.style.translate = "90vw";
+                // arrowElement.style.translate = "90vw";
+            }
+            else if(screenWidth<1400){
+                stepElement.style.translate = "80vw";
+                // arrowElement.style.translate = "80vw";
+            }
+            else {
+                stepElement.style.translate = "75vw";
+                // arrowElement.style.translate = "75vw";
+            }
+            stepElement.style.transformOrigin = 'top left';  // Rotate around the top-left corner
+            stepElement.style.transform = `rotate(${step.textRotation}deg)`;
+            arrowElement.style.transformOrigin = 'left bottom'
+        }
+        else {
+            stepElement.style.transform=`unset`
+            stepElement.style.translate=`unset`
+
+        }
     }
     if (step.arrowPosition.left === '50%') {
         arrowElement.style.transform = `translateX(-50%) rotate(${step.arrowRotation}deg)`;
@@ -459,7 +492,6 @@ function updateTutorial() {
         tutorialAlienDestroyed = !aliens.some(alien => alien.isTutorialAlien);
     }
     if(currentStep.condition()){
-        console.log(steps.length,"---",currentTutorialStep);
         if (currentTutorialStep === steps.length-2) {
                 lastStep();
         }

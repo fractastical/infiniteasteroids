@@ -1694,7 +1694,7 @@ document.addEventListener("fullscreenchange", () => {
 // });
 
 canvas.addEventListener("touchstart", handleTouch);
-canvas.addEventListener("touchmove", handleTouch);
+// canvas.addEventListener("touchmove", handleTouch);
 canvas.addEventListener("touchend", () => {
   touchAccelerating = false;
 });
