@@ -59,9 +59,9 @@ const desktopTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '40%', left: '0%' },
-        arrowPosition: { top: '50%', left: '0%' },
-        arrowRotation: 270,
+        position: { top: '40%', left: '49%' },
+        arrowPosition: { top: '0%', left: '61%' },
+        arrowRotation: 180,
         textRotation: 90,
         condition: () => level > 1 && elementalAsteroidCreated
     },
@@ -134,9 +134,9 @@ const mobileTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '40%', left: '0%' },
-        arrowPosition: { top: '50%', left: '0%' },
-        arrowRotation: 270,
+        position: { top: '0%', left: '49%' },
+        arrowPosition: { top: '0%', left: '61%' },
+        arrowRotation: 180,
         textRotation: 90,
         condition: () => level > 1 && elementalAsteroidCreated
     },
@@ -201,9 +201,9 @@ const fullscreenTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '40%', left: '0%' },
-        arrowPosition: { top: '50%', left: '0%' },
-        arrowRotation: 270,
+        position: { top: '0%', left: '49%' },
+        arrowPosition: { top: '0%', left: '61%' },
+        arrowRotation: 180,
         textRotation: 90,
         condition: () => level > 1 && elementalAsteroidCreated
     },
@@ -333,32 +333,37 @@ function showCurrentTutorialStep() {
     // Center horizontally if left is 50%
     if (step.position.left === '50%') {
         stepElement.style.transform = 'translateX(-50%)';
-    } else {
+    }
+    else {
         console.log(step.textRotation);
         if(step.textRotation !== undefined) {
-            const screenWidth = window.innerWidth;
-            if (screenWidth < 480) {
-                stepElement.style.translate = "99vw";
+            const screenHeight = window.innerHeight;
+            console.log("height",screenHeight);
+            if (screenHeight < 616) {
+                stepElement.style.top = `10px`
+                arrowElement.style.top = '18px'
                 // arrowElement.style.translate = "9vw";
 
-            } else if (screenWidth < 768) {
-                stepElement.style.translate = "95vw";
-                // arrowElement.style.translate = "95vw";
-            } else if(screenWidth<1100){
-                stepElement.style.translate = "90vw";
-                // arrowElement.style.translate = "90vw";
             }
-            else if(screenWidth<1400){
-                stepElement.style.translate = "80vw";
-                // arrowElement.style.translate = "80vw";
+            else if(screenHeight< 670 && isMobile()){
+                stepElement.style.top = "1%";
+                stepElement.style.left = "50%";
+                stepElement.style.transform = 'translateX(-50%)';
+
+                arrowElement.style.top = "7%"
+                arrowElement.style.left = "50%";
             }
             else {
-                stepElement.style.translate = "75vw";
+                stepElement.style.top = "15%";
+                stepElement.style.left = "50%";
+                stepElement.style.transform = 'translateX(-50%)';
+
+                arrowElement.style.top = "20%"
+                arrowElement.style.left = "50%";
+
                 // arrowElement.style.translate = "75vw";
             }
-            stepElement.style.transformOrigin = 'top left';  // Rotate around the top-left corner
-            stepElement.style.transform = `rotate(${step.textRotation}deg)`;
-            arrowElement.style.transformOrigin = 'left bottom'
+
         }
         else {
             stepElement.style.transform=`unset`

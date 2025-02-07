@@ -124,7 +124,9 @@
         justify-content: flex-start;
         gap: 10px;
     }
+
 }
+
 
 /* Style for upgrade options and similar items */
 .upgrade-option {
@@ -148,6 +150,10 @@
 .upgrade-details {
     flex-grow: 1;
 }
+/*.upgrade-details p {*/
+/*    font-size: 10px;*/
+/*}*/
+
 
 .upgrade-name {
     font-size: clamp(1rem, 2vw, 1.2rem);
@@ -159,7 +165,6 @@
     /* Scale the description size */
 }
 #levelUpModal{
-
 }
 /* Ensure buttons are aligned properly and shrink with viewport */
 .modal-content button {
@@ -183,4 +188,32 @@
 .entryWrapper p{
     font-size: 10px;
     text-align: left;
+}
+
+@media only screen and (max-width: 1000px) and (orientation: landscape) {
+    .upgrade-details p{
+        font-size: clamp(0.7rem, 1.5vw, 1.3rem)
+    }
+    .upgrade-option {
+        padding: 0; !important;
+    }
+    #upgradeOptions{
+        gap: 0;
+    }
+}
+
+@media only screen and (max-width: 670px) and (orientation: landscape) {
+    .upgrade-details p{
+        font-size: clamp(0.7rem, 1.5vw, 1.3rem)
+    }
+    .upgrade-option {
+        padding: 0; !important;
+        margin-bottom: 3px;
+    }
+    #upgradeOptions{
+        gap: 0;
+    }
+    .modal{
+        width: 80vw;
+    }
 }
