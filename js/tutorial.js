@@ -31,16 +31,18 @@ const lastStep =(()=> setTimeout(() => {
 const desktopTutorialSteps = [
     {
         text: "Use arrow keys or A,W,S,D to move your ship",
-        position: { top: '66%', left: '50%' },
-        arrowPosition: { top: '60%', left: '50%' },
+        position: { top: '66%', left: '5%' },
+        arrowPosition: { top: '60%', left: '5%' },
         arrowRotation: 0,
+        center: true,
         condition: () => keys['ArrowLeft'] || keys['a'] || keys['s']  || keys['d'] || keys['w'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
     {
         text: "Press SPACE to shoot lasers",
-        position: { top: '66%', left: '50%' },
-        arrowPosition: { top: '60%', left: '50%' },
+        position: { top: '66%', left: '5%' },
+        arrowPosition: { top: '60%', left: '5%' },
         arrowRotation: 0,
+        center: true,
         condition: () => keys[' '] // Space key pressed
     },
     {
@@ -48,6 +50,7 @@ const desktopTutorialSteps = [
         position: { top: '45%', left: '22%' },
         arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
+        asteroid:true,
         condition: () => tutorialAsteroidDestroyed
     },
     {
@@ -70,6 +73,7 @@ const desktopTutorialSteps = [
         position: { top: '45%', left: '72%' },
         arrowPosition: { top: '39%', left: '74%' },
         arrowRotation: 0,
+        elementAsteroid:true,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
@@ -77,6 +81,7 @@ const desktopTutorialSteps = [
         position: { top: '45%', left: '22%' },
         arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
+        asteroid:true,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
@@ -179,16 +184,18 @@ const mobileTutorialSteps = [
 const fullscreenTutorialSteps = [
     {
         text: "Use arrow keys or A,W,S,D to move your ship",
-        position: { top: '57%', left: '50%' },
-        arrowPosition: { top: '54%', left: '50%' },
+        position: { top: '57%', left: '5%' },
+        arrowPosition: { top: '54%', left: '5%' },
         arrowRotation: 0,
+        center: true,
         condition: () => keys['ArrowLeft'] || keys['a'] || keys['s']  || keys['d'] || keys['w'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
     {
         text: "Press SPACE to shoot lasers",
-        position: { top: '57%', left: '50%' },
-        arrowPosition: { top: '54%', left: '50%' },
+        position: { top: '57%', left: '5%' },
+        arrowPosition: { top: '54%', left: '5%' },
         arrowRotation: 0,
+        center: true,
         condition: () => keys[' '] // Space key pressed
     },
     {
@@ -218,6 +225,7 @@ const fullscreenTutorialSteps = [
         position: { top: '38%', left: '72%' },
         arrowPosition: { top: '35%', left: '74.5%' },
         arrowRotation: 0,
+        elementAsteroid:true,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
@@ -225,6 +233,7 @@ const fullscreenTutorialSteps = [
         position: { top: '45%', left: '22%' },
         arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
+        asteroid:true,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
@@ -335,17 +344,24 @@ function showCurrentTutorialStep() {
     arrowElement.style.top='unset'
     arrowElement.style.left='unset'
     arrowElement.style.maxWidth="auto";
-
     stepElement.textContent = step.text;
-    console.log(step.text);
 
-    if(step.asteroid===true){
+    // if(!isMobile() && canvas.height>canvas.width && step.textRotation!==undefined){
+    //     stepElement.style.top="45%";
+    //     arrowElement.style.top="50%";
+    //     console.log("here")
+    // }
+     if(step.asteroid===true){
         stepElement.style.transform = `translateX(${(canvas.width * 0.25)-80}px) translateY(${(canvas.height * 0.3)+70}px)`;
         arrowElement.style.transform = `translateX(${(canvas.width * 0.25)}px) translateY(${(canvas.height * 0.3)+40}px)`;
     }
     else if(step.elementAsteroid===true){
         stepElement.style.transform = `translateX(${(canvas.width * 0.75)-120}px) translateY(${(canvas.height * 0.3)+70}px)`;
         arrowElement.style.transform = `translateX(${(canvas.width * 0.75)-10}px) translateY(${(canvas.height * 0.3)+40}px)`;
+    }
+    else if(step.center===true){
+        stepElement.style.transform = `translateX(${(canvas.width * 0.5)-80}px) translateY(${(canvas.height * .5)+70}px)`;
+        arrowElement.style.transform = `translateX(${(canvas.width * 0.5)}px) translateY(${(canvas.height * 0.5)+40}px)`;
     }
     // Apply positions
     else {
@@ -366,12 +382,13 @@ function showCurrentTutorialStep() {
     }
     else {
         console.log(step.textRotation);
-        if(step.textRotation !== undefined) {
+        if(step.textRotation !== undefined ) {
             const screenHeight = window.innerHeight;
-            console.log("height",screenHeight);
             if (canvas.height < 616) {
                 stepElement.style.top = `10px`
                 arrowElement.style.top = '18px'
+                arrowElement.style.left = "65%"
+
                 // arrowElement.style.translate = "9vw";
             }
             else if(canvas.height< 670 && isMobile()){
@@ -383,18 +400,26 @@ function showCurrentTutorialStep() {
                 arrowElement.style.left = "50%";
             }
             else {
-                stepElement.style.top = "15%";
-                stepElement.style.left = "50%";
-                stepElement.style.transform = 'translateX(-50%)';
+                if(!isMobile() && canvas.height>canvas.width ){
+                    stepElement.style.top="27%";
+                    arrowElement.style.top="30%";
+                    arrowElement.style.left="50%";
 
-                arrowElement.style.top = "20%"
-                arrowElement.style.left = "50%";
+                    console.log("here")
+                }
+                else {
+                    stepElement.style.top = "15%";
+                    stepElement.style.left = "50%";
+                    stepElement.style.transform = 'translateX(-50%)';
 
+                    arrowElement.style.top = "20%"
+                    arrowElement.style.left = "50%";
+                }
                 // arrowElement.style.translate = "75vw";
             }
 
         }
-        else if(step.asteroid!==true && step.elementAsteroid!==true) {
+        else if(step.asteroid!==true && step.elementAsteroid!==true && step.center!==true) {
             stepElement.style.transform=`unset`
             stepElement.style.translate=`unset`
 
@@ -403,7 +428,7 @@ function showCurrentTutorialStep() {
 
     if (step.arrowPosition.left === '50%') {
         arrowElement.style.transform = `translateX(-50%) rotate(${step.arrowRotation}deg)`;
-    } else if(step.asteroid!==true && step.elementAsteroid!==true) {
+    } else if(step.asteroid!==true && step.elementAsteroid!==true && step.center!==true) {
         arrowElement.style.transform = `rotate(${step.arrowRotation}deg)`;
     }
 }
