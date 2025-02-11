@@ -21,8 +21,8 @@ let healthConditionTimerPassed = false;
 // Start the timer when the tutorial begins or at an appropriate time
 
 const lastStep =(()=> setTimeout(() => {
-    healthConditionTimerPassed = true;
-}, 3000)
+        healthConditionTimerPassed = true;
+    }, 3000)
 )
 
 
@@ -99,30 +99,31 @@ const desktopTutorialSteps = [
 const mobileTutorialSteps = [
     {
         text: "Use the left and right buttons to steer your ship",
-        position: { top: '58%', left: '70%' },
-        arrowPosition: { top: '73%', left: '89%' },
+        position: { bottom: '160', right: '10' },
+        arrowPosition: { bottom: '130', right: '100' },
         arrowRotation: 180,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight']
     },
     {
         text: "Use the up button to accelerate",
-        position: { top: '58%', left: '3%' },
-        arrowPosition: { top: '70%', left: '5%' },
+        position: { bottom: '160', left: '10' },
+        arrowPosition: { bottom: '130', left: '70' },
         arrowRotation: 180,
         condition: () => keys['ArrowUp']
     },
-    {
-        text: "Your ship fires automatically. Just aim!",
-        position: { top: '20%', left: '50%' },
-        arrowPosition: { top: '30%', left: '50%' },
-        arrowRotation: 180,
-        condition: () => ship.lasers.length > 0
-    },
+    // {
+    //     text: "Your ship fires automatically. Just aim!",
+    //     position: { top: '20%', left: '50%' },
+    //     arrowPosition: { top: '30%', left: '50%' },
+    //     arrowRotation: 180,
+    //     condition: () => ship.lasers.length > 0
+    // },
     {
         text: "Destroy the asteroid to get XP!",
-        position: { top: '48%', left: '22%' },
+        position: { top: '40%', left: '20%' },
         arrowPosition: { top: '41%', left: '24%' },
         arrowRotation: 0,
+        asteroid:true,
         condition: () => tutorialAsteroidDestroyed
     },
     {
@@ -137,6 +138,9 @@ const mobileTutorialSteps = [
         position: { top: '0%', left: '49%' },
         arrowPosition: { top: '0%', left: '61%' },
         arrowRotation: 180,
+
+
+
         textRotation: 90,
         condition: () => level > 1 && elementalAsteroidCreated
     },
@@ -145,6 +149,7 @@ const mobileTutorialSteps = [
         position: { top: '48%', left: '72%' },
         arrowPosition: { top: '42%', left: '74%' },
         arrowRotation: 0,
+        elementAsteroid:true,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
@@ -152,12 +157,13 @@ const mobileTutorialSteps = [
         position: { top: '48%', left: '22%' },
         arrowPosition: { top: '41%', left: '24%' },
         arrowRotation: 0,
+        asteroid:true,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
         text: "Double tap to activate your bomb (secondary weapon). Only three uses!",
-        position: { top: '20%', left: '10%' },
-        arrowPosition: { top: '14%', left: '13%' },
+        position: { top: '100', left: '120' },
+        arrowPosition: { top: '70', left: '120' },
         arrowRotation: 0,
         condition: () => secondaryWeaponUsedOnMobile
     },
@@ -320,15 +326,39 @@ function showCurrentTutorialStep() {
     const stepElement = document.getElementById('tutorialStep');
     const arrowElement = document.getElementById('tutorialArrow');
 
-    stepElement.textContent = step.text;
+    stepElement.style.bottom='unset'
+    stepElement.style.right='unset'
+    arrowElement.style.bottom='unset'
+    arrowElement.style.right='unset'
+    stepElement.style.top='unset'
+    stepElement.style.left='unset'
+    arrowElement.style.top='unset'
+    arrowElement.style.left='unset'
+    arrowElement.style.maxWidth="auto";
 
+    stepElement.textContent = step.text;
+    console.log(step.text);
+
+    if(step.asteroid===true){
+        stepElement.style.transform = `translateX(${(canvas.width * 0.25)-80}px) translateY(${(canvas.height * 0.3)+70}px)`;
+        arrowElement.style.transform = `translateX(${(canvas.width * 0.25)}px) translateY(${(canvas.height * 0.3)+40}px)`;
+    }
+    else if(step.elementAsteroid===true){
+        stepElement.style.transform = `translateX(${(canvas.width * 0.75)-120}px) translateY(${(canvas.height * 0.3)+70}px)`;
+        arrowElement.style.transform = `translateX(${(canvas.width * 0.75)-10}px) translateY(${(canvas.height * 0.3)+40}px)`;
+    }
     // Apply positions
-    for (const [key, value] of Object.entries(step.position)) {
-        stepElement.style[key] = value.endsWith('%') ? value : `${value}px`;
+    else {
+        for (const [key, value] of Object.entries(step.position)) {
+            stepElement.style[key] = value.endsWith('%') ? value : `${value}px`;
+        }
+        for (const [key, value] of Object.entries(step.arrowPosition)) {
+            arrowElement.style[key] = value.endsWith('%') ? value : `${value}px`;
+        }
     }
-    for (const [key, value] of Object.entries(step.arrowPosition)) {
-        arrowElement.style[key] = value.endsWith('%') ? value : `${value}px`;
-    }
+
+
+
 
     // Center horizontally if left is 50%
     if (step.position.left === '50%') {
@@ -339,13 +369,12 @@ function showCurrentTutorialStep() {
         if(step.textRotation !== undefined) {
             const screenHeight = window.innerHeight;
             console.log("height",screenHeight);
-            if (screenHeight < 616) {
+            if (canvas.height < 616) {
                 stepElement.style.top = `10px`
                 arrowElement.style.top = '18px'
                 // arrowElement.style.translate = "9vw";
-
             }
-            else if(screenHeight< 670 && isMobile()){
+            else if(canvas.height< 670 && isMobile()){
                 stepElement.style.top = "1%";
                 stepElement.style.left = "50%";
                 stepElement.style.transform = 'translateX(-50%)';
@@ -365,15 +394,16 @@ function showCurrentTutorialStep() {
             }
 
         }
-        else {
+        else if(step.asteroid!==true && step.elementAsteroid!==true) {
             stepElement.style.transform=`unset`
             stepElement.style.translate=`unset`
 
         }
     }
+
     if (step.arrowPosition.left === '50%') {
         arrowElement.style.transform = `translateX(-50%) rotate(${step.arrowRotation}deg)`;
-    } else {
+    } else if(step.asteroid!==true && step.elementAsteroid!==true) {
         arrowElement.style.transform = `rotate(${step.arrowRotation}deg)`;
     }
 }
@@ -406,7 +436,7 @@ function createTutorialAsteroidAndAddSecondary() {
 
     const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
     if (activeWeapon) {
-        activeWeapon.uses = 4;
+        activeWeapon.uses = 3;
     }
 }
 
@@ -497,8 +527,9 @@ function updateTutorial() {
         tutorialAlienDestroyed = !aliens.some(alien => alien.isTutorialAlien);
     }
     if(currentStep.condition()){
+        console.log(steps.length,"---",currentTutorialStep);
         if (currentTutorialStep === steps.length-2) {
-                lastStep();
+            lastStep();
         }
     }
 
