@@ -112,7 +112,7 @@ const mobileTutorialSteps = [
     {
         text: "Use the up button to accelerate",
         position: { bottom: '160', left: '10' },
-        arrowPosition: { bottom: '130', left: '70' },
+        arrowPosition: { bottom: '130', left: '50' },
         arrowRotation: 180,
         condition: () => keys['ArrowUp']
     },
@@ -167,15 +167,15 @@ const mobileTutorialSteps = [
     },
     {
         text: "Double tap to activate your bomb (secondary weapon). Only three uses!",
-        position: { top: '100', left: '120' },
-        arrowPosition: { top: '70', left: '120' },
+        position: { top: '100', left: '90' },
+        arrowPosition: { top: '70', left: '110' },
         arrowRotation: 0,
         condition: () => secondaryWeaponUsedOnMobile
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '20%', left: '5%' },
-        arrowPosition: { top: '14%', left: '7%' },
+        position: { top: '100', left: '60' },
+        arrowPosition: { top: '70', left: '80' },
         arrowRotation: 0,
         condition: () => healthConditionTimerPassed
     }
