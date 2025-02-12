@@ -86,15 +86,15 @@ const desktopTutorialSteps = [
     },
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
-        position: { top: '14%', left: '12%' },
-        arrowPosition: { top: '11%', left: '12%' },
+        position: { top: '100', left: '90' },
+        arrowPosition: { top: '70', left: '110' },
         arrowRotation: 0,
         condition: () => keys['e'] // E key pressed
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '14%', left: '6%' },
-        arrowPosition: { top: '11%', left: '6.6%' },
+        position: { top: '100', left: '60' },
+        arrowPosition: { top: '70', left: '80' },
         arrowRotation: 0,
         condition: () => healthConditionTimerPassed
     }
@@ -238,15 +238,15 @@ const fullscreenTutorialSteps = [
     },
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
-        position: { top: '9%', left: '5%' },
-        arrowPosition: { top: '6%', left: '6.5%' },
+        position: { top: '100', left: '90' },
+        arrowPosition: { top: '70', left: '110' },
         arrowRotation: 0,
         condition: () => keys['e'] // E key pressed
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '9%', left: '2%' },
-        arrowPosition: { top: '6%', left: '3.5%' },
+        position: { top: '100', left: '60' },
+        arrowPosition: { top: '70', left: '80' },
         arrowRotation: 0,
         condition: () => healthConditionTimerPassed
     }
@@ -384,14 +384,14 @@ function showCurrentTutorialStep() {
         console.log(step.textRotation);
         if(step.textRotation !== undefined ) {
             const screenHeight = window.innerHeight;
-            if (canvas.height < 616) {
+            if (canvas.height < 616 ) {
                 stepElement.style.top = `10px`
                 arrowElement.style.top = '18px'
                 arrowElement.style.left = "65%"
 
                 // arrowElement.style.translate = "9vw";
             }
-            else if(canvas.height< 670 && isMobile()){
+            else if(canvas.height< 800){
                 stepElement.style.top = "1%";
                 stepElement.style.left = "50%";
                 stepElement.style.transform = 'translateX(-50%)';
