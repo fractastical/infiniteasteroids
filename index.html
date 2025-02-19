@@ -2,1252 +2,1252 @@
 <html>
 
 <head>
-  <title>Infinite Asteroids</title>
-  <link href="styles.css" rel="stylesheet">
-  <link href="styles-cg.css" rel="stylesheet">
+	<title>Infinite Asteroids</title>
+	<link href="styles.css" rel="stylesheet">
+	<link href="styles-cg.css" rel="stylesheet">
 
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="preload" as="image" href="icons/play.png">
+	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="preload" as="image" href="icons/play.png">
 
 </head>
 
 <body>
 
-  <div id="mobile-controls">
-    <button id="steer-left" class="mobile-btn">◄</button>
-    <button id="steer-right" class="mobile-btn">►</button>
-    <button id="accelerate" class="mobile-btn">▲</button>
-  </div>
+<div id="mobile-controls">
+	<button id="steer-left" class="mobile-btn">◄</button>
+	<button id="steer-right" class="mobile-btn">►</button>
+	<button id="accelerate" class="mobile-btn">▲</button>
+</div>
 
-  <div id="mobile-pause" style="display: none;" onclick="pauseToggle()">
-    <img id="mobile-pause-img" width="30px" height="30px" src="icons/pause.png" alt="pause">
-  </div>
+<div id="mobile-pause" style="display: none;" onclick="pauseToggle()">
+	<img id="mobile-pause-img" width="30px" height="30px" src="icons/pause.png" alt="pause">
+</div>
 
-  <div id="leftArrow" class="flashing-arrow" style="left: 20px; top: 50%;"></div>
-  <div id="rightArrow" class="flashing-arrow" style="right: 20px; top: 50%;"></div>
+<div id="leftArrow" class="flashing-arrow" style="left: 20px; top: 50%;"></div>
+<div id="rightArrow" class="flashing-arrow" style="right: 20px; top: 50%;"></div>
 
-  <!-- New Leaderboard Modal -->
-  <div id="allLeaderboardsModal" class="modal">
-    <div class="modal-content">
-      <h2>All Game Modes Leaderboard</h2>
-      <div id="allLeaderboardsContainer"></div>
-      <button id="closeAllLeaderboards">Close</button>
-    </div>
-  </div>
+<!-- New Leaderboard Modal -->
+<div id="allLeaderboardsModal" class="modal">
+	<div class="modal-content">
+		<h2>All Game Modes Leaderboard</h2>
+		<div id="allLeaderboardsContainer"></div>
+		<button id="closeAllLeaderboards">Close</button>
+	</div>
+</div>
 
-  <div id="weaponDamageChartModal" class="modal" style="max-width:600px;">
-    <div class="modal-content">
-      <h2>Weapon Damage Per Wave</h2>
-      <div id="weaponDamageChartContainer">
-        <canvas id="weaponDamageChart"></canvas>
-      </div>
-      <button id="closeWeaponDamageChart">Close</button>
-    </div>
-  </div>
+<div id="weaponDamageChartModal" class="modal" style="max-width:600px;">
+	<div class="modal-content">
+		<h2>Weapon Damage Per Wave</h2>
+		<div id="weaponDamageChartContainer">
+			<canvas id="weaponDamageChart"></canvas>
+		</div>
+		<button id="closeWeaponDamageChart">Close</button>
+	</div>
+</div>
 
-  <div id="loginPopup" class="modal">
-    <div class="modal-content">
-      <h2>Login</h2>
-      <form id="loginForm">
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-      </form>
-      <div id="loginError" class="error-message"></div> <!-- Error display for login -->
+<div id="loginPopup" class="modal">
+	<div class="modal-content">
+		<h2>Login</h2>
+		<form id="loginForm">
+			<input type="email" id="email" placeholder="Email" required>
+			<input type="password" id="password" placeholder="Password" required>
+			<button type="submit">Login</button>
+		</form>
+		<div id="loginError" class="error-message"></div> <!-- Error display for login -->
 
-      <h2>Sign Up</h2>
-      <form id="signupForm">
-        <input type="text" id="signupNickname" placeholder="Nickname" required>
-        <input type="email" id="signupEmail" placeholder="Email" required>
-        <input type="password" id="signupPassword" placeholder="Password" required>
-        <button type="submit">Sign Up</button>
-      </form>
-      <button id="closeSignupPopup">Close</button> <!-- Add this button to close the signup popup -->
-      <div id="signupError" class="error-message"></div> <!-- Error display for signup -->
-    </div>
-  </div>
+		<h2>Sign Up</h2>
+		<form id="signupForm">
+			<input type="text" id="signupNickname" placeholder="Nickname" required>
+			<input type="email" id="signupEmail" placeholder="Email" required>
+			<input type="password" id="signupPassword" placeholder="Password" required>
+			<button type="submit">Sign Up</button>
+		</form>
+		<button id="closeSignupPopup">Close</button> <!-- Add this button to close the signup popup -->
+		<div id="signupError" class="error-message"></div> <!-- Error display for signup -->
+	</div>
+</div>
 
-  <!-- Add this somewhere appropriate in your body tag -->
-  <div id="upgradeShopModal" class="modal">
-    <div class="modal-content">
-      <h2>Upgrade Shop</h2>
-      <div id="upgrade-shop" class="upgrade-container"></div>
-      <button id="closeUpgradeShop">Close Shop</button>
-    </div>
-  </div>
+<!-- Add this somewhere appropriate in your body tag -->
+<div id="upgradeShopModal" class="modal">
+	<div class="modal-content">
+		<h2>Upgrade Shop</h2>
+		<div id="upgrade-shop" class="upgrade-container"></div>
+		<button id="closeUpgradeShop">Close Shop</button>
+	</div>
+</div>
 
-  <div id="shipCustomizationModal" class="modal">
-    <div class="modal-content">
-      <h2>Ship Customization</h2>
-      <div id="shipPreview"></div>
-      <div id="equippedUpgrades" class="upgrade-container">
-        <h3>Equipped Upgrades</h3>
-        <!-- Equipped upgrades will be added here dynamically -->
-      </div>
-      <div id="availableUpgrades" class="upgrade-container">
-        <h3>Used Upgrades</h3>
-        <!-- Available upgrades will be added here dynamically -->
-      </div>
-      <button id="saveCustomization">Save and Close</button>
-    </div>
-  </div>
-
-
-  <div class="top-right" id="loginContainer">
-
-<!--    <a href="#" id="login-link"><img width="80" src="icons/user/login.png" /></a>-->
-  </div>
-
-  <div class="top-right hidden" id="userInfo">
-    <span id="userNickname"></span>
-    <!-- | <a href="#" id="logoutLink">Logout</a> -->
-  </div>
+<div id="shipCustomizationModal" class="modal">
+	<div class="modal-content">
+		<h2>Ship Customization</h2>
+		<div id="shipPreview"></div>
+		<div id="equippedUpgrades" class="upgrade-container">
+			<h3>Equipped Upgrades</h3>
+			<!-- Equipped upgrades will be added here dynamically -->
+		</div>
+		<div id="availableUpgrades" class="upgrade-container">
+			<h3>Used Upgrades</h3>
+			<!-- Available upgrades will be added here dynamically -->
+		</div>
+		<button id="saveCustomization">Save and Close</button>
+	</div>
+</div>
 
 
-  <div id="xpBarContainer">
-    <div id="xpBar"></div>
-  </div>
+<div class="top-right" id="loginContainer">
 
-  <div id="pastScoresModal" class="modal">
-    <div class="modal-content">
-      <h2>Past Scores</h2>
-      <ul id="pastScoresList"></ul>
-      <button id="closePastScoresModal">Close</button>
-    </div>
-  </div>
+	<!--    <a href="#" id="login-link"><img width="80" src="icons/user/login.png" /></a>-->
+</div>
+
+<div class="top-right hidden" id="userInfo">
+	<span id="userNickname"></span>
+	<!-- | <a href="#" id="logoutLink">Logout</a> -->
+</div>
 
 
-  <!-- ver version -->
-  <div id="shipTypeContainer">
-    <canvas id="miniShipPreview" width="40" height="40"></canvas>
-  </div>
-  <!-- <div id="shipType">
-    Ship type: Basic&nbsp;&nbsp; &nbsp;
-  </div> -->
+<div id="xpBarContainer">
+	<div id="xpBar"></div>
+</div>
+
+<div id="pastScoresModal" class="modal">
+	<div class="modal-content">
+		<h2>Past Scores</h2>
+		<ul id="pastScoresList"></ul>
+		<button id="closePastScoresModal">Close</button>
+	</div>
+</div>
 
 
-  <div id="technologiesCount1">
-  </div>
-  <!-- 
-    <div id="result">
-
-    </div>
-  -->
-  <div id="levelUpModal" class="modal">
-    <div class="modal-content">
-      <h4 id="leveluptitle">Choose upgrade!</h4>
-        <div id="upgradeOptions">
-          <div class="upgrade-option" onclick="selectUpgrade(0)">
-            <div id="upgradeIcon1" class="upgrade-icon"></div>
-            <button id="upgrade1"></button>
-          </div>
-          <div class="upgrade-option" onclick="selectUpgrade(1)">
-            <div id="upgradeIcon2" class="upgrade-icon"></div>
-            <button id="upgrade2"></button>
-          </div>
-          <div class="upgrade-option" onclick="selectUpgrade(2)">
-            <div id="upgradeIcon3" class="upgrade-icon"></div>
-            <button id="upgrade3"></button>
-          </div>
-          <div class="upgrade-option" style="display:none" onclick="selectUpgrade(3)">
-            <div id="upgradeIcon4" class="upgrade-icon"></div>
-            <button id="upgrade4"></button>
-          </div>
-        </div>
-    </div>
-  </div>
+<!-- ver version -->
+<div id="shipTypeContainer">
+	<canvas id="miniShipPreview" width="40" height="40"></canvas>
+</div>
+<!-- <div id="shipType">
+  Ship type: Basic&nbsp;&nbsp; &nbsp;
+</div> -->
 
 
-  <div id="rouletteContainer" class="modal" style="display: none">
-    <div id="rouletteIcons"></div>
-    <div id="planet"></div>
-    <div id="upgradeDisplay"></div>
-    <button id="spinButton" onClick="startRoulette()">Spin [ENTER]</button>
+<div id="technologiesCount1">
+</div>
+<!--
+  <div id="result">
 
   </div>
+-->
+<div id="levelUpModal" class="modal">
+	<div class="modal-content">
+		<h4 id="leveluptitle">Choose upgrade!</h4>
+		<div id="upgradeOptions">
+			<div class="upgrade-option" onclick="selectUpgrade(0)">
+				<div id="upgradeIcon1" class="upgrade-icon"></div>
+				<button id="upgrade1"></button>
+			</div>
+			<div class="upgrade-option" onclick="selectUpgrade(1)">
+				<div id="upgradeIcon2" class="upgrade-icon"></div>
+				<button id="upgrade2"></button>
+			</div>
+			<div class="upgrade-option" onclick="selectUpgrade(2)">
+				<div id="upgradeIcon3" class="upgrade-icon"></div>
+				<button id="upgrade3"></button>
+			</div>
+			<div class="upgrade-option" style="display:none" onclick="selectUpgrade(3)">
+				<div id="upgradeIcon4" class="upgrade-icon"></div>
+				<button id="upgrade4"></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="rouletteContainer" class="modal" style="display: none">
+	<div id="rouletteIcons"></div>
+	<div id="planet"></div>
+	<div id="upgradeDisplay"></div>
+	<button id="spinButton" onClick="startRoulette()">Spin [ENTER]</button>
+
+</div>
+
+
+
+
+<div id="activeWeaponClassesContainer" class="bottom-icons">
+</div>
+
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+
+<div id="bottomContent">
+	<div id="waveCounter"></div>
+	<div id="coinsDisplay"></div>
+	<div id="livesDisplay"></div>
+	<div id="controlsInfo"></div>
+</div>
+
+
+
+<div id="endScreen" class="screen">
+	<h2>Game Over</h2>
+	<p><span id="wave"></span>
+
+	</p>
+	<p id="score"></p>
+	<p id="asteroidsDestroyed"></p>
+
+	<div style="gap: 10px; display: flex;"><button id="restartButton">Play Again</button><button
+			id="mainMenuButton">Main Menu</button></div>
+
+	<!-- <p id="bonusCoins"></p> -->
 
+	<h3>Damage Report</h3>
+	<ul id="damageReportList"></ul>
+	<p id="push-u">Push "U" for more details</p>
 
+	<h3 id="unlockedWeaponsHeader">Recently Unlocked Weapons</h3>
+	<ul id="unlockedWeaponsList"></ul>
 
+	<h3 id="newAchievementsHeader">New Achievements</h3>
+	<ul id="newAchievementsList"></ul>
 
-  <div id="activeWeaponClassesContainer" class="bottom-icons">
-  </div>
+	<!-- <h3>Used Upgrades</h3>
+	  <ul id="upgradesList"></ul> -->
 
-  <canvas id="gameCanvas" width="800" height="600"></canvas>
+	<div id="leaderboard-container">
+		<div id="leaderboard">
+			<h2>Leaderboard</h2>
+			<ol id="leaderboard-list"></ol>
+		</div>
+	</div>
+	<script>
+		document.addEventListener('DOMContentLoaded', async () => {
 
-  <div id="bottomContent">
-    <div id="waveCounter"></div>
-    <div id="coinsDisplay"></div>
-    <div id="livesDisplay"></div>
-    <div id="controlsInfo"></div>
-  </div>
+			if (isMobile()) {
+				console.log('is mobile', isMobile());
+				document.getElementById('push-u').style.display = 'none';
+			} else {
+				console.log('is mobile', isMobile());
+				document.getElementById('push-u').style.display = 'block';
+			}
 
+		});
+	</script>
+</div>
 
 
-  <div id="endScreen" class="screen">
-    <h2>Game Over</h2>
-    <p><span id="wave"></span>
+<!-- <div id="shipSelectionModal" class="modal">
+  <div class="modal-content">
+	<h2>Customize Your Ship</h2>
 
-    </p>
-    <p id="score"></p>
-    <p id="asteroidsDestroyed"></p>
+	<div class="ship-preview">
+	  <canvas id="shipPreviewCanvas" width="200" height="200"></canvas>
+	</div>
 
-    <div style="gap: 10px; display: flex;"><button id="restartButton">Play Again</button><button
-        id="mainMenuButton">Main Menu</button></div>
+	<div class="selection-section">
+	  <h3>Select Your Ship</h3>
+	  <select id="shipSelector">
+	  </select>
+	</div>
 
-    <!-- <p id="bonusCoins"></p> -->
+	<div class="selection-section">
+	  <h3>Select Secondary Weapon</h3>
+	  <select id="secondaryWeaponSelector">
+	  </select>
+	</div>
 
-    <h3>Damage Report</h3>
-    <ul id="damageReportList"></ul>
-    <p id="push-u">Push "U" for more details</p>
+	<button id="saveSelections">Save</button>
+	<button id="cancelSelections">Cancel</button>
+</div>
+</div> -->
 
-    <h3 id="unlockedWeaponsHeader">Recently Unlocked Weapons</h3>
-    <ul id="unlockedWeaponsList"></ul>
+<div id="joystick">
+	<div id="joystickHandle"></div>
 
-    <h3 id="newAchievementsHeader">New Achievements</h3>
-    <ul id="newAchievementsList"></ul>
+</div>
 
-    <!-- <h3>Used Upgrades</h3>
-      <ul id="upgradesList"></ul> -->
+<div id="weaponInfo">
+	<h2>Weapon Information</h2>
+	<div id="weaponsContainer">
+		<!-- Weapon entries will be dynamically added here -->
+	</div>
+	<!-- <div id="secondaryWeaponInfo"></div> -->
 
-    <div id="leaderboard-container">
-      <div id="leaderboard">
-        <h2>Leaderboard</h2>
-        <ol id="leaderboard-list"></ol>
-      </div>
-    </div>
-    <script>
-      document.addEventListener('DOMContentLoaded', async () => {
 
-        if (isMobile()) {
-          console.log('is mobile', isMobile());
-          document.getElementById('push-u').style.display = 'none';
-        } else {
-          console.log('is mobile', isMobile());
-          document.getElementById('push-u').style.display = 'block';
-        }
+	<button id="closeButton" onclick="toggleWeaponInfo()">Close</button>
+</div>
 
-      });
-    </script>
-  </div>
+<div id="achievementsModal" class="modal">
+	<div class="modal-content">
+		<h2>Achievements</h2>
 
+		<!-- Container for showing achievements -->
+		<div id="achievementsDisplay" class="achievement-page"></div>
 
-  <!-- <div id="shipSelectionModal" class="modal">
-    <div class="modal-content">
-      <h2>Customize Your Ship</h2>
+		<!-- Navigation buttons -->
+		<div class="modal-navigation" style="display: flex; gap: 10px;">
+			<button id="prevAchievement" class="nav-btn">←</button>
+			<button id="nextAchievement" class="nav-btn">→</button>
+		</div>
 
-      <div class="ship-preview">
-        <canvas id="shipPreviewCanvas" width="200" height="200"></canvas>
-      </div>
+		<button id="closeAchievementsModal">Close</button>
+	</div>
+</div>
 
-      <div class="selection-section">
-        <h3>Select Your Ship</h3>
-        <select id="shipSelector">
-        </select>
-      </div>
 
-      <div class="selection-section">
-        <h3>Select Secondary Weapon</h3>
-        <select id="secondaryWeaponSelector">
-        </select>
-      </div>
+<div id="settingsModal" class="modal" style="display:none;">
 
-      <button id="saveSelections">Save</button>
-      <button id="cancelSelections">Cancel</button>
-  </div>
-  </div> -->
+	<h2>Settings</h2>
+	<span id="versionInfo"><!--VERSION--> </span>
 
-  <div id="joystick">
-    <div id="joystickHandle"></div>
+	<h3>Volume Control</h3>
+	<input type="range" id="volumeSlider" min="1" max="10" value="5">
+	<p>Volume: <span id="volumeValue">5</span></p>
 
-  </div>
+	<p>
+		<button id="toggleMusic" onClick="toggleMusic()">Toggle [M]usic</button>
 
-  <div id="weaponInfo">
-    <h2>Weapon Information</h2>
-    <div id="weaponsContainer">
-      <!-- Weapon entries will be dynamically added here -->
-    </div>
-    <!-- <div id="secondaryWeaponInfo"></div> -->
+		<button id="toggleSound" onClick="toggleSound()">Toggle Sou[n]d</button>
 
+		<button id="toggleBackground" onClick="toggleBackground()">Toggle Background</button>
 
-    <button id="closeButton" onclick="toggleWeaponInfo()">Close</button>
-  </div>
+		<!-- <button id="toggleTunes" onClick="toggleTunes()" style="display:none">Toggle Tunes</button> -->
 
-  <div id="achievementsModal" class="modal">
-    <div class="modal-content">
-      <h2>Achievements</h2>
+		<!-- <button id="toggleReedem" onClick="toggleRedeemMode()">Toggle Redeem</button> -->
 
-      <!-- Container for showing achievements -->
-      <div id="achievementsDisplay" class="achievement-page"></div>
+		<!-- <button id="saveProgress" onClick="saveUserData()">Save Progress</button> -->
 
-      <!-- Navigation buttons -->
-      <div class="modal-navigation" style="display: flex; gap: 10px;">
-        <button id="prevAchievement" class="nav-btn">←</button>
-        <button id="nextAchievement" class="nav-btn">→</button>
-      </div>
+	</p>
 
-      <button id="closeAchievementsModal">Close</button>
-    </div>
-  </div>
+	<!-- <h3>Toggle redeem mode</h3> -->
+	<!-- <p>In redeem mode you push "r" to use your upgrade credits instead of them appearing automatically</p>
+	<p>Status: <span id="redeemModeStatus">Off</span></p> -->
 
 
-  <div id="settingsModal" class="modal" style="display:none;">
 
-    <h2>Settings</h2>
-    <span id="versionInfo"><!--VERSION--> </span>
+	<button onclick="toggleSettings()">Close</button>
+</div>
 
-    <h3>Volume Control</h3>
-    <input type="range" id="volumeSlider" min="1" max="10" value="5">
-    <p>Volume: <span id="volumeValue">5</span></p>
 
-    <p>
-      <button id="toggleMusic" onClick="toggleMusic()">Toggle [M]usic</button>
 
-      <button id="toggleSound" onClick="toggleSound()">Toggle Sou[n]d</button>
+<audio id="background-music" src="sounds/music_loop.mp3" loop></audio>
+<audio id="background-music2" src="sounds/ingame2.mp3" loop></audio>
+<!-- <audio id="background-music3" src="sounds/ingame3.mp3" loop></audio> -->
 
-      <button id="toggleBackground" onClick="toggleBackground()">Toggle Background</button>
+<audio id="meteor-destroy-1" src="sounds/meteor_destroy.mp3"></audio>
+<audio id="meteor-destroy-2" src="sounds/meteor_destroy2.mp3"></audio>
+<audio id="meteor-destroy-3" src="sounds/meteor_destroy3.mp3"></audio>
 
-      <!-- <button id="toggleTunes" onClick="toggleTunes()" style="display:none">Toggle Tunes</button> -->
+<audio id="shot-sound-1" src="sounds/shot1.mp3"></audio>
+<audio id="shot-sound-2" src="sounds/shot2.mp3"></audio>
+<audio id="shot-sound-3" src="sounds/shot3.mp3"></audio>
 
-      <!-- <button id="toggleReedem" onClick="toggleRedeemMode()">Toggle Redeem</button> -->
+<audio id="thruster-sound-1" src="sounds/thruster1.mp3"></audio>
+<audio id="thruster-sound-2" src="sounds/thruster2.mp3"></audio>
+<audio id="thruster-sound-3" src="sounds/thruster3.mp3"></audio>
+<audio id="thruster-sound-4" src="sounds/thruster3.mp3" loop></audio>
 
-      <!-- <button id="saveProgress" onClick="saveUserData()">Save Progress</button> -->
+<audio id="ship-destroyed" src="sounds/ship_destroyed.mp3"></audio>
 
-    </p>
+<audio id="alien-entering-sound" src="sounds/alien_entering.mp3"></audio>
 
-    <!-- <h3>Toggle redeem mode</h3> -->
-    <!-- <p>In redeem mode you push "r" to use your upgrade credits instead of them appearing automatically</p>
-    <p>Status: <span id="redeemModeStatus">Off</span></p> -->
+<audio id="alien-laugh-sound" src="sounds/alien_laugh3.mp3"></audio>
 
+<audio id="alien-laser-1" src="sounds/alien_laser1.mp3"></audio>
+<audio id="alien-laser-2" src="sounds/alien_laser2.mp3"></audio>
+<audio id="alien-laser-3" src="sounds/alien_laser3.mp3"></audio>
 
+<audio id="boss-shoot-1" src="sounds/boss/boss_shoot.mp3"></audio>
+<audio id="boss-shoot-2" src="sounds/boss/boss_shoot2.mp3"></audio>
 
-    <button onclick="toggleSettings()">Close</button>
-  </div>
+<audio id="boss-drone-1" src="sounds/boss/boss_drone_spawn.mp3"></audio>
+<audio id="boss-take-damage-1" src="sounds/boss/boss_damaged.mp3"></audio>
+<audio id="boss-die" src="sounds/boss/boss_die.mp3"></audio>
 
 
+<audio id="gem-collecting-sound" src="sounds/bird_chirp.mp3"></audio>
 
-  <audio id="background-music" src="sounds/music_loop.mp3" loop></audio>
-  <audio id="background-music2" src="sounds/ingame2.mp3" loop></audio>
-  <!-- <audio id="background-music3" src="sounds/ingame3.mp3" loop></audio> -->
+<audio id="spin-sound" src="sounds/upgrade_loop.mp3"></audio>
 
-  <audio id="meteor-destroy-1" src="sounds/meteor_destroy.mp3"></audio>
-  <audio id="meteor-destroy-2" src="sounds/meteor_destroy2.mp3"></audio>
-  <audio id="meteor-destroy-3" src="sounds/meteor_destroy3.mp3"></audio>
+<audio id="freeze-sound" src="sounds/freeze.mp3"></audio>
+<audio id="freeze-sound-2" src="sounds/freezew.mp3"></audio>
+<audio id="death-ray-sound" src="sounds/dray1.mp3"></audio>
+<audio id="deploy-drone-sound" src="sounds/deploy_drone.mp3"></audio>
+<audio id="acid-bomb-sound" src="sounds/acid_bomb.mp3"></audio>
+<audio id="bomb-lay-sound" src="sounds/lay_bomb.mp3"></audio>
+<audio id="lightning-sound" src="sounds/lightning_echo.mp3"></audio>
+<audio id="flamethrower" src="sounds/flame_throw2.mp3"></audio>
 
-  <audio id="shot-sound-1" src="sounds/shot1.mp3"></audio>
-  <audio id="shot-sound-2" src="sounds/shot2.mp3"></audio>
-  <audio id="shot-sound-3" src="sounds/shot3.mp3"></audio>
+<audio id="megaboss-background-music" src="sounds/boss1.mp3" loop></audio>
+<audio id="supermegaboss-background-music" src="sounds/boss2.mp3" loop></audio>
+<audio id="octoboss-background-music" src="sounds/boss3.mp3" loop></audio>
 
-  <audio id="thruster-sound-1" src="sounds/thruster1.mp3"></audio>
-  <audio id="thruster-sound-2" src="sounds/thruster2.mp3"></audio>
-  <audio id="thruster-sound-3" src="sounds/thruster3.mp3"></audio>
-  <audio id="thruster-sound-4" src="sounds/thruster3.mp3" loop></audio>
 
-  <audio id="ship-destroyed" src="sounds/ship_destroyed.mp3"></audio>
+<div id="startScreen">
+	<div id="technologiesCount">
+	</div>
+	<img height="50px" src="icons/ia-logo2.png" id="gameLogo"/>
+	<div id="canvasContainer">
+		<!-- <h2>Welcome to Infinite Asteroids!</h2> -->
+		<canvas id="animationCanvas"></canvas>
+	</div>
+	<!-- <h2>Welcome to Infinite Asteroids!</h2> -->
+	<script src="js/retro-infinite-asteroids-animation.js"></script>
+	<script>
+		let preloadedLeaderboards = null; // Variable to store preloaded leaderboards
 
-  <audio id="alien-entering-sound" src="sounds/alien_entering.mp3"></audio>
+		document.addEventListener('DOMContentLoaded', async () => {
 
-  <audio id="alien-laugh-sound" src="sounds/alien_laugh3.mp3"></audio>
 
-  <audio id="alien-laser-1" src="sounds/alien_laser1.mp3"></audio>
-  <audio id="alien-laser-2" src="sounds/alien_laser2.mp3"></audio>
-  <audio id="alien-laser-3" src="sounds/alien_laser3.mp3"></audio>
+			InfiniteAsteroidsAnimation.init('animationCanvas');
+			populateAchievements();
+			populateSelectors();
+			handleSelections();
+			updateShipPreview();
+			document.getElementById('versionInfo').innerHTML = "Version " + version;
+			// console.log("innerHeight");
+			// console.log(window.innerHeight);
+			preloadedLeaderboards = await loadAllLeaderboardsOptimized(gameId);
 
-  <audio id="boss-shoot-1" src="sounds/boss/boss_shoot.mp3"></audio>
-  <audio id="boss-shoot-2" src="sounds/boss/boss_shoot2.mp3"></audio>
+			document.getElementById('viewAllLeaderboardsButton').addEventListener('click', () => {
+				populateLeaderboardsModal(preloadedLeaderboards);
+			});
 
-  <audio id="boss-drone-1" src="sounds/boss/boss_drone_spawn.mp3"></audio>
-  <audio id="boss-take-damage-1" src="sounds/boss/boss_damaged.mp3"></audio>
-  <audio id="boss-die" src="sounds/boss/boss_die.mp3"></audio>
+			if (window.innerHeight < 500) {
+				document.getElementById('gameModeHeader').remove();
+				console.log(window.innerHeight);
+				document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
+			}
 
 
-  <audio id="gem-collecting-sound" src="sounds/bird_chirp.mp3"></audio>
+		});
 
-  <audio id="spin-sound" src="sounds/upgrade_loop.mp3"></audio>
 
-  <audio id="freeze-sound" src="sounds/freeze.mp3"></audio>
-  <audio id="freeze-sound-2" src="sounds/freezew.mp3"></audio>
-  <audio id="death-ray-sound" src="sounds/dray1.mp3"></audio>
-  <audio id="deploy-drone-sound" src="sounds/deploy_drone.mp3"></audio>
-  <audio id="acid-bomb-sound" src="sounds/acid_bomb.mp3"></audio>
-  <audio id="bomb-lay-sound" src="sounds/lay_bomb.mp3"></audio>
-  <audio id="lightning-sound" src="sounds/lightning_echo.mp3"></audio>
-  <audio id="flamethrower" src="sounds/flame_throw2.mp3"></audio>
+	</script>
+	<div id="controlSection">
+		<div>
+			<div id="shipCustomizationSection">
+				<div class="ship-preview">
+					<canvas id="shipPreviewCanvas" width="50" height="50"></canvas>
+				</div>
+				<div class="option-group"  style="display: flex; justify-content: center; gap: 10px;">
+					<h4 id="selectShipHeader">Select Ship:</h4>
+					<div class="selector">
+						<button id="prevShipButton">&#60;</button>
+						<span id="selectedShip">Basic</span>
+						<button id="nextShipButton">></button>
+					</div>
+				</div>
 
-  <audio id="megaboss-background-music" src="sounds/boss1.mp3" loop></audio>
-  <audio id="supermegaboss-background-music" src="sounds/boss2.mp3" loop></audio>
-  <audio id="octoboss-background-music" src="sounds/boss3.mp3" loop></audio>
+				<div class="option-group">
+					<h4 id="secondaryWeaponHeader">Select Secondary:</h4>
+					<div class="selector">
+						<button id="prevSecondaryWeaponButton">&#60;</button>
+						<span id="selectedSecondaryWeapon">Bomb</span>
+						<button id="nextSecondaryWeaponButton">></button>
+					</div>
+				</div>
+			</div>
 
+			<div id="gameModeSection">
+				<!-- <button>&#60;</button> -->
 
-  <div id="startScreen">
-    <div id="technologiesCount">
-    </div>
-    <img height="50px" src="icons/ia-logo2.png" id="gameLogo"/>
-    <div id="canvasContainer">
-      <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
-      <canvas id="animationCanvas"></canvas>
-    </div>
-    <!-- <h2>Welcome to Infinite Asteroids!</h2> -->
-    <script src="js/retro-infinite-asteroids-animation.js"></script>
-    <script>
-      let preloadedLeaderboards = null; // Variable to store preloaded leaderboards
+				<h4 id="gameModeHeader">Select Game Mode</h4>
 
-      document.addEventListener('DOMContentLoaded', async () => {
+				<div class="selector">
+					<button>&#60;</button>
 
+					<span id="selectedGameMode">Deep Space</span>
+					<button id="gameModeButton">></button>
+				</div>
+			</div>
+		</div>
+		<div><span id="crazyGameData"></span>
+			<button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
+			<BR /><button id="settings" onclick="toggleSettings()">Settings</button><BR />
+			<button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
+			<button id="Achievements" onclick="openAchievementsModal()">My Achievements</button>
+			<!-- <button id="viewPastScoresButton">View Stats</button> -->
+		</div>
+		<div>
+			<div id="achievementIconsList"></div>
+		</div>
+	</div>
 
-        InfiniteAsteroidsAnimation.init('animationCanvas');
-        populateAchievements();
-        populateSelectors();
-        handleSelections();
-        updateShipPreview();
-        document.getElementById('versionInfo').innerHTML = "Version " + version;
-        // console.log("innerHeight");
-        // console.log(window.innerHeight);
-        preloadedLeaderboards = await loadAllLeaderboardsOptimized(gameId);
+	<div id="achievementsContainer" style="display:none">
 
-        document.getElementById('viewAllLeaderboardsButton').addEventListener('click', () => {
-          populateLeaderboardsModal(preloadedLeaderboards);
-        });
+		<!-- <h3>Your Achievements</h3> -->
+		<div id="achievementsList"></div>
+	</div>
+	<!-- <h3>Your Upgrades</h3> -->
+	<div id="upgradesList"></div>
 
-        if (window.innerHeight < 500) {
-          document.getElementById('gameModeHeader').remove();
-          console.log(window.innerHeight);
-          document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
-        }
 
+	<!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
+		<button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button> -->
+	<!-- <p>Tap lower left for store.</p> -->
+	<!-- <p>Tap with two fingers to fire.</p> -->
+	<!-- <button onclick="startGame()">Start Game</button> -->
+</div>
+</div>
 
-      });
 
+<!-- <button id="restartButton" style="display: none;">Home</button> -->
+<script>
 
-    </script>
-    <div id="controlSection">
-      <div>
-        <div id="shipCustomizationSection">
-          <div class="ship-preview">
-            <canvas id="shipPreviewCanvas" width="50" height="50"></canvas>
-          </div>
-          <div class="option-group"  style="display: flex; justify-content: center; gap: 10px;">
-            <h4 id="selectShipHeader">Select Ship:</h4>
-            <div class="selector">
-              <button id="prevShipButton">&#60;</button>
-              <span id="selectedShip">Basic</span>
-              <button id="nextShipButton">></button>
-            </div>
-          </div>
+	const canvas = document.getElementById('gameCanvas');
+	let ctx = canvas.getContext('2d', { alpha: false });
 
-          <div class="option-group">
-            <h4 id="secondaryWeaponHeader">Select Secondary:</h4>
-            <div class="selector">
-              <button id="prevSecondaryWeaponButton">&#60;</button>
-              <span id="selectedSecondaryWeapon">Bomb</span>
-              <button id="nextSecondaryWeaponButton">></button>
-            </div>
-          </div>
-        </div>
+</script>
 
-        <div id="gameModeSection">
-          <!-- <button>&#60;</button> -->
 
-          <h4 id="gameModeHeader">Select Game Mode</h4>
 
-          <div class="selector">
-            <button>&#60;</button>
-
-            <span id="selectedGameMode">Deep Space</span>
-            <button id="gameModeButton">></button>
-          </div>
-        </div>
-      </div>
-      <div><span id="crazyGameData"></span>
-        <button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
-        <BR /><button id="settings" onclick="toggleSettings()">Settings</button><BR />
-        <button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
-        <button id="Achievements" onclick="openAchievementsModal()">My Achievements</button>
-        <!-- <button id="viewPastScoresButton">View Stats</button> -->
-      </div>
-      <div>
-        <div id="achievementIconsList"></div>
-      </div>
-    </div>
-
-    <div id="achievementsContainer" style="display:none">
-
-      <!-- <h3>Your Achievements</h3> -->
-      <div id="achievementsList"></div>
-    </div>
-    <!-- <h3>Your Upgrades</h3> -->
-    <div id="upgradesList"></div>
-
-
-    <!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
-        <button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button> -->
-    <!-- <p>Tap lower left for store.</p> -->
-    <!-- <p>Tap with two fingers to fire.</p> -->
-    <!-- <button onclick="startGame()">Start Game</button> -->
-  </div>
-  </div>
-
-
-  <!-- <button id="restartButton" style="display: none;">Home</button> -->
-  <script>
-
-    const canvas = document.getElementById('gameCanvas');
-    let ctx = canvas.getContext('2d', { alpha: false });
-
-  </script>
-
-
-
-  <script>
-   
-    document.addEventListener('DOMContentLoaded', () => {
-
-      // updateMiniShipPreview();
-      // loadAchievements();
-      // populateAchievements();
-      if (isMobile()) {
-
-        // fpsThrottleMode = true;
-        // cut three times to start
-        applyThrottleMode();
-        applyThrottleMode();
-        applyThrottleMode();
-        MAXPARTICLES = 0;
-        // MOVE TO start game
-        // const mobileControls = document.getElementById('mobile-controls');
-        // if (mobileControls) mobileControls.style.display = 'block';
-
-        // document.getElementById('joystick').style.display = 'block';
-        document.getElementById('startScreen').style.display = 'flex';
-      } else {
-        // startGame();
-      }
-
-    });
-
-    function populateLeaderboardsModal(allScores) {
-      const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
-      allLeaderboardsContainer.innerHTML = ''; // Clear previous content
-
-      const IndexedGameModes = {
-        [GameModes.EASY]: "Deep Space Easy",
-        [GameModes.NORMAL]: "Deep Space Normal",
-        [GameModes.HARD]: "Deep Space Hard",
-        [GameModes.HERO]: "Deep Space Hero",
-        [GameModes.METEORSHOWEREASY]: "Meteor Shower Easy",
-        [GameModes.METEORSHOWERNORMAL]: "Meteor Shower Normal",
-        [GameModes.METEORSHOWERHARD]: "Meteor Shower Hard",
-        [GameModes.METEORSHOWERHERO]: "Meteor Shower Hero",
-        [GameModes.PLANETEASY]: "Planet Easy",
-        [GameModes.PLANETNORMAL]: "Planet Normal",
-        [GameModes.PLANETHARD]: "Planet Hard",
-        [GameModes.PLANETHERO]: "Planet Hero",
-        [GameModes.ENDLESS_SLOW]: "Endless Slow"
-      };
-      for (let mode in allScores) {
-        const leaderboardDiv = document.createElement('div');
-        leaderboardDiv.className = 'leaderboard-mode';
-        leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${IndexedGameModes[mode] || "unknown"}</h3>`;
-        const entryWrapper = document.createElement('div');
-        entryWrapper.classList.add('entryWrapper')
-        allScores[mode].forEach((entry, index) => {
-          const formattedScore = entry.score.toLocaleString('en-US', {
-            maximumFractionDigits: 0
-          });
-          const entryP = document.createElement('p');
-          entryP.textContent = `${index + 1}. ${entry.nickname || entry.username}: ${formattedScore} points`;
-          entryP.tabIndex = 0; // Make each entry focusable
-          entryWrapper.appendChild(entryP)
-        });
-
-        leaderboardDiv.appendChild(entryWrapper);
-        allLeaderboardsContainer.appendChild(leaderboardDiv);
-      }
-
-      const modal = document.getElementById('allLeaderboardsModal');
-      modal.style.display = 'block';
-      const firstFocusableElement = modal.querySelector('[tabindex="0"]');
-      if (firstFocusableElement) {
-        firstFocusableElement.focus();
-      }
-      // scroll for leaderbaord
-      allLeaderboardsContainer.addEventListener('wheel', function (event) {
-        allLeaderboardsContainer.scrollTop += event.deltaY;
-      });
-
-      modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
-    }
-
-
-    // document.getElementById('viewAllLeaderboardsButton').addEventListener('click', async () => {
-    //   const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
-    //   allLeaderboardsContainer.innerHTML = ''; // Clear previous content
-
-    //   const allScores = await loadAllLeaderboards(gameId);
-
-    //   for (let mode in allScores) {
-    //     const leaderboardDiv = document.createElement('div');
-    //     leaderboardDiv.className = 'leaderboard-mode';
-    //     leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${mode}</h3>`;
-
-    //     allScores[mode].forEach((entry, index) => {
-    //       const formattedScore = entry.score.toLocaleString('en-US', {
-    //         maximumFractionDigits: 0
-    //       });
-    //       const entryP = document.createElement('p');
-    //       entryP.textContent = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
-    //       entryP.tabIndex = 0; // Make each entry focusable
-    //       leaderboardDiv.appendChild(entryP);
-    //     });
-
-    //     allLeaderboardsContainer.appendChild(leaderboardDiv);
-    //   }
-
-    //   const modal = document.getElementById('allLeaderboardsModal');
-    //   modal.style.display = 'block';
-
-    //   // Set focus to the first focusable element
-    //   const firstFocusableElement = modal.querySelector('[tabindex="0"]');
-    //   if (firstFocusableElement) {
-    //     firstFocusableElement.focus();
-    //   }
-
-    //   // Add keyboard event listener
-    //   modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
-    // });
-
-    document.getElementById('closeAllLeaderboards').addEventListener('click', () => {
-      const modal = document.getElementById('allLeaderboardsModal');
-      modal.style.display = 'none';
-      modal.removeEventListener('keydown', handleAllLeaderboardsKeydown);
-    });
+<script>
 
+	document.addEventListener('DOMContentLoaded', () => {
 
-    function handleAllLeaderboardsKeydown(event) {
-      const modal = document.getElementById('allLeaderboardsModal');
-      const focusableElements = modal.querySelectorAll('[tabindex="0"]');
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
+		// updateMiniShipPreview();
+		// loadAchievements();
+		// populateAchievements();
+		if (isMobile()) {
 
-      if (event.key === 'Tab') {
-        // Handle Tab key navigation
-        if (event.shiftKey && document.activeElement === firstElement) {
-          event.preventDefault();
-          lastElement.focus();
-        } else if (!event.shiftKey && document.activeElement === lastElement) {
-          event.preventDefault();
-          firstElement.focus();
-        }
-      } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-        event.preventDefault();
-        const currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
-        let nextIndex;
+			// fpsThrottleMode = true;
+			// cut three times to start
+			applyThrottleMode();
+			applyThrottleMode();
+			applyThrottleMode();
+			MAXPARTICLES = 0;
+			// MOVE TO start game
+			// const mobileControls = document.getElementById('mobile-controls');
+			// if (mobileControls) mobileControls.style.display = 'block';
 
-        if (event.key === 'ArrowDown') {
-          nextIndex = (currentIndex + 1) % focusableElements.length;
-        } else {
-          nextIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
-        }
-
-        focusableElements[nextIndex].focus();
-      } else if (event.key === 'Escape') {
-        document.getElementById('closeAllLeaderboards').click();
-      }
-    }
-
-
-
-
-
-
-
-
-    function updateCoinsDisplay() {
-      coinsDisplay.textContent = coins;
-    }
-
-
-
-    function drawPixelatedExplosion(x, y, size) {
-      const canvas = document.createElement('canvas');
-      // const ctx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
-      const pixelSize = 4; // Adjust pixel size to your preference
-
-      canvas.width = size;
-      canvas.height = size;
-
-      // Draw explosion on the off-screen canvas
-      ctx.fillStyle = 'orange';
-      ctx.beginPath();
-      ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Get the image data
-      const imageData = ctx.getImageData(0, 0, size, size);
-
-      // Create a new canvas for pixelated effect
-      const pixelCanvas = document.createElement('canvas');
-      const pixelCtx = pixelCanvas.getContext('2d', { alpha: false, willReadFrequently: true });
-
-      pixelCanvas.width = size;
-      pixelCanvas.height = size;
-
-      // Draw pixelated effect
-      for (let y = 0; y < size; y += pixelSize) {
-        for (let x = 0; x < size; x += pixelSize) {
-          const pixelIndex = (y * size + x) * 4;
-          const r = imageData.data[pixelIndex];
-          const g = imageData.data[pixelIndex + 1];
-          const b = imageData.data[pixelIndex + 2];
-          const a = imageData.data[pixelIndex + 3];
-
-          pixelCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
-          pixelCtx.fillRect(x, y, pixelSize, pixelSize);
-        }
-      }
-
-      // Draw the pixelated explosion on the main canvas
-      ctx.drawImage(pixelCanvas, 0, 0);
-
-      // Draw the pixelated canvas onto the game canvas
-      ctx.drawImage(canvas, x - size / 2, y - size / 2);
-    }
-
-    // Usage
-    // drawPixelatedExplosion(100, 100, 64);
-
-
-
-
-
-    function showArrow(side) {
-      const leftArrow = document.getElementById('leftArrow');
-      const rightArrow = document.getElementById('rightArrow');
-
-      if (side === 'left') {
-        leftArrow.style.display = 'block';
-        rightArrow.style.display = 'none';
-      } else {
-        leftArrow.style.display = 'none';
-        rightArrow.style.display = 'block';
-      }
-
-      setTimeout(() => {
-        leftArrow.style.display = 'none';
-        rightArrow.style.display = 'none';
-        createAsteroids(side);
-      }, 700);
-    }
-
-
-    // Function to toggle mobile buttons visibility based on device type
-    function toggleMobileButtons() {
-      const mobileControls = document.getElementById('mobile-controls');
-
-      // Check if it's a mobile device
-      if (isMobile()) {
-        if (mobileControls) mobileControls.style.display = 'block';
-      } else {
-        if (mobileControls) mobileControls.style.display = 'none';
-      }
-    }
-
-    // Call this function on page load
-    // window.addEventListener('load', toggleMobileButtons);
-
-    // Also call this on window resize in case the device orientation changes
-    // window.addEventListener('resize', toggleMobileButtons);
-
-    // Handle touch events for the buttons
-    document.getElementById('steer-left').addEventListener('touchstart', function (e) {
-      e.preventDefault();  // Prevent zooming
-      keys['ArrowLeft'] = true;
-	  this.style.backgroundColor = '#00cc00';
-
-    });
-
-    document.getElementById('steer-left').addEventListener('touchend', function (e) {
-      e.preventDefault();  // Prevent zooming
-      keys['ArrowLeft'] = false;
-	  this.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    });
-
-    document.getElementById('steer-right').addEventListener('touchstart', function (e) {
-      e.preventDefault();  // Prevent zooming
-      keys['ArrowRight'] = true;
-	  this.style.backgroundColor = '#00cc00';
-    });
-
-    document.getElementById('steer-right').addEventListener('touchend', function (e) {
-      e.preventDefault();  // Prevent zooming
-      keys['ArrowRight'] = false;
-	  this.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-	});
-
-    document.getElementById('accelerate').addEventListener('touchstart', function (e) {
-      e.preventDefault();  // Prevent zooming
-      keys['ArrowUp'] = true;
-	  this.style.backgroundColor = '#00cc00';
+			// document.getElementById('joystick').style.display = 'block';
+			document.getElementById('startScreen').style.display = 'flex';
+		} else {
+			// startGame();
+		}
 
 	});
 
-    document.getElementById('accelerate').addEventListener('touchend', function (e) {
-      e.preventDefault();  // Prevent zooming
-      keys['ArrowUp'] = false;
-	  this.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	function populateLeaderboardsModal(allScores) {
+		const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
+		allLeaderboardsContainer.innerHTML = ''; // Clear previous content
+
+		const IndexedGameModes = {
+			[GameModes.EASY]: "Deep Space Easy",
+			[GameModes.NORMAL]: "Deep Space Normal",
+			[GameModes.HARD]: "Deep Space Hard",
+			[GameModes.HERO]: "Deep Space Hero",
+			[GameModes.METEORSHOWEREASY]: "Meteor Shower Easy",
+			[GameModes.METEORSHOWERNORMAL]: "Meteor Shower Normal",
+			[GameModes.METEORSHOWERHARD]: "Meteor Shower Hard",
+			[GameModes.METEORSHOWERHERO]: "Meteor Shower Hero",
+			[GameModes.PLANETEASY]: "Planet Easy",
+			[GameModes.PLANETNORMAL]: "Planet Normal",
+			[GameModes.PLANETHARD]: "Planet Hard",
+			[GameModes.PLANETHERO]: "Planet Hero",
+			[GameModes.ENDLESS_SLOW]: "Endless Slow"
+		};
+		for (let mode in allScores) {
+			const leaderboardDiv = document.createElement('div');
+			leaderboardDiv.className = 'leaderboard-mode';
+			leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${IndexedGameModes[mode] || "unknown"}</h3>`;
+			const entryWrapper = document.createElement('div');
+			entryWrapper.classList.add('entryWrapper')
+			allScores[mode].forEach((entry, index) => {
+				const formattedScore = entry.score.toLocaleString('en-US', {
+					maximumFractionDigits: 0
+				});
+				const entryP = document.createElement('p');
+				entryP.textContent = `${index + 1}. ${entry.nickname || entry.username}: ${formattedScore} points`;
+				entryP.tabIndex = 0; // Make each entry focusable
+				entryWrapper.appendChild(entryP)
+			});
+
+			leaderboardDiv.appendChild(entryWrapper);
+			allLeaderboardsContainer.appendChild(leaderboardDiv);
+		}
+
+		const modal = document.getElementById('allLeaderboardsModal');
+		modal.style.display = 'block';
+		const firstFocusableElement = modal.querySelector('[tabindex="0"]');
+		if (firstFocusableElement) {
+			firstFocusableElement.focus();
+		}
+		// scroll for leaderbaord
+		allLeaderboardsContainer.addEventListener('wheel', function (event) {
+			allLeaderboardsContainer.scrollTop += event.deltaY;
+		});
+
+		modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
+	}
+
+
+	// document.getElementById('viewAllLeaderboardsButton').addEventListener('click', async () => {
+	//   const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
+	//   allLeaderboardsContainer.innerHTML = ''; // Clear previous content
+
+	//   const allScores = await loadAllLeaderboards(gameId);
+
+	//   for (let mode in allScores) {
+	//     const leaderboardDiv = document.createElement('div');
+	//     leaderboardDiv.className = 'leaderboard-mode';
+	//     leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${mode}</h3>`;
+
+	//     allScores[mode].forEach((entry, index) => {
+	//       const formattedScore = entry.score.toLocaleString('en-US', {
+	//         maximumFractionDigits: 0
+	//       });
+	//       const entryP = document.createElement('p');
+	//       entryP.textContent = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+	//       entryP.tabIndex = 0; // Make each entry focusable
+	//       leaderboardDiv.appendChild(entryP);
+	//     });
+
+	//     allLeaderboardsContainer.appendChild(leaderboardDiv);
+	//   }
+
+	//   const modal = document.getElementById('allLeaderboardsModal');
+	//   modal.style.display = 'block';
+
+	//   // Set focus to the first focusable element
+	//   const firstFocusableElement = modal.querySelector('[tabindex="0"]');
+	//   if (firstFocusableElement) {
+	//     firstFocusableElement.focus();
+	//   }
+
+	//   // Add keyboard event listener
+	//   modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
+	// });
+
+	document.getElementById('closeAllLeaderboards').addEventListener('click', () => {
+		const modal = document.getElementById('allLeaderboardsModal');
+		modal.style.display = 'none';
+		modal.removeEventListener('keydown', handleAllLeaderboardsKeydown);
 	});
 
 
-    // joystick.addEventListener('touchstart', (e) => {
-    //   isTouchingJoystick = true;
-    //   joystickStartX = e.touches[0].clientX;
-    //   joystickStartY = e.touches[0].clientY;
-    // });
-
-
-    // joystick.addEventListener('touchmove', (e) => {
-    //   if (isTouchingJoystick) {
-    //     const touchX = e.touches[0].clientX;
-    //     const touchY = e.touches[0].clientY;
-    //     const deltaX = touchX - joystickStartX;
-    //     const deltaY = touchY - joystickStartY;
-
-    //     // Calculate angle and distance from the center
-    //     const angle = Math.atan2(deltaY, deltaX);
-    //     const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
-
-    //     // Update joystick handle position
-    //     joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
-
-    //     // Update ship rotation and speed based on joystick movement
-    //     ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
-    //     ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
-
-    //     e.preventDefault();
-    //   }
-    // });
-
-    // joystick.addEventListener('touchend', () => {
-    //   isTouchingJoystick = false;
-    //   ship.speed = 0;
-    //   joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
-    // });
-
-    function resetAllVariables() {
-      document.getElementById('endScreen').style.display = 'none';
-      startScreen.style.display = 'flex';
-      document.getElementById('rouletteContainer').style.display = 'none';
-      // console.log(currentShip);
-
-      resetShip();
-      gravityStrength = 0;
-      meteorMode = false;
-      planetMode = false;
-      unclaimedLevelUps = 0;
-      fourthUpgradeUnlocked = false;
-      doubleTurret = false;
-      tripleTurret = false;
-      droneArmy = false;
-
-      explosiveRocket = {
-        cooldown: 120, // Cooldown time in frames (2 seconds at 60 FPS)
-        timer: 0, // Current cooldown timer
-        speed: 3, // Speed of the rocket
-        damage: 10, // Damage dealt by the rocket
-        radius: 100, // Explosion radius
-        active: false // Flag to track if the rocket is active
-      };
-
-      collectedSpacePizza = false;
-      collectedPurplePixie = false;
-      collectedGoldPixie = false;
-      collectedPinkPixie = false;
-      collectedSpacePickle = false;
-      collectedDarkSide = false;
-
-
-      xpToNextLevel = 300;
-      alienLasers = [];
-      explosions = [];
-      alienLaser = null;
-      activeMegaUpgrades = [];
-      ship.lasers = [];
-      lastRareAsteroids = [];
-      activeFloatingUpgrades = [];
-      floatingIsland.active = false;
-      explosiveRockets = [];
-      miniBossAlien = null;
-      aliens = [];
-
-      megaBossAlienSpawned = false;
-      superbossAlienSpawned = false;
-      octoBossSpawned = false;
-
-
-      flamethrower = {
-        cooldown: 10, // Cooldown time in frames
-        timer: 0, // Current cooldown timer
-        range: 130, // Range of the flamethrower
-        damage: 1, // Damage dealt per frame
-        active: false, // Flag to track if the flamethrower is active
-        damagePerSecond: 1 // Damage dealt per second
-      };
-
-      flamethrowerUpgrades = {
-        range: 1,
-        damage: 1,
-        cooldown: 1
-      };
-
-      resetPerformanceMonitoring();
-
-      turret = {
-        x: 0,
-        y: 0,
-        size: 10,
-        rotationSpeed: 2,
-        fireInterval: 120,
-        fireTimer: 0,
-        range: 400,
-        damage: 3,
-        color: 'cyan',
-        lasers: [] // Initialize the turret's lasers array
-      };
-
-      let count = countTechnologies();
-      const totalAchievements = Object.keys(Achievements).length + 5;
-
-      const technologiesCountElement = document.getElementById('technologiesCount');
-      technologiesCountElement.textContent = `You have unlocked ${count} of ${totalAchievements} technologies`;
-      document.getElementById('technologiesCount').style.display = 'block';
-      // document.getElementById('shipType').style.display = 'block';
-
-      lives = 3;
-      score = 0;
-      wave = 1;
-      asteroidsKilled = 0;
-      aliensKilled = 0;
-
-      // Reset coins and XP
-      coins = 0;
-      level = 1;
-      xp = 0;
-      updateXPBar();
-
-      // Reset asteroids and drones
-      asteroids = [];
-      drones = [];
-      aliens = [];
-      miniBossAlien = null;
-      swarmingAliens = [];
-      superbossAlien = null;
-      megaBossAlien = null;
-      octoBoss = null;
-
-
-      alienLasers = [];
-      droppedGems = [];
-
-      // Reset turret upgrades
-      turret.bought = false;
-      // Reset active weapon classes
-      activeWeaponClasses = [];
-
-
-      comboFlameChainLightningActive = false;
-      comboExplosiveDroneActive = false;
-      comboSonicBoomerangActive = false;
-      comboCryoBombActive = false;
-      comboGravityBlastActive = false;
-
-      level = 1;
-      xp = 0;
-
-      acidBomb = {
-        cooldown: 300,
-        timer: 0,
-        duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
-        damagePerSecond: 1,
-        size: 50,
-        activeBombs: [],
-        activeAreas: []
-      };
-
-      acidBombUpgrades = {
-        duration: 1,
-        cooldown: 1,
-        size: 1
-      };
-
-      boomerang = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        size: 10,
-        speed: 2,
-        damage: 1,
-        dx: 3,
-        dy: 3,
-        active: false
-      };
-
-      boomerangUpgrades = {
-        speed: 1,
-        damage: 1
-      };
-
-      nanoswarm = {
-        cooldown: 300,
-        timer: 0,
-        speed: 2,
-        damage: 5,
-        activeMissiles: []
-      };
-
-      nanoswarmUpgrades = {
-        speed: 1,
-        damage: 1,
-        cooldown: 1
-      };
-
-      freezeEffect = {
-        cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
-        timer: 0,
-        duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
-        active: false,
-        remainingDuration: 0
-      };
-
-      freezeEffectUpgrades = {
-        duration: 1,
-        cooldown: 1
-      };
-
-      damageReport = {
-        lasers: 0,
-        explosive: 0,
-        drones: 0,
-        turret: 0,
-        sonicBlast: 0,
-        bomberDrones: 0,
-        deathRay: 0,
-        acid: 0,
-        freeze: 0,
-        boomerang: 0,
-        nano: 0,
-        fireAsteroid: 0,
-        acidAsteroid: 0,
-        lightningAsteroid: 0,
-        iceAsteroid: 0
-
-      };
-
-
-      deathRay = {
-        length: 1000,
-        width: 40,
-        cooldown: 300,
-        timer: 0
-      };
-
-
-      deathRayActive = false;
-
-      deathRayUpgrades = {
-        length: 1,
-        width: 1,
-        cooldown: 1
-      };
-
-
-
-      ship = {
-        x: canvas.width / 2,
-        y: canvas.height - 50,
-        size: 20,
-        speed: 0,
-        acceleration: 0.15,
-        deceleration: 0.96,
-        maxSpeed: 3,
-        rotation: 0,
-        rotationSpeed: 1.7,
-        lasers: [],
-        velocityX: 0,
-        velocityY: 0,
-        laserLevel: 2,
-        weaponSlots: 5,
-        upgradeSlots: 2,
-        accelerationLevel: 1,
-        rotationSpeedLevel: 1,
-        maxBulletsLevel: 70,
-        explosiveLaserLevel: 0,
-        laserCooldown: 30,
-        laserTimer: 0,
-        laserCooldownLevel: 1,
-
-      };
-
-      drone = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        size: 10,
-        speed: 0.0001,
-        direction: Math.random() * Math.PI * 2,
-        lasers: [],
-        laserSpeed: 3,
-        laserInterval: 80, // Fire lasers every 120 frames (2 second)
-        laserTimer: 0
-      };
-
-      turret = {
-        x: 0,
-        y: 0,
-        size: 10,
-        rotationSpeed: 2,
-        fireInterval: 120,
-        fireTimer: 0,
-        range: 400,
-        damage: 3,
-        color: 'cyan',
-        lasers: [] // Initialize the turret's lasers array
-      };
-
-      turretUpgrades = {
-        range: 1,
-        fireRate: 1,
-        damage: 1
-      };
-
-      sonicBlast = {
-        cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
-        timer: 0, // Current cooldown timer
-        range: 120, // Range of the sonic blast
-        speed: 2, // Speed of the sonic blast wave
-        damage: 1, // Damage dealt by the sonic blast
-        waves: [], // Array to store the active sonic blast waves
-        rangeLevel: 1,
-        damageLevel: 1,
-        cooldownLevel: 1
-
-      };
-
-      // Reset game state
-      invincible = true;
-      invincibilityTimer = invincibilityDuration;
-      // document.getElementById('leaderboard-container').style.display = 'none';
-
-      // Reset spawn variables
-      spawnTimer = spawnCooldown;
-      chanceForSmallAsteroid = 3;
-      chanceForVerySmallAsteroid = 1;
-      chanceForHardenedAsteroid = 5;
-      chanceForVeryHardenedAsteroid = 2;
-
-      // Reset ship position
-      // resetShip();
-
-      bomberDrones = [];
-
-      // activeWeapon.uses = 3;
-
-      // bomberDrones = [];
-      bomberDroneUpgrades = {
-        speed: 1,
-        bombRadiusLevel: 1,
-        bombRadius: 50,
-        bombDamage: 2
-      };
-
-      chainLightning = {
-        cooldown: 300, // Cooldown time in frames
-        timer: 0, // Current cooldown timer
-        range: 200, // Range of the chain lightning
-        damage: 5, // Damage dealt per hit
-        bounces: 2, // Number of bounces
-        active: false // Flag to track if the chain lightning is active
-      };
-
-      chainLightningUpgrades = {
-        range: 1,
-        damage: 1,
-        bounces: 1,
-        cooldown: 1
-      };
-
-      // console.log(currentShip);
-
-
-    }
-    mainMenuButton.addEventListener('click', () => {
-      // restartButton.style.display = 'none';
-      // console.log("restart click");
-
-      resetAllVariables();
-
-    });
-
-    restartButton.addEventListener('click', async () => {
-      // restartButton.style.display = 'none';
-      // console.log("restart click");
-
-      resetAllVariables();
-      const callbacks = {
-        adFinished: () => {
-          console.log("End midgame ad (callback)");
-          initializeGame(gameModes[currentGameModeIndex].id, true);
-
-        },
-        adError: (error, errorData) => console.log("Error midgame ad (callback)", error, errorData),
-        adStarted: () => console.log("Start midgame ad (callback)"),
-      };
-      if (crazyGamesMode)
-        window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
-      else
-        initializeGame(gameModes[currentGameModeIndex].id, true);
-
-
-    });
-
-
-
-
-
-
-    function toggleWeaponInfo() {
-      const weaponInfoDiv = document.getElementById('weaponInfo');
-
-      // console.log(weaponInfoDiv);
-      weaponInfoDiv.style.display = weaponInfoDiv.style.display === 'none' ? 'block' : 'none';
-      // console.log("toggle2");
-      if (weaponInfoDiv.style.display === 'none') {
-        const container = document.getElementById('activeWeaponClassesContainer');
-        container.style.display = "block";
-
-        resumeGame();
-
-      } else {
-        const container = document.getElementById('activeWeaponClassesContainer');
-        container.style.display = "none";
-
-        pauseGame();
-
-      }
-
-
-    }
-
-    function loadWeaponInfo() {
-      const weaponsContainer = document.getElementById('weaponsContainer');
-      weaponsContainer.innerHTML = '';
-      for (let i = 0; i < weapons.length; i += 2) {
-        const row = document.createElement('div');
-        row.className = 'weapon-row';
-
-        for (let j = i; j < i + 2 && j < weapons.length; j++) {
-          const weapon = weapons[j];
-          const weaponDiv = document.createElement('div');
-          weaponDiv.className = 'weapon';
-
-          weaponDiv.innerHTML = `
+	function handleAllLeaderboardsKeydown(event) {
+		const modal = document.getElementById('allLeaderboardsModal');
+		const focusableElements = modal.querySelectorAll('[tabindex="0"]');
+		const firstElement = focusableElements[0];
+		const lastElement = focusableElements[focusableElements.length - 1];
+
+		if (event.key === 'Tab') {
+			// Handle Tab key navigation
+			if (event.shiftKey && document.activeElement === firstElement) {
+				event.preventDefault();
+				lastElement.focus();
+			} else if (!event.shiftKey && document.activeElement === lastElement) {
+				event.preventDefault();
+				firstElement.focus();
+			}
+		} else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+			event.preventDefault();
+			const currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
+			let nextIndex;
+
+			if (event.key === 'ArrowDown') {
+				nextIndex = (currentIndex + 1) % focusableElements.length;
+			} else {
+				nextIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
+			}
+
+			focusableElements[nextIndex].focus();
+		} else if (event.key === 'Escape') {
+			document.getElementById('closeAllLeaderboards').click();
+		}
+	}
+
+
+
+
+
+
+
+
+	function updateCoinsDisplay() {
+		coinsDisplay.textContent = coins;
+	}
+
+
+
+	function drawPixelatedExplosion(x, y, size) {
+		const canvas = document.createElement('canvas');
+		// const ctx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
+		const pixelSize = 4; // Adjust pixel size to your preference
+
+		canvas.width = size;
+		canvas.height = size;
+
+		// Draw explosion on the off-screen canvas
+		ctx.fillStyle = 'orange';
+		ctx.beginPath();
+		ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+		ctx.fill();
+
+		// Get the image data
+		const imageData = ctx.getImageData(0, 0, size, size);
+
+		// Create a new canvas for pixelated effect
+		const pixelCanvas = document.createElement('canvas');
+		const pixelCtx = pixelCanvas.getContext('2d', { alpha: false, willReadFrequently: true });
+
+		pixelCanvas.width = size;
+		pixelCanvas.height = size;
+
+		// Draw pixelated effect
+		for (let y = 0; y < size; y += pixelSize) {
+			for (let x = 0; x < size; x += pixelSize) {
+				const pixelIndex = (y * size + x) * 4;
+				const r = imageData.data[pixelIndex];
+				const g = imageData.data[pixelIndex + 1];
+				const b = imageData.data[pixelIndex + 2];
+				const a = imageData.data[pixelIndex + 3];
+
+				pixelCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
+				pixelCtx.fillRect(x, y, pixelSize, pixelSize);
+			}
+		}
+
+		// Draw the pixelated explosion on the main canvas
+		ctx.drawImage(pixelCanvas, 0, 0);
+
+		// Draw the pixelated canvas onto the game canvas
+		ctx.drawImage(canvas, x - size / 2, y - size / 2);
+	}
+
+	// Usage
+	// drawPixelatedExplosion(100, 100, 64);
+
+
+
+
+
+	function showArrow(side) {
+		const leftArrow = document.getElementById('leftArrow');
+		const rightArrow = document.getElementById('rightArrow');
+
+		if (side === 'left') {
+			leftArrow.style.display = 'block';
+			rightArrow.style.display = 'none';
+		} else {
+			leftArrow.style.display = 'none';
+			rightArrow.style.display = 'block';
+		}
+
+		setTimeout(() => {
+			leftArrow.style.display = 'none';
+			rightArrow.style.display = 'none';
+			createAsteroids(side);
+		}, 700);
+	}
+
+
+	// Function to toggle mobile buttons visibility based on device type
+	function toggleMobileButtons() {
+		const mobileControls = document.getElementById('mobile-controls');
+
+		// Check if it's a mobile device
+		if (isMobile()) {
+			if (mobileControls) mobileControls.style.display = 'block';
+		} else {
+			if (mobileControls) mobileControls.style.display = 'none';
+		}
+	}
+
+	// Call this function on page load
+	// window.addEventListener('load', toggleMobileButtons);
+
+	// Also call this on window resize in case the device orientation changes
+	// window.addEventListener('resize', toggleMobileButtons);
+
+	// Handle touch events for the buttons
+	document.getElementById('steer-left').addEventListener('touchstart', function (e) {
+		e.preventDefault();  // Prevent zooming
+		keys['ArrowLeft'] = true;
+		this.style.backgroundColor = '#00cc00';
+
+	});
+
+	document.getElementById('steer-left').addEventListener('touchend', function (e) {
+		e.preventDefault();  // Prevent zooming
+		keys['ArrowLeft'] = false;
+		this.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	});
+
+	document.getElementById('steer-right').addEventListener('touchstart', function (e) {
+		e.preventDefault();  // Prevent zooming
+		keys['ArrowRight'] = true;
+		this.style.backgroundColor = '#00cc00';
+	});
+
+	document.getElementById('steer-right').addEventListener('touchend', function (e) {
+		e.preventDefault();  // Prevent zooming
+		keys['ArrowRight'] = false;
+		this.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	});
+
+	document.getElementById('accelerate').addEventListener('touchstart', function (e) {
+		e.preventDefault();  // Prevent zooming
+		keys['ArrowUp'] = true;
+		this.style.backgroundColor = '#00cc00';
+
+	});
+
+	document.getElementById('accelerate').addEventListener('touchend', function (e) {
+		e.preventDefault();  // Prevent zooming
+		keys['ArrowUp'] = false;
+		this.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	});
+
+
+	// joystick.addEventListener('touchstart', (e) => {
+	//   isTouchingJoystick = true;
+	//   joystickStartX = e.touches[0].clientX;
+	//   joystickStartY = e.touches[0].clientY;
+	// });
+
+
+	// joystick.addEventListener('touchmove', (e) => {
+	//   if (isTouchingJoystick) {
+	//     const touchX = e.touches[0].clientX;
+	//     const touchY = e.touches[0].clientY;
+	//     const deltaX = touchX - joystickStartX;
+	//     const deltaY = touchY - joystickStartY;
+
+	//     // Calculate angle and distance from the center
+	//     const angle = Math.atan2(deltaY, deltaX);
+	//     const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), 50); // Limit the joystick handle movement
+
+	//     // Update joystick handle position
+	//     joystickHandle.style.transform = `translate(${distance * Math.cos(angle)}px, ${distance * Math.sin(angle)}px)`;
+
+	//     // Update ship rotation and speed based on joystick movement
+	//     ship.rotation = angle * (180 / Math.PI); // Convert radians to degrees
+	//     ship.speed = Math.min(distance / 20, ship.maxSpeed); // Adjust speed based on distance, ensure it doesn't exceed maxSpeed
+
+	//     e.preventDefault();
+	//   }
+	// });
+
+	// joystick.addEventListener('touchend', () => {
+	//   isTouchingJoystick = false;
+	//   ship.speed = 0;
+	//   joystickHandle.style.transform = 'translate(-50%, -50%)'; // Reset joystick handle position
+	// });
+
+	function resetAllVariables() {
+		document.getElementById('endScreen').style.display = 'none';
+		startScreen.style.display = 'flex';
+		document.getElementById('rouletteContainer').style.display = 'none';
+		// console.log(currentShip);
+
+		resetShip();
+		gravityStrength = 0;
+		meteorMode = false;
+		planetMode = false;
+		unclaimedLevelUps = 0;
+		fourthUpgradeUnlocked = false;
+		doubleTurret = false;
+		tripleTurret = false;
+		droneArmy = false;
+
+		explosiveRocket = {
+			cooldown: 120, // Cooldown time in frames (2 seconds at 60 FPS)
+			timer: 0, // Current cooldown timer
+			speed: 3, // Speed of the rocket
+			damage: 10, // Damage dealt by the rocket
+			radius: 100, // Explosion radius
+			active: false // Flag to track if the rocket is active
+		};
+
+		collectedSpacePizza = false;
+		collectedPurplePixie = false;
+		collectedGoldPixie = false;
+		collectedPinkPixie = false;
+		collectedSpacePickle = false;
+		collectedDarkSide = false;
+
+
+		xpToNextLevel = 300;
+		alienLasers = [];
+		explosions = [];
+		alienLaser = null;
+		activeMegaUpgrades = [];
+		ship.lasers = [];
+		lastRareAsteroids = [];
+		activeFloatingUpgrades = [];
+		floatingIsland.active = false;
+		explosiveRockets = [];
+		miniBossAlien = null;
+		aliens = [];
+
+		megaBossAlienSpawned = false;
+		superbossAlienSpawned = false;
+		octoBossSpawned = false;
+
+
+		flamethrower = {
+			cooldown: 10, // Cooldown time in frames
+			timer: 0, // Current cooldown timer
+			range: 130, // Range of the flamethrower
+			damage: 1, // Damage dealt per frame
+			active: false, // Flag to track if the flamethrower is active
+			damagePerSecond: 1 // Damage dealt per second
+		};
+
+		flamethrowerUpgrades = {
+			range: 1,
+			damage: 1,
+			cooldown: 1
+		};
+
+		resetPerformanceMonitoring();
+
+		turret = {
+			x: 0,
+			y: 0,
+			size: 10,
+			rotationSpeed: 2,
+			fireInterval: 120,
+			fireTimer: 0,
+			range: 400,
+			damage: 3,
+			color: 'cyan',
+			lasers: [] // Initialize the turret's lasers array
+		};
+
+		let count = countTechnologies();
+		const totalAchievements = Object.keys(Achievements).length + 5;
+
+		const technologiesCountElement = document.getElementById('technologiesCount');
+		technologiesCountElement.textContent = `You have unlocked ${count} of ${totalAchievements} technologies`;
+		document.getElementById('technologiesCount').style.display = 'block';
+		// document.getElementById('shipType').style.display = 'block';
+
+		lives = 3;
+		score = 0;
+		wave = 1;
+		asteroidsKilled = 0;
+		aliensKilled = 0;
+
+		// Reset coins and XP
+		coins = 0;
+		level = 1;
+		xp = 0;
+		updateXPBar();
+
+		// Reset asteroids and drones
+		asteroids = [];
+		drones = [];
+		aliens = [];
+		miniBossAlien = null;
+		swarmingAliens = [];
+		superbossAlien = null;
+		megaBossAlien = null;
+		octoBoss = null;
+
+
+		alienLasers = [];
+		droppedGems = [];
+
+		// Reset turret upgrades
+		turret.bought = false;
+		// Reset active weapon classes
+		activeWeaponClasses = [];
+
+
+		comboFlameChainLightningActive = false;
+		comboExplosiveDroneActive = false;
+		comboSonicBoomerangActive = false;
+		comboCryoBombActive = false;
+		comboGravityBlastActive = false;
+
+		level = 1;
+		xp = 0;
+
+		acidBomb = {
+			cooldown: 300,
+			timer: 0,
+			duration: 300, // Duration the acid effect lasts (5 seconds at 60 FPS)
+			damagePerSecond: 1,
+			size: 50,
+			activeBombs: [],
+			activeAreas: []
+		};
+
+		acidBombUpgrades = {
+			duration: 1,
+			cooldown: 1,
+			size: 1
+		};
+
+		boomerang = {
+			x: canvas.width / 2,
+			y: canvas.height / 2,
+			size: 10,
+			speed: 2,
+			damage: 1,
+			dx: 3,
+			dy: 3,
+			active: false
+		};
+
+		boomerangUpgrades = {
+			speed: 1,
+			damage: 1
+		};
+
+		nanoswarm = {
+			cooldown: 300,
+			timer: 0,
+			speed: 2,
+			damage: 5,
+			activeMissiles: []
+		};
+
+		nanoswarmUpgrades = {
+			speed: 1,
+			damage: 1,
+			cooldown: 1
+		};
+
+		freezeEffect = {
+			cooldown: 600, // Cooldown period for freeze effect (10 seconds at 60 FPS)
+			timer: 0,
+			duration: 300, // Duration the freeze effect lasts (5 seconds at 60 FPS)
+			active: false,
+			remainingDuration: 0
+		};
+
+		freezeEffectUpgrades = {
+			duration: 1,
+			cooldown: 1
+		};
+
+		damageReport = {
+			lasers: 0,
+			explosive: 0,
+			drones: 0,
+			turret: 0,
+			sonicBlast: 0,
+			bomberDrones: 0,
+			deathRay: 0,
+			acid: 0,
+			freeze: 0,
+			boomerang: 0,
+			nano: 0,
+			fireAsteroid: 0,
+			acidAsteroid: 0,
+			lightningAsteroid: 0,
+			iceAsteroid: 0
+
+		};
+
+
+		deathRay = {
+			length: 1000,
+			width: 40,
+			cooldown: 300,
+			timer: 0
+		};
+
+
+		deathRayActive = false;
+
+		deathRayUpgrades = {
+			length: 1,
+			width: 1,
+			cooldown: 1
+		};
+
+
+
+		ship = {
+			x: canvas.width / 2,
+			y: canvas.height - 50,
+			size: 20,
+			speed: 0,
+			acceleration: 0.15,
+			deceleration: 0.96,
+			maxSpeed: 3,
+			rotation: 0,
+			rotationSpeed: 1.7,
+			lasers: [],
+			velocityX: 0,
+			velocityY: 0,
+			laserLevel: 2,
+			weaponSlots: 5,
+			upgradeSlots: 2,
+			accelerationLevel: 1,
+			rotationSpeedLevel: 1,
+			maxBulletsLevel: 70,
+			explosiveLaserLevel: 0,
+			laserCooldown: 30,
+			laserTimer: 0,
+			laserCooldownLevel: 1,
+
+		};
+
+		drone = {
+			x: canvas.width / 2,
+			y: canvas.height / 2,
+			size: 10,
+			speed: 0.0001,
+			direction: Math.random() * Math.PI * 2,
+			lasers: [],
+			laserSpeed: 3,
+			laserInterval: 80, // Fire lasers every 120 frames (2 second)
+			laserTimer: 0
+		};
+
+		turret = {
+			x: 0,
+			y: 0,
+			size: 10,
+			rotationSpeed: 2,
+			fireInterval: 120,
+			fireTimer: 0,
+			range: 400,
+			damage: 3,
+			color: 'cyan',
+			lasers: [] // Initialize the turret's lasers array
+		};
+
+		turretUpgrades = {
+			range: 1,
+			fireRate: 1,
+			damage: 1
+		};
+
+		sonicBlast = {
+			cooldown: 300, // Cooldown time in frames (5 seconds at 60 FPS)
+			timer: 0, // Current cooldown timer
+			range: 120, // Range of the sonic blast
+			speed: 2, // Speed of the sonic blast wave
+			damage: 1, // Damage dealt by the sonic blast
+			waves: [], // Array to store the active sonic blast waves
+			rangeLevel: 1,
+			damageLevel: 1,
+			cooldownLevel: 1
+
+		};
+
+		// Reset game state
+		invincible = true;
+		invincibilityTimer = invincibilityDuration;
+		// document.getElementById('leaderboard-container').style.display = 'none';
+
+		// Reset spawn variables
+		spawnTimer = spawnCooldown;
+		chanceForSmallAsteroid = 3;
+		chanceForVerySmallAsteroid = 1;
+		chanceForHardenedAsteroid = 5;
+		chanceForVeryHardenedAsteroid = 2;
+
+		// Reset ship position
+		// resetShip();
+
+		bomberDrones = [];
+
+		// activeWeapon.uses = 3;
+
+		// bomberDrones = [];
+		bomberDroneUpgrades = {
+			speed: 1,
+			bombRadiusLevel: 1,
+			bombRadius: 50,
+			bombDamage: 2
+		};
+
+		chainLightning = {
+			cooldown: 300, // Cooldown time in frames
+			timer: 0, // Current cooldown timer
+			range: 200, // Range of the chain lightning
+			damage: 5, // Damage dealt per hit
+			bounces: 2, // Number of bounces
+			active: false // Flag to track if the chain lightning is active
+		};
+
+		chainLightningUpgrades = {
+			range: 1,
+			damage: 1,
+			bounces: 1,
+			cooldown: 1
+		};
+
+		// console.log(currentShip);
+
+
+	}
+	mainMenuButton.addEventListener('click', () => {
+		// restartButton.style.display = 'none';
+		// console.log("restart click");
+
+		resetAllVariables();
+
+	});
+
+	restartButton.addEventListener('click', async () => {
+		// restartButton.style.display = 'none';
+		// console.log("restart click");
+
+		resetAllVariables();
+		const callbacks = {
+			adFinished: () => {
+				console.log("End midgame ad (callback)");
+				initializeGame(gameModes[currentGameModeIndex].id, true);
+
+			},
+			adError: (error, errorData) => console.log("Error midgame ad (callback)", error, errorData),
+			adStarted: () => console.log("Start midgame ad (callback)"),
+		};
+		if (crazyGamesMode)
+			window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
+		else
+			initializeGame(gameModes[currentGameModeIndex].id, true);
+
+
+	});
+
+
+
+
+
+
+	function toggleWeaponInfo() {
+		const weaponInfoDiv = document.getElementById('weaponInfo');
+
+		// console.log(weaponInfoDiv);
+		weaponInfoDiv.style.display = weaponInfoDiv.style.display === 'none' ? 'block' : 'none';
+		// console.log("toggle2");
+		if (weaponInfoDiv.style.display === 'none') {
+			const container = document.getElementById('activeWeaponClassesContainer');
+			container.style.display = "block";
+
+			resumeGame();
+
+		} else {
+			const container = document.getElementById('activeWeaponClassesContainer');
+			container.style.display = "none";
+
+			pauseGame();
+
+		}
+
+
+	}
+
+	function loadWeaponInfo() {
+		const weaponsContainer = document.getElementById('weaponsContainer');
+		weaponsContainer.innerHTML = '';
+		for (let i = 0; i < weapons.length; i += 2) {
+			const row = document.createElement('div');
+			row.className = 'weapon-row';
+
+			for (let j = i; j < i + 2 && j < weapons.length; j++) {
+				const weapon = weapons[j];
+				const weaponDiv = document.createElement('div');
+				weaponDiv.className = 'weapon';
+
+				weaponDiv.innerHTML = `
                 <div class="weapon-icon ${weapon.icon}"></div>
                 <div class="weapon-info">
                     <h3>${weapon.name}</h3>
@@ -1255,208 +1255,208 @@
                 </div>
             `;
 
-          row.appendChild(weaponDiv);
-        }
-
-        weaponsContainer.appendChild(row);
-      }
-    }
-
-    function populateUpgrades() {
-      const upgradesList = document.getElementById('upgradesList');
-      upgradesList.innerHTML = '';
-
-      const container = document.getElementById('activeWeaponClassesContainer');
-      container.style.display = "none";
-
-      megaUpgrades.forEach(upgrade => {
-        const upgradeElement = document.createElement('div');
-        upgradeElement.classList.add('upgrade');
-        upgradeElement.style.opacity = upgrade.owned ? '1' : '0.5';
-
-        const icon = document.createElement('img');
-        icon.classList.add('upgrade-icon');
-        icon.src = upgrade.icon;
-        icon.alt = upgrade.name;
-        upgradeElement.appendChild(icon);
-
-        const description = document.createElement('span');
-        description.classList.add('upgrade-info');
-
-        description.textContent = upgrade.description;
-        upgradeElement.appendChild(description);
-
-        upgradesList.appendChild(upgradeElement);
-      });
-    }
-
-
-    window.onload = loadWeaponInfo;
-
-
-
-
-
-
-
-  </script>
-  <script src="js/ships.js"></script>
-  <script src="js/game-spacetime.js"></script>
-  <script src="js/game-taper.js"></script>
-  <script src="js/game-damagereport.js"></script>
-
-  <script src="js/game.js"></script>
-  <script src="js/tutorial.js"></script>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-  <script>
-
-    let userId = "";
-    const firebaseConfig = {
-      apiKey: "AIzaSyCvgdn8c6D8RusKRr4vHAzFj1x4FNxrXVE",
-      authDomain: "infinite-games-9c69e.firebaseapp.com",
-      projectId: "infinite-games-9c69e",
-      storageBucket: "infinite-games-9c69e.appspot.com",
-      messagingSenderId: "602022483888",
-      appId: "1:602022483888:web:f967a6c1cb236ae66ba875",
-      measurementId: "G-9LE6E1BKZ7"
-    };
-
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
-  <script>
-    let sdkReady = false;
-
-    async function initializeCrazyGamesSDK() {
-      console.log('Attempting to initialize CrazyGames SDK...');
-      try {
-        await window.CrazyGames.SDK.init();
-        console.log('CrazyGames SDK initialized successfully');
-        if (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled") {
-          console.log('SDK disabled');
-          return;
-        } else {
-          sdkReady = true;
-          crazyGamesMode = true;
-          await checkCrazyUserStatus();
-
-        }
-      } catch (error) {
-        console.error('Error initializing CrazyGames SDK:', error);
-        handleSDKInitializationFailure();
-      }
-    }
-
-    function handleSDKInitializationFailure() {
-      crazyGamesMode = false;
-      clearUserId();
-      // Fallback to your regular game initialization here
-      console.log('Falling back to standard mode due to SDK initialization failure');
-    }
-
-    async function checkCrazyUserStatus() {
-      if (!sdkReady || (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled")) {
-        console.log('SDK not ready, cannot check user status');
-        return;
-      }
+				row.appendChild(weaponDiv);
+			}
+
+			weaponsContainer.appendChild(row);
+		}
+	}
+
+	function populateUpgrades() {
+		const upgradesList = document.getElementById('upgradesList');
+		upgradesList.innerHTML = '';
+
+		const container = document.getElementById('activeWeaponClassesContainer');
+		container.style.display = "none";
+
+		megaUpgrades.forEach(upgrade => {
+			const upgradeElement = document.createElement('div');
+			upgradeElement.classList.add('upgrade');
+			upgradeElement.style.opacity = upgrade.owned ? '1' : '0.5';
+
+			const icon = document.createElement('img');
+			icon.classList.add('upgrade-icon');
+			icon.src = upgrade.icon;
+			icon.alt = upgrade.name;
+			upgradeElement.appendChild(icon);
+
+			const description = document.createElement('span');
+			description.classList.add('upgrade-info');
+
+			description.textContent = upgrade.description;
+			upgradeElement.appendChild(description);
+
+			upgradesList.appendChild(upgradeElement);
+		});
+	}
+
+
+	window.onload = loadWeaponInfo;
+
+
+
+
+
+
+
+</script>
+<script src="js/ships.js"></script>
+<script src="js/game-spacetime.js"></script>
+<script src="js/game-taper.js"></script>
+<script src="js/game-damagereport.js"></script>
+
+<script src="js/game.js"></script>
+<script src="js/tutorial.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+<script>
+
+	let userId = "";
+	const firebaseConfig = {
+		apiKey: "AIzaSyCvgdn8c6D8RusKRr4vHAzFj1x4FNxrXVE",
+		authDomain: "infinite-games-9c69e.firebaseapp.com",
+		projectId: "infinite-games-9c69e",
+		storageBucket: "infinite-games-9c69e.appspot.com",
+		messagingSenderId: "602022483888",
+		appId: "1:602022483888:web:f967a6c1cb236ae66ba875",
+		measurementId: "G-9LE6E1BKZ7"
+	};
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
+<script>
+	let sdkReady = false;
+
+	async function initializeCrazyGamesSDK() {
+		console.log('Attempting to initialize CrazyGames SDK...');
+		try {
+			await window.CrazyGames.SDK.init();
+			console.log('CrazyGames SDK initialized successfully');
+			if (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled") {
+				console.log('SDK disabled');
+				return;
+			} else {
+				sdkReady = true;
+				crazyGamesMode = true;
+				await checkCrazyUserStatus();
+
+			}
+		} catch (error) {
+			console.error('Error initializing CrazyGames SDK:', error);
+			handleSDKInitializationFailure();
+		}
+	}
+
+	function handleSDKInitializationFailure() {
+		crazyGamesMode = false;
+		clearUserId();
+		// Fallback to your regular game initialization here
+		console.log('Falling back to standard mode due to SDK initialization failure');
+	}
+
+	async function checkCrazyUserStatus() {
+		if (!sdkReady || (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled")) {
+			console.log('SDK not ready, cannot check user status');
+			return;
+		}
 
-      try {
-        // const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
+		try {
+			// const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
 
-        const user = await window.CrazyGames.SDK.user.getUser();
-        if (user && user.userId) {
-          console.log('User already signed in:', user);
-          saveUserId('cg_' + user.userId);
-          await handleUserLogin(userId, user.username);
-        } else {
-          console.log('No user signed in');
-          clearUserId();
-          // You might want to show a login button or prompt here
-        }
-      } catch (error) {
-        console.error('Error checking user status:', error);
-        clearUserId();
-      }
-    }
+			const user = await window.CrazyGames.SDK.user.getUser();
+			if (user && user.userId) {
+				console.log('User already signed in:', user);
+				saveUserId('cg_' + user.userId);
+				await handleUserLogin(userId, user.username);
+			} else {
+				console.log('No user signed in');
+				clearUserId();
+				// You might want to show a login button or prompt here
+			}
+		} catch (error) {
+			console.error('Error checking user status:', error);
+			clearUserId();
+		}
+	}
 
-    function saveUserId(id) {
-      userId = id;
-      localStorage.setItem('userId', id);
-      console.log('UserId saved:', id);
-    }
+	function saveUserId(id) {
+		userId = id;
+		localStorage.setItem('userId', id);
+		console.log('UserId saved:', id);
+	}
 
-    function loadUserId() {
-      const storedId = localStorage.getItem('userId');
-      if (storedId) {
-        userId = storedId;
-        console.log('UserId loaded from storage:', userId);
-      }
-      return userId;
-    }
-
-    function clearUserId() {
-      userId = null;
-      localStorage.removeItem('userId');
-      console.log('UserId cleared');
-    }
+	function loadUserId() {
+		const storedId = localStorage.getItem('userId');
+		if (storedId) {
+			userId = storedId;
+			console.log('UserId loaded from storage:', userId);
+		}
+		return userId;
+	}
+
+	function clearUserId() {
+		userId = null;
+		localStorage.removeItem('userId');
+		console.log('UserId cleared');
+	}
 
-  </script>
-  <script type="module">
-
-    // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    // import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    // import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    // import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection, orderBy, limit, where, query, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-
-    // Firebase configuration and initialization
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // await example
-    // try {
-    //   const user = await window.CrazyGames.SDK.user.getUser();
-    //   crazyGamesMode = true;
-
-    //   const crazyGameData = document.getElementById('crazyGameData');
-
-    //   // if (crazyGamesDebugMode) {
-    //   crazyGameData.innerHTML = ''; // Clear previous content
-    //   crazyGameData.innerHTML = user;
-    //   // }
-
-    //   console.log(user);
-    // } catch (e) {
-
-
-    //   const crazyGameData = document.getElementById('crazyGameData');
-
-    //   // if (crazyGamesDebugMode) {
-    //   crazyGameData.innerHTML = ''; // Clear previous content
-    //   crazyGameData.innerHTML = e.message;
-    //   // }
-
-
-
-
-    //   console.log("Get user error: ", e);
-    // }
+</script>
+<script type="module">
+
+	// import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+	// import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+	// import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+	import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+	import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+	import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+	// import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+	import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc, getDocs, collection, orderBy, limit, where, query, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+	// Firebase configuration and initialization
+	const app = initializeApp(firebaseConfig);
+	const analytics = getAnalytics(app);
+	const auth = getAuth(app);
+	const db = getFirestore(app);
+
+	// await example
+	// try {
+	//   const user = await window.CrazyGames.SDK.user.getUser();
+	//   crazyGamesMode = true;
+
+	//   const crazyGameData = document.getElementById('crazyGameData');
+
+	//   // if (crazyGamesDebugMode) {
+	//   crazyGameData.innerHTML = ''; // Clear previous content
+	//   crazyGameData.innerHTML = user;
+	//   // }
+
+	//   console.log(user);
+	// } catch (e) {
+
+
+	//   const crazyGameData = document.getElementById('crazyGameData');
+
+	//   // if (crazyGamesDebugMode) {
+	//   crazyGameData.innerHTML = ''; // Clear previous content
+	//   crazyGameData.innerHTML = e.message;
+	//   // }
+
+
+
+
+	//   console.log("Get user error: ", e);
+	// }
 
-    // .then .catch example
-    // window.CrazyGames.SDK.user
-    //   .getUser()
-    //   .then((user) => console.log(user))
-    //   .catch((e) => console.log("Get user error: ", e));
+	// .then .catch example
+	// window.CrazyGames.SDK.user
+	//   .getUser()
+	//   .then((user) => console.log(user))
+	//   .catch((e) => console.log("Get user error: ", e));
 
 
 
@@ -1464,1099 +1464,1100 @@
 
 
 
-    const loginLink = document.getElementById('login-link');
-    const aut = document.getElementById('auth-link');
+	// const loginLink = document.getElementById('login-link');
+	const aut = document.getElementById('auth-link');
 
-    const loginPopup = document.getElementById('loginPopup');
-    const loginForm = document.getElementById('loginForm');
-    const userInfo = document.getElementById('userInfo');
-    const userNickname = document.getElementById('userNickname');
-    const logoutLink = document.getElementById('logoutLink');
-    const loginContainer = document.getElementById('loginContainer');
-    const signupForm = document.getElementById('signupForm');
+	const loginPopup = document.getElementById('loginPopup');
+	const loginForm = document.getElementById('loginForm');
+	const userInfo = document.getElementById('userInfo');
+	const userNickname = document.getElementById('userNickname');
+	const logoutLink = document.getElementById('logoutLink');
+	const loginContainer = document.getElementById('loginContainer');
+	const signupForm = document.getElementById('signupForm');
 
-    window.addEventListener('load', async () => {
-      console.log('Window loaded, initializing...');
-      loadUserId(); // Load any existing userId
+	window.addEventListener('load', async () => {
+		console.log('Window loaded, initializing...');
+		loadUserId(); // Load any existing userId
 
-      try {
-        await window.CrazyGames.SDK.init();
-        console.log('CrazyGames SDK initialized successfully');
-        if (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled") {
-          return;
-          console.log('CrazyGames SDK disabled on this domain');
+		try {
+			await window.CrazyGames.SDK.init();
+			console.log('CrazyGames SDK initialized successfully');
+			if (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled") {
+				return;
+				console.log('CrazyGames SDK disabled on this domain');
 
-        }
-        else {
-          sdkReady = true;
-          crazyGamesMode = true;
-          await checkAndHandleCrazyGamesUser();
-
-        }
-      } catch (error) {
-        console.log('CrazyGames SDK not available, running in standard mode');
-        crazyGamesMode = false;
-        handleSDKInitializationFailure();
-      }
-    });
-
-
-    async function checkAndHandleCrazyGamesUser() {
-      if (sdkReady) {
-        try {
-          const user = await window.CrazyGames.SDK.user.getUser();
-          if (user && user.username) {
-            console.log('CrazyGames user already logged in:', user);
-            await handleUserLogin('cg_' + user.username, user.username);
-          } else {
-            console.log('No CrazyGames user logged in');
-          }
-        } catch (error) {
-          console.error('Error checking CrazyGames user:', error);
-        }
-      }
-    }
-
-
-    async function saveInitialData(userId, email, nickname) {
-      const initialData = {
-        email: email,
-        nickname: nickname,
-        coins: 100,
-        portfolio: {},
-        portfolioHistory: []
-      };
-      await setDoc(doc(db, 'users', userId), initialData);
-    }
-
-    async function showCrazyGamesAuthPrompt() {
-
-
-      try {
-        const user = await window.CrazyGames.SDK.user.showAuthPrompt();
-        console.log("Auth prompt result", user);
-
-
-      } catch (e) {
-        console.log("Error:", e);
-        // normal login as backup
-        loginFormOpen = true;
-        event.preventDefault();
-        pauseGame();
-        loginPopup.style.display = 'block';
-
-
-
-      }
-
-    }
-
-    // async function testCrazyGamesUserFlow() {
-
-    //   try {
-    //     cgUser = await window.CrazyGames.SDK.user.getUser();
-
-    //     console.log(cgUser);
-
-    //     const userToken = await window.CrazyGames.SDK.user.getUserToken();
-
-    //     console.log(userToken);
-
-    //     console.log(cgUser);
-    //     userNickname.textContent = cgUser.username;
-    //     userInfo.style.display = 'block';
-    //     loginLink.style.display = 'none';
-    //     console.log("userId");
-    //     // console.log(userId);
-    //     window.userId = "cg_" + cgUser.username;
-    //     console.log(window.userId);
-    //     // return "cg+" + cgUser.username;
-
-    //   } catch (e) {
-    //     console.log("Get user error: ", e);
-
-    //   }
-    // }
-
-    // window.testCrazyGamesUserFlow = testCrazyGamesUserFlow;
-
-    loginLink.addEventListener('click', async (event) => {
-      event.preventDefault();
-
-      if (crazyGamesMode && sdkReady) {
-        try {
-          await handleCrazyGamesLogin();
-        } catch (error) {
-          console.error('CrazyGames login failed:', error);
-          // showFirebaseLoginPopup();
-        }
-      } else {
-        // showFirebaseLoginPopup();
-      }
-    });
-
-    function showFirebaseLoginPopup() {
-      loginFormOpen = true;
-      pauseGame();
-      loginPopup.style.display = 'block';
-    }
-
-
-
-    async function handleCrazyGamesLogin() {
-      if (!sdkReady) {
-        throw new Error('CrazyGames SDK not ready');
-      }
-
-      console.log('Handling CrazyGames login...');
-
-      const user = await window.CrazyGames.SDK.user.getUser();
-      if (user && user.username) {
-        await handleUserLogin('cg_' + user.username, user.username);
-      } else {
-        const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
-        if (authResult && authResult.userObject && authResult.userObject.username) {
-          await handleUserLogin('cg_' + authResult.userObject.username, authResult.userObject.username);
-        } else {
-          throw new Error('CrazyGames authentication failed');
-        }
-      }
-    }
-
-
-
-
-    async function handleUserLogin(id, username) {
-      console.log('Handling user login for:', id, username);
-      if (!id) {
-        console.error('Invalid user ID received');
-        return;
-      }
-      userId = id;
-
-      try {
-        const db = getFirestore();
-        const userDocRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          username = userData.nickname || username; // Use the stored nickname if available
-          loadUserData(userId);
-        } else {
-          // If the user document doesn't exist, we might want to create it
-          await setDoc(userDocRef, {
-            nickname: username,
-            createdAt: new Date()
-          });
-        }
-
-        userNickname.textContent = username;
-        userInfo.style.display = 'block';
-        loginLink.style.display = 'none';
-
-        await loadOrInitializeUserData(id, username);
-      } catch (error) {
-        console.error('Error handling user login:', error);
-      }
-    }
-
-
-    function loadUserDataToGame(userData) {
-      coins = userData.coins || 0;
-      Object.assign(Achievements, userData.games?.[gameId]?.achievements || {});
-      // Load other game-specific data as needed
-      updateGameUI();
-    }
-
-
-    async function loadOrInitializeUserData(id, username) {
-      console.log('Loading or initializing user data for:', id);
-      // Implement your logic to load or initialize user data here
-      // This might involve fetching data from Firebase or initializing new user data
-    }
-
-
-    loginForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        console.log(user);
-        console.log("username");
-
-        await handleUserLogin(user.uid, user.email.split('@')[0]);
-        loginPopup.style.display = 'none';
-        loginFormOpen = false;
-        resumeGame();
-      } catch (error) {
-        console.error('Error signing in:', error);
-        document.getElementById('loginError').textContent = error.message;
-      }
-    });
-
-    signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = signupForm['signupEmail'].value;
-      const password = signupForm['signupPassword'].value;
-      const nickname = signupForm['signupNickname'].value;
-      try {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
-        userId = cred.user.uid;
-        await saveInitialData(userId, email, nickname);
-        signupForm.reset();
-        // document.getElementById('auth').classList.toggle('hidden');
-        loginPopup.style.display = 'none';
-        loginFormOpen = false;
-
-      } catch (error) {
-        const errorMessage = error.message;
-        document.getElementById('signupError').textContent = errorMessage; // Display the error message
-        console.error("Error creating user:", errorMessage);
-      }
-    });
-
-    document.getElementById('closeSignupPopup').addEventListener('click', () => {
-      loginPopup.style.display = 'none';
-      resumeGame(); // Resume the game if paused
-    });
-
-    if (logoutLink) {
-
-      logoutLink.addEventListener('click', async (event) => {
-        event.preventDefault();
-
-        if (crazyGamesMode) {
-          // CrazyGames doesn't have a logout function, so we just clear the local state
-          userId = null;
-          userInfo.style.display = 'none';
-          loginLink.style.display = 'block';
-        } else {
-          try {
-            await auth.signOut();
-            userId = null;
-            userInfo.style.display = 'none';
-            loginLink.style.display = 'block';
-          } catch (error) {
-            console.error('Error signing out:', error);
-          }
-        }
-      });
-
-    }
-
-
-    auth.onAuthStateChanged(user => {
-      if (user && !crazyGamesMode) {
-        handleUserLogin(user.uid, user.email.split('@')[0]);
-        if (score && score > 1000) {
-          const gameData = {
-            score: score
-          };
-          saveUserScore(gameData);
-        }
-      } else if (!user && !crazyGamesMode) {
-        userInfo.style.display = 'none';
-        loginContainer.style.display = 'block';
-        pauseGame();
-      }
-    });
-
-
-
-    async function loadUserData(userId) {
-      try {
-        const db = getFirestore();
-        const userDocRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          console.log("User data loaded from Firebase:", userData);
-
-          // Load achievements
-          const gameAchievements = userData.games?.[gameId]?.achievements || {};
-          Object.assign(Achievements, gameAchievements);
-
-          // Load scores and calculate totals
-          const userScores = userData.games?.[gameId]?.scores || [];
-          totalDamage = 0;
-          totalAsteroidsKilled = 0;
-          totalAliensKilled = 0;
-
-          userScores.forEach(score => {
-            // Check if topWeapons exists and is an array before using reduce
-            if (Array.isArray(score.topWeapons)) {
-              totalDamage += score.topWeapons.reduce((sum, weapon) => sum + (weapon.damage || 0), 0);
-            }
-            totalAsteroidsKilled += score.asteroidsKilled || 0;
-            totalAliensKilled += score.aliensKilled || 0;
-          });
-
-          const last10Scores = userScores.slice(-10).reverse();
-
-          populateAchievements();
-          populateSelectors();
-          populateUserScores(last10Scores);
-
-          // You can add more data loading here as needed
-        } else {
-          console.log("No existing user document. Creating new user data.");
-          await setDoc(userDocRef, {
-            nickname: "New User", // Use a default nickname or prompt the user for one
-            games: {
-              [gameId]: {
-                achievements: {},
-                scores: []
-              }
-            }
-          });
-        }
-      } catch (firebaseError) {
-        console.error("Error getting/setting user data in Firebase:", firebaseError);
-      }
-    }
-    function populateUserSessions(sessions) {
-      const pastSessionsList = document.getElementById('pastScoresList');
-      pastSessionsList.innerHTML = ''; // Clear previous content
-
-      sessions.forEach(session => {
-        const li = document.createElement('li');
-        li.style.marginBottom = '20px';
-
-        // Display score, game mode, and session length
-        li.innerHTML = `
+			}
+			else {
+				sdkReady = true;
+				crazyGamesMode = true;
+				await checkAndHandleCrazyGamesUser();
+
+			}
+		} catch (error) {
+			console.log('CrazyGames SDK not available, running in standard mode');
+			crazyGamesMode = false;
+			handleSDKInitializationFailure();
+		}
+	});
+
+
+	async function checkAndHandleCrazyGamesUser() {
+		if (sdkReady) {
+			try {
+				const user = await window.CrazyGames.SDK.user.getUser();
+				if (user && user.username) {
+					console.log('CrazyGames user already logged in:', user);
+					await handleUserLogin('cg_' + user.username, user.username);
+				} else {
+					console.log('No CrazyGames user logged in');
+				}
+			} catch (error) {
+				console.error('Error checking CrazyGames user:', error);
+			}
+		}
+	}
+
+
+	async function saveInitialData(userId, email, nickname) {
+		const initialData = {
+			email: email,
+			nickname: nickname,
+			coins: 100,
+			portfolio: {},
+			portfolioHistory: []
+		};
+		await setDoc(doc(db, 'users', userId), initialData);
+	}
+
+	async function showCrazyGamesAuthPrompt() {
+
+
+		try {
+			const user = await window.CrazyGames.SDK.user.showAuthPrompt();
+			console.log("Auth prompt result", user);
+
+
+		} catch (e) {
+			console.log("Error:", e);
+			// normal login as backup
+			loginFormOpen = true;
+			event.preventDefault();
+			pauseGame();
+			loginPopup.style.display = 'block';
+
+
+
+		}
+
+	}
+
+	// async function testCrazyGamesUserFlow() {
+
+	//   try {
+	//     cgUser = await window.CrazyGames.SDK.user.getUser();
+
+	//     console.log(cgUser);
+
+	//     const userToken = await window.CrazyGames.SDK.user.getUserToken();
+
+	//     console.log(userToken);
+
+	//     console.log(cgUser);
+	//     userNickname.textContent = cgUser.username;
+	//     userInfo.style.display = 'block';
+	//     loginLink.style.display = 'none';
+	//     console.log("userId");
+	//     // console.log(userId);
+	//     window.userId = "cg_" + cgUser.username;
+	//     console.log(window.userId);
+	//     // return "cg+" + cgUser.username;
+
+	//   } catch (e) {
+	//     console.log("Get user error: ", e);
+
+	//   }
+	// }
+
+	// window.testCrazyGamesUserFlow = testCrazyGamesUserFlow;
+
+	// loginLink.addEventListener('click', async (event) => {
+	//   event.preventDefault();
+	//
+	//   if (crazyGamesMode && sdkReady) {
+	//     try {
+	//       await handleCrazyGamesLogin();
+	//     } catch (error) {
+	//       console.error('CrazyGames login failed:', error);
+	//       // showFirebaseLoginPopup();
+	//     }
+	//   } else {
+	//     // showFirebaseLoginPopup();
+	//   }
+	// });
+
+	function showFirebaseLoginPopup() {
+		loginFormOpen = true;
+		pauseGame();
+		loginPopup.style.display = 'block';
+	}
+
+
+
+	async function handleCrazyGamesLogin() {
+		if (!sdkReady) {
+			throw new Error('CrazyGames SDK not ready');
+		}
+
+		console.log('Handling CrazyGames login...');
+
+		const user = await window.CrazyGames.SDK.user.getUser();
+		if (user && user.username) {
+			await handleUserLogin('cg_' + user.username, user.username);
+		} else {
+			const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
+			if (authResult && authResult.userObject && authResult.userObject.username) {
+				await handleUserLogin('cg_' + authResult.userObject.username, authResult.userObject.username);
+			} else {
+				throw new Error('CrazyGames authentication failed');
+			}
+		}
+	}
+
+
+
+
+	async function handleUserLogin(id, username) {
+		console.log('Handling user login for:', id, username);
+		if (!id) {
+			console.error('Invalid user ID received');
+			return;
+		}
+		userId = id;
+
+		try {
+			const db = getFirestore();
+			const userDocRef = doc(db, 'users', userId);
+			const userDoc = await getDoc(userDocRef);
+
+			if (userDoc.exists()) {
+				const userData = userDoc.data();
+				username = userData.nickname || username; // Use the stored nickname if available
+				loadUserData(userId);
+			} else {
+				// If the user document doesn't exist, we might want to create it
+				await setDoc(userDocRef, {
+					nickname: username,
+					createdAt: new Date()
+				});
+			}
+
+			userNickname.textContent = username;
+			userInfo.style.display = 'block';
+			// loginLink.style.display = 'none';
+
+			await loadOrInitializeUserData(id, username);
+		} catch (error) {
+			console.error('Error handling user login:', error);
+		}
+	}
+
+
+	function loadUserDataToGame(userData) {
+		coins = userData.coins || 0;
+		Object.assign(Achievements, userData.games?.[gameId]?.achievements || {});
+		// Load other game-specific data as needed
+		updateGameUI();
+	}
+
+
+	async function loadOrInitializeUserData(id, username) {
+		console.log('Loading or initializing user data for:', id);
+		// Implement your logic to load or initialize user data here
+		// This might involve fetching data from Firebase or initializing new user data
+	}
+
+
+	loginForm.addEventListener('submit', async (event) => {
+		event.preventDefault();
+		const email = document.getElementById('email').value;
+		const password = document.getElementById('password').value;
+
+		try {
+			const userCredential = await signInWithEmailAndPassword(auth, email, password);
+			const user = userCredential.user;
+			console.log(user);
+			console.log("username");
+
+			await handleUserLogin(user.uid, user.email.split('@')[0]);
+			loginPopup.style.display = 'none';
+			loginFormOpen = false;
+			resumeGame();
+		} catch (error) {
+			console.error('Error signing in:', error);
+			document.getElementById('loginError').textContent = error.message;
+		}
+	});
+
+	signupForm.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		const email = signupForm['signupEmail'].value;
+		const password = signupForm['signupPassword'].value;
+		const nickname = signupForm['signupNickname'].value;
+		try {
+			const cred = await createUserWithEmailAndPassword(auth, email, password);
+			userId = cred.user.uid;
+			await saveInitialData(userId, email, nickname);
+			signupForm.reset();
+			// document.getElementById('auth').classList.toggle('hidden');
+			loginPopup.style.display = 'none';
+			loginFormOpen = false;
+
+		} catch (error) {
+			const errorMessage = error.message;
+			document.getElementById('signupError').textContent = errorMessage; // Display the error message
+			console.error("Error creating user:", errorMessage);
+		}
+	});
+
+	document.getElementById('closeSignupPopup').addEventListener('click', () => {
+		loginPopup.style.display = 'none';
+		resumeGame(); // Resume the game if paused
+	});
+
+	if (logoutLink) {
+
+		logoutLink.addEventListener('click', async (event) => {
+			event.preventDefault();
+
+			if (crazyGamesMode) {
+				// CrazyGames doesn't have a logout function, so we just clear the local state
+				userId = null;
+				userInfo.style.display = 'none';
+				// loginLink.style.display = 'block';
+			} else {
+				try {
+					await auth.signOut();
+					userId = null;
+					userInfo.style.display = 'none';
+					// loginLink.style.display = 'block';
+				} catch (error) {
+					console.error('Error signing out:', error);
+				}
+			}
+		});
+
+	}
+
+
+	auth.onAuthStateChanged(user => {
+		if (user && !crazyGamesMode) {
+			handleUserLogin(user.uid, user.email.split('@')[0]);
+			if (score && score > 1000) {
+				const gameData = {
+					score: score
+				};
+				saveUserScore(gameData);
+			}
+		} else if (!user && !crazyGamesMode) {
+			userInfo.style.display = 'none';
+			loginContainer.style.display = 'block';
+			pauseGame();
+		}
+	});
+
+
+
+	async function loadUserData(userId) {
+		try {
+			const db = getFirestore();
+			const userDocRef = doc(db, 'users', userId);
+			const userDoc = await getDoc(userDocRef);
+
+			if (userDoc.exists()) {
+				const userData = userDoc.data();
+				console.log("User data loaded from Firebase:", userData);
+
+				// Load achievements
+				const gameAchievements = userData.games?.[gameId]?.achievements || {};
+				Object.assign(Achievements, gameAchievements);
+
+				// Load scores and calculate totals
+				const userScores = userData.games?.[gameId]?.scores || [];
+				totalDamage = 0;
+				totalAsteroidsKilled = 0;
+				totalAliensKilled = 0;
+
+				userScores.forEach(score => {
+					// Check if topWeapons exists and is an array before using reduce
+					if (Array.isArray(score.topWeapons)) {
+						totalDamage += score.topWeapons.reduce((sum, weapon) => sum + (weapon.damage || 0), 0);
+					}
+					totalAsteroidsKilled += score.asteroidsKilled || 0;
+					totalAliensKilled += score.aliensKilled || 0;
+				});
+
+				const last10Scores = userScores.slice(-10).reverse();
+
+				populateAchievements();
+				populateSelectors();
+				populateUserScores(last10Scores);
+
+				// You can add more data loading here as needed
+			} else {
+				console.log("No existing user document. Creating new user data.");
+				await setDoc(userDocRef, {
+					nickname: "New User", // Use a default nickname or prompt the user for one
+					games: {
+						[gameId]: {
+							achievements: {},
+							scores: []
+						}
+					}
+				});
+			}
+		} catch (firebaseError) {
+			console.error("Error getting/setting user data in Firebase:", firebaseError);
+		}
+	}
+	function populateUserSessions(sessions) {
+		const pastSessionsList = document.getElementById('pastScoresList');
+		pastSessionsList.innerHTML = ''; // Clear previous content
+
+		sessions.forEach(session => {
+			const li = document.createElement('li');
+			li.style.marginBottom = '20px';
+
+			// Display score, game mode, and session length
+			li.innerHTML = `
       <h3>Score: ${session.score}</h3>
       <p>Mode: ${getGameModeName(session.gameMode)}</p>
       <p>Session Length: ${formatSessionLength(session.sessionLength)}</p>
     `;
 
-        // Add a detailed damage report
-        const damageReport = document.createElement('ul');
-        damageReport.classList.add('damage-report');  // Add a class for custom styling
-
-        session.topWeapons.forEach(weaponData => {
-          const weapon = weaponData.weapon;
-          const damage = weaponData.damage;
-
-          // Find weapon info based on weapon name
-          const weaponInfo = weapons.find(w => w.name === weapon);
-
-          if (weaponInfo) {
-            const weaponLi = document.createElement('li');
-            weaponLi.style.display = 'flex';
-            weaponLi.style.alignItems = 'center';
-
-            // Display weapon icon
-            const icon = document.createElement('div');
-            icon.classList.add('weaponClassIcon', weaponInfo.icon);
-            icon.style.width = '24px';
-            icon.style.height = '24px';
-            icon.style.marginRight = '10px';
-
-            // Display weapon name and damage
-            const text = document.createElement('span');
-            text.textContent = `${weaponInfo.name}: ${damage}`;
-
-            weaponLi.appendChild(icon);
-            weaponLi.appendChild(text);
-            damageReport.appendChild(weaponLi);
-          }
-        });
-
-        li.appendChild(damageReport);
-        pastSessionsList.appendChild(li);
-      });
-    }
-
-
-    // document.getElementById('login-toggle').addEventListener('click', function (event) {
-    //   event.preventDefault();
-    //   document.getElementById('auth').classList.toggle('hidden');
-    // });
-
-
-    // async function saveUserScore(gameData) {
-    //   if (!userId) {
-    //     console.log('No user logged in, score not saved');
-    //     return;
-    //   }
-
-    //   const db = getFirestore();
-    //   const userDocRef = doc(db, 'users', userId);
-
-    //   try {
-    //     await setDoc(userDocRef, {
-    //       [`games.${gameId}.scores`]: arrayUnion({
-    //         score: gameData.score,
-    //         topWeapons: gameData.topWeapons,
-    //         sessionLength: gameData.sessionLength,
-    //         loginTime: new Date(),
-    //         gameMode: gameData.gameMode
-    //       }),
-    //       [`games.${gameId}.achievements`]: Achievements,
-    //       coins: coins
-    //     }, { merge: true });
-    //     console.log('User data saved successfully');
-    //   } catch (error) {
-    //     console.error('Error saving user data:', error);
-    //     console.error('Error details:', error.code, error.message);
-    //   }
-    // }
-
-
-
-    // Function to save user score for a specific game
-    // async function saveUserScore(userId, gameData) {
-    //   const db = getFirestore();
-    //   const userDocRef = doc(db, 'users', userId);
-
-    //   try {
-    //     // For CrazyGames users, we need to set the document if it doesn't exist
-    //     if (userId.startsWith('cg_')) {
-    //       await setDoc(userDocRef, {
-    //         [`games.${gameId}.scores`]: arrayUnion({
-    //           score: gameData.score,
-    //           topWeapons: gameData.topWeapons,
-    //           sessionLength: gameData.sessionLength,
-    //           loginTime: new Date(),
-    //           gameMode: gameData.gameMode
-    //         }),
-    //         [`games.${gameId}.achievements`]: Achievements,
-    //         coins: coins
-    //       }, { merge: true });
-    //     } else {
-    //       // For Firebase users, we can use updateDoc as before
-    //       await updateDoc(userDocRef, {
-    //         [`games.${gameId}.scores`]: arrayUnion({
-    //           score: gameData.score,
-    //           topWeapons: gameData.topWeapons,
-    //           sessionLength: gameData.sessionLength,
-    //           loginTime: new Date(),
-    //           gameMode: gameData.gameMode
-    //         }),
-    //         [`games.${gameId}.achievements`]: Achievements,
-    //         coins: coins
-    //       });
-    //     }
-    //     console.log('User data saved successfully');
-    //   } catch (error) {
-    //     console.error('Error saving user data:', error);
-    //     // Log more details about the error
-    //     console.error('Error details:', error.code, error.message);
-    //   }
-    // }
-    // window.saveUserScore = saveUserScore;
-
-    // async function saveUserScore(gameData) {
-    //   console.log('Saving user score, userId:', userId);
-    //   if (!userId || userId === 'cg_undefined') {
-    //     console.error('Invalid userId, score not saved');
-    //     return;
-    //   }
-
-    //   if (!gameData || typeof gameData !== 'object') {
-    //     console.error('Invalid gameData, score not saved');
-    //     return;
-    //   }
-
-    //   const db = getFirestore();
-    //   const userDocRef = doc(db, 'users', userId);
-
-    //   // Ensure all gameData properties are defined
-    //   const safeGameData = {
-    //     score: gameData.score || 0,
-    //     topWeapons: gameData.topWeapons || [],
-    //     sessionLength: gameData.sessionLength || 0,
-    //     loginTime: new Date(),
-    //     gameMode: gameData.gameMode || 'unknown'
-    //   };
-
-    //   try {
-    //     await setDoc(userDocRef, {
-    //       [`games.${gameId}.scores`]: arrayUnion(safeGameData),
-    //       [`games.${gameId}.achievements`]: Achievements || {},
-    //       coins: coins || 0
-    //     }, { merge: true });
-    //     console.log('User data saved successfully');
-    //   } catch (error) {
-    //     console.error('Error saving user data:', error);
-    //     console.error('Error details:', error.code, error.message);
-    //   }
-    // }
-
-
-    async function saveUserScore(gameData) {
-      if (crazyGamesMode) {
-        const user = await window.CrazyGames.SDK.user.getUser();
-        if (user && user.username) {
-          userId = 'cg_' + user.username;
-        }
-      }
-
-      if (!userId || !gameData) {
-        console.error('Invalid userId or gameData');
-        return;
-      }
-
-      const db = getFirestore();
-
-      const scoresCollectionRef = collection(db, 'scores');
-
-      const userDocRef = doc(db, 'users', userId);
-      const userDoc = await getDoc(userDocRef);
-      const loadedUserData = userDoc.data()
-      const safeGameData = {
-        score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
-        topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
-        activeMegaUpgrades: Array.isArray(gameData.activeMegaUpgrades) ? gameData.activeMegaUpgrades : [],
-        sessionLength: gameData.sessionLength || 0,
-        loginTime: gameData.loginTime || new Date(),
-        endTime: gameData.endTime || new Date(),
-        gameMode: gameData.gameMode || 'unknown',
-        asteroidsKilled: gameData.asteroidsKilled || 0,
-        aliensKilled: gameData.aliensKilled || 0,
-        wave: gameData.wave || 1
-      };
-      try {
-        // Add a new document to the 'scores' collection with an auto-generated ID
-        await addDoc(scoresCollectionRef, {
-          userId: userId,
-          username: loadedUserData.nickname || loadedUserData.username || "Unnamed",
-          gameName: 'InfiniteSpaceWar',
-          score: safeGameData.score,
-          wave: safeGameData.wave,
-          timestamp: safeGameData.endTime,  // Use endTime as the timestamp
-          topWeapons: safeGameData.topWeapons,
-          activeMegaUpgrades: safeGameData.activeMegaUpgrades,
-          sessionLength: safeGameData.sessionLength,
-          asteroidsKilled: safeGameData.asteroidsKilled,
-          aliensKilled: safeGameData.aliensKilled,
-          gameMode: safeGameData.gameMode,
-          loginTime: safeGameData.loginTime
-        });
-
-        // Update the user document by adding the score to their existing list of scores
-        await setDoc(userDocRef, {
-          games: {
-            InfiniteSpaceWar: {
-              scores: arrayUnion(safeGameData),
-              achievements: Achievements || {}
-            }
-          },
-          coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
-          lastUpdated: new Date(),
-          // Add the new leaderboard field
-          leaderboard: {
-            [safeGameData.gameMode]: {
-              score: safeGameData.score,
-              wave: safeGameData.wave,
-              timestamp: safeGameData.endTime
-            }
-          }
-        }, { merge: true });
-        console.log('User score saved successfully:', safeGameData);
-      } catch (error) {
-        console.error('Error saving user score:', error);
-      }
-    }
-
-    window.saveUserScore = saveUserScore;
-    // Function to save initial user data
-    async function saveUserData(userIdToSave = window.userId, gameName = gameId) {
-
-      console.log(window.CrazyGames.SDK.user);
-      console.log(userIdToSave);
-      console.log(gameName);
-
-      const db = getFirestore();
-      const userDocRef = doc(db, 'users', userIdToSave);
-      const userData = {
-        [`games.${gameName} `]: {
-          scores: [],
-          lastLogin: new Date()
-        }
-      };
-      await setDoc(userDocRef, userData, { merge: true });
-    }
-
-    window.saveUserData = saveUserData;
-
-
-    async function loadLeaderboard(gameName, gameMode, retryCount = 0) {
-      const maxRetries = 3;
-      const retryDelay = 2000; // 2 seconds
-
-      try {
-        const db = getFirestore();
-        const usersSnapshot = await getDocs(collection(db, 'users'));
-        const scores = [];
-        let userScore = null;
-
-        usersSnapshot.forEach(doc => {
-          const userData = doc.data();
-          const gameScores = userData.games?.[gameName]?.scores || [];
-          gameScores.forEach(session => {
-            if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === gameMode) {
-              const scoreEntry = {
-                nickname: userData.nickname || 'Unnamed',
-                score: session.score,
-                wave: session.wave,
-                isCurrentUser: doc.id === userId
-              };
-              scores.push(scoreEntry);
-
-              // Check if this is the current user's most recent score
-              if (scoreEntry.isCurrentUser && (!userScore || session.loginTime > userScore.loginTime)) {
-                userScore = scoreEntry;
-              }
-            }
-          });
-        });
-
-        scores.sort((a, b) => b.score - a.score);
-
-        const limitedScores = [];
-        const playerCounts = {};
-        let userScoreIncluded = false;
-
-        scores.forEach(score => {
-          if (!playerCounts[score.nickname]) {
-            playerCounts[score.nickname] = 0;
-          }
-          if (playerCounts[score.nickname] < 3 || (score.isCurrentUser && score.score === userScore.score)) {
-            limitedScores.push(score);
-            playerCounts[score.nickname]++;
-            if (score.isCurrentUser && score.score === userScore.score) {
-              userScoreIncluded = true;
-            }
-          }
-        });
-
-        // If user's score is not in top scores, add it at the end
-        if (!userScoreIncluded && userScore) {
-          limitedScores.push(userScore);
-        }
-
-        const topScores = limitedScores.slice(0, 13); // Increased to potentially include user's score
-
-        const leaderboard = document.getElementById('leaderboard');
-        leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gameMode)}</h2>`;
-        topScores.forEach((entry, index) => {
-          const formattedScore = entry.score.toLocaleString('en-US', {
-            maximumFractionDigits: 0
-          });
-          const scoreDiv = document.createElement('div');
-          scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
-          scoreDiv.tabIndex = 0; // Make it focusable
-
-          if (entry.isCurrentUser && entry.score === userScore.score) {
-            scoreDiv.style.fontWeight = 'bold';
-            scoreDiv.style.color = '#FFD700'; // Gold color for user's score
-          }
-
-          leaderboard.appendChild(scoreDiv);
-        });
-
-        document.getElementById('leaderboard-container').appendChild(leaderboard);
-      } catch (error) {
-        console.error('Error loading leaderboard:', error);
-        if (retryCount < maxRetries) {
-          console.log(`Retrying leaderboard load... (Attempt ${retryCount + 1})`);
-          setTimeout(() => loadLeaderboard(gameName, gameMode, retryCount + 1), retryDelay);
-        } else {
-          console.error('Max retries reached. Unable to load leaderboard.');
-          const leaderboard = document.getElementById('leaderboard');
-          leaderboard.innerHTML = '<h2>Leaderboard Unavailable</h2><p>Please try again later.</p>';
-        }
-      }
-    }
-
-    function displayLeaderboard(scores, gamemode) {
-      const leaderboard = document.getElementById('leaderboard');
-      leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gamemode || '')}</h2>`;
-      scores.forEach((entry, index) => {
-        const formattedScore = entry.score.toLocaleString('en-US', {
-          maximumFractionDigits: 0
-        });
-        const scoreDiv = document.createElement('div');
-        scoreDiv.innerText = `${index + 1}. ${entry.nickname || entry.username}: ${formattedScore} points`;
-        scoreDiv.tabIndex = 0; // Make it focusable
-        if (entry?.userId === userId) {
-          scoreDiv.style.fontWeight = 'bold';
-          scoreDiv.style.color = '#FFD700'; // Gold color for user's score
-        }
-        leaderboard.appendChild(scoreDiv);
-      });
-      document.getElementById('leaderboard-container').appendChild(leaderboard);
-    }
-
-
-    async function loadLeaderboardOptimized(gameName, gameMode, gameData, limitScore = 10,) {
-      try {
-        const db = getFirestore();
-        const scoresCollection = collection(db, 'scores');
-
-        const currentGameData = {
-          username: userNickname.textContent,
-          score: gameData.score,
-          userId
-        }
-
-        const scoresQuery = query(
-          scoresCollection,
-          where('gameMode', '==', gameMode), // Filter by gameMode
-          orderBy('score', 'desc'), // Order by score descending
-          limit(limitScore) // Limit to top N scores
-        );
-
-        // Fetch the results based on the query
-        const scoresSnapShot = await getDocs(scoresQuery);
-        const leaderboardData = [currentGameData];
-        let userScore = null;
-
-        // Process each user document
-        scoresSnapShot.forEach(doc => {
-          const scoreData = doc.data();
-          console.log('User Data:', scoreData);
-          if (scoreData) {
-            leaderboardData.push(scoreData)
-          }
-        });
-
-        leaderboardData.sort((a, b) => b.score - a.score);
-
-        // Display the leaderboard data
-        displayLeaderboard(leaderboardData.slice(0, limitScore), gameMode);
-
-      } catch (error) {
-        console.error('Error loading leaderboard:', error);
-      }
-    }
-
-    async function loadAllLeaderboards(gameName) {
-      const db = getFirestore();
-      const usersSnapshot = await getDocs(collection(db, 'users'));
-      const allScores = {};
-
-      usersSnapshot.forEach(doc => {
-        const userData = doc.data();
-        gameModes.forEach(mode => {
-          const gameScores = userData.games?.[gameName]?.scores || [];
-          gameScores.forEach(session => {
-            if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === mode.id) {
-              if (!allScores[mode.name]) {
-                allScores[mode.name] = [];
-              }
-              allScores[mode.name].push({
-                nickname: userData.nickname || 'Unnamed',
-                score: session.score,
-                wave: session.wave  // Assuming we also save the wave number
-              });
-            }
-          });
-        });
-      });
-
-      // Sort and limit scores for each mode
-      for (let mode in allScores) {
-        allScores[mode].sort((a, b) => b.score - a.score);
-
-        const playerCounts = {};
-        allScores[mode] = allScores[mode].filter(score => {
-          if (!playerCounts[score.nickname]) {
-            playerCounts[score.nickname] = 0;
-          }
-          if (playerCounts[score.nickname] < 3) {
-            playerCounts[score.nickname]++;
-            return true;
-          }
-          return false;
-        }).slice(0, 12);
-      }
-
-      return allScores;
-    }
-
-
-    async function loadAllLeaderboardsOptimized(gameName, limitScore = 10, userId = null) {
-      try {
-        const db = getFirestore();
-        const scoresCollection = collection(db, 'scores');
-
-        const GameModes = {
-          EASY: 'easy',
-          NORMAL: 'normal',
-          HARD: 'hard',
-          HERO: 'heroic',
-          METEORSHOWEREASY: 'meteorshowereasy',
-          METEORSHOWERNORMAL: 'meteorshowernormal',
-          METEORSHOWERHARD: 'meteorshowerhard',
-          METEORSHOWERHERO: 'meteorshowerhero',
-          PLANETEASY: 'planeteasy',
-          PLANETNORMAL: 'planetnormal',
-          PLANETHARD: 'planethard',
-          PLANETHERO: 'planethero',
-          ENDLESS_SLOW: 'endless_slow',
-          COOP: 'coop'
-        };
-
-        const allScores = {};  // Object to store leaderboard data for each game mode
-
-        // Process each game mode
-        await Promise.all(Object.values(GameModes).map(async (mode) => {
-          const scoresQuery = query(
-            scoresCollection,
-            where('gameMode', '==', mode), // Filter by gameMode
-            orderBy('score', 'desc'), // Order by score descending
-            limit(limitScore) // Limit to top N scores
-          );
-
-          const scoresSnapShot = await getDocs(scoresQuery);
-
-          if (scoresSnapShot.size > 0) {
-            allScores[mode] = scoresSnapShot.docs.map(doc => doc.data()); // Push scores data directly
-          }
-        }));
-
-        // Return allScores for further use
-        return allScores;
-
-      } catch (error) {
-        console.error('Error loading leaderboards for all game modes:', error);
-        return null;  // Return null in case of an error
-      }
-    }
-
-
-    // async function loadAllLeaderboards(gameId) {
-    //   try {
-    //     const db = getFirestore();
-    //     const usersSnapshot = await getDocs(collection(db, 'users'));
-    //     const allLeaderboards = {};
-
-    //     if (usersSnapshot.empty) {
-    //       console.log('No users found in the database');
-    //       return {};
-    //     }
-
-    //     usersSnapshot.forEach(doc => {
-    //       const userData = doc.data();
-    //       console.log('Processing user:', doc.id, userData);
-
-    //       const gameScores = userData.games?.[gameId]?.scores || [];
-    //       console.log('Game scores for user:', gameScores);
-
-    //       gameScores.forEach(session => {
-    //         if (session.score && isFinite(session.score) && session.score > 0 && session.gameMode) {
-    //           if (!allLeaderboards[session.gameMode]) {
-    //             allLeaderboards[session.gameMode] = [];
-    //           }
-    //           allLeaderboards[session.gameMode].push({
-    //             nickname: userData.nickname || 'Unnamed',
-    //             score: session.score,
-    //             wave: session.wave || 1
-    //           });
-    //           console.log('Added score to leaderboard:', session.gameMode, session.score);
-    //         } else {
-    //           console.log('Invalid score data:', session);
-    //         }
-    //       });
-    //     });
-
-    //     // Sort and limit each leaderboard
-    //     Object.keys(allLeaderboards).forEach(mode => {
-    //       allLeaderboards[mode].sort((a, b) => b.score - a.score);
-    //       allLeaderboards[mode] = allLeaderboards[mode].slice(0, 10);
-    //       console.log(`Sorted leaderboard for ${mode}:`, allLeaderboards[mode]);
-    //     });
-
-    //     return allLeaderboards;
-    //   } catch (error) {
-    //     console.error('Error loading leaderboards:', error);
-    //     return {};
-    //   }
-    // }
-
-
-    function getGameModeName(mode) {
-      switch (mode) {
-        case GameModes.EASY: return "Easy";
-        case GameModes.NORMAL: return "Normal";
-        case GameModes.HARD: return "Hard";
-        case GameModes.HERO: return "Hero";
-        case GameModes.METEORSHOWEREASY: return "Meteor Shower Easy";
-        case GameModes.METEORSHOWERNORMAL: return "Meteor Shower Normal";
-        case GameModes.METEORSHOWERHARD: return "Meteor Shower Hard";
-        case GameModes.METEORSHOWERHERO: return "Meteor Shower Hero";
-        case GameModes.PLANETEASY: return "Planet Easy";
-        case GameModes.PLANETNORMAL: return "Planet Normal";
-        case GameModes.PLANETHARD: return "Planet Hard";
-        case GameModes.PLANETHERO: return "Planet Hero";
-        case GameModes.ENDLESS_SLOW: return "Endless Slow";
-        default: return "Unknown Mode";
-      }
-    }
-
-    window.loadLeaderboardOptimized = loadLeaderboardOptimized;
-    window.loadAllLeaderboardsOptimized = loadAllLeaderboardsOptimized;
-
-
-    // Function to load achievements from Firebase or localStorage
-    async function loadAchievements() {
-      const params = new URLSearchParams(window.location.search);
-      const userId = params.get('userId');
-      const db = getFirestore();
-      let loadedAchievements = {};
-
-      if (userId) {
-        const userDocRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists() && userDoc.data().achievements) {
-          loadedAchievements = userDoc.data().achievements;
-          console.log('loadach');
-
-        } else {
-          const savedAchievements = localStorage.getItem('achievements');
-          if (savedAchievements) {
-            loadedAchievements = JSON.parse(savedAchievements);
-          }
-        }
-      } else {
-        const savedAchievements = localStorage.getItem('achievements');
-        if (savedAchievements) {
-          loadedAchievements = JSON.parse(savedAchievements);
-        }
-      }
-      Object.assign(Achievements, loadedAchievements);
-
-      return Achievements;
-    }
-
-
-
-    window.loadAchievements = loadAchievements;
-
-    function populateUserScores(scores) {
-      const pastScoresList = document.getElementById('pastScoresList');
-      pastScoresList.innerHTML = ''; // Clear previous content
-
-      scores.forEach(scoreData => {
-        const li = document.createElement('li');
-        li.style.marginBottom = '20px';
-
-        // Display score, game mode, and session length
-        li.innerHTML = `
+			// Add a detailed damage report
+			const damageReport = document.createElement('ul');
+			damageReport.classList.add('damage-report');  // Add a class for custom styling
+
+			session.topWeapons.forEach(weaponData => {
+				const weapon = weaponData.weapon;
+				const damage = weaponData.damage;
+
+				// Find weapon info based on weapon name
+				const weaponInfo = weapons.find(w => w.name === weapon);
+
+				if (weaponInfo) {
+					const weaponLi = document.createElement('li');
+					weaponLi.style.display = 'flex';
+					weaponLi.style.alignItems = 'center';
+
+					// Display weapon icon
+					const icon = document.createElement('div');
+					icon.classList.add('weaponClassIcon', weaponInfo.icon);
+					icon.style.width = '24px';
+					icon.style.height = '24px';
+					icon.style.marginRight = '10px';
+
+					// Display weapon name and damage
+					const text = document.createElement('span');
+					text.textContent = `${weaponInfo.name}: ${damage}`;
+
+					weaponLi.appendChild(icon);
+					weaponLi.appendChild(text);
+					damageReport.appendChild(weaponLi);
+				}
+			});
+
+			li.appendChild(damageReport);
+			pastSessionsList.appendChild(li);
+		});
+	}
+
+
+	// document.getElementById('login-toggle').addEventListener('click', function (event) {
+	//   event.preventDefault();
+	//   document.getElementById('auth').classList.toggle('hidden');
+	// });
+
+
+	// async function saveUserScore(gameData) {
+	//   if (!userId) {
+	//     console.log('No user logged in, score not saved');
+	//     return;
+	//   }
+
+	//   const db = getFirestore();
+	//   const userDocRef = doc(db, 'users', userId);
+
+	//   try {
+	//     await setDoc(userDocRef, {
+	//       [`games.${gameId}.scores`]: arrayUnion({
+	//         score: gameData.score,
+	//         topWeapons: gameData.topWeapons,
+	//         sessionLength: gameData.sessionLength,
+	//         loginTime: new Date(),
+	//         gameMode: gameData.gameMode
+	//       }),
+	//       [`games.${gameId}.achievements`]: Achievements,
+	//       coins: coins
+	//     }, { merge: true });
+	//     console.log('User data saved successfully');
+	//   } catch (error) {
+	//     console.error('Error saving user data:', error);
+	//     console.error('Error details:', error.code, error.message);
+	//   }
+	// }
+
+
+
+	// Function to save user score for a specific game
+	// async function saveUserScore(userId, gameData) {
+	//   const db = getFirestore();
+	//   const userDocRef = doc(db, 'users', userId);
+
+	//   try {
+	//     // For CrazyGames users, we need to set the document if it doesn't exist
+	//     if (userId.startsWith('cg_')) {
+	//       await setDoc(userDocRef, {
+	//         [`games.${gameId}.scores`]: arrayUnion({
+	//           score: gameData.score,
+	//           topWeapons: gameData.topWeapons,
+	//           sessionLength: gameData.sessionLength,
+	//           loginTime: new Date(),
+	//           gameMode: gameData.gameMode
+	//         }),
+	//         [`games.${gameId}.achievements`]: Achievements,
+	//         coins: coins
+	//       }, { merge: true });
+	//     } else {
+	//       // For Firebase users, we can use updateDoc as before
+	//       await updateDoc(userDocRef, {
+	//         [`games.${gameId}.scores`]: arrayUnion({
+	//           score: gameData.score,
+	//           topWeapons: gameData.topWeapons,
+	//           sessionLength: gameData.sessionLength,
+	//           loginTime: new Date(),
+	//           gameMode: gameData.gameMode
+	//         }),
+	//         [`games.${gameId}.achievements`]: Achievements,
+	//         coins: coins
+	//       });
+	//     }
+	//     console.log('User data saved successfully');
+	//   } catch (error) {
+	//     console.error('Error saving user data:', error);
+	//     // Log more details about the error
+	//     console.error('Error details:', error.code, error.message);
+	//   }
+	// }
+	// window.saveUserScore = saveUserScore;
+
+	// async function saveUserScore(gameData) {
+	//   console.log('Saving user score, userId:', userId);
+	//   if (!userId || userId === 'cg_undefined') {
+	//     console.error('Invalid userId, score not saved');
+	//     return;
+	//   }
+
+	//   if (!gameData || typeof gameData !== 'object') {
+	//     console.error('Invalid gameData, score not saved');
+	//     return;
+	//   }
+
+	//   const db = getFirestore();
+	//   const userDocRef = doc(db, 'users', userId);
+
+	//   // Ensure all gameData properties are defined
+	//   const safeGameData = {
+	//     score: gameData.score || 0,
+	//     topWeapons: gameData.topWeapons || [],
+	//     sessionLength: gameData.sessionLength || 0,
+	//     loginTime: new Date(),
+	//     gameMode: gameData.gameMode || 'unknown'
+	//   };
+
+	//   try {
+	//     await setDoc(userDocRef, {
+	//       [`games.${gameId}.scores`]: arrayUnion(safeGameData),
+	//       [`games.${gameId}.achievements`]: Achievements || {},
+	//       coins: coins || 0
+	//     }, { merge: true });
+	//     console.log('User data saved successfully');
+	//   } catch (error) {
+	//     console.error('Error saving user data:', error);
+	//     console.error('Error details:', error.code, error.message);
+	//   }
+	// }
+
+
+	async function saveUserScore(gameData) {
+
+		if (crazyGamesMode) {
+			const user = await window.CrazyGames.SDK.user.getUser();
+			if (user && user.username) {
+				userId = 'cg_' + user.username;
+			}
+		}
+
+		if (!userId || !gameData) {
+			console.error('Invalid userId or gameData');
+			return;
+		}
+
+		const db = getFirestore();
+
+		const scoresCollectionRef = collection(db, 'scores');
+
+		const userDocRef = doc(db, 'users', userId);
+		const userDoc = await getDoc(userDocRef);
+		const loadedUserData = userDoc.data()
+		const safeGameData = {
+			score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
+			topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
+			activeMegaUpgrades: Array.isArray(gameData.activeMegaUpgrades) ? gameData.activeMegaUpgrades : [],
+			sessionLength: gameData.sessionLength || 0,
+			loginTime: gameData.loginTime || new Date(),
+			endTime: gameData.endTime || new Date(),
+			gameMode: gameData.gameMode || 'unknown',
+			asteroidsKilled: gameData.asteroidsKilled || 0,
+			aliensKilled: gameData.aliensKilled || 0,
+			wave: gameData.wave || 1
+		};
+		try {
+			// Add a new document to the 'scores' collection with an auto-generated ID
+			await addDoc(scoresCollectionRef, {
+				userId: userId,
+				username: loadedUserData.nickname || loadedUserData.username || "Unnamed",
+				gameName: 'InfiniteSpaceWar',
+				score: safeGameData.score,
+				wave: safeGameData.wave,
+				timestamp: safeGameData.endTime,  // Use endTime as the timestamp
+				topWeapons: safeGameData.topWeapons,
+				activeMegaUpgrades: safeGameData.activeMegaUpgrades,
+				sessionLength: safeGameData.sessionLength,
+				asteroidsKilled: safeGameData.asteroidsKilled,
+				aliensKilled: safeGameData.aliensKilled,
+				gameMode: safeGameData.gameMode,
+				loginTime: safeGameData.loginTime
+			});
+
+			// Update the user document by adding the score to their existing list of scores
+			await setDoc(userDocRef, {
+				games: {
+					InfiniteSpaceWar: {
+						scores: arrayUnion(safeGameData),
+						achievements: Achievements || {}
+					}
+				},
+				coins: typeof coins === 'number' ? Math.max(0, coins) : 0,
+				lastUpdated: new Date(),
+				// Add the new leaderboard field
+				leaderboard: {
+					[safeGameData.gameMode]: {
+						score: safeGameData.score,
+						wave: safeGameData.wave,
+						timestamp: safeGameData.endTime
+					}
+				}
+			}, { merge: true });
+			console.log('User score saved successfully:', safeGameData);
+		} catch (error) {
+			console.error('Error saving user score:', error);
+		}
+	}
+
+	window.saveUserScore = saveUserScore;
+	// Function to save initial user data
+	async function saveUserData(userIdToSave = window.userId, gameName = gameId) {
+
+		console.log(window.CrazyGames.SDK.user);
+		console.log(userIdToSave);
+		console.log(gameName);
+
+		const db = getFirestore();
+		const userDocRef = doc(db, 'users', userIdToSave);
+		const userData = {
+			[`games.${gameName} `]: {
+				scores: [],
+				lastLogin: new Date()
+			}
+		};
+		await setDoc(userDocRef, userData, { merge: true });
+	}
+
+	window.saveUserData = saveUserData;
+
+
+	async function loadLeaderboard(gameName, gameMode, retryCount = 0) {
+		const maxRetries = 3;
+		const retryDelay = 2000; // 2 seconds
+
+		try {
+			const db = getFirestore();
+			const usersSnapshot = await getDocs(collection(db, 'users'));
+			const scores = [];
+			let userScore = null;
+
+			usersSnapshot.forEach(doc => {
+				const userData = doc.data();
+				const gameScores = userData.games?.[gameName]?.scores || [];
+				gameScores.forEach(session => {
+					if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === gameMode) {
+						const scoreEntry = {
+							nickname: userData.nickname || 'Unnamed',
+							score: session.score,
+							wave: session.wave,
+							isCurrentUser: doc.id === userId
+						};
+						scores.push(scoreEntry);
+
+						// Check if this is the current user's most recent score
+						if (scoreEntry.isCurrentUser && (!userScore || session.loginTime > userScore.loginTime)) {
+							userScore = scoreEntry;
+						}
+					}
+				});
+			});
+
+			scores.sort((a, b) => b.score - a.score);
+
+			const limitedScores = [];
+			const playerCounts = {};
+			let userScoreIncluded = false;
+
+			scores.forEach(score => {
+				if (!playerCounts[score.nickname]) {
+					playerCounts[score.nickname] = 0;
+				}
+				if (playerCounts[score.nickname] < 3 || (score.isCurrentUser && score.score === userScore.score)) {
+					limitedScores.push(score);
+					playerCounts[score.nickname]++;
+					if (score.isCurrentUser && score.score === userScore.score) {
+						userScoreIncluded = true;
+					}
+				}
+			});
+
+			// If user's score is not in top scores, add it at the end
+			if (!userScoreIncluded && userScore) {
+				limitedScores.push(userScore);
+			}
+
+			const topScores = limitedScores.slice(0, 13); // Increased to potentially include user's score
+
+			const leaderboard = document.getElementById('leaderboard');
+			leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gameMode)}</h2>`;
+			topScores.forEach((entry, index) => {
+				const formattedScore = entry.score.toLocaleString('en-US', {
+					maximumFractionDigits: 0
+				});
+				const scoreDiv = document.createElement('div');
+				scoreDiv.innerText = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
+				scoreDiv.tabIndex = 0; // Make it focusable
+
+				if (entry.isCurrentUser && entry.score === userScore.score) {
+					scoreDiv.style.fontWeight = 'bold';
+					scoreDiv.style.color = '#FFD700'; // Gold color for user's score
+				}
+
+				leaderboard.appendChild(scoreDiv);
+			});
+
+			document.getElementById('leaderboard-container').appendChild(leaderboard);
+		} catch (error) {
+			console.error('Error loading leaderboard:', error);
+			if (retryCount < maxRetries) {
+				console.log(`Retrying leaderboard load... (Attempt ${retryCount + 1})`);
+				setTimeout(() => loadLeaderboard(gameName, gameMode, retryCount + 1), retryDelay);
+			} else {
+				console.error('Max retries reached. Unable to load leaderboard.');
+				const leaderboard = document.getElementById('leaderboard');
+				leaderboard.innerHTML = '<h2>Leaderboard Unavailable</h2><p>Please try again later.</p>';
+			}
+		}
+	}
+
+	function displayLeaderboard(scores, gamemode) {
+		const leaderboard = document.getElementById('leaderboard');
+		leaderboard.innerHTML = `<h2>Leaderboard - ${getGameModeName(gamemode || '')}</h2>`;
+		scores.forEach((entry, index) => {
+			const formattedScore = entry.score.toLocaleString('en-US', {
+				maximumFractionDigits: 0
+			});
+			const scoreDiv = document.createElement('li');
+			scoreDiv.innerText = `${index + 1}. ${entry.nickname || entry.username}: ${formattedScore} points`;
+			scoreDiv.tabIndex = 0; // Make it focusable
+			if (entry?.userId === userId) {
+				scoreDiv.style.fontWeight = 'bold';
+				scoreDiv.style.color = '#FFD700'; // Gold color for user's score
+			}
+			leaderboard.appendChild(scoreDiv);
+		});
+		document.getElementById('leaderboard-container').appendChild(leaderboard);
+	}
+
+
+	async function loadLeaderboardOptimized(gameName, gameMode, gameData, limitScore = 10,) {
+		try {
+			const db = getFirestore();
+			const scoresCollection = collection(db, 'scores');
+
+			const currentGameData = {
+				username: userNickname.textContent,
+				score: gameData.score,
+				userId
+			}
+
+			const scoresQuery = query(
+					scoresCollection,
+					where('gameMode', '==', gameMode), // Filter by gameMode
+					orderBy('score', 'desc'), // Order by score descending
+					limit(limitScore) // Limit to top N scores
+			);
+
+			// Fetch the results based on the query
+			const scoresSnapShot = await getDocs(scoresQuery);
+			const leaderboardData = [currentGameData];
+			let userScore = null;
+
+			// Process each user document
+			scoresSnapShot.forEach(doc => {
+				const scoreData = doc.data();
+				console.log('User Data:', scoreData);
+				if (scoreData) {
+					leaderboardData.push(scoreData)
+				}
+			});
+
+			leaderboardData.sort((a, b) => b.score - a.score);
+
+			// Display the leaderboard data
+			displayLeaderboard(leaderboardData.slice(0, limitScore), gameMode);
+
+		} catch (error) {
+			console.error('Error loading leaderboard:', error);
+		}
+	}
+
+	async function loadAllLeaderboards(gameName) {
+		const db = getFirestore();
+		const usersSnapshot = await getDocs(collection(db, 'users'));
+		const allScores = {};
+
+		usersSnapshot.forEach(doc => {
+			const userData = doc.data();
+			gameModes.forEach(mode => {
+				const gameScores = userData.games?.[gameName]?.scores || [];
+				gameScores.forEach(session => {
+					if (session.score && isFinite(session.score) && session.score <= 100000000 && session.gameMode === mode.id) {
+						if (!allScores[mode.name]) {
+							allScores[mode.name] = [];
+						}
+						allScores[mode.name].push({
+							nickname: userData.nickname || 'Unnamed',
+							score: session.score,
+							wave: session.wave  // Assuming we also save the wave number
+						});
+					}
+				});
+			});
+		});
+
+		// Sort and limit scores for each mode
+		for (let mode in allScores) {
+			allScores[mode].sort((a, b) => b.score - a.score);
+
+			const playerCounts = {};
+			allScores[mode] = allScores[mode].filter(score => {
+				if (!playerCounts[score.nickname]) {
+					playerCounts[score.nickname] = 0;
+				}
+				if (playerCounts[score.nickname] < 3) {
+					playerCounts[score.nickname]++;
+					return true;
+				}
+				return false;
+			}).slice(0, 12);
+		}
+
+		return allScores;
+	}
+
+
+	async function loadAllLeaderboardsOptimized(gameName, limitScore = 10, userId = null) {
+		try {
+			const db = getFirestore();
+			const scoresCollection = collection(db, 'scores');
+
+			const GameModes = {
+				EASY: 'easy',
+				NORMAL: 'normal',
+				HARD: 'hard',
+				HERO: 'heroic',
+				METEORSHOWEREASY: 'meteorshowereasy',
+				METEORSHOWERNORMAL: 'meteorshowernormal',
+				METEORSHOWERHARD: 'meteorshowerhard',
+				METEORSHOWERHERO: 'meteorshowerhero',
+				PLANETEASY: 'planeteasy',
+				PLANETNORMAL: 'planetnormal',
+				PLANETHARD: 'planethard',
+				PLANETHERO: 'planethero',
+				ENDLESS_SLOW: 'endless_slow',
+				COOP: 'coop'
+			};
+
+			const allScores = {};  // Object to store leaderboard data for each game mode
+
+			// Process each game mode
+			await Promise.all(Object.values(GameModes).map(async (mode) => {
+				const scoresQuery = query(
+						scoresCollection,
+						where('gameMode', '==', mode), // Filter by gameMode
+						orderBy('score', 'desc'), // Order by score descending
+						limit(limitScore) // Limit to top N scores
+				);
+
+				const scoresSnapShot = await getDocs(scoresQuery);
+
+				if (scoresSnapShot.size > 0) {
+					allScores[mode] = scoresSnapShot.docs.map(doc => doc.data()); // Push scores data directly
+				}
+			}));
+
+			// Return allScores for further use
+			return allScores;
+
+		} catch (error) {
+			console.error('Error loading leaderboards for all game modes:', error);
+			return null;  // Return null in case of an error
+		}
+	}
+
+
+	// async function loadAllLeaderboards(gameId) {
+	//   try {
+	//     const db = getFirestore();
+	//     const usersSnapshot = await getDocs(collection(db, 'users'));
+	//     const allLeaderboards = {};
+
+	//     if (usersSnapshot.empty) {
+	//       console.log('No users found in the database');
+	//       return {};
+	//     }
+
+	//     usersSnapshot.forEach(doc => {
+	//       const userData = doc.data();
+	//       console.log('Processing user:', doc.id, userData);
+
+	//       const gameScores = userData.games?.[gameId]?.scores || [];
+	//       console.log('Game scores for user:', gameScores);
+
+	//       gameScores.forEach(session => {
+	//         if (session.score && isFinite(session.score) && session.score > 0 && session.gameMode) {
+	//           if (!allLeaderboards[session.gameMode]) {
+	//             allLeaderboards[session.gameMode] = [];
+	//           }
+	//           allLeaderboards[session.gameMode].push({
+	//             nickname: userData.nickname || 'Unnamed',
+	//             score: session.score,
+	//             wave: session.wave || 1
+	//           });
+	//           console.log('Added score to leaderboard:', session.gameMode, session.score);
+	//         } else {
+	//           console.log('Invalid score data:', session);
+	//         }
+	//       });
+	//     });
+
+	//     // Sort and limit each leaderboard
+	//     Object.keys(allLeaderboards).forEach(mode => {
+	//       allLeaderboards[mode].sort((a, b) => b.score - a.score);
+	//       allLeaderboards[mode] = allLeaderboards[mode].slice(0, 10);
+	//       console.log(`Sorted leaderboard for ${mode}:`, allLeaderboards[mode]);
+	//     });
+
+	//     return allLeaderboards;
+	//   } catch (error) {
+	//     console.error('Error loading leaderboards:', error);
+	//     return {};
+	//   }
+	// }
+
+
+	function getGameModeName(mode) {
+		switch (mode) {
+			case GameModes.EASY: return "Easy";
+			case GameModes.NORMAL: return "Normal";
+			case GameModes.HARD: return "Hard";
+			case GameModes.HERO: return "Hero";
+			case GameModes.METEORSHOWEREASY: return "Meteor Shower Easy";
+			case GameModes.METEORSHOWERNORMAL: return "Meteor Shower Normal";
+			case GameModes.METEORSHOWERHARD: return "Meteor Shower Hard";
+			case GameModes.METEORSHOWERHERO: return "Meteor Shower Hero";
+			case GameModes.PLANETEASY: return "Planet Easy";
+			case GameModes.PLANETNORMAL: return "Planet Normal";
+			case GameModes.PLANETHARD: return "Planet Hard";
+			case GameModes.PLANETHERO: return "Planet Hero";
+			case GameModes.ENDLESS_SLOW: return "Endless Slow";
+			default: return "Unknown Mode";
+		}
+	}
+
+	window.loadLeaderboardOptimized = loadLeaderboardOptimized;
+	window.loadAllLeaderboardsOptimized = loadAllLeaderboardsOptimized;
+
+
+	// Function to load achievements from Firebase or localStorage
+	async function loadAchievements() {
+		const params = new URLSearchParams(window.location.search);
+		const userId = params.get('userId');
+		const db = getFirestore();
+		let loadedAchievements = {};
+
+		if (userId) {
+			const userDocRef = doc(db, 'users', userId);
+			const userDoc = await getDoc(userDocRef);
+
+			if (userDoc.exists() && userDoc.data().achievements) {
+				loadedAchievements = userDoc.data().achievements;
+				console.log('loadach');
+
+			} else {
+				const savedAchievements = localStorage.getItem('achievements');
+				if (savedAchievements) {
+					loadedAchievements = JSON.parse(savedAchievements);
+				}
+			}
+		} else {
+			const savedAchievements = localStorage.getItem('achievements');
+			if (savedAchievements) {
+				loadedAchievements = JSON.parse(savedAchievements);
+			}
+		}
+		Object.assign(Achievements, loadedAchievements);
+
+		return Achievements;
+	}
+
+
+
+	window.loadAchievements = loadAchievements;
+
+	function populateUserScores(scores) {
+		const pastScoresList = document.getElementById('pastScoresList');
+		pastScoresList.innerHTML = ''; // Clear previous content
+
+		scores.forEach(scoreData => {
+			const li = document.createElement('li');
+			li.style.marginBottom = '20px';
+
+			// Display score, game mode, and session length
+			li.innerHTML = `
       <h3>Score: ${scoreData.score}</h3>
       <p>Mode: ${getGameModeName(scoreData.gameMode)}</p>
       <p>Session Length: ${formatSessionLength(scoreData.sessionLength)}</p>
     `;
 
-        // Add a detailed damage report
-        const damageReport = document.createElement('ul');
-        damageReport.classList.add('damage-report');  // Add a class for custom styling
-        // console.log(scoreData.topWeapons.length);
+			// Add a detailed damage report
+			const damageReport = document.createElement('ul');
+			damageReport.classList.add('damage-report');  // Add a class for custom styling
+			// console.log(scoreData.topWeapons.length);
 
-        scoreData.topWeapons.forEach(weaponData => {
-          const weapon = weaponData.weapon;
-          const damage = weaponData.damage;
-          // console.log(weapon);
+			scoreData.topWeapons.forEach(weaponData => {
+				const weapon = weaponData.weapon;
+				const damage = weaponData.damage;
+				// console.log(weapon);
 
-          // Find weapon info based on weapon name
-          const weaponInfo = weapons.find(w => w.name === weapon);
-          // console.log(weaponInfo);
+				// Find weapon info based on weapon name
+				const weaponInfo = weapons.find(w => w.name === weapon);
+				// console.log(weaponInfo);
 
-          // if (weaponInfo) {
-          const weaponLi = document.createElement('li');
-          weaponLi.style.display = 'flex';
-          weaponLi.style.alignItems = 'center';
+				// if (weaponInfo) {
+				const weaponLi = document.createElement('li');
+				weaponLi.style.display = 'flex';
+				weaponLi.style.alignItems = 'center';
 
-          // Display weapon icon
-          // const icon = document.createElement('div');
-          // icon.classList.add('weaponClassIcon', weaponInfo.icon);  // Use the class or image for the icon
-          // icon.style.width = '24px';
-          // icon.style.height = '24px';
-          // icon.style.marginRight = '10px';
+				// Display weapon icon
+				// const icon = document.createElement('div');
+				// icon.classList.add('weaponClassIcon', weaponInfo.icon);  // Use the class or image for the icon
+				// icon.style.width = '24px';
+				// icon.style.height = '24px';
+				// icon.style.marginRight = '10px';
 
-          // Display weapon name and damage
-          const text = document.createElement('span');
-          text.textContent = `${weapon}: ${damage}`;
+				// Display weapon name and damage
+				const text = document.createElement('span');
+				text.textContent = `${weapon}: ${damage}`;
 
-          // weaponLi.appendChild(icon);
-          weaponLi.appendChild(text);
-          damageReport.appendChild(weaponLi);
-          // }
-        });
+				// weaponLi.appendChild(icon);
+				weaponLi.appendChild(text);
+				damageReport.appendChild(weaponLi);
+				// }
+			});
 
-        li.appendChild(damageReport);
-        pastScoresList.appendChild(li);
-      });
-    }
-    // Helper function to format session length
-    function formatSessionLength(sessionLength) {
-      const minutes = Math.floor(sessionLength / 60000);
-      const seconds = ((sessionLength % 60000) / 1000).toFixed(0);
-      return `${minutes} min ${seconds < 10 ? '0' : ''}${seconds} sec`;
-    }
+			li.appendChild(damageReport);
+			pastScoresList.appendChild(li);
+		});
+	}
+	// Helper function to format session length
+	function formatSessionLength(sessionLength) {
+		const minutes = Math.floor(sessionLength / 60000);
+		const seconds = ((sessionLength % 60000) / 1000).toFixed(0);
+		return `${minutes} min ${seconds < 10 ? '0' : ''}${seconds} sec`;
+	}
 
-    window.populateAchievements = populateAchievements;
+	window.populateAchievements = populateAchievements;
 
-    // document.getElementById('viewPastScoresButton').addEventListener('click', () => {
-    //   const pastScoresModal = document.getElementById('pastScoresModal');
-    //   pastScoresModal.style.display = 'block';
-    // });
+	// document.getElementById('viewPastScoresButton').addEventListener('click', () => {
+	//   const pastScoresModal = document.getElementById('pastScoresModal');
+	//   pastScoresModal.style.display = 'block';
+	// });
 
-    // Close the modal
-    document.getElementById('closePastScoresModal').addEventListener('click', () => {
-      const pastScoresModal = document.getElementById('pastScoresModal');
-      pastScoresModal.style.display = 'none';
-    });
+	// Close the modal
+	document.getElementById('closePastScoresModal').addEventListener('click', () => {
+		const pastScoresModal = document.getElementById('pastScoresModal');
+		pastScoresModal.style.display = 'none';
+	});
 
-  </script>
-  <script src="js/optimize.js"></script>
-  <script src="js/audio.js"></script>
-  <!-- <script src="infinite/leaderboard.js"></script> -->
-  <script src="js/asteroids.js"></script>
-  <script src="js/weapons.js"></script>
-  <script src="js/weapons-secondary.js"></script>
-  <script src="js/weapons-optimized.js"></script>
-  <script src="js/upgrade-menu.js"></script>
-  <script src="js/upgrades-functions.js"></script>
-  <script src="js/upgrades-main.js"></script>
-  <script src="js/upgrades-space.js"></script>
+</script>
+<script src="js/optimize.js"></script>
+<script src="js/audio.js"></script>
+<!-- <script src="infinite/leaderboard.js"></script> -->
+<script src="js/asteroids.js"></script>
+<script src="js/weapons.js"></script>
+<script src="js/weapons-secondary.js"></script>
+<script src="js/weapons-optimized.js"></script>
+<script src="js/upgrade-menu.js"></script>
+<script src="js/upgrades-functions.js"></script>
+<script src="js/upgrades-main.js"></script>
+<script src="js/upgrades-space.js"></script>
 
-  <script src="js/aliens.js"></script>
-  <script src="js/gems.js"></script>
-  <script src="js/special-effects.js"></script>
-  <script>
+<script src="js/aliens.js"></script>
+<script src="js/gems.js"></script>
+<script src="js/special-effects.js"></script>
+<script>
 
-    function isFirefox() {
-      return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-    }
+	function isFirefox() {
+		return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+	}
 
-    // Function to hide the ship selection area
-    function hideShipHeader() {
-      const shipCustomizationSection = document.getElementById('selectShipHeader');
-      if (shipCustomizationSection) {
-        shipCustomizationSection.style.display = 'none';
-      }
-    }
+	// Function to hide the ship selection area
+	function hideShipHeader() {
+		const shipCustomizationSection = document.getElementById('selectShipHeader');
+		if (shipCustomizationSection) {
+			shipCustomizationSection.style.display = 'none';
+		}
+	}
 
-    // Check if it's Firefox and hide the ship selection when the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', function () {
-      if (isFirefox()) {
-        hideShipHeader();
-        console.log('Firefox detected. Ship selection hidden.');
-      }
-    });
+	// Check if it's Firefox and hide the ship selection when the DOM is fully loaded
+	document.addEventListener('DOMContentLoaded', function () {
+		if (isFirefox()) {
+			hideShipHeader();
+			console.log('Firefox detected. Ship selection hidden.');
+		}
+	});
 
 
-    resizeCanvas();
-  </script>
+	resizeCanvas();
+</script>
 
 </body>
 
