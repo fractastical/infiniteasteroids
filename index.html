@@ -1196,7 +1196,9 @@
 				initializeGame(gameModes[currentGameModeIndex].id, true);
 
 			},
-			adError: (error, errorData) => console.log("Error midgame ad (callback)", error, errorData),
+			adError: (error, errorData) => {console.log("Error midgame ad (callback)", error,
+					errorData);
+				initializeGame(gameModes[currentGameModeIndex].id, true);},
 			adStarted: () => console.log("Start midgame ad (callback)"),
 		};
 		if (crazyGamesMode)

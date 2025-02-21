@@ -549,13 +549,15 @@ canvas {
 }
 
 #xpBarContainer {
-    display: none;
+    transform: translateY(+10px);
+    display: block;
     width: 50%;
     height: 20px;
     background-color: #333;
     border: 2px solid #fff;
     border-radius: 10px;
     overflow: hidden;
+    z-index: 2;
 }
 
 #xpBar {
@@ -566,6 +568,23 @@ canvas {
     /* Smooth transition effect */
 }
 
+
+@media (max-width: 500px) {
+    #xpBarContainer {
+        transform: translateX(+20%) translateY(+15px);
+    }
+}
+@media (max-width: 420px) {
+    #xpBarContainer {
+        transform: translateX(+27%) translateY(+15px);
+        width: 40%;
+    }
+}
+@media (max-height: 500px) {
+    #xpBarContainer {
+        transform: translateY(+20px);
+    }
+}
 
 
 #startScreen button:disabled {

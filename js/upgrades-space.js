@@ -67,6 +67,19 @@ const floatingUpgrades = [
     },
 ];
 
+const upgradeImages = {};
+
+function preloadUpgradeImages(upgrades) {
+    upgrades.forEach(upgrade => {
+        if (!upgradeImages[upgrade.icon]) {
+            const img = new Image();
+            img.src = upgrade.icon;
+            upgradeImages[upgrade.icon] = img;
+        }
+    });
+}
+preloadUpgradeImages(floatingUpgrades)
+
 // Chance to spawn upgrades per wave based on difficulty
 const spawnChances = {
     EASY: 0.005, // 0.5% chance per wave
@@ -196,18 +209,26 @@ function drawFloatingUpgrades() {
         ctx.fill();
 
         // Draw upgrade icon
-        const img = new Image();
-        img.src = upgrade.icon;
-        img.onload = () => {
+        // const img = new Image();
+        // img.src = upgrade.icon;
+        // img.onload = () => {
+        //     ctx.drawImage(img, upgrade.x, upgrade.y, upgrade.size, upgrade.size);
+        //     // console.log(`Drew upgrade ${index} at:`, upgrade.x, upgrade.y);
+        // };
+        // img.onerror = () => {
+        //     console.error(`Failed to load image for upgrade ${index}:`, upgrade.icon);
+        //     // Draw a placeholder
+        //     ctx.fillStyle = 'red';
+        //     ctx.fillRect(upgrade.x, upgrade.y, upgrade.size, upgrade.size);
+        // };
+        const img = upgradeImages[upgrade.icon];
+        if (img && img.complete) {
             ctx.drawImage(img, upgrade.x, upgrade.y, upgrade.size, upgrade.size);
-            // console.log(`Drew upgrade ${index} at:`, upgrade.x, upgrade.y);
-        };
-        img.onerror = () => {
-            console.error(`Failed to load image for upgrade ${index}:`, upgrade.icon);
-            // Draw a placeholder
+        } else {
+            // Draw a placeholder if image isn't available
             ctx.fillStyle = 'red';
             ctx.fillRect(upgrade.x, upgrade.y, upgrade.size, upgrade.size);
-        };
+        }
 
         ctx.restore();
     });

@@ -1422,7 +1422,7 @@ function increaseXP(amount, isGem = false) {
   }
 
   xp += amount;
-  document.getElementById("xpBarContainer").style.display = "none";
+  // document.getElementById("xpBarContainer").style.display = "none";
 
   updateXPBar();
 
@@ -1437,15 +1437,6 @@ function increaseXP(amount, isGem = false) {
   }
 }
 
-function updateXPBar() {
-  if (!megaBossAlien && !superbossAlien) {
-    const xpBar = document.getElementById("xpBar");
-    xpBar.style.backgroundColor = "#0f0";
-    const xpPercentage = (xp / xpToNextLevel) * 100;
-    xpBar.style.width = xpPercentage + "%";
-  }
-}
-
 // Function to get a random shade of orange
 function getRandomOrangeShade() {
   const shades = ["#FF4500", "#FF6347", "#FF8C00", "#FFA500", "#FF7F50"];
@@ -1456,6 +1447,18 @@ function getRandomBlueShade() {
   const shades = ["#1E90FF", "#00BFFF", "#87CEFA", "#4682B4", "#5F9EA0"];
   return shades[Math.floor(Math.random() * shades.length)];
 }
+
+function updateXPBar() {
+  if (!megaBossAlien && !superbossAlien) {
+
+    const xpBar = document.getElementById("xpBar");
+
+    xpBar.style.backgroundColor = "#0f0";
+    const xpPercentage = (xp / xpToNextLevel) * 100;
+    xpBar.style.width = xpPercentage + "%";
+  }
+}
+
 
 function getRandomPurpleShade() {
   const shades = [
@@ -2484,6 +2487,7 @@ function populateAchievements() {
 
   const secondaryWeaponsHeader = document.createElement("h4");
   secondaryWeaponsHeader.textContent = `Secondary Weapons and Upgrades (${availableSecondaryWeapons.length} / ${totalSecondaryWeapons})`;
+  secondaryWeaponsHeader.style.lineHeight = "1.5";
   secondaryWeaponsContainer.appendChild(secondaryWeaponsHeader);
 
   availableSecondaryWeapons.forEach((weapon) => {
