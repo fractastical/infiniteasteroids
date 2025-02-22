@@ -15,20 +15,34 @@ function isMobileDevice() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
+
+let healthConditionTimerPassed = false;
+
+// Start the timer when the tutorial begins or at an appropriate time
+
+const lastStep =(()=> setTimeout(() => {
+        healthConditionTimerPassed = true;
+    }, 3000)
+)
+
+
+
 // Tutorial steps for desktop
 const desktopTutorialSteps = [
     {
-        text: "Use arrow keys to move your ship",
-        position: { top: '66%', left: '50%' },
-        arrowPosition: { top: '60%', left: '50%' },
+        text: "Use arrow keys or A,W,S,D to move your ship",
+        position: { top: '66%', left: '5%' },
+        arrowPosition: { top: '60%', left: '5%' },
         arrowRotation: 0,
-        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
+        center: true,
+        condition: () => keys['ArrowLeft'] || keys['a'] || keys['s']  || keys['d'] || keys['w'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
     {
         text: "Press SPACE to shoot lasers",
-        position: { top: '66%', left: '50%' },
-        arrowPosition: { top: '60%', left: '50%' },
+        position: { top: '66%', left: '5%' },
+        arrowPosition: { top: '60%', left: '5%' },
         arrowRotation: 0,
+        center: true,
         condition: () => keys[' '] // Space key pressed
     },
     {
@@ -36,6 +50,7 @@ const desktopTutorialSteps = [
         position: { top: '45%', left: '22%' },
         arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
+        asteroid:true,
         condition: () => tutorialAsteroidDestroyed
     },
     {
@@ -47,9 +62,10 @@ const desktopTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '0%', left: '25%' },
-        arrowPosition: { top: '8%', left: '33%' },
+        position: { top: '40%', left: '49%' },
+        arrowPosition: { top: '0%', left: '61%' },
         arrowRotation: 180,
+        textRotation: 90,
         condition: () => level > 1 && elementalAsteroidCreated
     },
     {
@@ -57,28 +73,30 @@ const desktopTutorialSteps = [
         position: { top: '45%', left: '72%' },
         arrowPosition: { top: '39%', left: '74%' },
         arrowRotation: 0,
+        elementAsteroid:true,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '65%', left: '75%' },
-        arrowPosition: { top: '60%', left: '75%' },
+        position: { top: '45%', left: '22%' },
+        arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
+        asteroid:true,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
-        position: { top: '14%', left: '12%' },
-        arrowPosition: { top: '11%', left: '12%' },
+        position: { top: '100', left: '90' },
+        arrowPosition: { top: '70', left: '110' },
         arrowRotation: 0,
         condition: () => keys['e'] // E key pressed
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '14%', left: '6%' },
-        arrowPosition: { top: '11%', left: '6.6%' },
+        position: { top: '100', left: '60' },
+        arrowPosition: { top: '70', left: '80' },
         arrowRotation: 0,
-        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
+        condition: () => healthConditionTimerPassed
     }
 ];
 
@@ -86,30 +104,31 @@ const desktopTutorialSteps = [
 const mobileTutorialSteps = [
     {
         text: "Use the left and right buttons to steer your ship",
-        position: { top: '58%', left: '70%' },
-        arrowPosition: { top: '73%', left: '89%' },
+        position: { bottom: '160', right: '10' },
+        arrowPosition: { bottom: '130', right: '100' },
         arrowRotation: 180,
         condition: () => keys['ArrowLeft'] || keys['ArrowRight']
     },
     {
         text: "Use the up button to accelerate",
-        position: { top: '58%', left: '3%' },
-        arrowPosition: { top: '70%', left: '5%' },
+        position: { bottom: '160', left: '10' },
+        arrowPosition: { bottom: '130', left: '50' },
         arrowRotation: 180,
         condition: () => keys['ArrowUp']
     },
-    {
-        text: "Your ship fires automatically. Just aim!",
-        position: { top: '20%', left: '50%' },
-        arrowPosition: { top: '30%', left: '50%' },
-        arrowRotation: 180,
-        condition: () => ship.lasers.length > 0
-    },
+    // {
+    //     text: "Your ship fires automatically. Just aim!",
+    //     position: { top: '20%', left: '50%' },
+    //     arrowPosition: { top: '30%', left: '50%' },
+    //     arrowRotation: 180,
+    //     condition: () => ship.lasers.length > 0
+    // },
     {
         text: "Destroy the asteroid to get XP!",
-        position: { top: '48%', left: '22%' },
+        position: { top: '40%', left: '20%' },
         arrowPosition: { top: '41%', left: '24%' },
         arrowRotation: 0,
+        asteroid:true,
         condition: () => tutorialAsteroidDestroyed
     },
     {
@@ -121,9 +140,13 @@ const mobileTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '0%', left: '33%' },
-        arrowPosition: { top: '9%', left: '33%' },
+        position: { top: '0%', left: '49%' },
+        arrowPosition: { top: '0%', left: '61%' },
         arrowRotation: 180,
+
+
+
+        textRotation: 90,
         condition: () => level > 1 && elementalAsteroidCreated
     },
     {
@@ -131,44 +154,48 @@ const mobileTutorialSteps = [
         position: { top: '48%', left: '72%' },
         arrowPosition: { top: '42%', left: '74%' },
         arrowRotation: 0,
+        elementAsteroid:true,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '68%', left: '72%' },
-        arrowPosition: { top: '62%', left: '74%' },
+        position: { top: '48%', left: '22%' },
+        arrowPosition: { top: '41%', left: '24%' },
         arrowRotation: 0,
+        asteroid:true,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
-        text: "Use two fingers to activate your bomb (secondary weapon). Only three uses!",
-        position: { top: '20%', left: '10%' },
-        arrowPosition: { top: '14%', left: '13%' },
+        text: "Double tap to activate your bomb (secondary weapon). Only three uses!",
+        position: { top: '100', left: '90' },
+        arrowPosition: { top: '70', left: '110' },
         arrowRotation: 0,
         condition: () => secondaryWeaponUsedOnMobile
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '20%', left: '5%' },
-        arrowPosition: { top: '14%', left: '7%' },
+        position: { top: '100', left: '60' },
+        arrowPosition: { top: '70', left: '80' },
         arrowRotation: 0,
-        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp']
+        condition: () => healthConditionTimerPassed
     }
 ];
 
 const fullscreenTutorialSteps = [
     {
-        text: "Use arrow keys to move your ship",
-        position: { top: '57%', left: '50%' },
-        arrowPosition: { top: '54%', left: '50%' },
+        text: "Use arrow keys or A,W,S,D to move your ship",
+        position: { top: '57%', left: '5%' },
+        arrowPosition: { top: '54%', left: '5%' },
         arrowRotation: 0,
-        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
+        center: true,
+        condition: () => keys['ArrowLeft'] || keys['a'] || keys['s']  || keys['d'] || keys['w'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
     {
         text: "Press SPACE to shoot lasers",
-        position: { top: '57%', left: '50%' },
-        arrowPosition: { top: '54%', left: '50%' },
+        position: { top: '57%', left: '5%' },
+        arrowPosition: { top: '54%', left: '5%' },
         arrowRotation: 0,
+        center: true,
         condition: () => keys[' '] // Space key pressed
     },
     {
@@ -176,6 +203,7 @@ const fullscreenTutorialSteps = [
         position: { top: '37%', left: '22%' },
         arrowPosition: { top: '34%', left: '24.5%' },
         arrowRotation: 0,
+        asteroid: true,
         condition: () => tutorialAsteroidDestroyed
     },
     {
@@ -187,9 +215,10 @@ const fullscreenTutorialSteps = [
     },
     {
         text: "Pick an upgrade with XP!",
-        position: { top: '1%', left: '37%' },
-        arrowPosition: { top: '5%', left: '41%' },
+        position: { top: '0%', left: '49%' },
+        arrowPosition: { top: '0%', left: '61%' },
         arrowRotation: 180,
+        textRotation: 90,
         condition: () => level > 1 && elementalAsteroidCreated
     },
     {
@@ -197,28 +226,30 @@ const fullscreenTutorialSteps = [
         position: { top: '38%', left: '72%' },
         arrowPosition: { top: '35%', left: '74.5%' },
         arrowRotation: 0,
+        elementAsteroid:true,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
         text: "Everything green is an enemy. Now, shoot the alien ship before it gets you! ",
-        position: { top: '57%', left: '73%' },
-        arrowPosition: { top: '54%', left: '74.5%' },
+        position: { top: '45%', left: '22%' },
+        arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
+        asteroid:true,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
         text: "Press E to use your bomb (secondary weapon). Only three uses!",
-        position: { top: '9%', left: '5%' },
-        arrowPosition: { top: '6%', left: '6.5%' },
+        position: { top: '100', left: '90' },
+        arrowPosition: { top: '70', left: '110' },
         arrowRotation: 0,
         condition: () => keys['e'] // E key pressed
     },
     {
         text: "This is your health. Don't let it reach zero!",
-        position: { top: '9%', left: '2%' },
-        arrowPosition: { top: '6%', left: '3.5%' },
+        position: { top: '100', left: '60' },
+        arrowPosition: { top: '70', left: '80' },
         arrowRotation: 0,
-        condition: () => keys['ArrowLeft'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
+        condition: () => healthConditionTimerPassed
     }
 ];
 
@@ -241,8 +272,8 @@ function initializeTutorial() {
 
 function createTutorialAlien() {
     const tutorialAlien = {
-        x: canvas.width * 0.75,
-        y: canvas.height * 0.50,
+        x: canvas.width * 0.25,
+        y: canvas.height * 0.3,
         size: 40,
         speed: 0.2,
         hitpoints: 1,
@@ -263,7 +294,7 @@ function createTutorialOverlay() {
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.2);
-        z-index: 1000;
+        z-index: 100;
         pointer-events: none;
     `;
 
@@ -305,25 +336,102 @@ function showCurrentTutorialStep() {
     const stepElement = document.getElementById('tutorialStep');
     const arrowElement = document.getElementById('tutorialArrow');
 
+    stepElement.style.bottom='unset'
+    stepElement.style.right='unset'
+    arrowElement.style.bottom='unset'
+    arrowElement.style.right='unset'
+    stepElement.style.top='unset'
+    stepElement.style.left='unset'
+    arrowElement.style.top='unset'
+    arrowElement.style.left='unset'
+    arrowElement.style.maxWidth="auto";
     stepElement.textContent = step.text;
 
+    // if(!isMobile() && canvas.height>canvas.width && step.textRotation!==undefined){
+    //     stepElement.style.top="45%";
+    //     arrowElement.style.top="50%";
+    //     console.log("here")
+    // }
+     if(step.asteroid===true){
+        stepElement.style.transform = `translateX(${(canvas.width * 0.25)-90}px) translateY(${(canvas.height * 0.3)+70}px)`;
+        arrowElement.style.transform = `translateX(${(canvas.width * 0.25)}px) translateY(${(canvas.height * 0.3)+40}px)`;
+    }
+    else if(step.elementAsteroid===true){
+        stepElement.style.transform = `translateX(${(canvas.width * 0.75)-120}px) translateY(${(canvas.height * 0.3)+70}px)`;
+        arrowElement.style.transform = `translateX(${(canvas.width * 0.75)-10}px) translateY(${(canvas.height * 0.3)+40}px)`;
+    }
+    else if(step.center===true){
+        stepElement.style.transform = `translateX(${(canvas.width * 0.5)-80}px) translateY(${(canvas.height * .5)+70}px)`;
+        arrowElement.style.transform = `translateX(${(canvas.width * 0.5)}px) translateY(${(canvas.height * 0.5)+40}px)`;
+    }
     // Apply positions
-    for (const [key, value] of Object.entries(step.position)) {
-        stepElement.style[key] = value.endsWith('%') ? value : `${value}px`;
+    else {
+        for (const [key, value] of Object.entries(step.position)) {
+            stepElement.style[key] = value.endsWith('%') ? value : `${value}px`;
+        }
+        for (const [key, value] of Object.entries(step.arrowPosition)) {
+            arrowElement.style[key] = value.endsWith('%') ? value : `${value}px`;
+        }
     }
-    for (const [key, value] of Object.entries(step.arrowPosition)) {
-        arrowElement.style[key] = value.endsWith('%') ? value : `${value}px`;
-    }
+
+
+
 
     // Center horizontally if left is 50%
     if (step.position.left === '50%') {
         stepElement.style.transform = 'translateX(-50%)';
-    } else {
-        stepElement.style.transform = '';
     }
+    else {
+        console.log(step.textRotation);
+        if(step.textRotation !== undefined ) {
+            const screenWidth = window.innerWidth;
+            if (screenWidth<450 && canvas.height < 650 ) {
+                stepElement.style.top = `10px`
+                arrowElement.style.top = '18px'
+                arrowElement.style.left = "75%"
+                // arrowElement.style.translate = "9vw";
+            }
+            else if (canvas.height < 616 ) {
+                stepElement.style.top = `10px`
+                arrowElement.style.top = '18px'
+                arrowElement.style.left = "65%"
+
+                // arrowElement.style.translate = "9vw";
+            }
+            else if(canvas.height< 800){
+                stepElement.style.top = "1%";
+                stepElement.style.left = "50%";
+                stepElement.style.transform = 'translateX(-50%)';
+                arrowElement.style.top = "7%"
+                arrowElement.style.left = "50%";
+            }
+
+            else {
+                if (!isMobile() && canvas.height > canvas.width) {
+                    stepElement.style.top = "27%";
+                    arrowElement.style.top = "30%";
+                    arrowElement.style.left = "50%";
+                }
+                else {
+                    stepElement.style.top = "15%";
+                    stepElement.style.left = "50%";
+                    stepElement.style.transform = 'translateX(-50%)';
+
+                    arrowElement.style.top = "20%"
+                    arrowElement.style.left = "50%";
+                }
+            }
+        }
+        else if(step.asteroid!==true && step.elementAsteroid!==true && step.center!==true) {
+            stepElement.style.transform=`unset`
+            stepElement.style.translate=`unset`
+
+        }
+    }
+
     if (step.arrowPosition.left === '50%') {
         arrowElement.style.transform = `translateX(-50%) rotate(${step.arrowRotation}deg)`;
-    } else {
+    } else if(step.asteroid!==true && step.elementAsteroid!==true && step.center!==true) {
         arrowElement.style.transform = `rotate(${step.arrowRotation}deg)`;
     }
 }
@@ -356,34 +464,36 @@ function createTutorialAsteroidAndAddSecondary() {
 
     const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
     if (activeWeapon) {
-        activeWeapon.uses = 4;
+        activeWeapon.uses = 3;
     }
 }
 
 function createTutorialElementalAsteroid() {
 
     // Create elemental asteroid
-    const elementalTypes = ['exploding', 'freezing', 'chainLightning', 'acid'];
-    const randomType = elementalTypes[Math.floor(Math.random() * elementalTypes.length)];
-    const elementalAsteroid = {
-        x: canvas.width * 0.75,
-        y: canvas.height * 0.3,
-        size: 30,
-        speed: 0,
-        dx: 0,
-        dy: 0,
-        angle: 0,
-        rotationSpeed: 0.02,
-        hitpoints: 5,
-        initialHitpoints: 5,
-        type: randomType,
-        isElemental: true,
-        color: getElementalColor(randomType),
-        label: 'Elemental Asteroid'
-    };
-    asteroids.push(elementalAsteroid);
+    if(!elementalAsteroidCreated && level > 1) {
+        const elementalTypes = ['exploding', 'freezing', 'chainLightning', 'acid'];
+        const randomType = elementalTypes[Math.floor(Math.random() * elementalTypes.length)];
+        const elementalAsteroid = {
+            x: canvas.width * 0.75,
+            y: canvas.height * 0.3,
+            size: 30,
+            speed: 0,
+            dx: 0,
+            dy: 0,
+            angle: 0,
+            rotationSpeed: 0.02,
+            hitpoints: 5,
+            initialHitpoints: 5,
+            type: randomType,
+            isElemental: true,
+            color: getElementalColor(randomType),
+            label: 'Elemental Asteroid'
+        };
+        asteroids.push(elementalAsteroid);
 
-    elementalAsteroidCreated = true;
+        elementalAsteroidCreated = true;
+    }
 
 }
 
@@ -419,6 +529,7 @@ function updateTutorial() {
 
     const steps = getTutorialSteps();
     const currentStep = steps[currentTutorialStep];
+    // console.log(currentStep);
 
     // Check for gem collection
     // if (!gemCollected) {
@@ -443,11 +554,18 @@ function updateTutorial() {
     if (tutorialAlienCreated && !tutorialAlienDestroyed) {
         tutorialAlienDestroyed = !aliens.some(alien => alien.isTutorialAlien);
     }
+    if(currentStep.condition()){
+        console.log(steps.length,"---",currentTutorialStep);
+        if (currentTutorialStep === steps.length-2) {
+            lastStep();
+        }
+    }
 
     if (currentStep.condition()) {
         currentTutorialStep++;
         if (currentTutorialStep >= steps.length) {
             endTutorial();
+            console.log("tutorial end")
         } else {
             showCurrentTutorialStep();
         }

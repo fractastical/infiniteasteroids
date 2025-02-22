@@ -171,13 +171,26 @@
 
         <button onclick="spawnRandomUpgrade()">Space Upgrade</button>
         <button onclick="spawnRandomUpgrade100x()">Space Upgrade 100x</button>
+
+
         <button onclick="spawnFloatingIsland()">Spawn Island</button>
+        <button onclick="openUpgradeOptions()">openUpgradeOptions</button>
 
         <button onclick="laser5x()">Laser 5x</button>
         <button onclick="sonic5x()">Sonic 5x</button>
-        <button onclick="modifyWeapon('flameChainLightning.active', 1)">Chain of Flame</button>
-        <button onclick="modifyWeapon('explosiveDrone.active', 1)">Explo Drone</button>
-        <button onclick="modifyWeapon('sonicBoomerang.active', 1)">Sonic Boom</button>
+        <button onclick="boom5x()">Boom 5x</button>
+        <button onclick="chain5x()">Chain 5x</button>
+        <button onclick="flame5x()">Flame 5x</button>
+        <button onclick="flame1x()">Flame 1x</button>
+
+        <button onclick="drone5x()">Drone 5x</button>
+        <button onclick="exploding5x()">Explo 5x</button>
+        <button onclick="acid5x()">Acid 5x</button>
+        <button onclick="freeze5x()">Freeze 5x</button>
+
+        <button onclick="activateComboFlameChainLightning()">Chain of Flame</button>
+        <button onclick="activateComboExplosiveDrone()">Explo Drone</button>
+        <button onclick="activateComboSonicBoomerang()">Sonic Boom</button>
         <button onclick="activateComboCryoBomb()">Cryo Bomb</button>
         <button onclick="activateComboGravityBlast()">Gravity Blast</button>
 
@@ -189,14 +202,17 @@
         <button onclick="toggleFreezeEffect()">Toggle Freeze Effect</button>
     </div>
 
-    <div id="settingsModal" class="modal" style="display:none;">
+    <div id="settingsModal" style="display:none;" class="modal">
         <h2>Volume Control</h2>
         <input type="range" id="volumeSlider" min="1" max="10" value="5">
         <p>Volume: <span id="volumeValue">5</span></p>
         <button onclick="toggleSettings()">Close</button>
     </div>
 
+
     <audio id="background-music" src="sounds/music_loop.mp3" loop></audio>
+    <audio id="background-music2" src="sounds/ingame2.mp3" loop></audio>
+    <audio id="background-music3" src="sounds/ingame3.mp3" loop></audio>
 
     <audio id="meteor-destroy-1" src="sounds/meteor_destroy.mp3"></audio>
     <audio id="meteor-destroy-2" src="sounds/meteor_destroy2.mp3"></audio>
@@ -214,11 +230,23 @@
 
     <audio id="alien-entering-sound" src="sounds/alien_entering.mp3"></audio>
 
+    <audio id="alien-laugh-sound" src="sounds/alien_laugh3.mp3"></audio>
+
     <audio id="alien-laser-1" src="sounds/alien_laser1.mp3"></audio>
     <audio id="alien-laser-2" src="sounds/alien_laser2.mp3"></audio>
     <audio id="alien-laser-3" src="sounds/alien_laser3.mp3"></audio>
 
+    <audio id="boss-shoot-1" src="sounds/boss/boss_shoot.mp3"></audio>
+    <audio id="boss-shoot-2" src="sounds/boss/boss_shoot2.mp3"></audio>
+
+    <audio id="boss-drone-1" src="sounds/boss/boss_drone_spawn.mp3"></audio>
+    <audio id="boss-take-damage-1" src="sounds/boss/boss_damaged.mp3"></audio>
+    <audio id="boss-die" src="sounds/boss/boss_die.mp3"></audio>
+
+
     <audio id="gem-collecting-sound" src="sounds/bird_chirp.mp3"></audio>
+
+    <audio id="spin-sound" src="sounds/upgrade_loop.mp3"></audio>
 
     <audio id="freeze-sound" src="sounds/freeze.mp3"></audio>
     <audio id="freeze-sound-2" src="sounds/freezew.mp3"></audio>
@@ -227,11 +255,12 @@
     <audio id="acid-bomb-sound" src="sounds/acid_bomb.mp3"></audio>
     <audio id="bomb-lay-sound" src="sounds/lay_bomb.mp3"></audio>
     <audio id="lightning-sound" src="sounds/lightning_echo.mp3"></audio>
-    <audio id="flamethrower" src="sounds/flamethrow.mp3"></audio>
+    <audio id="flamethrower" src="sounds/flame_throw2.mp3"></audio>
 
     <audio id="megaboss-background-music" src="sounds/boss1.mp3" loop></audio>
     <audio id="supermegaboss-background-music" src="sounds/boss2.mp3" loop></audio>
     <audio id="octoboss-background-music" src="sounds/boss3.mp3" loop></audio>
+
 
     <div id="xpBarContainer">
         <div id="xpBar"></div>
@@ -242,7 +271,9 @@
         <div id="weaponsContainer">
             <!-- Weapon entries will be dynamically added here -->
         </div>
-        <div id="secondaryWeaponInfo"></div>
+        <div class="weaponInfo">
+            <p id="secondaryWeaponInfo"></p>
+        </div>
 
 
         <button id="closeButton" onclick="toggleWeaponInfo()">Close</button>
@@ -253,16 +284,56 @@
         </span>
     </div>
 
+    <div id="weaponDamageChartModal" class="modal" style="max-width:600px;">
+        <div class="modal-content">
+            <h2>Weapon Damage Per Wave</h2>
+            <div id="weaponDamageChartContainer">
+                <canvas id="weaponDamageChart"></canvas>
+            </div>
+            <button id="closeWeaponDamageChart">Close</button>
+        </div>
+    </div>
+
+    <div id="achievementsModal" class="modal">
+        <div class="modal-content">
+            <h2>Achievements</h2>
+
+            <!-- Container for showing achievements -->
+            <div id="achievementsDisplay" class="achievement-page"></div>
+
+            <!-- Navigation buttons -->
+            <div class="modal-navigation">
+                <button id="prevAchievement" class="nav-btn">←</button>
+                <button id="nextAchievement" class="nav-btn">→</button>
+            </div>
+
+            <button id="closeAchievementsModal">Close</button>
+        </div>
+    </div>
+
+
 
     <div id="levelUpModal" class="modal">
         <div class="modal-content">
-            <h2 id="leveluptitle">Level Up!</h2>
-            <p>Choose an upgrade:</p>
-            <button id="upgrade1" onclick="selectUpgrade(1)"></button>
-            <button id="upgrade2" onclick="selectUpgrade(2)"></button>
-            <button id="upgrade3" onclick="selectUpgrade(3)"></button>
-            <button id="upgrade4" style="display:none" onclick="selectUpgrade(4)"></button>
-
+            <h4 id="leveluptitle">Choose upgrade!</h2>
+                <div id="upgradeOptions">
+                    <div class="upgrade-option" onclick="selectUpgrade(0)">
+                        <div id="upgradeIcon1" class="upgrade-icon"></div>
+                        <button id="upgrade1"></button>
+                    </div>
+                    <div class="upgrade-option" onclick="selectUpgrade(1)">
+                        <div id="upgradeIcon2" class="upgrade-icon"></div>
+                        <button id="upgrade2"></button>
+                    </div>
+                    <div class="upgrade-option" onclick="selectUpgrade(2)">
+                        <div id="upgradeIcon3" class="upgrade-icon"></div>
+                        <button id="upgrade3"></button>
+                    </div>
+                    <div class="upgrade-option" style="display:none" onclick="selectUpgrade(3)">
+                        <div id="upgradeIcon4" class="upgrade-icon"></div>
+                        <button id="upgrade4"></button>
+                    </div>
+                </div>
         </div>
     </div>
 
@@ -271,7 +342,7 @@
         Ship type: Basic&nbsp;&nbsp; &nbsp;
     </div>
 
-    <div id="c" class="bottom-icons">
+    <div id="activeWeaponClassesContainer" class="bottom-icons">
     </div>
 
 
@@ -285,17 +356,28 @@
         <div id="controlsInfo"></div>
     </div>
 
+    <div id="rouletteContainer" style="display: none">
+        <div id="rouletteIcons"></div>
+        <div id="planet"></div>
+        <div id="upgradeDisplay"></div>
+        <button id="spinButton" onClick="startRoulette()">Spin [ENTER]</button>
+
+    </div>
+
 
     <script>
 
         const canvas = document.getElementById('gameCanvas');
-        let ctx = canvas.getContext('2d');
+        let ctx = canvas.getContext('2d' , { alpha: false  , willReadFrequently: true});
 
     </script>
 
 
     <script src="js/ships.js"></script>
     <script src="js/game-spacetime.js"></script>
+
+    <script src="js/game-taper.js"></script>
+    <script src="js/game-damagereport.js"></script>
 
     <script src="js/game.js"></script>
     <script src="js/game-playground.js"></script>
@@ -322,6 +404,7 @@
 
 
     <script>
+        let tutorialActive = false;
         // Playground control functions
         function modifyWeapon(weaponPath, value) {
             const parts = weaponPath.split('.');
@@ -344,13 +427,13 @@
             if (lastPart === 'active') {
                 // Handle activation of combo weapons
                 switch (weaponClass) {
-                    case 'flameChainLightning':
+                    case 'chainofflame':
                         activateComboFlameChainLightning();
                         break;
-                    case 'explosiveDrone':
+                    case 'explodrone':
                         activateComboExplosiveDrone();
                         break;
-                    case 'sonicBoomerang':
+                    case 'sonicboom':
                         activateComboSonicBoomerang();
                         break;
 
@@ -386,6 +469,7 @@
                 y: 50,
                 size: 60,
                 speed: 0.3,
+                radius: 25,
                 direction: Math.PI / 2,
                 shootTimer: 0,
                 hitpoints: wave * 2,
@@ -404,6 +488,10 @@
         //     console.log("Spawned mega boss alien");
         // }
 
+        function updateTutorial() {
+
+        }
+
         function toggleInvincibility() {
             invincible = !invincible;
             console.log(`Invincibility ${invincible ? 'enabled' : 'disabled'}`);
@@ -415,6 +503,7 @@
         }
 
         function endGame() {
+            gameOver = false;
             lives += 1;
         }
 

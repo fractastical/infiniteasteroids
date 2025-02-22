@@ -210,6 +210,9 @@ function fireSecondaryWeapon() {
     if (!isPaused) {
 
         console.log("firing secondary");
+        if(isMobile() && tutorialAlienDestroyed ){
+            secondaryWeaponUsedOnMobile=true;
+        }
         const activeWeapon = Object.values(secondaryWeapons).find(weapon => weapon.isActive);
         if (activeWeapon && activeWeapon.cooldown == 0) {
             activeWeapon.useWeapon();
