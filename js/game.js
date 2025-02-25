@@ -1426,7 +1426,7 @@ function increaseXP(amount, isGem = false) {
 
   updateXPBar();
 
-  if (xp >= xpToNextLevel && (currTimeInMS > lastLevelUp + 8000 || isGem)) {
+  if (xp >= xpToNextLevel && (currTimeInMS > lastLevelUp + 1000 || isGem)) {
     const upgradeModal = document.getElementById("upgradeModal");
     // only display levelup if upgrade modal is not open
     if (!upgradeModal || upgradeModal.style.display == "block") {
