@@ -2113,15 +2113,17 @@
 		//     console.error('Error details:', error.code, error.message);
 		//   }
 		// }
-
+		var cg_usernickname = "";
 
 		async function saveUserScore(gameData) {
+
 
 			if (crazyGamesMode) {
 				const token = await window.CrazyGames.SDK.user.getUserToken();
 				// const user = await window.CrazyGames.SDK.user.getUser();
 				if (token && token.userId) {
 					userId = 'cg_' + token.userId;
+					cg_usernickname = token.userNickname;
 				}
 			}
 
@@ -2153,7 +2155,7 @@
 				// Add a new document to the 'scores' collection with an auto-generated ID
 				await addDoc(scoresCollectionRef, {
 					userId: userId,
-					username: loadedUserData.nickname || loadedUserData.username || "Unnamed",
+					username: cg_usernickname || loadedUserData.nickname || loadedUserData.username || "Unnamed",
 					gameName: 'InfiniteSpaceWar',
 					score: safeGameData.score,
 					wave: safeGameData.wave,
