@@ -1995,13 +1995,13 @@
 
 		async function saveUserScore(gameData) {
 
-			// if (crazyGamesMode) {
-			// 	const token = await window.CrazyGames.SDK.user.getUserToken();
-			// 	// const user = await window.CrazyGames.SDK.user.getUser();
-			// 	if (token && token.userId) {
-			// 		userId = 'cg_' + token.userId;
-			// 	}
-			// }
+			if (crazyGamesMode) {
+				const token = await window.CrazyGames.SDK.user.getUserToken();
+				// const user = await window.CrazyGames.SDK.user.getUser();
+				if (token && token.userId) {
+					userId = 'cg_' + token.userId;
+				}
+			}
 
 			if (!userId || !gameData) {
 				console.error('Invalid userId or gameData');
