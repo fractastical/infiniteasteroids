@@ -2155,7 +2155,7 @@ function populateGameModes() {
     gameModeSection.innerHTML = `
         <h4 id="gameModeHeader">Select Game Mode:</h4>
         <div class="selector">
-            <button id="prevGameModeButton">&#60;</button>
+            <button id="prevGameModeButton">&#60;</button>&nbsp;
             <span id="selectedGameMode">${gameModes[currentGameModeIndex].name}</span>
             <button id="nextGameModeButton">></button>
         </div>
@@ -2163,7 +2163,7 @@ function populateGameModes() {
   } else {
     gameModeSection.innerHTML = `
         <div class="selector">
-            <button id="prevGameModeButton">&#60;</button>
+            <button id="prevGameModeButton">&#60;</button>&nbsp;
             <span id="selectedGameMode">${gameModes[currentGameModeIndex].name}</span>
             <button id="nextGameModeButton">></button>
         </div>
