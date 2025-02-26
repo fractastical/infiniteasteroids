@@ -354,6 +354,11 @@ function toggleSettings() {
 
 function togglePrivacyPolicy() {
     // console.log("vol");
+
+    const settingsModal = document.getElementById('settingsModal');
+    if (settingsModal.style.display == 'block')
+        settingsModal.style.display = 'none';
+
     const privacyModal = document.getElementById('privacyModal');
     privacyModal.style.display = settingsModal.style.display === 'none' ? 'block' : 'none';
     if (privacyModal.style.display === 'none') {
