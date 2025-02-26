@@ -291,6 +291,7 @@
 	</div>
 
 
+	displayPrivacyPolicy
 	<div id="settingsModal" class="modal" style="display:none;">
 
 		<h2>Settings</h2>
@@ -306,6 +307,8 @@
 			<button id="toggleSound" onClick="toggleSound()">Toggle Sou[n]d</button>
 
 			<button id="toggleBackground" onClick="toggleBackground()">Toggle Background</button>
+
+			<button id="privacyPolicy" onClick="togglePrivacyPolicy()">Privacy Policy</button>
 
 			<!-- <button id="toggleTunes" onClick="toggleTunes()" style="display:none">Toggle Tunes</button> -->
 
@@ -324,7 +327,120 @@
 		<button onclick="toggleSettings()">Close</button>
 	</div>
 
+	<div id="privacyModal" class="modal" style="display:none;">
 
+		<div class="privacy-policy">
+			<h1>Privacy Policy for Infinite Asteroids</h1>
+			<p><em>Last Updated: Feb 26, 2025</em></p>
+
+			<p>Thank you for playing <strong>Infinite Asteroids</strong>! This Privacy Policy explains how we collect,
+				use, and protect your information when you use our game. By playing Infinite Asteroids, you agree to the
+				terms outlined in this policy.</p>
+
+			<div class="section">
+				<h2>1. Information We Collect</h2>
+				<p>We may collect the following types of information:</p>
+
+				<h3>1.1. Personal Information</h3>
+				<ul>
+					<li>If you create an account, we may collect your <strong>name, email address, username, and
+							password</strong>.</li>
+					<li>If you contact us for support, we may collect your <strong>email address</strong> and any other
+						information you provide.</li>
+				</ul>
+
+				<h3>1.2. Gameplay Data</h3>
+				<ul>
+					<li>We may collect <strong>gameplay statistics</strong>, such as scores, progress, and in-game
+						achievements.</li>
+					<li>We may collect <strong>device information</strong>, such as your device type, operating system,
+						and unique device identifiers.</li>
+				</ul>
+
+				<h3>1.3. Analytics and Cookies</h3>
+				<ul>
+					<li>We may use <strong>third-party analytics tools</strong> (e.g., Google Analytics) to collect data
+						about how you interact with the game.</li>
+					<li>We may use <strong>cookies or similar technologies</strong> to enhance your experience and track
+						usage patterns.</li>
+				</ul>
+
+				<h3>1.4. In-App Purchases</h3>
+				<ul>
+					<li>If you make in-app purchases, we may collect <strong>transaction details</strong>, but we do not
+						store your payment information. Payment processing is handled by third-party services (e.g.,
+						Apple App Store, Google Play Store).</li>
+				</ul>
+			</div>
+
+			<div class="section">
+				<h2>2. How We Use Your Information</h2>
+				<p>We use the information we collect for the following purposes:</p>
+				<ul>
+					<li>To <strong>provide and improve</strong> the game experience.</li>
+					<li>To <strong>respond to your inquiries</strong> and provide customer support.</li>
+					<li>To <strong>analyze gameplay data</strong> and improve game features.</li>
+					<li>To <strong>send promotional emails</strong> (if you opt-in).</li>
+					<li>To <strong>comply with legal obligations</strong>.</li>
+				</ul>
+			</div>
+
+			<div class="section">
+				<h2>3. Sharing Your Information</h2>
+				<p>We do not sell your personal information. However, we may share your information in the following
+					cases:</p>
+				<ul>
+					<li>With <strong>third-party service providers</strong> who assist us in operating the game (e.g.,
+						analytics, hosting, payment processing).</li>
+					<li>If required by <strong>law or legal process</strong>.</li>
+					<li>In the event of a <strong>business transfer</strong> (e.g., merger, acquisition).</li>
+				</ul>
+			</div>
+
+			<div class="section">
+				<h2>4. Data Security</h2>
+				<p>We take reasonable measures to protect your information from unauthorized access, alteration, or
+					destruction. However, no method of transmission over the internet or electronic storage is 100%
+					secure.</p>
+			</div>
+
+			<div class="section">
+				<h2>5. Children’s Privacy</h2>
+				<p>Infinite Asteroids is not intended for children under the age of <strong>13</strong>. We do not
+					knowingly collect personal information from children under 13. If we become aware that we have
+					collected such information, we will delete it immediately.</p>
+			</div>
+
+			<div class="section">
+				<h2>6. Your Rights</h2>
+				<p>Depending on your location, you may have the following rights:</p>
+				<ul>
+					<li>To <strong>access, update, or delete</strong> your personal information.</li>
+					<li>To <strong>opt-out</strong> of marketing communications.</li>
+					<li>To <strong>restrict or object</strong> to the processing of your data.</li>
+				</ul>
+				<p>To exercise these rights, please contact us at <strong>[Insert Contact Email]</strong>.</p>
+			</div>
+
+			<div class="section">
+				<h2>7. Third-Party Links</h2>
+				<p>Infinite Asteroids may contain links to third-party websites or services. We are not responsible for
+					the privacy practices or content of these third parties.</p>
+			</div>
+
+			<div class="section">
+				<h2>8. Changes to This Policy</h2>
+				<p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the
+					new policy on this page. Your continued use of Infinite Asteroids after any changes constitutes your
+					acceptance of the updated policy.</p>
+			</div>
+
+		</div>
+
+		<button onclick="togglePrivacyPolicy()">Close</button>
+
+
+	</div>
 
 	<audio id="background-music" src="sounds/music_loop.mp3" loop></audio>
 	<audio id="background-music2" src="sounds/ingame2.mp3" loop></audio>
@@ -1193,7 +1309,6 @@
 			const callbacks = {
 				adFinished: () => {
 					console.log("End midgame ad (callback)");
-					toggleMusic();
 					initializeGame(gameModes[currentGameModeIndex].id, true);
 
 				},

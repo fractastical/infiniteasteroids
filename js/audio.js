@@ -351,6 +351,33 @@ function toggleSettings() {
     console.log(settingsModal.style.display);
 }
 
+
+function togglePrivacyPolicy() {
+    // console.log("vol");
+    const privacyModal = document.getElementById('privacyModal');
+    privacyModal.style.display = settingsModal.style.display === 'none' ? 'block' : 'none';
+    if (privacyModal.style.display === 'none') {
+        const container = document.getElementById('activeWeaponClassesContainer');
+        container.style.display = "block";
+
+        resumeGame();
+
+    } else {
+        const container = document.getElementById('activeWeaponClassesContainer');
+        container.style.display = "none";
+
+        pauseGame();
+
+    }
+
+    console.log(privacyModal.style.display);
+}
+
+
+
+
+
+
 // Function to set the volume of all sounds
 function setVolume(volume) {
     allSounds.forEach(sound => {
