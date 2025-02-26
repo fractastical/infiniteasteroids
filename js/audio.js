@@ -404,7 +404,7 @@ function pauseAllMusic() {
         backgroundMusic2.pause();
     // if (backgroundMusic3)
     //     backgroundMusic3.pause();
-    isMusicPlaying = false;
+    // isMusicPlaying = false;
 
 
 }
