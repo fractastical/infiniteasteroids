@@ -71,11 +71,13 @@
     }
 
     #levelUpModal {
-        height: auto; !important;
+        height: auto;
+        !important;
     }
 }
 
-#prevAchievement, #nextAchievement {
+#prevAchievement,
+#nextAchievement {
     width: 70px;
 }
 
@@ -150,6 +152,7 @@
 .upgrade-details {
     flex-grow: 1;
 }
+
 /*.upgrade-details p {*/
 /*    font-size: 10px;*/
 /*}*/
@@ -164,8 +167,9 @@
     font-size: clamp(0.8rem, 1.5vw, 1rem);
     /* Scale the description size */
 }
-#levelUpModal{
-}
+
+#levelUpModal {}
+
 /* Ensure buttons are aligned properly and shrink with viewport */
 .modal-content button {
     margin-top: auto;
@@ -175,45 +179,67 @@
 
 
 /* model style for entry wrapper */
-#allLeaderboardsContainer .leaderboard-mode{
+#allLeaderboardsContainer .leaderboard-mode {
     display: flex;
     flex-direction: column;
 }
-.entryWrapper{
+
+.entryWrapper {
     display: flex;
     flex-direction: column;
     margin: auto;
     margin-top: 15px;
 }
-.entryWrapper p{
+
+.entryWrapper p {
     font-size: 10px;
     text-align: left;
 }
 
 @media only screen and (max-width: 1000px) and (orientation: landscape) {
-    .upgrade-details p{
+    .upgrade-details p {
         font-size: clamp(0.7rem, 1.5vw, 1.3rem)
     }
+
     .upgrade-option {
-        padding: 0; !important;
+        padding: 0;
+        !important;
     }
-    #upgradeOptions{
+
+    #upgradeOptions {
         gap: 0;
     }
 }
 
 @media only screen and (max-width: 670px) and (orientation: landscape) {
-    .upgrade-details p{
+    .upgrade-details p {
         font-size: clamp(0.7rem, 1.5vw, 1.3rem)
     }
+
     .upgrade-option {
-        padding: 0; !important;
+        padding: 0;
+        !important;
         margin-bottom: 3px;
     }
-    #upgradeOptions{
+
+    #upgradeOptions {
         gap: 0;
     }
-    .modal{
+
+    .modal {
         width: 80vw;
     }
+}
+
+#privacyModal .privacy-policy {
+    max-height: 60vh;
+    /* Adjust height as needed */
+    overflow-y: auto;
+    padding-right: 10px;
+    /* Prevent content from being hidden under scrollbar */
+}
+
+/* Optional: Ensure the modal itself doesn't scroll */
+#privacyModal .modal-content {
+    overflow: hidden;
 }

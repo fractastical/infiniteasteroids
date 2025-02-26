@@ -360,7 +360,7 @@ function togglePrivacyPolicy() {
         settingsModal.style.display = 'none';
 
     const privacyModal = document.getElementById('privacyModal');
-    privacyModal.style.display = settingsModal.style.display === 'none' ? 'block' : 'none';
+    privacyModal.style.display = privacyModal.style.display === 'none' ? 'block' : 'none';
     if (privacyModal.style.display === 'none') {
         const container = document.getElementById('activeWeaponClassesContainer');
         container.style.display = "block";
