@@ -190,7 +190,7 @@ function playThrusterSound() {
 
 // Function to stop the thruster sound
 function stopThrusterSound() {
-    if (isThrusterSoundPlaying ) {
+    if (isThrusterSoundPlaying) {
         thrusterSound.pause();
         thrusterSound.currentTime = 0; // Reset to the start
         isThrusterSoundPlaying = false;
@@ -372,6 +372,7 @@ function pauseAllMusic() {
         backgroundMusic2.pause();
     // if (backgroundMusic3)
     //     backgroundMusic3.pause();
+    isMusicPlaying = false;
 
 
 }
