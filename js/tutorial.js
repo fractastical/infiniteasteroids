@@ -20,9 +20,9 @@ let healthConditionTimerPassed = false;
 
 // Start the timer when the tutorial begins or at an appropriate time
 
-const lastStep =(()=> setTimeout(() => {
-        healthConditionTimerPassed = true;
-    }, 3000)
+const lastStep = (() => setTimeout(() => {
+    healthConditionTimerPassed = true;
+}, 3000)
 )
 
 
@@ -35,7 +35,7 @@ const desktopTutorialSteps = [
         arrowPosition: { top: '60%', left: '5%' },
         arrowRotation: 0,
         center: true,
-        condition: () => keys['ArrowLeft'] || keys['a'] || keys['s']  || keys['d'] || keys['w'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
+        condition: () => keys['ArrowLeft'] || keys['a'] || keys['s'] || keys['d'] || keys['w'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
     {
         text: "Press SPACE to shoot lasers",
@@ -50,7 +50,7 @@ const desktopTutorialSteps = [
         position: { top: '45%', left: '22%' },
         arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
-        asteroid:true,
+        asteroid: true,
         condition: () => tutorialAsteroidDestroyed
     },
     {
@@ -73,7 +73,7 @@ const desktopTutorialSteps = [
         position: { top: '45%', left: '72%' },
         arrowPosition: { top: '39%', left: '74%' },
         arrowRotation: 0,
-        elementAsteroid:true,
+        elementAsteroid: true,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
@@ -81,7 +81,7 @@ const desktopTutorialSteps = [
         position: { top: '45%', left: '22%' },
         arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
-        asteroid:true,
+        asteroid: true,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
@@ -128,7 +128,7 @@ const mobileTutorialSteps = [
         position: { top: '40%', left: '20%' },
         arrowPosition: { top: '41%', left: '24%' },
         arrowRotation: 0,
-        asteroid:true,
+        asteroid: true,
         condition: () => tutorialAsteroidDestroyed
     },
     {
@@ -154,7 +154,7 @@ const mobileTutorialSteps = [
         position: { top: '48%', left: '72%' },
         arrowPosition: { top: '42%', left: '74%' },
         arrowRotation: 0,
-        elementAsteroid:true,
+        elementAsteroid: true,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
@@ -162,7 +162,7 @@ const mobileTutorialSteps = [
         position: { top: '48%', left: '22%' },
         arrowPosition: { top: '41%', left: '24%' },
         arrowRotation: 0,
-        asteroid:true,
+        asteroid: true,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
@@ -188,7 +188,7 @@ const fullscreenTutorialSteps = [
         arrowPosition: { top: '54%', left: '5%' },
         arrowRotation: 0,
         center: true,
-        condition: () => keys['ArrowLeft'] || keys['a'] || keys['s']  || keys['d'] || keys['w'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
+        condition: () => keys['ArrowLeft'] || keys['a'] || keys['s'] || keys['d'] || keys['w'] || keys['ArrowRight'] || keys['ArrowUp'] || keys['ArrowDown']
     },
     {
         text: "Press SPACE to shoot lasers",
@@ -226,7 +226,7 @@ const fullscreenTutorialSteps = [
         position: { top: '38%', left: '72%' },
         arrowPosition: { top: '35%', left: '74.5%' },
         arrowRotation: 0,
-        elementAsteroid:true,
+        elementAsteroid: true,
         condition: () => elementalAsteroidCreated && elementalAsteroidDestroyed
     },
     {
@@ -234,7 +234,7 @@ const fullscreenTutorialSteps = [
         position: { top: '45%', left: '22%' },
         arrowPosition: { top: '39%', left: '24%' },
         arrowRotation: 0,
-        asteroid:true,
+        asteroid: true,
         condition: () => tutorialAlienCreated && tutorialAlienDestroyed
     },
     {
@@ -336,15 +336,15 @@ function showCurrentTutorialStep() {
     const stepElement = document.getElementById('tutorialStep');
     const arrowElement = document.getElementById('tutorialArrow');
 
-    stepElement.style.bottom='unset'
-    stepElement.style.right='unset'
-    arrowElement.style.bottom='unset'
-    arrowElement.style.right='unset'
-    stepElement.style.top='unset'
-    stepElement.style.left='unset'
-    arrowElement.style.top='unset'
-    arrowElement.style.left='unset'
-    arrowElement.style.maxWidth="auto";
+    stepElement.style.bottom = 'unset'
+    stepElement.style.right = 'unset'
+    arrowElement.style.bottom = 'unset'
+    arrowElement.style.right = 'unset'
+    stepElement.style.top = 'unset'
+    stepElement.style.left = 'unset'
+    arrowElement.style.top = 'unset'
+    arrowElement.style.left = 'unset'
+    arrowElement.style.maxWidth = "auto";
     stepElement.textContent = step.text;
 
     // if(!isMobile() && canvas.height>canvas.width && step.textRotation!==undefined){
@@ -352,17 +352,17 @@ function showCurrentTutorialStep() {
     //     arrowElement.style.top="50%";
     //     console.log("here")
     // }
-     if(step.asteroid===true){
-        stepElement.style.transform = `translateX(${(canvas.width * 0.25)-90}px) translateY(${(canvas.height * 0.3)+70}px)`;
-        arrowElement.style.transform = `translateX(${(canvas.width * 0.25)}px) translateY(${(canvas.height * 0.3)+40}px)`;
+    if (step.asteroid === true) {
+        stepElement.style.transform = `translateX(${(canvas.width * 0.25) - 90}px) translateY(${(canvas.height * 0.3) + 70}px)`;
+        arrowElement.style.transform = `translateX(${(canvas.width * 0.25)}px) translateY(${(canvas.height * 0.3) + 40}px)`;
     }
-    else if(step.elementAsteroid===true){
-        stepElement.style.transform = `translateX(${(canvas.width * 0.75)-120}px) translateY(${(canvas.height * 0.3)+70}px)`;
-        arrowElement.style.transform = `translateX(${(canvas.width * 0.75)-10}px) translateY(${(canvas.height * 0.3)+40}px)`;
+    else if (step.elementAsteroid === true) {
+        stepElement.style.transform = `translateX(${(canvas.width * 0.75) - 120}px) translateY(${(canvas.height * 0.3) + 70}px)`;
+        arrowElement.style.transform = `translateX(${(canvas.width * 0.75) - 10}px) translateY(${(canvas.height * 0.3) + 40}px)`;
     }
-    else if(step.center===true){
-        stepElement.style.transform = `translateX(${(canvas.width * 0.5)-80}px) translateY(${(canvas.height * .5)+70}px)`;
-        arrowElement.style.transform = `translateX(${(canvas.width * 0.5)}px) translateY(${(canvas.height * 0.5)+40}px)`;
+    else if (step.center === true) {
+        stepElement.style.transform = `translateX(${(canvas.width * 0.5) - 80}px) translateY(${(canvas.height * .5) + 70}px)`;
+        arrowElement.style.transform = `translateX(${(canvas.width * 0.5)}px) translateY(${(canvas.height * 0.5) + 40}px)`;
     }
     // Apply positions
     else {
@@ -383,22 +383,22 @@ function showCurrentTutorialStep() {
     }
     else {
         console.log(step.textRotation);
-        if(step.textRotation !== undefined ) {
+        if (step.textRotation !== undefined) {
             const screenWidth = window.innerWidth;
-            if (screenWidth<450 && canvas.height < 650 ) {
+            if (screenWidth < 450 && canvas.height < 650) {
                 stepElement.style.top = `10px`
                 arrowElement.style.top = '18px'
                 arrowElement.style.left = "75%"
                 // arrowElement.style.translate = "9vw";
             }
-            else if (canvas.height < 616 ) {
+            else if (canvas.height < 616) {
                 stepElement.style.top = `10px`
                 arrowElement.style.top = '18px'
                 arrowElement.style.left = "65%"
 
                 // arrowElement.style.translate = "9vw";
             }
-            else if(canvas.height< 800){
+            else if (canvas.height < 800) {
                 stepElement.style.top = "1%";
                 stepElement.style.left = "50%";
                 stepElement.style.transform = 'translateX(-50%)';
@@ -422,16 +422,16 @@ function showCurrentTutorialStep() {
                 }
             }
         }
-        else if(step.asteroid!==true && step.elementAsteroid!==true && step.center!==true) {
-            stepElement.style.transform=`unset`
-            stepElement.style.translate=`unset`
+        else if (step.asteroid !== true && step.elementAsteroid !== true && step.center !== true) {
+            stepElement.style.transform = `unset`
+            stepElement.style.translate = `unset`
 
         }
     }
 
     if (step.arrowPosition.left === '50%') {
         arrowElement.style.transform = `translateX(-50%) rotate(${step.arrowRotation}deg)`;
-    } else if(step.asteroid!==true && step.elementAsteroid!==true && step.center!==true) {
+    } else if (step.asteroid !== true && step.elementAsteroid !== true && step.center !== true) {
         arrowElement.style.transform = `rotate(${step.arrowRotation}deg)`;
     }
 }
@@ -440,14 +440,14 @@ function showCurrentTutorialStep() {
 function createTutorialAsteroidAndAddSecondary() {
     // Create normal tutorial asteroid
     tutorialAsteroid = {
-        x: canvas.width * 0.25,
+        x: canvas.width * 0.26,
         y: canvas.height * 0.3,
         size: 20,
         speed: 0,
         dx: 0,
         dy: 0,
         angle: 0,
-        rotationSpeed: 0.02,
+        rotationSpeed: 0,
         hitpoints: 1,
         initialHitpoints: 1,
         isTutorialAsteroid: true,
@@ -471,7 +471,7 @@ function createTutorialAsteroidAndAddSecondary() {
 function createTutorialElementalAsteroid() {
 
     // Create elemental asteroid
-    if(!elementalAsteroidCreated && level > 1) {
+    if (!elementalAsteroidCreated && level > 1) {
         const elementalTypes = ['exploding', 'freezing', 'chainLightning', 'acid'];
         const randomType = elementalTypes[Math.floor(Math.random() * elementalTypes.length)];
         const elementalAsteroid = {
@@ -554,9 +554,9 @@ function updateTutorial() {
     if (tutorialAlienCreated && !tutorialAlienDestroyed) {
         tutorialAlienDestroyed = !aliens.some(alien => alien.isTutorialAlien);
     }
-    if(currentStep.condition()){
-        console.log(steps.length,"---",currentTutorialStep);
-        if (currentTutorialStep === steps.length-2) {
+    if (currentStep.condition()) {
+        console.log(steps.length, "---", currentTutorialStep);
+        if (currentTutorialStep === steps.length - 2) {
             lastStep();
         }
     }
