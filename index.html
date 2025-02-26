@@ -1596,7 +1596,10 @@
 		const logoutLink = document.getElementById('logoutLink');
 		const loginContainer = document.getElementById('loginContainer');
 		const signupForm = document.getElementById('signupForm');
-
+		const authListener = (user) => {
+			checkAndHandleCrazyGamesUser();
+			console.log("User changed", user);
+		}
 		window.addEventListener('load', async () => {
 			console.log('Window loaded, initializing...');
 			loadUserId(); // Load any existing userId
@@ -1613,6 +1616,7 @@
 					sdkReady = true;
 					crazyGamesMode = true;
 					await checkAndHandleCrazyGamesUser();
+					window.CrazyGames.SDK.user.addAuthListener(authListener);
 
 				}
 			} catch (error) {
@@ -1621,6 +1625,7 @@
 				handleSDKInitializationFailure();
 			}
 		});
+
 
 
 		async function checkAndHandleCrazyGamesUser() {
