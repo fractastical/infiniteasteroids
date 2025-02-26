@@ -1193,6 +1193,7 @@
 			const callbacks = {
 				adFinished: () => {
 					console.log("End midgame ad (callback)");
+					toggleMusic();
 					initializeGame(gameModes[currentGameModeIndex].id, true);
 
 				},
@@ -1203,8 +1204,10 @@
 				},
 				adStarted: () => console.log("Start midgame ad (callback)"),
 			};
-			if (crazyGamesMode)
+			if (crazyGamesMode) {
 				window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
+				pauseAllMusic();
+			}
 			else
 				initializeGame(gameModes[currentGameModeIndex].id, true);
 
@@ -1370,7 +1373,7 @@
 			try {
 				// const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
 
-				const user = await window.CrazyGames.SDK.user.getUser();
+				const user = await window.CrazyGames.SDK.user.getUserToken();
 				if (user && user.userId) {
 					console.log('User already signed in:', user);
 					saveUserId('cg_' + user.userId);
@@ -1508,10 +1511,10 @@
 		async function checkAndHandleCrazyGamesUser() {
 			if (sdkReady) {
 				try {
-					const user = await window.CrazyGames.SDK.user.getUser();
-					if (user && user.username) {
+					const user = await window.CrazyGames.SDK.user.getUserToken();
+					if (user && user.userId) {
 						console.log('CrazyGames user already logged in:', user);
-						await handleUserLogin('cg_' + user.username, user.username);
+						await handleUserLogin('cg_' + user.userId, user.username);
 					} else {
 						console.log('No CrazyGames user logged in');
 					}
@@ -1614,13 +1617,13 @@
 
 			console.log('Handling CrazyGames login...');
 
-			const user = await window.CrazyGames.SDK.user.getUser();
-			if (user && user.username) {
-				await handleUserLogin('cg_' + user.username, user.username);
+			const user = await window.CrazyGames.SDK.user.getUserToken();
+			if (user && user.userId) {
+				await handleUserLogin('cg_' + user.userId, user.username);
 			} else {
 				const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
-				if (authResult && authResult.userObject && authResult.userObject.username) {
-					await handleUserLogin('cg_' + authResult.userObject.username, authResult.userObject.username);
+				if (authResult && authResult.userObject && authResult.userObject.userId) {
+					await handleUserLogin('cg_' + authResult.userObject.userId, authResult.userObject.username);
 				} else {
 					throw new Error('CrazyGames authentication failed');
 				}
