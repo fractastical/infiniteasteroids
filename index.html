@@ -2091,7 +2091,7 @@
 		//     console.error('Error details:', error.code, error.message);
 		//   }
 		// }
-		var cg_usernickname = "";
+		let cg_usernickname = "";
 
 		async function saveUserScore(gameData) {
 
@@ -2102,9 +2102,13 @@
 				// const user = await window.CrazyGames.SDK.user.getUser();
 				if (decodedUserToken && decodedUserToken.userId) {
 					userId = 'cg_' + token.userId;
+					console.log("a" + userId);
 					cg_usernickname = token.username;
 				}
+				console.log("b" + userId);
 			}
+			console.log("c" + userId);
+
 
 			if (!userId || !gameData) {
 				console.error('Invalid userId or gameData');

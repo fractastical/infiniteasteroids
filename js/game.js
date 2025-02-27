@@ -1606,7 +1606,7 @@ function pauseGame() {
 }
 
 function resumeGame() {
-  if (moving) {
+  if (moving && !gameOver) {
     playThrusterSound();
   }
   document.getElementById("mobile-pause-img").style.display = "block";
