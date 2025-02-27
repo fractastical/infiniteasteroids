@@ -504,7 +504,11 @@
 			<canvas id="animationCanvas"></canvas>
 		</div>
 		<!-- <h2>Welcome to Infinite Asteroids!</h2> -->
+		<!-- via https://unpkg.com/jwt-decode@2.0.4/build/jwt-decode.min.js-->
+		<script src="js/jwt-decode-min.js"></script>
+
 		<script src="js/retro-infinite-asteroids-animation.js"></script>
+
 		<script>
 			let preloadedLeaderboards = null; // Variable to store preloaded leaderboards
 
@@ -1488,10 +1492,11 @@
 				// const available = window.CrazyGames.SDK.user.isUserAccountAvailable;
 
 				const user = await window.CrazyGames.SDK.user.getUserToken();
-				if (user && user.userId) {
-					console.log('User already signed in:', user);
-					saveUserId('cg_' + user.userId);
-					await handleUserLogin(userId, user.username);
+				const decodedUserToken = jwt_decode(user);
+				if (decodedUserToken && decodedUserToken.userId) {
+					console.log('User already signed in:', decodedUserToken);
+					saveUserId('cg_' + decodedUserToken.userId);
+					await handleUserLogin('cg_' + decodedUserToken.userId, decodedUserToken.nickname);
 				} else {
 					console.log('No user signed in');
 					clearUserId();
@@ -1631,9 +1636,12 @@
 			if (sdkReady) {
 				try {
 					const user = await window.CrazyGames.SDK.user.getUserToken();
-					if (user && user.userId) {
-						console.log('CrazyGames user already logged in:', user);
-						await handleUserLogin('cg_' + user.userId, user.username);
+					const decodedUserToken = jwt_decode(user);
+					console.log("Usertoken from CG");
+					console.log(decodedUserToken);
+					if (decodedUserToken && decodedUserToken.userId) {
+						console.log('CrazyGames user already logged in:', decodedUserToken);
+						await handleUserLogin('cg_' + decodedUserToken.userId, decodedUserToken.username);
 					} else {
 						console.log('No CrazyGames user logged in');
 					}
@@ -1737,8 +1745,10 @@
 			console.log('Handling CrazyGames login...');
 
 			const user = await window.CrazyGames.SDK.user.getUserToken();
-			if (user && user.userId) {
-				await handleUserLogin('cg_' + user.userId, user.username);
+			const decodedUserToken = jwt_decode(user);
+
+			if (decodedUserToken && decodedUserToken.userId) {
+				await handleUserLogin('cg_' + decodedUserToken.userId, decodedUserToken.username);
 			} else {
 				const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
 				if (authResult && authResult.userObject && authResult.userObject.userId) {
@@ -2120,10 +2130,11 @@
 
 			if (crazyGamesMode) {
 				const token = await window.CrazyGames.SDK.user.getUserToken();
+				const decodedUserToken = jwt_decode(token);
 				// const user = await window.CrazyGames.SDK.user.getUser();
-				if (token && token.userId) {
+				if (decodedUserToken && decodedUserToken.userId) {
 					userId = 'cg_' + token.userId;
-					cg_usernickname = token.userNickname;
+					cg_usernickname = token.username;
 				}
 			}
 
