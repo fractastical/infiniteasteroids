@@ -1640,7 +1640,7 @@
 					console.log("Usertoken from CG");
 					console.log(decodedUserToken);
 					if (decodedUserToken && decodedUserToken.userId) {
-						console.log('CrazyGames user already logged in:', decodedUserToken);
+						// console.log('CrazyGames user already logged in:', decodedUserToken);
 						await handleUserLogin('cg_' + decodedUserToken.userId, decodedUserToken.username);
 					} else {
 						console.log('No CrazyGames user logged in');
@@ -1777,7 +1777,7 @@
 
 				if (userDoc.exists()) {
 					const userData = userDoc.data();
-					username = userData.nickname || username; // Use the stored nickname if available
+					username = username || userData.nickname;
 					loadUserData(userId);
 				} else {
 					// If the user document doesn't exist, we might want to create it
@@ -2149,7 +2149,8 @@
 
 			const userDocRef = doc(db, 'users', userId);
 			const userDoc = await getDoc(userDocRef);
-			const loadedUserData = userDoc.data()
+			const loadedUserData = userDoc.data(); // seems to be null
+			console.log(loadedUserData);
 			const safeGameData = {
 				score: typeof gameData.score === 'number' ? Math.max(0, gameData.score) : 0,
 				topWeapons: Array.isArray(gameData.topWeapons) ? gameData.topWeapons : [],
@@ -2163,10 +2164,12 @@
 				wave: gameData.wave || 1
 			};
 			try {
+				console.log(cg_usernickname);
 				// Add a new document to the 'scores' collection with an auto-generated ID
+				// currently failing on htis username line doen'st seem to like anything in the loadedUserData including nickname and username
 				await addDoc(scoresCollectionRef, {
 					userId: userId,
-					username: cg_usernickname || loadedUserData.nickname || loadedUserData.username || "Unnamed",
+					username: cg_usernickname || "Unnamed",
 					gameName: 'InfiniteSpaceWar',
 					score: safeGameData.score,
 					wave: safeGameData.wave,
