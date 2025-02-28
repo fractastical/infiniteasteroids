@@ -580,6 +580,7 @@
 
 		const canvas = document.getElementById('gameCanvas');
 		let ctx = canvas.getContext('2d', { alpha: false });
+		let cg_usernickname = "";
 
 	</script>
 
@@ -1737,6 +1738,7 @@
 				return;
 			}
 			userId = id;
+			cg_usernickname = username;
 
 			try {
 				const db = getFirestore();
@@ -2091,22 +2093,23 @@
 		//     console.error('Error details:', error.code, error.message);
 		//   }
 		// }
-		let cg_usernickname = "";
 
 		async function saveUserScore(gameData) {
+			console.log("0cg_" + userId);
 
+			console.log(userId);
 
-			if (crazyGamesMode) {
-				const token = await window.CrazyGames.SDK.user.getUserToken();
-				const decodedUserToken = jwt_decode(token);
-				// const user = await window.CrazyGames.SDK.user.getUser();
-				if (decodedUserToken && decodedUserToken.userId) {
-					userId = 'cg_' + token.userId;
-					console.log("a" + userId);
-					cg_usernickname = token.username;
-				}
-				console.log("b" + userId);
-			}
+			// if (crazyGamesMode) {
+			// 	const token = await window.CrazyGames.SDK.user.getUserToken();
+			// 	const decodedUserToken = jwt_decode(token);
+			// 	// const user = await window.CrazyGames.SDK.user.getUser();
+			// 	if (decodedUserToken && decodedUserToken.userId) {
+			// 		userId = 'cg_' + token.userId;
+			// 		console.log("a" + userId);
+			// 		cg_usernickname = token.username;
+			// 	}
+			// 	console.log("b" + userId);
+			// }
 			console.log("c" + userId);
 
 
