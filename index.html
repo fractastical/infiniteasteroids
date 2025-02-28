@@ -2142,7 +2142,7 @@
 				await addDoc(scoresCollectionRef, {
 					userId: userId,
 					username: cg_usernickname || "Unnamed",
-					gameName: 'InfiniteSpaceWar',
+					gameName: 'InfiniteAsteroids',
 					score: safeGameData.score,
 					wave: safeGameData.wave,
 					timestamp: safeGameData.endTime,  // Use endTime as the timestamp
@@ -2158,7 +2158,7 @@
 				// Update the user document by adding the score to their existing list of scores
 				await setDoc(userDocRef, {
 					games: {
-						InfiniteSpaceWar: {
+						InfiniteAsteroids: {
 							scores: arrayUnion(safeGameData),
 							achievements: Achievements || {}
 						}
