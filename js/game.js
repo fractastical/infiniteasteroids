@@ -528,17 +528,6 @@ function startGame() {
   turret.bought = false;
   resetShip();
   invincibilityTimer += invincibilityDuration;
-  // clearInterval(gameLoop);
-  // if (mode == GameModes.ENDLESS_SLOW)
-  //   spawnCooldown = 6;
-
-  // const selectedUpgrades = getSelectedUpgrades(); // Implement this function to retrieve the selected upgrades
-
-  // // Load the selected upgrades and their corresponding functions
-  // selectedUpgrades.forEach(upgrade => {
-  //   addUpgrade(upgrade);
-  // });
-  // console.log(currentShip);
 
   ship.laserLevel = ships[currentShip].laserLevel;
   // Specific actions for StarHawk
@@ -728,6 +717,35 @@ function isMobile() {
 
 let randomSeed = Math.random();
 
+function drawCorrectBackground() {
+
+  if (
+    currentMode == GameModes.EASY ||
+    currentMode == GameModes.NORMAL ||
+    currentMode == GameModes.HARD ||
+    currentMode == GameModes.HERO
+  )
+    drawSubtleGridBackground(ctx, canvas.width, canvas.height);
+  else if (
+    currentMode == GameModes.METEORSHOWEREASY ||
+    currentMode == GameModes.METEORSHOWERNORMAL ||
+    currentMode == GameModes.METEORSHOWERHARD ||
+    currentMode == GameModes.METEORSHOWERHERO
+  )
+    drawZigzagGridBackground(ctx, canvas.width, canvas.height);
+  else if (
+    currentMode == GameModes.PLANETEASY ||
+    currentMode == GameModes.PLANETNORMAL ||
+    currentMode == GameModes.PLANETHARD ||
+    currentMode == GameModes.PLANETHERO
+  )
+    drawGravityWellBackground(ctx, canvas.width, canvas.height);
+  else if (currentMode == GameModes.ENDLESS_SLOW)
+    drawWarpedBackground(ctx, canvas.width, canvas.height);
+
+
+}
+
 function update() {
   randomSeed = Math.random();
 
@@ -737,37 +755,17 @@ function update() {
 
   // for now mobile fps is too low.
   if (!toggleBackgroundOff && !isMobile()) {
-    if (
-      currentMode == GameModes.EASY ||
-      currentMode == GameModes.NORMAL ||
-      currentMode == GameModes.HARD ||
-      currentMode == GameModes.HERO
-    )
-      drawSubtleGridBackground(ctx, canvas.width, canvas.height);
-    else if (
-      currentMode == GameModes.METEORSHOWEREASY ||
-      currentMode == GameModes.METEORSHOWERNORMAL ||
-      currentMode == GameModes.METEORSHOWERHARD ||
-      currentMode == GameModes.METEORSHOWERHERO
-    )
-      drawZigzagGridBackground(ctx, canvas.width, canvas.height);
-    else if (
-      currentMode == GameModes.PLANETEASY ||
-      currentMode == GameModes.PLANETNORMAL ||
-      currentMode == GameModes.PLANETHARD ||
-      currentMode == GameModes.PLANETHERO
-    )
-      drawGravityWellBackground(ctx, canvas.width, canvas.height);
-    else if (currentMode == GameModes.ENDLESS_SLOW)
-      drawWarpedBackground(ctx, canvas.width, canvas.height);
+    drawCorrectBackground();
   }
+
+  if (currentBackgroundImage) {
+    ctx.drawImage(currentBackgroundImage, 0, 0, canvas.width, canvas.height);
+  }
+
 
   // drawWarpedGrid();
 
   // document.getElementById('leaderboard-container').style.display = 'none';
-  if (currentBackgroundImage) {
-    ctx.drawImage(currentBackgroundImage, 0, 0, canvas.width, canvas.height);
-  }
 
   if (planetMode) {
     drawPlanet();
@@ -817,55 +815,6 @@ function update() {
       applyGravity(ship2);
     }
   }
-
-  // if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
-  //   if (!toggleMusicOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
-  //   playRandomThrusterSound();
-
-  //   // Move backwards with higher initial acceleration
-  //   const initialBackwardAcceleration = ship.acceleration * 1.5; // Increased initial backward acceleration
-  //   const backwardSpeed = ship.maxSpeed; // Increased backward speed limit
-  //   ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
-  //   ship.velocityY += initialBackwardAcceleration * Math.cos(angle);
-
-  //   // Limit backward speed
-  //   // const currentSpeed = Math.sqrt(ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY);
-  //   // if (currentSpeed > backwardSpeed) {
-  //   //   ship.velocityX = (ship.velocityX / currentSpeed) * backwardSpeed;
-  //   //   ship.velocityY = (ship.velocityY / currentSpeed) * backwardSpeed;
-  //   // }
-
-  //   // Generate thruster particles for backward movement
-  //   generateThrusterParticles();
-
-  // } else {
-  //   // Apply natural deceleration when no thrust key is pressed
-  //   ship.velocityX *= ship.deceleration;
-  //   ship.velocityY *= ship.deceleration;
-  // }
-
-  // // Update ship position based on velocity
-  // ship.x += ship.velocityX;
-  // ship.y += ship.velocityY;
-
-  // // Wrap the ship around the screen edges
-  // if (ship.x < 0) ship.x = canvas.width;
-  // else if (ship.x > canvas.width) ship.x = 0;
-  // if (ship.y < 0) ship.y = canvas.height;
-  // else if (ship.y > canvas.height) ship.y = 0;
-
-  // // Handle ship rotation based on key states
-  // if (keys['ArrowLeft'] || keys['a']) {
-  //   ship.rotation -= ship.rotationSpeed;
-  // }
-  // if (keys['ArrowRight'] || keys['d']) {
-  //   ship.rotation += ship.rotationSpeed;
-  // }
-
-  // // Handle shooting based on key state and cooldown
-  // if (keys[' '] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
-  //   shootLasers();
-  // }
 
   updateGems();
   drawGems();
@@ -1684,20 +1633,6 @@ document.addEventListener("fullscreenchange", () => {
   }
 });
 
-// window.addEventListener('resize', () => {
-//     if (document.fullscreenElement) {
-//         // Store ship's position relative to canvas size
-//         shipRelativeX = ship.x / canvas.width;
-//         shipRelativeY = ship.y / canvas.height;
-
-//         // Adjust canvas size
-//         canvas.width = window.innerWidth;
-//         canvas.height = window.innerHeight;
-
-//         // Update ship's position based on new canvas size
-//         updateShipPositionAfterResize();
-//     }
-// });
 
 canvas.addEventListener("touchstart", handleTouch);
 // canvas.addEventListener("touchmove", handleTouch);
@@ -1871,70 +1806,6 @@ function handleKeyUp(event) {
   keys[event.key] = false;
 }
 
-// function countTechnologies() {
-//     let count = 2; // laser + bomb
-
-//     // These are all the achievements that have a specific weapon unlock assigned
-//     if (Achievements.reach_wave_2.reached) count += 2; //turret and bomber drone
-//     if (Achievements.reach_wave_5.reached) count += 2;  //freeze and cluster bomb
-//     if (Achievements.reach_wave_10.reached) count++;
-//     if (Achievements.complete_easy_mode.reached) count++;
-//     if (Achievements.complete_normal_mode.reached) count++;
-//     if (Achievements.complete_hard_mode.reached) count++;
-//     if (Achievements.complete_hero_mode.reached) count++;
-//     if (Achievements.acid_bomb_damage.reached) count++;
-//     if (Achievements.destroy_100_asteroids.reached) count++;
-//     if (Achievements.destroy_1000_asteroids.reached) count++;
-
-//     if (Achievements.kill_5_aliens.reached) count++;
-//     if (Achievements.kill_50_aliens.reached) count++;
-//     if (Achievements.kill_500_aliens.reached) count++;
-//     if (Achievements.no_lives_lost.reached) count++;
-//     if (Achievements.death_ray_damage.reached) count++;
-//     if (Achievements.complete_meteor_normal_mode.reached) count++;
-//     if (Achievements.complete_meteor_hard_mode.reached) count++;
-//     if (Achievements.complete_meteor_hero_mode.reached) count++;
-
-//     if (Achievements.complete_planet_easy_mode.reached) count++;
-//     if (Achievements.complete_planet_normal_mode.reached) count++;
-//     if (Achievements.complete_planet_hard_mode.reached) count++;
-//     if (Achievements.complete_planet_hero_mode.reached) count++;
-//     if (Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached) count++;
-
-//     if (Achievements.drone_damage.reached) count++;
-//     if (Achievements.laser_damage.reached) count++;
-//     if (Achievements.wave_60_endless.reached) count++;
-
-//     if (Achievements.wave_120_endless.reached) count++;
-//     if (Achievements.million_score.reached) count++;
-//     if (Achievements.all_modes.reached) count++;
-
-//     // if (Achievements.space_potato.reached) count++;
-//     if (Achievements.space_pizza.reached) count++;
-
-//     // if (Achievements.space_monkey.reached) count++;
-//     if (Achievements.pink_pixie.reached) count++;
-//     if (Achievements.purple_pixie.reached) count++;
-//     if (Achievements.gold_pixie.reached) count++;
-
-//     if (Achievements.space_pickle.reached) count++;
-//     if (Achievements.dark_side.reached) count++;
-
-//     if (Achievements.alien_supermegaboss_killed.reached) count++;
-//     if (Achievements.alien_octopus_killed.reached) count++;
-//     if (Achievements.alien_megaboss_killed.reached) count++;
-
-//     // 8 ship types to be unlocked  (including basic).
-
-//     // Check the conditions of each ship
-//     for (const ship in ships) {
-//         if (ships.hasOwnProperty(ship)) {
-//             if (ships[ship].condition()) count++;
-//         }
-//     }
-//     // think we are at 41
-//     return count;
-// }
 
 function countTechnologies() {
   // Start with 2 for laser and bomb

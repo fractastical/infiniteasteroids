@@ -178,11 +178,29 @@
 }
 
 
+#leaderboard-list {
+    text-align: left;
+    padding-left: 20px;
+}
+
+#leaderboard ol li {
+    text-align: left;
+}
+
+#leaderboard h2 {
+    text-align: center;
+}
+
 /* model style for entry wrapper */
 #allLeaderboardsContainer .leaderboard-mode {
     display: flex;
     flex-direction: column;
 }
+
+#allLeaderboardsContainer .leaderboard-mode h3 {
+    text-align: center;
+}
+
 
 .entryWrapper {
     display: flex;
