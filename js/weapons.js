@@ -2405,7 +2405,7 @@ function checkAlienDamage(weapon) {
             createBossExplosion(superbossAlien.x, superbossAlien.y, 150);
             superbossAlien = null; // Destroy alien
             pauseAllMusic();
-            if (backgroundMusic2)
+            if (!toggleMusicOff && backgroundMusic2)
                 backgroundMusic2.play();
             playBossDieSound();
 
@@ -2429,7 +2429,6 @@ function checkAlienDamage(weapon) {
         }
     }
 
-
     if (megaBossAlien && isColliding(weapon, megaBossAlien)) {
 
         actualDamage = Math.min(weapon.damage + damageBooster * pixieBoost, megaBossAlien.hitpoints); // Ensure we don't overkill the asteroid
@@ -2447,7 +2446,8 @@ function checkAlienDamage(weapon) {
             // Achievements.alien_megaboss_killed.reached = true;
             playBossDieSound();
             pauseAllMusic();
-            backgroundMusic2.play();
+            if (!toggleMusicOff && backgroundMusic2)
+                backgroundMusic2.play();
 
 
             increaseXP(30 * 20);
