@@ -3003,6 +3003,10 @@ function endGame() {
   // clearInterval(gameLoop);
   pauseAllMusic();
 
+  const xpBar = document.getElementById('xpBar');
+  xpBar.style.backgroundColor = 'green';
+  xpBar.style.width = 0 + '%';
+
   if (
     crazyGamesMode &&
     window.CrazyGames &&
