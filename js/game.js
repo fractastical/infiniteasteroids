@@ -1,6 +1,6 @@
 // for leaderboard and telegram API
 let gameId = "InfiniteAsteroids";
-let version = "1.0011";
+let version = "1.0012";
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;

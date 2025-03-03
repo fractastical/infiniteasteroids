@@ -565,12 +565,6 @@
 		<!-- <h3>Your Upgrades</h3> -->
 		<div id="upgradesList"></div>
 
-
-		<!-- <button onclick="initializeGame(GameModes.NORMAL)" ${!modesUnlocked.normal ? 'disabled' : '' }>Normal</button>
-		<button onclick="initializeGame(GameModes.HARD)" ${!modesUnlocked.hard ? 'disabled' : '' }>Hard</button> -->
-		<!-- <p>Tap lower left for store.</p> -->
-		<!-- <p>Tap with two fingers to fire.</p> -->
-		<!-- <button onclick="startGame()">Start Game</button> -->
 	</div>
 	</div>
 
@@ -667,42 +661,6 @@
 		}
 
 
-		// document.getElementById('viewAllLeaderboardsButton').addEventListener('click', async () => {
-		//   const allLeaderboardsContainer = document.getElementById('allLeaderboardsContainer');
-		//   allLeaderboardsContainer.innerHTML = ''; // Clear previous content
-
-		//   const allScores = await loadAllLeaderboards(gameId);
-
-		//   for (let mode in allScores) {
-		//     const leaderboardDiv = document.createElement('div');
-		//     leaderboardDiv.className = 'leaderboard-mode';
-		//     leaderboardDiv.innerHTML = `<p>&nbsp;</p><h3 tabindex="0">${mode}</h3>`;
-
-		//     allScores[mode].forEach((entry, index) => {
-		//       const formattedScore = entry.score.toLocaleString('en-US', {
-		//         maximumFractionDigits: 0
-		//       });
-		//       const entryP = document.createElement('p');
-		//       entryP.textContent = `${index + 1}. ${entry.nickname}: ${formattedScore} points`;
-		//       entryP.tabIndex = 0; // Make each entry focusable
-		//       leaderboardDiv.appendChild(entryP);
-		//     });
-
-		//     allLeaderboardsContainer.appendChild(leaderboardDiv);
-		//   }
-
-		//   const modal = document.getElementById('allLeaderboardsModal');
-		//   modal.style.display = 'block';
-
-		//   // Set focus to the first focusable element
-		//   const firstFocusableElement = modal.querySelector('[tabindex="0"]');
-		//   if (firstFocusableElement) {
-		//     firstFocusableElement.focus();
-		//   }
-
-		//   // Add keyboard event listener
-		//   modal.addEventListener('keydown', handleAllLeaderboardsKeydown);
-		// });
 
 		document.getElementById('closeAllLeaderboards').addEventListener('click', () => {
 			const modal = document.getElementById('allLeaderboardsModal');
@@ -1517,48 +1475,6 @@
 		const auth = getAuth(app);
 		const db = getFirestore(app);
 
-		// await example
-		// try {
-		//   const user = await window.CrazyGames.SDK.user.getUser();
-		//   crazyGamesMode = true;
-
-		//   const crazyGameData = document.getElementById('crazyGameData');
-
-		//   // if (crazyGamesDebugMode) {
-		//   crazyGameData.innerHTML = ''; // Clear previous content
-		//   crazyGameData.innerHTML = user;
-		//   // }
-
-		//   console.log(user);
-		// } catch (e) {
-
-
-		//   const crazyGameData = document.getElementById('crazyGameData');
-
-		//   // if (crazyGamesDebugMode) {
-		//   crazyGameData.innerHTML = ''; // Clear previous content
-		//   crazyGameData.innerHTML = e.message;
-		//   // }
-
-
-
-
-		//   console.log("Get user error: ", e);
-		// }
-
-		// .then .catch example
-		// window.CrazyGames.SDK.user
-		//   .getUser()
-		//   .then((user) => console.log(user))
-		//   .catch((e) => console.log("Get user error: ", e));
-
-
-
-
-
-
-
-		// const loginLink = document.getElementById('login-link');
 		const aut = document.getElementById('auth-link');
 
 		const loginPopup = document.getElementById('loginPopup');
@@ -1653,49 +1569,6 @@
 
 		}
 
-		// async function testCrazyGamesUserFlow() {
-
-		//   try {
-		//     cgUser = await window.CrazyGames.SDK.user.getUser();
-
-		//     console.log(cgUser);
-
-		//     const userToken = await window.CrazyGames.SDK.user.getUserToken();
-
-		//     console.log(userToken);
-
-		//     console.log(cgUser);
-		//     userNickname.textContent = cgUser.username;
-		//     userInfo.style.display = 'block';
-		//     loginLink.style.display = 'none';
-		//     console.log("userId");
-		//     // console.log(userId);
-		//     window.userId = "cg_" + cgUser.username;
-		//     console.log(window.userId);
-		//     // return "cg+" + cgUser.username;
-
-		//   } catch (e) {
-		//     console.log("Get user error: ", e);
-
-		//   }
-		// }
-
-		// window.testCrazyGamesUserFlow = testCrazyGamesUserFlow;
-
-		// loginLink.addEventListener('click', async (event) => {
-		//   event.preventDefault();
-		//
-		//   if (crazyGamesMode && sdkReady) {
-		//     try {
-		//       await handleCrazyGamesLogin();
-		//     } catch (error) {
-		//       console.error('CrazyGames login failed:', error);
-		//       // showFirebaseLoginPopup();
-		//     }
-		//   } else {
-		//     // showFirebaseLoginPopup();
-		//   }
-		// });
 
 		function showFirebaseLoginPopup() {
 			loginFormOpen = true;
@@ -1978,120 +1851,6 @@
 		}
 
 
-		// document.getElementById('login-toggle').addEventListener('click', function (event) {
-		//   event.preventDefault();
-		//   document.getElementById('auth').classList.toggle('hidden');
-		// });
-
-
-		// async function saveUserScore(gameData) {
-		//   if (!userId) {
-		//     console.log('No user logged in, score not saved');
-		//     return;
-		//   }
-
-		//   const db = getFirestore();
-		//   const userDocRef = doc(db, 'users', userId);
-
-		//   try {
-		//     await setDoc(userDocRef, {
-		//       [`games.${gameId}.scores`]: arrayUnion({
-		//         score: gameData.score,
-		//         topWeapons: gameData.topWeapons,
-		//         sessionLength: gameData.sessionLength,
-		//         loginTime: new Date(),
-		//         gameMode: gameData.gameMode
-		//       }),
-		//       [`games.${gameId}.achievements`]: Achievements,
-		//       coins: coins
-		//     }, { merge: true });
-		//     console.log('User data saved successfully');
-		//   } catch (error) {
-		//     console.error('Error saving user data:', error);
-		//     console.error('Error details:', error.code, error.message);
-		//   }
-		// }
-
-
-
-		// Function to save user score for a specific game
-		// async function saveUserScore(userId, gameData) {
-		//   const db = getFirestore();
-		//   const userDocRef = doc(db, 'users', userId);
-
-		//   try {
-		//     // For CrazyGames users, we need to set the document if it doesn't exist
-		//     if (userId.startsWith('cg_')) {
-		//       await setDoc(userDocRef, {
-		//         [`games.${gameId}.scores`]: arrayUnion({
-		//           score: gameData.score,
-		//           topWeapons: gameData.topWeapons,
-		//           sessionLength: gameData.sessionLength,
-		//           loginTime: new Date(),
-		//           gameMode: gameData.gameMode
-		//         }),
-		//         [`games.${gameId}.achievements`]: Achievements,
-		//         coins: coins
-		//       }, { merge: true });
-		//     } else {
-		//       // For Firebase users, we can use updateDoc as before
-		//       await updateDoc(userDocRef, {
-		//         [`games.${gameId}.scores`]: arrayUnion({
-		//           score: gameData.score,
-		//           topWeapons: gameData.topWeapons,
-		//           sessionLength: gameData.sessionLength,
-		//           loginTime: new Date(),
-		//           gameMode: gameData.gameMode
-		//         }),
-		//         [`games.${gameId}.achievements`]: Achievements,
-		//         coins: coins
-		//       });
-		//     }
-		//     console.log('User data saved successfully');
-		//   } catch (error) {
-		//     console.error('Error saving user data:', error);
-		//     // Log more details about the error
-		//     console.error('Error details:', error.code, error.message);
-		//   }
-		// }
-		// window.saveUserScore = saveUserScore;
-
-		// async function saveUserScore(gameData) {
-		//   console.log('Saving user score, userId:', userId);
-		//   if (!userId || userId === 'cg_undefined') {
-		//     console.error('Invalid userId, score not saved');
-		//     return;
-		//   }
-
-		//   if (!gameData || typeof gameData !== 'object') {
-		//     console.error('Invalid gameData, score not saved');
-		//     return;
-		//   }
-
-		//   const db = getFirestore();
-		//   const userDocRef = doc(db, 'users', userId);
-
-		//   // Ensure all gameData properties are defined
-		//   const safeGameData = {
-		//     score: gameData.score || 0,
-		//     topWeapons: gameData.topWeapons || [],
-		//     sessionLength: gameData.sessionLength || 0,
-		//     loginTime: new Date(),
-		//     gameMode: gameData.gameMode || 'unknown'
-		//   };
-
-		//   try {
-		//     await setDoc(userDocRef, {
-		//       [`games.${gameId}.scores`]: arrayUnion(safeGameData),
-		//       [`games.${gameId}.achievements`]: Achievements || {},
-		//       coins: coins || 0
-		//     }, { merge: true });
-		//     console.log('User data saved successfully');
-		//   } catch (error) {
-		//     console.error('Error saving user data:', error);
-		//     console.error('Error details:', error.code, error.message);
-		//   }
-		// }
 
 		async function saveUserScore(gameData) {
 			console.log("0cg_" + userId);
@@ -2449,55 +2208,6 @@
 			}
 		}
 
-
-		// async function loadAllLeaderboards(gameId) {
-		//   try {
-		//     const db = getFirestore();
-		//     const usersSnapshot = await getDocs(collection(db, 'users'));
-		//     const allLeaderboards = {};
-
-		//     if (usersSnapshot.empty) {
-		//       console.log('No users found in the database');
-		//       return {};
-		//     }
-
-		//     usersSnapshot.forEach(doc => {
-		//       const userData = doc.data();
-		//       console.log('Processing user:', doc.id, userData);
-
-		//       const gameScores = userData.games?.[gameId]?.scores || [];
-		//       console.log('Game scores for user:', gameScores);
-
-		//       gameScores.forEach(session => {
-		//         if (session.score && isFinite(session.score) && session.score > 0 && session.gameMode) {
-		//           if (!allLeaderboards[session.gameMode]) {
-		//             allLeaderboards[session.gameMode] = [];
-		//           }
-		//           allLeaderboards[session.gameMode].push({
-		//             nickname: userData.nickname || 'Unnamed',
-		//             score: session.score,
-		//             wave: session.wave || 1
-		//           });
-		//           console.log('Added score to leaderboard:', session.gameMode, session.score);
-		//         } else {
-		//           console.log('Invalid score data:', session);
-		//         }
-		//       });
-		//     });
-
-		//     // Sort and limit each leaderboard
-		//     Object.keys(allLeaderboards).forEach(mode => {
-		//       allLeaderboards[mode].sort((a, b) => b.score - a.score);
-		//       allLeaderboards[mode] = allLeaderboards[mode].slice(0, 10);
-		//       console.log(`Sorted leaderboard for ${mode}:`, allLeaderboards[mode]);
-		//     });
-
-		//     return allLeaderboards;
-		//   } catch (error) {
-		//     console.error('Error loading leaderboards:', error);
-		//     return {};
-		//   }
-		// }
 
 
 		function getGameModeName(mode) {
