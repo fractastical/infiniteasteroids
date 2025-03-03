@@ -1,5 +1,5 @@
 // for leaderboard and telegram API
-let gameId = "InfiniteSpaceWar";
+let gameId = "InfiniteAsteroids";
 let version = "1.0011";
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
@@ -1406,11 +1406,14 @@ function createAreaDamage(x, y, radius, damage = 1) {
   return totalDamage;
 }
 function increaseXP(amount, isGem = false) {
+
+  //TODO: at the moment in easy from wave 20-40 or so seems to be way too easy.
   const currTimeInMS = Date.now();
   // Apply tapering based on wave number
   const taperingFactor = xpTaperingFactor();
-  amount *= taperingFactor;
+  console.log(xpTaperingFactor);
 
+  amount *= taperingFactor;
   if (xp >= xpToNextLevel / 1) {
     if (lastLevelUp + 2000 > currTimeInMS) {
       amount *= 0.05;
@@ -1426,7 +1429,7 @@ function increaseXP(amount, isGem = false) {
 
   updateXPBar();
 
-  if (xp >= xpToNextLevel && (currTimeInMS > lastLevelUp + 1000 || isGem)) {
+  if (xp >= xpToNextLevel && (currTimeInMS > lastLevelUp + 8000 || isGem)) {
     const upgradeModal = document.getElementById("upgradeModal");
     // only display levelup if upgrade modal is not open
     if (!upgradeModal || upgradeModal.style.display == "block") {
