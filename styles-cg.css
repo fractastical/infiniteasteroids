@@ -249,15 +249,96 @@
     }
 }
 
-#privacyModal .privacy-policy {
-    max-height: 60vh;
-    /* Adjust height as needed */
-    overflow-y: auto;
-    padding-right: 10px;
-    /* Prevent content from being hidden under scrollbar */
+/* Privacy Policy Modal Specific Styles */
+#privacyModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    width: 90%;
+    max-width: 600px;
+    overflow: hidden;
 }
 
-/* Optional: Ensure the modal itself doesn't scroll */
-#privacyModal .modal-content {
-    overflow: hidden;
+.privacy-policy-container {
+    flex: 1;
+    overflow-y: auto;
+    margin: 10px 0;
+    padding-right: 10px;
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+.privacy-policy {
+    padding: 0 10px;
+    color: #0f0;
+    text-align: left;
+}
+
+.privacy-policy h1,
+.privacy-policy h2 {
+    font-size: 1rem;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #0f0;
+}
+
+.privacy-policy h3 {
+    font-size: 0.9rem;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    color: #0f0;
+}
+
+.privacy-policy p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.privacy-policy a {
+    color: #0ff;
+    text-decoration: none;
+}
+
+.privacy-policy a:hover {
+    text-decoration: underline;
+}
+
+#privacyModal button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #222;
+    color: #0f0;
+    border: 2px solid #4e15ac;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    align-self: center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    #privacyModal .modal-content {
+        height: 75vh;
+        width: 95%;
+    }
+
+    .privacy-policy h1,
+    .privacy-policy h2 {
+        font-size: 0.9rem;
+    }
+
+    .privacy-policy h3 {
+        font-size: 0.8rem;
+    }
+
+    .privacy-policy p {
+        font-size: 0.7rem;
+    }
+}
+
+/* For very small screens */
+@media (max-height: 500px) {
+    #privacyModal .modal-content {
+        height: 85vh;
+    }
 }

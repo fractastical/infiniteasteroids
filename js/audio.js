@@ -353,31 +353,84 @@ function toggleSettings() {
 
 
 function togglePrivacyPolicy() {
-    // console.log("vol");
-
-    const settingsModal = document.getElementById('settingsModal');
-    if (settingsModal.style.display == 'block')
-        settingsModal.style.display = 'none';
-
     const privacyModal = document.getElementById('privacyModal');
-    privacyModal.style.display = privacyModal.style.display === 'none' ? 'block' : 'none';
-    if (privacyModal.style.display === 'none') {
-        const container = document.getElementById('activeWeaponClassesContainer');
-        container.style.display = "block";
 
-        resumeGame();
+    if (privacyModal.style.display === 'none' || !privacyModal.style.display) {
+        // Save the current game state if needed
+        const wasGamePaused = typeof window.gameIsPaused === 'function' ? window.gameIsPaused() : false;
 
+        // Show the modal
+        privacyModal.style.display = 'block';
+
+        // Store the previous body overflow setting to restore it later
+        privacyModal.dataset.previousBodyOverflow = document.body.style.overflow;
+
+        // Only if no other modal appears to be using this property
+        if (!document.querySelector('.modal[style*="display: block"]:not(#privacyModal)')) {
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Set focus for accessibility without disrupting game focus handling
+        setTimeout(() => {
+            const closeButton = privacyModal.querySelector('button');
+            if (closeButton && !document.activeElement || document.activeElement === document.body) {
+                closeButton.focus();
+            }
+        }, 100);
+
+        // Only if game handling allows it
+        if (typeof pauseGame === 'function' && !wasGamePaused) {
+            pauseGame();
+        }
     } else {
-        const container = document.getElementById('activeWeaponClassesContainer');
-        container.style.display = "none";
+        // Hide the modal
+        privacyModal.style.display = 'none';
 
-        pauseGame();
+        // Restore the previous body overflow only if we changed it
+        if (privacyModal.dataset.hasOwnProperty('previousBodyOverflow')) {
+            document.body.style.overflow = privacyModal.dataset.previousBodyOverflow || '';
+            delete privacyModal.dataset.previousBodyOverflow;
+        }
 
+        // Resume game if needed and if no other modals are visible
+        if (typeof resumeGame === 'function' && !document.querySelector('.modal[style*="display: block"]')) {
+            resumeGame();
+        }
     }
-
-    console.log(privacyModal.style.display);
 }
 
+// Add wheel event listener to prevent body scrolling when scrolling inside the privacy policy
+document.addEventListener('DOMContentLoaded', function () {
+    const privacyModal = document.getElementById('privacyModal');
+    const privacyPolicyContainer = privacyModal.querySelector('.privacy-policy-container');
+
+    if (privacyPolicyContainer) {
+        // Use a non-passive event listener to allow preventDefault
+        privacyPolicyContainer.addEventListener('wheel', function (event) {
+            // Don't interfere with any other modal's scrolling
+            if (privacyModal.style.display !== 'block') return;
+
+            // If the content is scrollable (scrollHeight > clientHeight)
+            if (this.scrollHeight > this.clientHeight) {
+                const scrollTop = this.scrollTop;
+                const scrollHeight = this.scrollHeight;
+                const height = this.clientHeight;
+                const delta = event.deltaY;
+
+                // Check if scroll is at the top or bottom
+                const isAtTop = scrollTop === 0;
+                const isAtBottom = scrollTop + height >= scrollHeight - 1;
+
+                // If trying to scroll up when at the top, or down when at the bottom,
+                // prevent the event from propagating to the body
+                if ((isAtTop && delta < 0) || (isAtBottom && delta > 0)) {
+                    event.preventDefault();
+                }
+            }
+        }, { passive: false });
+
+    }
+});
 
 
 
