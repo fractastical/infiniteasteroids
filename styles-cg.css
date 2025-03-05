@@ -263,9 +263,11 @@
     flex: 1;
     overflow-y: auto;
     margin: 10px 0;
-    padding-right: 10px;
+    padding-right: 5px;
     border: 1px solid #333;
     border-radius: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: #4e15ac #222;
 }
 
 .privacy-policy {
@@ -341,4 +343,38 @@
     #privacyModal .modal-content {
         height: 85vh;
     }
+}
+
+/* Custom scrollbar styles for webkit browsers (Chrome, Safari, Edge) */
+.privacy-policy-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.privacy-policy-container::-webkit-scrollbar-track {
+    background: #222;
+    border-radius: 4px;
+}
+
+.privacy-policy-container::-webkit-scrollbar-thumb {
+    background: #4e15ac;
+    border-radius: 4px;
+    border: 2px solid #222;
+}
+
+.privacy-policy-container::-webkit-scrollbar-thumb:hover {
+    background: #6929cc;
+}
+
+/* Show a clear indicator that content is scrollable */
+.privacy-policy-container::after {
+    content: "▼ Scroll for more ▼";
+    display: block;
+    text-align: center;
+    color: #0f0;
+    font-size: 0.7rem;
+    padding: 5px 0;
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(transparent, #111);
+    pointer-events: none;
 }
