@@ -402,36 +402,122 @@ function togglePrivacyPolicy() {
 // Add wheel event listener to prevent body scrolling when scrolling inside the privacy policy
 document.addEventListener('DOMContentLoaded', function () {
     const privacyModal = document.getElementById('privacyModal');
-    const privacyPolicyContainer = privacyModal.querySelector('.privacy-policy-container');
 
-    if (privacyPolicyContainer) {
-        // Use a non-passive event listener to allow preventDefault
-        privacyPolicyContainer.addEventListener('wheel', function (event) {
-            // Don't interfere with any other modal's scrolling
-            if (privacyModal.style.display !== 'block') return;
+    // When the privacy policy modal is opened
+    if (privacyModal) {
+        const originalToggleFunction = window.togglePrivacyPolicy;
 
-            // If the content is scrollable (scrollHeight > clientHeight)
-            if (this.scrollHeight > this.clientHeight) {
-                const scrollTop = this.scrollTop;
-                const scrollHeight = this.scrollHeight;
-                const height = this.clientHeight;
-                const delta = event.deltaY;
+        // Override the toggle function to add our enhancements
+        window.togglePrivacyPolicy = function () {
+            // Call the original function first
+            originalToggleFunction.apply(this, arguments);
 
-                // Check if scroll is at the top or bottom
-                const isAtTop = scrollTop === 0;
-                const isAtBottom = scrollTop + height >= scrollHeight - 1;
+            // Check if the modal is now visible
+            if (privacyModal.style.display === 'block') {
+                const container = privacyModal.querySelector('.privacy-policy-container');
+                if (container) {
+                    // Create a visual scrollbar indicator
+                    highlightScrollbar(container);
 
-                // If trying to scroll up when at the top, or down when at the bottom,
-                // prevent the event from propagating to the body
-                if ((isAtTop && delta < 0) || (isAtBottom && delta > 0)) {
-                    event.preventDefault();
+                    // Add scroll buttons for mobile users
+                    addScrollButtons(container);
                 }
             }
-        }, { passive: false });
+        };
+    }
 
+    // Function to highlight the scrollbar with animation
+    function highlightScrollbar(container) {
+        // Flash the scrollbar area to draw attention
+        const flasher = document.createElement('div');
+        flasher.style.cssText = `
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background-color: rgba(78, 21, 172, 0.3);
+            z-index: 5;
+            pointer-events: none;
+            animation: scrollbarFlash 1.5s ease-out;
+        `;
+        container.style.position = 'relative';
+        container.appendChild(flasher);
+
+        // Remove after animation completes
+        setTimeout(() => {
+            if (flasher.parentNode === container) {
+                container.removeChild(flasher);
+            }
+        }, 1500);
+
+        // Add keyframe animation if it doesn't exist yet
+        if (!document.getElementById('scrollbarFlashAnimation')) {
+            const style = document.createElement('style');
+            style.id = 'scrollbarFlashAnimation';
+            style.textContent = `
+                @keyframes scrollbarFlash {
+                    0% { opacity: 0.8; }
+                    100% { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    // Function to add scroll buttons for accessibility
+    function addScrollButtons(container) {
+        // Remove any existing buttons first
+        const existingButtons = privacyModal.querySelectorAll('.scroll-button');
+        existingButtons.forEach(button => button.remove());
+
+        // Create scroll up/down buttons
+        const scrollButtons = document.createElement('div');
+        scrollButtons.className = 'scroll-controls';
+        scrollButtons.style.cssText = `
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+        `;
+
+        // Up button
+        const upButton = document.createElement('button');
+        upButton.className = 'scroll-button';
+        upButton.textContent = '▲';
+        upButton.style.cssText = `
+            background: #333;
+            color: #0f0;
+            border: 1px solid #4e15ac;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 12px;
+        `;
+        upButton.onclick = function () {
+            container.scrollBy({ top: -100, behavior: 'smooth' });
+        };
+
+        // Down button
+        const downButton = document.createElement('button');
+        downButton.className = 'scroll-button';
+        downButton.textContent = '▼';
+        downButton.style.cssText = upButton.style.cssText;
+        downButton.onclick = function () {
+            container.scrollBy({ top: 100, behavior: 'smooth' });
+        };
+
+        scrollButtons.appendChild(upButton);
+        scrollButtons.appendChild(downButton);
+
+        // Add to container parent to avoid scrolling issues
+        container.parentNode.appendChild(scrollButtons);
     }
 });
-
 
 
 
