@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.21.1"></script> -->
+</head>
+
+<body>
+    <h1>Admin Dashboard</h1>
+    <div id="sessionInfo">
+        <p>Total Sessions: <span id="totalSessions"></span></p>
+        <p>Total Session Time: <span id="totalSessionTime"></span></p>
+        <p>Average Session Time: <span id="averageSessionTime"></span></p>
+    </div>
+    <div id="newUserInfo">
+        <p>New Users (Last 7 Days): <span id="newUsersWeek"></span></p>
+        <p>New Users (Last 30 Days): <span id="newUsersMonth"></span></p>
+        <p>New Users (Last 90 Days): <span id="newUsers90Days"></span></p>
+    </div>
+    <div id="topWeapons">
+        <h2>Top Weapons Used</h2>
+        <ol id="topWeaponsList"></ol>
+    </div>
+    <div id="topWeaponsHighScores">
+        <h2 id="topWeaponsHighScoresHeader">Top Weapons Used (Scores above 100,000)</h2>
+        <ol id="topWeaponsHighScoresList"></ol>
+    </div>
+    <div id="topWeaponsUltraHighScores">
+        <h2 id="topWeaponsUltraHighScoresHeader">Top Weapons Used (Scores above 500,000)</h2>
+        <ol id="topWeaponsUltraHighScoresList"></ol>
+    </div>
+    <div id="topWeaponsUltraUltraHighScores">
+        <h2 id="topWeaponsUltraUltraHighScoresHeader">Top Weapons Used (Scores above 2,500,000)</h2>
+        <ol id="topWeaponsUltraUltraHighScoresList"></ol>
+    </div>
+
+    <h2>Number of New Users per Day</h2>
+    <canvas id="newUsersChart"></canvas>
+
+    <h2>Total Time Spent per Day</h2>
+    <canvas id="timeSpentChart"></canvas>
+
+    <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script>
+
+        // Add this line after your existing code to create a download button
+        document.body.insertAdjacentHTML('beforeend', '<button onclick="downloadCSV()">Download CSV</button>');
+
+
+        // Initialize Firebase (replace with your own config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCvgdn8c6D8RusKRr4vHAzFj1x4FNxrXVE",
+            authDomain: "infinite-games-9c69e.firebaseapp.com",
+            projectId: "infinite-games-9c69e",
+            storageBucket: "infinite-games-9c69e.appspot.com",
+            messagingSenderId: "602022483888",
+            appId: "1:602022483888:web:f967a6c1cb236ae66ba875",
+            measurementId: "G-9LE6E1BKZ7"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const MAX_VALID_SCORE = 90000000; // 90 million
+        let dailySessionData = {};
+
+        // Function to calculate total session time in milliseconds
+        function calculateTotalSessionTime(sessions) {
+            return sessions.reduce((total, session) => {
+                const sessionLength = parseFloat(session.sessionLength);
+                return total + (isNaN(sessionLength) || sessionLength > 18000 * 1000 ? 0 : sessionLength);
+            }, 0);
+        }
+
+        // Function to calculate average session time in milliseconds
+        function calculateAverageSessionTime(totalSessionTime, totalSessions) {
+            return totalSessions > 0 ? totalSessionTime / totalSessions : 0;
+        }
+
+        // Function to get the top weapons used by average damage done
+        function getTopWeaponsUsed(sessions) {
+            const weaponStats = {};
+
+            sessions.forEach((session) => {
+                if (session.topWeapons) {
+                    session.topWeapons.forEach((weapon) => {
+                        if (weaponStats[weapon.weapon]) {
+                            weaponStats[weapon.weapon].totalDamage += weapon.damage;
+                            weaponStats[weapon.weapon].count += 1;
+                        } else {
+                            weaponStats[weapon.weapon] = { totalDamage: weapon.damage, count: 1 };
+                        }
+                    });
+                }
+            });
+
+            return Object.entries(weaponStats)
+                .map(([weapon, stats]) => ({
+                    weapon,
+                    averageDamage: stats.totalDamage / stats.count,
+                    count: stats.count
+                }))
+                .sort((a, b) => b.averageDamage - a.averageDamage);
+        }
+
+        // Function to get the top weapons used by average damage done for high scores
+        function getTopWeaponsUsedHighScores(sessions, scoreThreshold) {
+            const weaponStats = {};
+            let qualifyingSessions = 0;
+
+            sessions.forEach((session) => {
+                if (session.score > scoreThreshold && session.score <= MAX_VALID_SCORE && session.topWeapons) {
+                    qualifyingSessions++;
+                    session.topWeapons.forEach((weapon) => {
+                        if (weaponStats[weapon.weapon]) {
+                            weaponStats[weapon.weapon].totalDamage += weapon.damage;
+                            weaponStats[weapon.weapon].count += 1;
+                        } else {
+                            weaponStats[weapon.weapon] = { totalDamage: weapon.damage, count: 1 };
+                        }
+                    });
+                }
+            });
+
+            const topWeapons = Object.entries(weaponStats)
+                .map(([weapon, stats]) => ({
+                    weapon,
+                    averageDamage: stats.totalDamage / stats.count,
+                    count: stats.count
+                }))
+                .sort((a, b) => b.averageDamage - a.averageDamage);
+
+            return { topWeapons, qualifyingSessions };
+        }
+
+        // Function to display the admin dashboard data
+        function displayAdminData(
+            totalSessions, totalSessionTime, averageSessionTime,
+            topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, topWeaponsUltraUltraHighScores,
+            newUsersWeek, newUsersMonth, newUsers90Days,
+            scoresAbove100k, scoresAbove500k, scoresAbove2_5M,
+            totalTimeAbove100k, totalTimeAbove500k, totalTimeAbove2_5M
+        ) {
+            function setTextContent(id, text) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = text;
+                } else {
+                    console.warn(`Element with id '${id}' not found`);
+                }
+            }
+
+            function populateList(id, items) {
+                const list = document.getElementById(id);
+                if (list) {
+                    list.innerHTML = '';
+                    items.forEach((item) => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${item.weapon}: ${item.count} times, Average Damage: ${item.averageDamage.toFixed(2)}`;
+                        list.appendChild(listItem);
+                    });
+                } else {
+                    console.warn(`List with id '${id}' not found`);
+                }
+            }
+
+            setTextContent('totalSessions', totalSessions);
+            setTextContent('totalSessionTime', formatTime(totalSessionTime));
+            setTextContent('averageSessionTime', formatTime(averageSessionTime));
+
+            setTextContent('newUsersWeek', newUsersWeek);
+            setTextContent('newUsersMonth', newUsersMonth);
+            setTextContent('newUsers90Days', newUsers90Days);
+
+            populateList('topWeaponsList', topWeapons);
+
+            function populateWeaponsList(id, weaponData, scoreThreshold, scoresAbove, totalTimeAbove) {
+                const { topWeapons, qualifyingSessions } = weaponData;
+                const avgTime = scoresAbove > 0 ? totalTimeAbove / scoresAbove : 0;
+
+                setTextContent(
+                    `${id}Header`,
+                    `Top Weapons Used (Scores above ${scoreThreshold.toLocaleString()}) - ${qualifyingSessions} scores, ` +
+                    `Total Time: ${formatTime(totalTimeAbove)}, Avg Time: ${formatTime(avgTime)}`
+                );
+
+                populateList(`${id}List`, topWeapons);
+            }
+
+
+            populateWeaponsList('topWeaponsHighScores', topWeaponsHighScores, 100000, scoresAbove100k, totalTimeAbove100k);
+            populateWeaponsList('topWeaponsUltraHighScores', topWeaponsUltraHighScores, 500000, scoresAbove500k, totalTimeAbove500k);
+            populateWeaponsList('topWeaponsUltraUltraHighScores', topWeaponsUltraUltraHighScores, 2500000, scoresAbove2_5M, totalTimeAbove2_5M);
+
+
+        }
+        // Function to format time in milliseconds to a readable format (hh:mm:ss)
+        function formatTime(timeInMilliseconds) {
+            const timeInSeconds = timeInMilliseconds / 1000;
+            const hours = Math.floor(timeInSeconds / 3600);
+            const minutes = Math.floor((timeInSeconds % 3600) / 60);
+            const seconds = Math.floor(timeInSeconds % 60);
+
+            return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+        }
+
+        // Function to pad single-digit numbers with leading zero
+        function padZero(number) {
+            return number.toString().padStart(2, '0');
+        }
+
+        // Function to fetch and display new users chart
+        function displayNewUsersChart(newUsersData) {
+            const ctx = document.getElementById('newUsersChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(newUsersData),
+                    datasets: [{
+                        label: 'New Users per Day',
+                        data: Object.values(newUsersData),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to fetch and display total time spent chart
+        function displayTimeSpentChart(timeSpentData) {
+            const ctx = document.getElementById('timeSpentChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(timeSpentData),
+                    datasets: [{
+                        label: 'Total Time Spent per Day',
+                        data: Object.values(timeSpentData),
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // function calculateRecentNewUsers(newUsersData) {
+        //     const today = new Date();
+        //     const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        //     const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+        //     const ninetyDaysAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+
+        //     let newUsersWeek = 0;
+        //     let newUsersMonth = 0;
+        //     let newUsers90Days = 0;
+
+        //     Object.entries(newUsersData).forEach(([dateString, count]) => {
+        //         const date = new Date(dateString);
+        //         if (date >= oneWeekAgo) {
+        //             newUsersWeek += count;
+        //         }
+        //         if (date >= oneMonthAgo) {
+        //             newUsersMonth += count;
+        //         }
+        //         if (date >= ninetyDaysAgo) {
+        //             newUsers90Days += count;
+        //         }
+        //     });
+
+        //     return { newUsersWeek, newUsersMonth, newUsers90Days };
+        // }
+
+
+
+        // Fetch data from Firestore and display admin dashboard
+        db.collection('users')
+            .get()
+            .then((querySnapshot) => {
+                console.log('Total number of documents:', querySnapshot.size);
+
+                let totalSessions = 0;
+                let totalSessionTime = 0;
+                const allSessions = [];
+                const newUsersData = {};
+                const timeSpentData = {};
+                let scoresAbove100k = 0;
+                let scoresAbove500k = 0;
+                let scoresAbove2_5M = 0;
+                let totalTimeAbove100k = 0;
+                let totalTimeAbove500k = 0;
+                let totalTimeAbove2_5M = 0;
+
+                querySnapshot.forEach((doc, index) => {
+                    const userData = doc.data();
+                    console.log(`User ${index + 1} ID:`, doc.id);
+
+                    const gameSessions = userData.games?.InfiniteAsteroids?.scores || [];
+                    console.log(`User ${index + 1} total sessions:`, gameSessions.length);
+
+                    let earliestLoginTime = null;
+
+                    gameSessions.forEach((session, sessionIndex) => {
+                        console.log(`User ${index + 1}, Session ${sessionIndex + 1}:`, {
+                            loginTime: session.loginTime ? session.loginTime.toDate() : 'Invalid Date',
+                            sessionLength: session.sessionLength,
+                            score: session.score
+                        });
+
+                        if (session.loginTime && session.loginTime.toDate instanceof Function) {
+                            const loginTime = session.loginTime.toDate();
+                            if (!earliestLoginTime || loginTime < earliestLoginTime) {
+                                earliestLoginTime = loginTime;
+                            }
+                        }
+
+                        const sessionLength = parseFloat(session.sessionLength);
+                        if (!isNaN(sessionLength) && sessionLength <= 18000 * 1000) {
+                            if (session.score > 2500000) {
+                                scoresAbove2_5M++;
+                                totalTimeAbove2_5M += sessionLength;
+                            } else if (session.score > 500000) {
+                                scoresAbove500k++;
+                                totalTimeAbove500k += sessionLength;
+                            } else if (session.score > 100000) {
+                                scoresAbove100k++;
+                                totalTimeAbove100k += sessionLength;
+                            }
+                        }
+                    });
+
+                    console.log(`User ${index + 1} earliest login time:`, earliestLoginTime);
+
+                    const validSessions = gameSessions.filter(session => {
+                        const sessionLength = parseFloat(session.sessionLength);
+                        return !isNaN(sessionLength) && sessionLength <= 18000 * 1000;
+                    });
+                    console.log(`User ${index + 1} valid sessions:`, validSessions.length);
+
+                    validSessions.forEach(session => {
+                        if (session.loginTime && session.loginTime.toDate instanceof Function) {
+                            const loginTime = session.loginTime.toDate();
+                            const sessionDateString = loginTime.toISOString().split('T')[0];
+                            if (!dailySessionData[sessionDateString]) {
+                                dailySessionData[sessionDateString] = { date: sessionDateString, sessions: 0, totalTime: 0 };
+                            }
+                            dailySessionData[sessionDateString].sessions++;
+                            dailySessionData[sessionDateString].totalTime += parseFloat(session.sessionLength);
+                        }
+                    });
+
+
+                    if (earliestLoginTime) {
+                        const dateString = earliestLoginTime.toISOString().split('T')[0];
+                        newUsersData[dateString] = (newUsersData[dateString] || 0) + 1;
+                        console.log(`Added user to newUsersData for date:`, dateString);
+                    } else {
+                        console.log(`User ${index + 1} has no valid login time`);
+                    }
+
+                    validSessions.forEach(session => {
+                        if (session.loginTime && session.loginTime.toDate instanceof Function) {
+                            const loginTime = session.loginTime.toDate();
+                            const sessionDateString = loginTime.toISOString().split('T')[0];
+                            timeSpentData[sessionDateString] = (timeSpentData[sessionDateString] || 0) + parseFloat(session.sessionLength);
+                            console.log(`Added session time for date:`, sessionDateString);
+                        }
+                    });
+
+                    totalSessions += validSessions.length;
+                    totalSessionTime += calculateTotalSessionTime(validSessions);
+                    allSessions.push(...validSessions);
+                });
+
+                console.log('New users data:', newUsersData);
+                console.log('Time spent data:', timeSpentData);
+                console.log('Total sessions:', totalSessions);
+                console.log('Total session time:', totalSessionTime);
+                console.log('Scores above 100,000:', scoresAbove100k);
+                console.log('Scores above 500,000:', scoresAbove500k);
+                console.log('Scores above 2,500,000:', scoresAbove2_5M);
+
+                const averageSessionTime = calculateAverageSessionTime(totalSessionTime, totalSessions);
+                console.log('Average session time:', averageSessionTime);
+
+                const topWeapons = getTopWeaponsUsed(allSessions);
+                console.log('Top weapons:', topWeapons);
+
+                const topWeaponsHighScores = getTopWeaponsUsedHighScores(allSessions, 100000);
+                const topWeaponsUltraHighScores = getTopWeaponsUsedHighScores(allSessions, 500000);
+                const topWeaponsUltraUltraHighScores = getTopWeaponsUsedHighScores(allSessions, 2500000);
+
+                const { newUsersWeek, newUsersMonth, newUsers90Days } = calculateRecentNewUsers(newUsersData);
+                console.log('New users counts:', { newUsersWeek, newUsersMonth, newUsers90Days });
+
+                displayAdminData(
+                    totalSessions, totalSessionTime, averageSessionTime,
+                    topWeapons, topWeaponsHighScores, topWeaponsUltraHighScores, topWeaponsUltraUltraHighScores,
+                    newUsersWeek, newUsersMonth, newUsers90Days,
+                    scoresAbove100k, scoresAbove500k, scoresAbove2_5M,
+                    totalTimeAbove100k, totalTimeAbove500k, totalTimeAbove2_5M
+                );
+            })
+            .catch((error) => {
+                console.error('Error fetching admin data:', error);
+            });
+
+        function convertToCSV(data) {
+            const headers = ['Date', 'Number of Sessions', 'Total Time (ms)'];
+            const csvRows = [headers.join(',')];
+
+            for (const date in data) {
+                const row = [
+                    data[date].date,
+                    data[date].sessions,
+                    data[date].totalTime
+                ];
+                csvRows.push(row.join(','));
+            }
+
+            return csvRows.join('\n');
+        }
+
+        // Function to trigger CSV download
+        function downloadCSV() {
+            const csv = convertToCSV(dailySessionData);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'daily_session_data.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+
+        function calculateRecentNewUsers(newUsersData) {
+            const today = new Date();
+            const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            const ninetyDaysAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+
+            let newUsersWeek = 0;
+            let newUsersMonth = 0;
+            let newUsers90Days = 0;
+
+            Object.entries(newUsersData).forEach(([dateString, count]) => {
+                const date = new Date(dateString);
+                if (date >= ninetyDaysAgo) {
+                    newUsers90Days += count;
+                    if (date >= oneMonthAgo) {
+                        newUsersMonth += count;
+                        if (date >= oneWeekAgo) {
+                            newUsersWeek += count;
+                        }
+                    }
+                }
+            });
+
+            return { newUsersWeek, newUsersMonth, newUsers90Days };
+        }
+    </script>
+</body>
+
+</html>
