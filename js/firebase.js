@@ -14,12 +14,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, doc, updateDoc, arrayUnion, getDoc, getDocs, collection, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
 // Firebase configuration and initialization
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const functions = getFunctions(app);
 
 document.getElementById('login-form').addEventListener('submit', function (event) {
     event.preventDefault();
@@ -74,30 +76,24 @@ document.getElementById('login-toggle').addEventListener('click', function (even
     document.getElementById('auth').classList.toggle('hidden');
 });
 
-// Function to save user score for a specific game
-// async function saveUserScore(userId, gameName, score) {
-//     const db = getFirestore();
-//     const userDocRef = doc(db, 'users', userId);
-//     const sessionLength = calculateSessionLength(); // Implement this function as needed
-//     const loginTime = new Date();
+// Securely submit the user's score using the Cloud Function `submitScore`.
+// The `scoreData` object should include all relevant metrics (e.g., score, wave, playSeconds, kills).
+async function saveUserScore(scoreData) {
+    if (!scoreData) {
+        console.error("saveUserScore called without score data");
+        return;
+    }
 
-//     if (typeof score === 'undefined' || typeof sessionLength === 'undefined') {
-//         console.error('Invalid score or session length');
-//         return;
-//     }
+    try {
+        const submitScore = httpsCallable(functions, 'submitScore');
+        const response = await submitScore(scoreData);
+        console.log('Score submitted successfully:', response.data);
+    } catch (error) {
+        console.error('Error submitting score:', error);
+    }
+}
 
-//     // Save the score, session length, and login time for the specific game
-//     const gameData = {
-//         [`games.${gameName}.scores`]: arrayUnion({
-//             score: score,
-//             sessionLength: sessionLength,
-//             loginTime: loginTime
-//         })
-//     };
-
-//     await updateDoc(userDocRef, gameData);
-// }
-
+// Expose the function globally so it can be called from other scripts (e.g., game.js)
 window.saveUserScore = saveUserScore;
 
 // Function to save initial user data
