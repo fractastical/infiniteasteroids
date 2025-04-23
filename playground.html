@@ -169,6 +169,9 @@
         <button onclick="spawnMegaBossAlien()">Spawn Mega Boss Alien</button>
         <button onclick="spawnOctoBoss()">Spawn Octoboss</button>
 
+        <button onclick="spawnSplitterAliens(5)">Spawn Splitter Aliens</button>
+        <button onclick="spawnPhaseWraithAliens(5)">Spawn Phase Wraiths</button>
+
         <button onclick="spawnRandomUpgrade()">Space Upgrade</button>
         <button onclick="spawnRandomUpgrade100x()">Space Upgrade 100x</button>
 
@@ -364,6 +367,14 @@
 
     </div>
 
+    <div id="mobile-pause" style="display: none;" onclick="pauseToggle()">
+        <img id="mobile-pause-img" width="30px" height="30px" src="icons/pause.png" alt="pause">
+    </div>
+    <div id="endScreen" class="screen">
+        <h2>Game Over</h2>
+        <p><span id="wave"></span>
+        </p></div>
+
 
     <script>
 
@@ -398,9 +409,11 @@
     <script src="js/upgrades-space.js"></script>
 
     <script src="js/aliens.js"></script>
+    <script src="js/eliteAliens.js"></script>
+    <script src="js/aliens-splitter-phase.js"></script>
+
     <script src="js/gems.js"></script>
     <script src="js/special-effects.js"></script>
-
 
 
     <script>
