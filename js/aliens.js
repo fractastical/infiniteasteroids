@@ -393,8 +393,8 @@ function spawnSuperBossAlien() {
         shootTimer: 0,
         radius: 20,
         spawnTimer: 0,
-        hitpoints: 5000,
-        maxHitpoints: 5000,
+        hitpoints: 1500,
+        maxHitpoints: 1500,
         shootInterval: 220 // Adjust this value as needed
     };
 
@@ -486,9 +486,9 @@ function spawnMegaBossAlien() {
         direction: Math.random() * Math.PI * 2,
         shootTimer: 0,
         spawnTimer: 0,
-        hitpoints: 10000,
+        hitpoints: 5000,
         radius: 30,
-        maxHitpoints: 10000,
+        maxHitpoints: 5000,
         shootInterval: 100 // Adjust this value as needed
     };
     aliens.push(megaBossAlien);
