@@ -16,43 +16,43 @@ laserGridAlienImage.src = 'icons/aliens/alien_grid_ship.png';
 
 // Add new alien types to SwarmingAlienTypes
 const NewAlienTypes = {
-    NINJA: { 
-        hitpoints: 3, 
-        color: 'indigo', 
-        speed: 0.9, 
+    NINJA: {
+        hitpoints: 3,
+        color: 'indigo',
+        speed: 0.9,
         vanishDuration: 60,
         attackCooldown: 180,
         image: ninjaAlienImage
     },
-    TELEPORTER: { 
-        hitpoints: 2, 
-        color: 'orange', 
-        speed: 0.4, 
+    TELEPORTER: {
+        hitpoints: 2,
+        color: 'orange',
+        speed: 0.4,
         teleportInterval: 240,
         attackCooldown: 120,
         image: teleporterAlienImage
     },
-    SHIELD: { 
-        hitpoints: 8, 
-        color: 'gold', 
-        speed: 0.3, 
+    SHIELD: {
+        hitpoints: 8,
+        color: 'gold',
+        speed: 0.3,
         shieldActive: true,
         shieldHitpoints: 10,
         attackCooldown: 300,
         image: shieldAlienImage
     },
-    BOMBER: { 
-        hitpoints: 5, 
-        color: 'crimson', 
-        speed: 0.25, 
+    BOMBER: {
+        hitpoints: 5,
+        color: 'crimson',
+        speed: 0.25,
         bombCooldown: 360,
         explosionRadius: 80,
         image: bomberAlienImage
     },
-    LASERGRID: { 
-        hitpoints: 6, 
-        color: 'lime', 
-        speed: 0.2, 
+    LASERGRID: {
+        hitpoints: 6,
+        color: 'lime',
+        speed: 0.2,
         gridCooldown: 420,
         gridSize: 4,
         gridSpacing: 50,
@@ -68,9 +68,9 @@ function spawnNinjaAliens(count) {
     for (let i = 0; i < count; i++) {
         const spawnEdge = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
         let x, y;
-        
+
         // Spawn from screen edges
-        switch(spawnEdge) {
+        switch (spawnEdge) {
             case 0: // top
                 x = Math.random() * canvas.width;
                 y = -20;
@@ -88,7 +88,7 @@ function spawnNinjaAliens(count) {
                 y = Math.random() * canvas.height;
                 break;
         }
-        
+
         const newNinjaAlien = {
             x: x,
             y: y,
@@ -103,7 +103,7 @@ function spawnNinjaAliens(count) {
             lastX: x,
             lastY: y
         };
-        
+
         aliens.push(newNinjaAlien);
     }
 }
@@ -124,7 +124,7 @@ function spawnTeleporterAliens(count) {
             teleporting: false,
             teleportDuration: 20
         };
-        
+
         aliens.push(newTeleporterAlien);
     }
 }
@@ -143,7 +143,7 @@ function spawnShieldAliens(count) {
             shieldHitpoints: SwarmingAlienTypes.SHIELD.shieldHitpoints,
             attackTimer: 0
         };
-        
+
         aliens.push(newShieldAlien);
     }
 }
@@ -164,7 +164,7 @@ function spawnBomberAliens(count) {
             bombing: false,
             bombDroptime: 60
         };
-        
+
         aliens.push(newBomberAlien);
     }
 }
@@ -183,7 +183,7 @@ function spawnLaserGridAliens(count) {
             firingGrid: false,
             gridDuration: 90
         };
-        
+
         aliens.push(newLaserGridAlien);
     }
 }
@@ -204,7 +204,7 @@ function updateNewAliens() {
             } else if (alien.type === SwarmingAlienTypes.LASERGRID) {
                 updateLaserGridAlien(alien);
             }
-            
+
             // Collision with player (for all alien types)
             if (!invincible && isColliding(alien, ship)) {
                 processPlayerDeath();
@@ -220,13 +220,13 @@ function updateNinjaAlien(alien) {
         alien.lastX = alien.x;
         alien.lastY = alien.y;
     }
-    
+
     // Vanish ability
     alien.vanishTimer++;
     if (alien.vanishTimer >= SwarmingAlienTypes.NINJA.vanishDuration) {
         alien.vanished = !alien.vanished;
         alien.vanishTimer = 0;
-        
+
         // When reappearing, position closer to player
         if (!alien.vanished) {
             const angle = Math.atan2(ship.y - alien.y, ship.x - alien.x);
@@ -234,43 +234,43 @@ function updateNinjaAlien(alien) {
             alien.y = ship.y - Math.sin(angle) * 150;
         }
     }
-    
+
     // Only move and attack when visible
     if (!alien.vanished) {
         // Chase player
         const dx = ship.x - alien.x;
         const dy = ship.y - alien.y;
         const angle = Math.atan2(dy, dx);
-        
+
         alien.x += Math.cos(angle) * alien.speed;
         alien.y += Math.sin(angle) * alien.speed;
-        
+
         // Attack - quick dash toward player
         alien.attackTimer++;
         if (alien.attackTimer >= SwarmingAlienTypes.NINJA.attackCooldown) {
             alien.attackTimer = 0;
-            
+
             // Create trail effect
             for (let i = 0; i < 10; i++) {
                 createParticle(
-                    alien.x, 
-                    alien.y, 
-                    Math.cos(angle) * 2, 
-                    Math.sin(angle) * 2, 
-                    10, 
+                    alien.x,
+                    alien.y,
+                    Math.cos(angle) * 2,
+                    Math.sin(angle) * 2,
+                    10,
                     'indigo'
                 );
             }
-            
+
             // Move quickly toward player
             alien.x += Math.cos(angle) * 100;
             alien.y += Math.sin(angle) * 100;
-            
+
             // Shoot after dash
             shootAlienLaser(alien);
         }
     }
-    
+
     // Screen wrapping
     if (alien.x < 0) alien.x = canvas.width;
     else if (alien.x > canvas.width) alien.x = 0;
@@ -282,22 +282,22 @@ function updateTeleporterAlien(alien) {
     // If currently teleporting
     if (alien.teleporting) {
         alien.teleportDuration--;
-        
+
         // Create teleport effect
         createParticle(
-            alien.lastPosition.x + (Math.random() - 0.5) * 20, 
-            alien.lastPosition.y + (Math.random() - 0.5) * 20, 
-            (Math.random() - 0.5) * 2, 
-            (Math.random() - 0.5) * 2, 
-            30, 
+            alien.lastPosition.x + (Math.random() - 0.5) * 20,
+            alien.lastPosition.y + (Math.random() - 0.5) * 20,
+            (Math.random() - 0.5) * 2,
+            (Math.random() - 0.5) * 2,
+            30,
             'orange'
         );
-        
+
         // Finish teleporting
         if (alien.teleportDuration <= 0) {
             alien.teleporting = false;
             alien.teleportDuration = 20;
-            
+
             // Shoot immediately after teleporting
             for (let i = 0; i < 8; i++) {
                 const spreadAngle = (i * Math.PI / 4);
@@ -319,25 +319,25 @@ function updateTeleporterAlien(alien) {
     const angle = Math.atan2(dy, dx);
     alien.x += Math.cos(angle) * alien.speed;
     alien.y += Math.sin(angle) * alien.speed;
-    
+
     // Teleport ability
     alien.teleportTimer++;
     if (alien.teleportTimer >= SwarmingAlienTypes.TELEPORTER.teleportInterval) {
         alien.teleportTimer = 0;
         alien.lastPosition = { x: alien.x, y: alien.y };
         alien.teleporting = true;
-        
+
         // Calculate new position close to player but not too close
         const teleportDistance = 150 + Math.random() * 100;
         const teleportAngle = Math.random() * Math.PI * 2;
         alien.x = ship.x + Math.cos(teleportAngle) * teleportDistance;
         alien.y = ship.y + Math.sin(teleportAngle) * teleportDistance;
-        
+
         // Keep within screen bounds
         alien.x = Math.max(20, Math.min(canvas.width - 20, alien.x));
         alien.y = Math.max(20, Math.min(canvas.height - 20, alien.y));
     }
-    
+
     // Regular attacks
     alien.attackTimer++;
     if (alien.attackTimer >= SwarmingAlienTypes.TELEPORTER.attackCooldown) {
@@ -349,18 +349,18 @@ function updateTeleporterAlien(alien) {
 function updateShieldAlien(alien) {
     // Move slower when shield is active
     const speedModifier = alien.shieldActive ? 0.6 : 1.2;
-    
+
     const dx = ship.x - alien.x;
     const dy = ship.y - alien.y;
     const angle = Math.atan2(dy, dx);
     alien.x += Math.cos(angle) * alien.speed * speedModifier;
     alien.y += Math.sin(angle) * alien.speed * speedModifier;
-    
+
     // Regular attacks
     alien.attackTimer++;
     if (alien.attackTimer >= SwarmingAlienTypes.SHIELD.attackCooldown) {
         alien.attackTimer = 0;
-        
+
         // Special attack - shoots three lasers in a spread
         const spreadAngle = Math.PI / 8;
         for (let i = -1; i <= 1; i++) {
@@ -373,7 +373,7 @@ function updateShieldAlien(alien) {
             });
         }
         playAlienLaserSound();
-        
+
         // Drop shield temporarily after firing
         alien.shieldActive = false;
         setTimeout(() => {
@@ -383,13 +383,13 @@ function updateShieldAlien(alien) {
             }
         }, 2000);
     }
-    
+
     // Regenerate shield if it's been destroyed
     if (!alien.shieldActive && Math.random() < 0.001) {
         alien.shieldActive = true;
         alien.shieldHitpoints = SwarmingAlienTypes.SHIELD.shieldHitpoints;
     }
-    
+
     // Screen wrapping
     if (alien.x < 0) alien.x = canvas.width;
     else if (alien.x > canvas.width) alien.x = 0;
@@ -402,19 +402,19 @@ function updateBomberAlien(alien) {
     const dx = ship.x - alien.x;
     const dy = ship.y - alien.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    
+
     // Stay at a certain distance from player
     const idealDistance = 200;
     let angle = Math.atan2(dy, dx);
-    
+
     if (distance < idealDistance) {
         // Move away from player
         angle += Math.PI;
     }
-    
+
     alien.x += Math.cos(angle) * alien.speed;
     alien.y += Math.sin(angle) * alien.speed;
-    
+
     // Bombing logic
     alien.bombTimer++;
     if (alien.bombTimer >= SwarmingAlienTypes.BOMBER.bombCooldown && !alien.bombing) {
@@ -422,26 +422,26 @@ function updateBomberAlien(alien) {
         alien.bombing = true;
         alien.targetX = ship.x;
         alien.targetY = ship.y;
-        
+
         // Visual indicator that bomb is being prepared
         createParticle(alien.x, alien.y, 0, 0, 30, 'yellow', 30);
     }
-    
+
     if (alien.bombing) {
         alien.bombDroptime--;
-        
+
         // Countdown visual effect
         if (alien.bombDroptime % 10 === 0) {
             createParticle(alien.x, alien.y, 0, 0, 10, 'yellow', 10);
         }
-        
+
         if (alien.bombDroptime <= 0) {
             dropBomb(alien);
             alien.bombing = false;
             alien.bombDroptime = 60;
         }
     }
-    
+
     // Screen wrapping
     if (alien.x < 0) alien.x = canvas.width;
     else if (alien.x > canvas.width) alien.x = 0;
@@ -455,14 +455,14 @@ function updateLaserGridAlien(alien) {
     if (!alien.firingGrid) {
         alien.x += Math.sin(time) * alien.speed;
         alien.y += Math.cos(time) * alien.speed * 0.5;
-        
+
         // Keep within reasonable bounds
         if (alien.x < 50) alien.x = 50;
         if (alien.x > canvas.width - 50) alien.x = canvas.width - 50;
         if (alien.y < 50) alien.y = 50;
         if (alien.y > canvas.height / 2) alien.y = canvas.height / 2;
     }
-    
+
     // Grid attack logic
     alien.gridTimer++;
     if (alien.gridTimer >= SwarmingAlienTypes.LASERGRID.gridCooldown && !alien.firingGrid) {
@@ -470,19 +470,19 @@ function updateLaserGridAlien(alien) {
         alien.firingGrid = true;
         createLaserGrid(alien);
     }
-    
+
     if (alien.firingGrid) {
         alien.gridDuration--;
-        
+
         // Visual effect while grid is active
         if (alien.gridDuration % 5 === 0) {
             createParticle(
-                alien.x + (Math.random() - 0.5) * 40, 
-                alien.y + (Math.random() - 0.5) * 40, 
+                alien.x + (Math.random() - 0.5) * 40,
+                alien.y + (Math.random() - 0.5) * 40,
                 0, 0, 15, 'lime', 10
             );
         }
-        
+
         if (alien.gridDuration <= 0) {
             alien.firingGrid = false;
             alien.gridDuration = 90;
@@ -494,16 +494,16 @@ function updateLaserGridAlien(alien) {
 function dropBomb(alien) {
     // Create bomb effect
     createExplosion(alien.targetX, alien.targetY, SwarmingAlienTypes.BOMBER.explosionRadius);
-    
+
     // Check if player is in explosion radius
     const dx = ship.x - alien.targetX;
     const dy = ship.y - alien.targetY;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    
+
     if (distance < SwarmingAlienTypes.BOMBER.explosionRadius && !invincible) {
         processPlayerDeath();
     }
-    
+
     // Play explosion sound
     playExplosionSound();
 }
@@ -511,11 +511,11 @@ function dropBomb(alien) {
 function createLaserGrid(alien) {
     const gridSize = SwarmingAlienTypes.LASERGRID.gridSize;
     const spacing = SwarmingAlienTypes.LASERGRID.gridSpacing;
-    
+
     // Create horizontal grid lines
     for (let i = 0; i < gridSize; i++) {
-        const y = alien.y + (i - Math.floor(gridSize/2)) * spacing;
-        
+        const y = alien.y + (i - Math.floor(gridSize / 2)) * spacing;
+
         for (let x = 0; x < canvas.width; x += 10) {
             alienLasers.push({
                 x: x,
@@ -526,11 +526,11 @@ function createLaserGrid(alien) {
             });
         }
     }
-    
+
     // Create vertical grid lines
     for (let i = 0; i < gridSize; i++) {
-        const x = alien.x + (i - Math.floor(gridSize/2)) * spacing;
-        
+        const x = alien.x + (i - Math.floor(gridSize / 2)) * spacing;
+
         for (let y = 0; y < canvas.height; y += 10) {
             alienLasers.push({
                 x: x,
@@ -541,7 +541,7 @@ function createLaserGrid(alien) {
             });
         }
     }
-    
+
     playAlienLaserSound();
 }
 
@@ -552,15 +552,15 @@ function drawNewAliens() {
         if (alien.type === SwarmingAlienTypes.NINJA && alien.vanished) {
             return;
         }
-        
+
         // Skip drawing teleporter aliens during teleport
         if (alien.type === SwarmingAlienTypes.TELEPORTER && alien.teleporting) {
             return;
         }
-        
+
         ctx.save();
         ctx.translate(alien.x, alien.y);
-        
+
         // Draw shield for shield aliens
         if (alien.type === SwarmingAlienTypes.SHIELD && alien.shieldActive) {
             ctx.beginPath();
@@ -571,7 +571,7 @@ function drawNewAliens() {
             ctx.lineWidth = 2;
             ctx.stroke();
         }
-        
+
         // Draw bombing target for bomber aliens
         if (alien.type === SwarmingAlienTypes.BOMBER && alien.bombing) {
             ctx.globalAlpha = 0.5;
@@ -583,7 +583,7 @@ function drawNewAliens() {
             ctx.lineWidth = 2;
             ctx.stroke();
         }
-        
+
         // Draw grid effect for laser grid aliens
         if (alien.type === SwarmingAlienTypes.LASERGRID && alien.firingGrid) {
             ctx.beginPath();
@@ -594,18 +594,18 @@ function drawNewAliens() {
             ctx.lineWidth = 2;
             ctx.stroke();
         }
-        
+
         // Calculate angle to face the player's ship
         const dx = ship.x - alien.x;
         const dy = ship.y - alien.y;
         const angle = Math.atan2(dy, dx) + Math.PI / 2; // Add 90 degrees
-        
+
         // Rotate the context
         ctx.rotate(angle);
-        
+
         // Draw the alien image
         ctx.drawImage(alien.image, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
-        
+
         ctx.restore();
     });
 }
@@ -614,7 +614,7 @@ function drawNewAliens() {
 function drawAlienLasers(time = currentTime) {
     alienLasers.forEach((laser, i) => {
         ctx.save();
-        
+
         // Special formatting for grid lasers
         if (laser.isGridLaser) {
             const pulseFactor = Math.sin(time * 5) * 0.2 + 0.8;
@@ -632,23 +632,23 @@ function drawAlienLasers(time = currentTime) {
         // Standard lasers (existing code)
         else {
             const pulseFactor = Math.sin(time * 3 + i) * 0.2 + 0.8;
-            
+
             if (!fpsThrottleMode) {
                 const gradient = ctx.createRadialGradient(
                     laser.x, laser.y, 0,
                     laser.x, laser.y, alienLaserSize * 2
                 );
-                
+
                 gradient.addColorStop(0, 'rgba(255, 0, 0, 0.5)');
                 gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                
+
                 ctx.globalAlpha = 0.7 * pulseFactor;
                 ctx.fillStyle = gradient;
                 ctx.beginPath();
                 ctx.arc(laser.x, laser.y, alienLaserSize, 0, Math.PI * 2);
                 ctx.fill();
             }
-            
+
             if (Math.abs(laser.dx) > alienLaserSpeed * 2 || Math.abs(laser.dy) > alienLaserSpeed * 2) {
                 ctx.fillStyle = 'red';
                 ctx.beginPath();
@@ -661,17 +661,17 @@ function drawAlienLasers(time = currentTime) {
                 ctx.fill();
             }
         }
-        
+
         ctx.globalAlpha = 1;
         ctx.restore();
     });
 }
 
 // Particle system implementation
-let particles = [];
+let alienParticles = [];
 
 function createParticle(x, y, dx, dy, size, color, life = 30) {
-    particles.push({
+    palienParticlesarticles.push({
         x: x,
         y: y,
         dx: dx,
@@ -684,25 +684,25 @@ function createParticle(x, y, dx, dy, size, color, life = 30) {
 }
 
 function updateParticles() {
-    for (let i = particles.length - 1; i >= 0; i--) {
-        const particle = particles[i];
-        
+    for (let i = alienParticles.length - 1; i >= 0; i--) {
+        const particle = alienParticles[i];
+
         // Update position
         particle.x += particle.dx;
         particle.y += particle.dy;
-        
+
         // Decrease life
         particle.life--;
-        
+
         // Remove dead particles
         if (particle.life <= 0) {
-            particles.splice(i, 1);
+            alienParticles.splice(i, 1);
         }
     }
 }
 
 function drawParticles() {
-    particles.forEach(particle => {
+    alienParticles.forEach(particle => {
         ctx.save();
         ctx.globalAlpha = particle.life / particle.maxLife;
         ctx.fillStyle = particle.color;
@@ -721,7 +721,7 @@ function spawnPowerup(x, y) {
     // Basic implementation if needed:
     const powerupTypes = ['shield', 'tripleShot', 'speedBoost', 'healthUp'];
     const type = powerupTypes[Math.floor(Math.random() * powerupTypes.length)];
-    
+
     powerups.push({
         x: x,
         y: y,
@@ -734,13 +734,13 @@ function spawnPowerup(x, y) {
 // Modify your existing game loop to include these new updates
 function gameLoop() {
     // ... Your existing code
-    
+
     updateParticles();
-    
+
     // ... Your existing code
-    
+
     drawParticles();
-    
+
     // ... Your existing code
 }
 
@@ -748,27 +748,27 @@ function gameLoop() {
 function checkLaserAlienCollisions() {
     for (let i = lasers.length - 1; i >= 0; i--) {
         const laser = lasers[i];
-        
+
         for (let j = aliens.length - 1; j >= 0; j--) {
             const alien = aliens[j];
-            
+
             if (isColliding(laser, alien)) {
                 lasers.splice(i, 1);
-                
+
                 // Special handling for new alien types
                 if (Object.values(NewAlienTypes).includes(alien.type)) {
                     handleSpecialAlienCollision(alien, laser, j);
                 } else {
                     // Your existing alien collision logic
                     alien.hitpoints -= (ship.laserLevel + damageBooster);
-                    
+
                     if (alien.hitpoints <= 0) {
                         createExplosion(alien.x, alien.y);
                         aliens.splice(j, 1);
                         addScore(50);
                     }
                 }
-                
+
                 return; // Laser hit something
             }
         }
@@ -777,48 +777,48 @@ function checkLaserAlienCollisions() {
 
 function spawnAliens(wave) {
     // Your existing code...
-    
+
     // Add new alien types based on wave number
     if (wave % 12 == 0) {
         spawnNinjaAliens(Math.floor(wave / 12));
     }
-    
+
     if (wave % 15 == 0) {
         spawnTeleporterAliens(Math.floor(wave / 15));
     }
-    
+
     if (wave % 18 == 0) {
         spawnShieldAliens(Math.floor(wave / 18));
     }
-    
+
     if (wave % 20 == 0) {
         spawnBomberAliens(Math.floor(wave / 20));
     }
-    
+
     if (wave % 25 == 0) {
         spawnLaserGridAliens(Math.floor(wave / 25));
     }
-    
+
     // Mix of different alien types for variety
     if (wave > 30 && wave % 10 == 0) {
         const mixAmount = Math.floor(wave / 30);
         spawnNinjaAliens(mixAmount);
         spawnTeleporterAliens(mixAmount);
     }
-    
+
     // Special wave combinations for higher difficulty
     if (wave >= 40 && wave % 40 == 0) {
         console.log("Spawning special combination wave!");
         const specialAmount = Math.floor(wave / 40) + 1;
-        
+
         // Shield + Laser Grid combo
         spawnShieldAliens(specialAmount);
         spawnLaserGridAliens(specialAmount);
-        
+
         // Create a warning message
         displayWarningMessage("SPECIAL ATTACK FORMATION DETECTED!");
     }
-    
+
     // Your existing code...
 }
 
@@ -837,7 +837,7 @@ function displayWarningMessage(message) {
     warningElement.style.textShadow = '0 0 10px #fff';
     warningElement.style.zIndex = '1000';
     document.body.appendChild(warningElement);
-    
+
     // Remove the warning after a few seconds
     setTimeout(() => {
         document.body.removeChild(warningElement);
@@ -849,28 +849,28 @@ function displayWarningMessage(message) {
 // EXAMPLE: How to modify the existing updateGame function
 function updateGame() {
     // Your existing update code
-    
+
     updateAliens();
     updateAlienLasers();
     if (superbossAlien) updateSuperBossAlien();
     if (megaBossAlien) updateMegaBossAlien();
     if (octoBoss) updateOctoBoss();
     updateParticles(); // Add this line to update particles
-    
+
     // Your other update code
 }
 
 // EXAMPLE: How to modify the existing drawGame function
 function drawGame() {
     // Your existing drawing code
-    
+
     drawAliens();
     drawAlienLasers();
     if (superbossAlien) drawSuperBossAlien();
     if (megaBossAlien) drawMegaBossAlien();
     if (octoBoss) drawOctoBoss();
     drawParticles(); // Add this line to draw particles
-    
+
     // Your other drawing code
 }
 
@@ -897,7 +897,7 @@ function updateAliens() {
                 case SwarmingAlienTypes.LITTLE:
                     // Your existing LITTLE alien update code...
                     break;
-                    
+
                 // New alien types
                 case SwarmingAlienTypes.NINJA:
                     updateNinjaAlien(alien);
@@ -915,7 +915,7 @@ function updateAliens() {
                     updateLaserGridAlien(alien);
                     break;
             }
-            
+
             // Collision with player (for all alien types)
             if (!invincible && isColliding(alien, ship)) {
                 processPlayerDeath();
@@ -931,15 +931,15 @@ function drawAliens() {
         if (alien.type === SwarmingAlienTypes.NINJA && alien.vanished) {
             return;
         }
-        
+
         // Skip drawing teleporter aliens during teleport
         if (alien.type === SwarmingAlienTypes.TELEPORTER && alien.teleporting) {
             return;
         }
-        
+
         ctx.save();
         ctx.translate(alien.x, alien.y);
-        
+
         // Special rendering for new alien types
         if (alien.type === SwarmingAlienTypes.SHIELD && alien.shieldActive) {
             // Draw shield
@@ -970,15 +970,15 @@ function drawAliens() {
             ctx.lineWidth = 2;
             ctx.stroke();
         }
-        
+
         // Calculate angle to face the player's ship
         const dx = ship.x - alien.x;
         const dy = ship.y - alien.y;
         const angle = Math.atan2(dy, dx) + Math.PI / 2; // Add 90 degrees
-        
+
         // Rotate the context
         ctx.rotate(angle);
-        
+
         // Draw the appropriate alien image
         if (alien.image) {
             ctx.drawImage(alien.image, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
@@ -986,7 +986,7 @@ function drawAliens() {
             // Default to original alien image if no specific image is assigned
             ctx.drawImage(alienImage, -alien.size / 2, -alien.size / 2, alien.size, alien.size);
         }
-        
+
         ctx.restore();
     });
 }
@@ -996,94 +996,94 @@ function handleSpecialAlienCollision(alien, laser, index) {
     if (alien.type === SwarmingAlienTypes.SHIELD && alien.shieldActive) {
         // Shield absorbs hit
         alien.shieldHitpoints--;
-        
+
         // Create shield impact effect
         createParticle(
-            laser.x, 
-            laser.y, 
-            (Math.random() - 0.5) * 2, 
-            (Math.random() - 0.5) * 2, 
-            15, 
+            laser.x,
+            laser.y,
+            (Math.random() - 0.5) * 2,
+            (Math.random() - 0.5) * 2,
+            15,
             'gold'
         );
-        
+
         // Shield breaks
         if (alien.shieldHitpoints <= 0) {
             alien.shieldActive = false;
         }
-        
+
         return true; // Shield blocked the laser
     }
-    
+
     // Normal collision handling
     alien.hitpoints -= (ship.laserLevel + damageBooster);
-    
+
     if (alien.hitpoints <= 0) {
         // Special effects for different alien types when destroyed
-        switch(alien.type) {
+        switch (alien.type) {
             case SwarmingAlienTypes.NINJA:
                 createExplosion(alien.x, alien.y, 20, 'indigo');
                 break;
-                
+
             case SwarmingAlienTypes.TELEPORTER:
                 createExplosion(alien.x, alien.y, 30, 'orange');
                 // Create after-images
                 for (let i = 0; i < 3; i++) {
                     setTimeout(() => {
                         createParticle(
-                            alien.x + (Math.random() - 0.5) * 30, 
-                            alien.y + (Math.random() - 0.5) * 30, 
+                            alien.x + (Math.random() - 0.5) * 30,
+                            alien.y + (Math.random() - 0.5) * 30,
                             0, 0, 20, 'orange', 15
                         );
                     }, i * 100);
                 }
                 break;
-                
+
             case SwarmingAlienTypes.SHIELD:
                 createExplosion(alien.x, alien.y, 40, 'gold');
                 break;
-                
+
             case SwarmingAlienTypes.BOMBER:
                 // Create a chain reaction explosion
                 createExplosion(alien.x, alien.y, 30, 'crimson');
                 setTimeout(() => {
                     createExplosion(alien.x, alien.y, 60, 'orange');
                 }, 100);
-                
+
                 // Drop last bomb as final attack
                 dropBomb(alien);
                 break;
-                
+
             case SwarmingAlienTypes.LASERGRID:
                 createExplosion(alien.x, alien.y, 35, 'lime');
-                
+
                 // Final grid attack
                 if (Math.random() < 0.5) {
                     const gridSize = 3;
                     const spacing = 60;
-                    
+
                     // Create smaller final grid
                     for (let i = 0; i < gridSize; i++) {
-                        const y = alien.y + (i - Math.floor(gridSize/2)) * spacing;
-                        const x = alien.x + (i - Math.floor(gridSize/2)) * spacing;
-                        
+                        const y = alien.y + (i - Math.floor(gridSize / 2)) * spacing;
+                        const x = alien.x + (i - Math.floor(gridSize / 2)) * spacing;
+
                         alienLasers.push({
                             x: x,
                             y: y,
-                            dx: Math.cos(i * Math.PI/3) * alienLaserSpeed,
-                            dy: Math.sin(i * Math.PI/3) * alienLaserSpeed,
+                            dx: Math.cos(i * Math.PI / 3) * alienLaserSpeed,
+                            dy: Math.sin(i * Math.PI / 3) * alienLaserSpeed,
                             isGridLaser: true
                         });
                     }
                 }
                 break;
-                
+
             default:
                 createExplosion(alien.x, alien.y);
         }
-        
+
         // Add score based on alien type
-        switch(alien.type) {
+        switch (alien.type) {
             case SwarmingAlienTypes.NINJA:
                 addScore(100);
                 break;
@@ -1102,10 +1102,10 @@ function handleSpecialAlienCollision(alien, laser, index) {
             default:
                 addScore(50);
         }
-        
+
         // Remove the alien
         aliens.splice(index, 1);
-        
+
         // Maybe drop a powerup
         const powerupChance = alien.type === SwarmingAlienTypes.SHIELD ? 0.2 : 0.1;
         if (Math.random() < powerupChance) {
@@ -1114,14 +1114,14 @@ function handleSpecialAlienCollision(alien, laser, index) {
     } else {
         // Hit effect for damage
         createParticle(
-            laser.x, 
-            laser.y, 
-            (Math.random() - 0.5) * 2, 
-            (Math.random() - 0.5) * 2, 
-            10, 
+            laser.x,
+            laser.y,
+            (Math.random() - 0.5) * 2,
+            (Math.random() - 0.5) * 2,
+            10,
             'white'
         );
     }
-    
+
     return true; // Handled collision
 }
