@@ -3,11 +3,13 @@
     const modal = document.getElementById('shipCustomizationModal');
     const openBtn = document.getElementById('customizeShipButton');
     const saveBtn = document.getElementById('saveCustomization');
-    const previewCan = document.createElement('canvas');   // reuse updateShipPreview later
-    previewCan.id = 'shipPreviewCanvas';
-    previewCan.width = 160;
-    previewCan.height = 160;
-    document.getElementById('shipPreview').appendChild(previewCan);
+
+    // Re‑use the existing preview canvas instead of creating a duplicate.
+    const previewCan = document.getElementById('shipPreviewCanvas');
+    const originalParent = previewCan.parentElement;
+    const originalSize = { w: previewCan.width, h: previewCan.height };
+    const modalPreviewContainer = document.getElementById('shipPreview');
+    const modalSize = { w: 160, h: 160 };
 
     // --- data structure safeguards --------------------------------------
     // Ensure a global inventory object exists so that the modal logic never
@@ -23,6 +25,10 @@
     openBtn.addEventListener('click', () => {
         pauseGame?.();                 // if your game exposes this
         populateCustomization();       // fills in current data
+        // Move the canvas into the modal and enlarge it
+        modalPreviewContainer.appendChild(previewCan);
+        previewCan.width = modalSize.w;
+        previewCan.height = modalSize.h;
         modal.style.display = 'block';
         updateShipPreview(currentShip); // already exists in ships.js
     });
@@ -31,6 +37,10 @@
     saveBtn.addEventListener('click', () => {
         applyCustomization();          // TODO: write this (equip logic)
         modal.style.display = 'none';
+        // Move the canvas back to its original spot and restore size
+        originalParent.appendChild(previewCan);
+        previewCan.width = originalSize.w;
+        previewCan.height = originalSize.h;
         resumeGame?.();
     });
 
