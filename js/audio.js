@@ -190,7 +190,7 @@ function playThrusterSound() {
 
 // Function to stop the thruster sound
 function stopThrusterSound() {
-    if (isThrusterSoundPlaying ) {
+    if (isThrusterSoundPlaying) {
         thrusterSound.pause();
         thrusterSound.currentTime = 0; // Reset to the start
         isThrusterSoundPlaying = false;
@@ -351,6 +351,177 @@ function toggleSettings() {
     console.log(settingsModal.style.display);
 }
 
+
+function togglePrivacyPolicy() {
+    const privacyModal = document.getElementById('privacyModal');
+
+    if (privacyModal.style.display === 'none' || !privacyModal.style.display) {
+        // Save the current game state if needed
+        const wasGamePaused = typeof window.gameIsPaused === 'function' ? window.gameIsPaused() : false;
+
+        // Show the modal
+        privacyModal.style.display = 'block';
+
+        // Store the previous body overflow setting to restore it later
+        privacyModal.dataset.previousBodyOverflow = document.body.style.overflow;
+
+        // Only if no other modal appears to be using this property
+        if (!document.querySelector('.modal[style*="display: block"]:not(#privacyModal)')) {
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Set focus for accessibility without disrupting game focus handling
+        setTimeout(() => {
+            const closeButton = privacyModal.querySelector('button');
+            if (closeButton && !document.activeElement || document.activeElement === document.body) {
+                closeButton.focus();
+            }
+        }, 100);
+
+        // Only if game handling allows it
+        if (typeof pauseGame === 'function' && !wasGamePaused) {
+            pauseGame();
+        }
+    } else {
+        // Hide the modal
+        privacyModal.style.display = 'none';
+
+        // Restore the previous body overflow only if we changed it
+        if (privacyModal.dataset.hasOwnProperty('previousBodyOverflow')) {
+            document.body.style.overflow = privacyModal.dataset.previousBodyOverflow || '';
+            delete privacyModal.dataset.previousBodyOverflow;
+        }
+
+        // Resume game if needed and if no other modals are visible
+        if (typeof resumeGame === 'function' && !document.querySelector('.modal[style*="display: block"]')) {
+            resumeGame();
+        }
+    }
+}
+
+// Add wheel event listener to prevent body scrolling when scrolling inside the privacy policy
+document.addEventListener('DOMContentLoaded', function () {
+    const privacyModal = document.getElementById('privacyModal');
+
+    // When the privacy policy modal is opened
+    if (privacyModal) {
+        const originalToggleFunction = window.togglePrivacyPolicy;
+
+        // Override the toggle function to add our enhancements
+        window.togglePrivacyPolicy = function () {
+            // Call the original function first
+            originalToggleFunction.apply(this, arguments);
+
+            // Check if the modal is now visible
+            if (privacyModal.style.display === 'block') {
+                const container = privacyModal.querySelector('.privacy-policy-container');
+                if (container) {
+                    // Create a visual scrollbar indicator
+                    highlightScrollbar(container);
+
+                    // Add scroll buttons for mobile users
+                    addScrollButtons(container);
+                }
+            }
+        };
+    }
+
+    // Function to highlight the scrollbar with animation
+    function highlightScrollbar(container) {
+        // Flash the scrollbar area to draw attention
+        const flasher = document.createElement('div');
+        flasher.style.cssText = `
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background-color: rgba(78, 21, 172, 0.3);
+            z-index: 5;
+            pointer-events: none;
+            animation: scrollbarFlash 1.5s ease-out;
+        `;
+        container.style.position = 'relative';
+        container.appendChild(flasher);
+
+        // Remove after animation completes
+        setTimeout(() => {
+            if (flasher.parentNode === container) {
+                container.removeChild(flasher);
+            }
+        }, 1500);
+
+        // Add keyframe animation if it doesn't exist yet
+        if (!document.getElementById('scrollbarFlashAnimation')) {
+            const style = document.createElement('style');
+            style.id = 'scrollbarFlashAnimation';
+            style.textContent = `
+                @keyframes scrollbarFlash {
+                    0% { opacity: 0.8; }
+                    100% { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    // Function to add scroll buttons for accessibility
+    function addScrollButtons(container) {
+        // Remove any existing buttons first
+        const existingButtons = privacyModal.querySelectorAll('.scroll-button');
+        existingButtons.forEach(button => button.remove());
+
+        // Create scroll up/down buttons
+        const scrollButtons = document.createElement('div');
+        scrollButtons.className = 'scroll-controls';
+        scrollButtons.style.cssText = `
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+        `;
+
+        // Up button
+        const upButton = document.createElement('button');
+        upButton.className = 'scroll-button';
+        upButton.textContent = '▲';
+        upButton.style.cssText = `
+            background: #333;
+            color: #0f0;
+            border: 1px solid #4e15ac;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 12px;
+        `;
+        upButton.onclick = function () {
+            container.scrollBy({ top: -100, behavior: 'smooth' });
+        };
+
+        // Down button
+        const downButton = document.createElement('button');
+        downButton.className = 'scroll-button';
+        downButton.textContent = '▼';
+        downButton.style.cssText = upButton.style.cssText;
+        downButton.onclick = function () {
+            container.scrollBy({ top: 100, behavior: 'smooth' });
+        };
+
+        scrollButtons.appendChild(upButton);
+        scrollButtons.appendChild(downButton);
+
+        // Add to container parent to avoid scrolling issues
+        container.parentNode.appendChild(scrollButtons);
+    }
+});
+
+
+
+
 // Function to set the volume of all sounds
 function setVolume(volume) {
     allSounds.forEach(sound => {
@@ -372,6 +543,7 @@ function pauseAllMusic() {
         backgroundMusic2.pause();
     // if (backgroundMusic3)
     //     backgroundMusic3.pause();
+    // isMusicPlaying = false;
 
 
 }

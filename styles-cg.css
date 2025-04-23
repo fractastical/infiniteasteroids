@@ -71,11 +71,13 @@
     }
 
     #levelUpModal {
-        height: auto; !important;
+        height: auto;
+        !important;
     }
 }
 
-#prevAchievement, #nextAchievement {
+#prevAchievement,
+#nextAchievement {
     width: 70px;
 }
 
@@ -150,6 +152,7 @@
 .upgrade-details {
     flex-grow: 1;
 }
+
 /*.upgrade-details p {*/
 /*    font-size: 10px;*/
 /*}*/
@@ -164,8 +167,9 @@
     font-size: clamp(0.8rem, 1.5vw, 1rem);
     /* Scale the description size */
 }
-#levelUpModal{
-}
+
+#levelUpModal {}
+
 /* Ensure buttons are aligned properly and shrink with viewport */
 .modal-content button {
     margin-top: auto;
@@ -174,46 +178,240 @@
 }
 
 
+#leaderboard-list {
+    text-align: left;
+    padding-left: 20px;
+}
+
+#leaderboard ol li {
+    text-align: left;
+}
+
+#leaderboard h2 {
+    text-align: center;
+}
+
 /* model style for entry wrapper */
-#allLeaderboardsContainer .leaderboard-mode{
+#allLeaderboardsContainer .leaderboard-mode {
     display: flex;
     flex-direction: column;
 }
-.entryWrapper{
+
+#allLeaderboardsContainer .leaderboard-mode h3 {
+    text-align: center;
+}
+
+
+.entryWrapper {
     display: flex;
     flex-direction: column;
     margin: auto;
     margin-top: 15px;
 }
-.entryWrapper p{
+
+.entryWrapper p {
     font-size: 10px;
     text-align: left;
 }
 
 @media only screen and (max-width: 1000px) and (orientation: landscape) {
-    .upgrade-details p{
+    .upgrade-details p {
         font-size: clamp(0.7rem, 1.5vw, 1.3rem)
     }
+
     .upgrade-option {
-        padding: 0; !important;
+        padding: 0;
+        !important;
     }
-    #upgradeOptions{
+
+    #upgradeOptions {
         gap: 0;
     }
 }
 
 @media only screen and (max-width: 670px) and (orientation: landscape) {
-    .upgrade-details p{
+    .upgrade-details p {
         font-size: clamp(0.7rem, 1.5vw, 1.3rem)
     }
+
     .upgrade-option {
-        padding: 0; !important;
+        padding: 0;
+        !important;
         margin-bottom: 3px;
     }
-    #upgradeOptions{
+
+    #upgradeOptions {
         gap: 0;
     }
-    .modal{
+
+    .modal {
         width: 80vw;
+    }
+}
+
+/* Privacy Policy Modal Specific Styles */
+#privacyModal .modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    width: 90%;
+    max-width: 600px;
+    overflow: hidden;
+}
+
+.privacy-policy-container {
+    flex: 1;
+    overflow-y: scroll;
+    /* Changed from auto to scroll to force scrollbar display */
+    margin: 10px 0;
+    padding-right: 5px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: #4e15ac #222;
+}
+
+.privacy-policy {
+    padding: 0 10px;
+    color: #0f0;
+    text-align: left;
+}
+
+.privacy-policy h1,
+.privacy-policy h2 {
+    font-size: 1rem;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #0f0;
+}
+
+.privacy-policy h3 {
+    font-size: 0.9rem;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    color: #0f0;
+}
+
+.privacy-policy p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.privacy-policy a {
+    color: #0ff;
+    text-decoration: none;
+}
+
+.privacy-policy a:hover {
+    text-decoration: underline;
+}
+
+#privacyModal button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #222;
+    color: #0f0;
+    border: 2px solid #4e15ac;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    align-self: center;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    #privacyModal .modal-content {
+        height: 75vh;
+        width: 95%;
+    }
+
+    .privacy-policy h1,
+    .privacy-policy h2 {
+        font-size: 0.9rem;
+    }
+
+    .privacy-policy h3 {
+        font-size: 0.8rem;
+    }
+
+    .privacy-policy p {
+        font-size: 0.7rem;
+    }
+}
+
+/* For very small screens */
+@media (max-height: 500px) {
+    #privacyModal .modal-content {
+        height: 85vh;
+    }
+}
+
+/* Custom scrollbar styles for webkit browsers (Chrome, Safari, Edge) */
+.privacy-policy-container::-webkit-scrollbar {
+    width: 14px;
+    /* Increased width for better visibility */
+    background: #222;
+}
+
+.privacy-policy-container::-webkit-scrollbar-track {
+    background: #222;
+    border-radius: 4px;
+    border: 1px solid #333;
+}
+
+.privacy-policy-container::-webkit-scrollbar-thumb {
+    background: #4e15ac;
+    border-radius: 4px;
+    border: 2px solid #222;
+    min-height: 40px;
+    /* Ensure minimum height of thumb */
+    box-shadow: 0 0 5px rgba(78, 21, 172, 0.5);
+    /* Add glow effect */
+}
+
+.privacy-policy-container::-webkit-scrollbar-thumb:hover {
+    background: #6929cc;
+}
+
+/* Show a clear indicator that content is scrollable */
+.privacy-policy-container::after {
+    content: "▼ Scroll for more ▼";
+    display: block;
+    text-align: center;
+    color: #0f0;
+    font-size: 0.7rem;
+    padding: 5px 0;
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(transparent, #111);
+    pointer-events: none;
+}
+
+/* Add a vertical scrollbar indicator on the right side */
+.privacy-policy-container::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 14px;
+    height: 100%;
+    background: linear-gradient(to bottom,
+            #4e15ac 0%, rgba(78, 21, 172, 0.3) 40%,
+            rgba(78, 21, 172, 0.3) 60%, #4e15ac 100%);
+    pointer-events: none;
+    animation: pulseScroll 2s infinite;
+    z-index: 10;
+    opacity: 0.7;
+}
+
+@keyframes pulseScroll {
+
+    0%,
+    100% {
+        opacity: 0.7;
+    }
+
+    50% {
+        opacity: 0.3;
     }
 }

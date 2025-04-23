@@ -11,7 +11,7 @@ const InfiniteAsteroidsAnimation = (function () {
       this.x = -50; // Start off-screen
       this.y = canvas.height / 2;
       this.width = 20;
-      this.height = 20;
+      this.height = 22;
       this.speed = 2;
       this.lasers = [];
       this.laserLevel = 8;
@@ -166,8 +166,8 @@ const InfiniteAsteroidsAnimation = (function () {
         : colors[Math.floor(Math.random() * colors.length)];
       this.alienImage = isAlien
         ? swarmingAlienImages[
-            Math.floor(Math.random() * swarmingAlienImages.length)
-          ]
+        Math.floor(Math.random() * swarmingAlienImages.length)
+        ]
         : null;
       this.angle = Math.random() * Math.PI * 2;
       this.velocity = { x: 0, y: 0 };
@@ -333,15 +333,15 @@ const InfiniteAsteroidsAnimation = (function () {
   const instructions = [
     "Press SPACE to fire",
     "Press E for bomb",
-    "Beat wave 30 to advance",
-    "Final boss on wave 100",
+    "Boss at wave 22",
+    "Final boss on wave 88",
   ];
 
   const mobileInstructions = [
     "Arrows to steer",
     "Double tap for bomb",
-    "Beat wave 30 to advance",
-    "Final boss on wave 100",
+    "Boss at wave 22",
+    "Final boss on wave 88",
   ];
 
   let explosions = [];

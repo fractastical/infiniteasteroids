@@ -1,6 +1,7 @@
 // for leaderboard and telegram API
-let gameId = "InfiniteSpaceWar";
-let version = "1.009";
+let gameId = "InfiniteAsteroids";
+let version = "1.2";
+let versionNotes = "1.2 intended to have distinct challenges."
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
 let normalDebugMode = false;
@@ -38,7 +39,7 @@ const rotationSpeedLevelDisplay = document.getElementById("rotationSpeedLevel");
 const droneSpeedLevelDisplay = document.getElementById("droneSpeedLevel");
 // const droneLaserSpeedLevelDisplay = document.getElementById('droneLaserSpeedLevel');
 const droneLaserIntervalLevelDisplay = document.getElementById(
-    "droneLaserIntervalLevel"
+  "droneLaserIntervalLevel"
 );
 let toggleMusicOff = false;
 let toggleSoundOff = false;
@@ -454,7 +455,7 @@ let lastCurrentShip = "basic";
 
 function isMobile() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
+    navigator.userAgent
   );
 }
 
@@ -466,10 +467,10 @@ function startGame() {
   initializeLastDamageReport();
 
   if (
-      crazyGamesMode &&
-      window.CrazyGames &&
-      window.CrazyGames.SDK &&
-      window.CrazyGames.SDK.game
+    crazyGamesMode &&
+    window.CrazyGames &&
+    window.CrazyGames.SDK &&
+    window.CrazyGames.SDK.game
   ) {
     try {
       window.CrazyGames.SDK.game.gameplayStart();
@@ -482,9 +483,9 @@ function startGame() {
     const mobileControls = document.getElementById("mobile-controls");
     const mobilePause = document.getElementById("mobile-pause");
     console.log(
-        "mobile display triggered",
-        mobilePause,
-        mobilePause.style.display
+      "mobile display triggered",
+      mobilePause,
+      mobilePause.style.display
     );
     if (mobileControls) {
       mobileControls.style.display = "block";
@@ -528,17 +529,6 @@ function startGame() {
   turret.bought = false;
   resetShip();
   invincibilityTimer += invincibilityDuration;
-  // clearInterval(gameLoop);
-  // if (mode == GameModes.ENDLESS_SLOW)
-  //   spawnCooldown = 6;
-
-  // const selectedUpgrades = getSelectedUpgrades(); // Implement this function to retrieve the selected upgrades
-
-  // // Load the selected upgrades and their corresponding functions
-  // selectedUpgrades.forEach(upgrade => {
-  //   addUpgrade(upgrade);
-  // });
-  // console.log(currentShip);
 
   ship.laserLevel = ships[currentShip].laserLevel;
   // Specific actions for StarHawk
@@ -728,6 +718,35 @@ function isMobile() {
 
 let randomSeed = Math.random();
 
+function drawCorrectBackground() {
+
+  if (
+    currentMode == GameModes.EASY ||
+    currentMode == GameModes.NORMAL ||
+    currentMode == GameModes.HARD ||
+    currentMode == GameModes.HERO
+  )
+    drawSubtleGridBackground(ctx, canvas.width, canvas.height);
+  else if (
+    currentMode == GameModes.METEORSHOWEREASY ||
+    currentMode == GameModes.METEORSHOWERNORMAL ||
+    currentMode == GameModes.METEORSHOWERHARD ||
+    currentMode == GameModes.METEORSHOWERHERO
+  )
+    drawZigzagGridBackground(ctx, canvas.width, canvas.height);
+  else if (
+    currentMode == GameModes.PLANETEASY ||
+    currentMode == GameModes.PLANETNORMAL ||
+    currentMode == GameModes.PLANETHARD ||
+    currentMode == GameModes.PLANETHERO
+  )
+    drawGravityWellBackground(ctx, canvas.width, canvas.height);
+  else if (currentMode == GameModes.ENDLESS_SLOW)
+    drawWarpedBackground(ctx, canvas.width, canvas.height);
+
+
+}
+
 function update() {
   randomSeed = Math.random();
 
@@ -737,37 +756,17 @@ function update() {
 
   // for now mobile fps is too low.
   if (!toggleBackgroundOff && !isMobile()) {
-    if (
-        currentMode == GameModes.EASY ||
-        currentMode == GameModes.NORMAL ||
-        currentMode == GameModes.HARD ||
-        currentMode == GameModes.HERO
-    )
-      drawSubtleGridBackground(ctx, canvas.width, canvas.height);
-    else if (
-        currentMode == GameModes.METEORSHOWEREASY ||
-        currentMode == GameModes.METEORSHOWERNORMAL ||
-        currentMode == GameModes.METEORSHOWERHARD ||
-        currentMode == GameModes.METEORSHOWERHERO
-    )
-      drawZigzagGridBackground(ctx, canvas.width, canvas.height);
-    else if (
-        currentMode == GameModes.PLANETEASY ||
-        currentMode == GameModes.PLANETNORMAL ||
-        currentMode == GameModes.PLANETHARD ||
-        currentMode == GameModes.PLANETHERO
-    )
-      drawGravityWellBackground(ctx, canvas.width, canvas.height);
-    else if (currentMode == GameModes.ENDLESS_SLOW)
-      drawWarpedBackground(ctx, canvas.width, canvas.height);
+    drawCorrectBackground();
   }
+
+  if (currentBackgroundImage) {
+    ctx.drawImage(currentBackgroundImage, 0, 0, canvas.width, canvas.height);
+  }
+
 
   // drawWarpedGrid();
 
   // document.getElementById('leaderboard-container').style.display = 'none';
-  if (currentBackgroundImage) {
-    ctx.drawImage(currentBackgroundImage, 0, 0, canvas.width, canvas.height);
-  }
 
   if (planetMode) {
     drawPlanet();
@@ -792,8 +791,8 @@ function update() {
   updateShip(ship, "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " ");
 
   if (
-      document.getElementById("loginPopup") &&
-      document.getElementById("loginPopup").style.display == "none"
+    document.getElementById("loginPopup") &&
+    document.getElementById("loginPopup").style.display == "none"
   ) {
     if (currentMode === GameModes.COOP) {
       updateShip(ship2, "a", "d", "w", "s", "q");
@@ -817,55 +816,6 @@ function update() {
       applyGravity(ship2);
     }
   }
-
-  // if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
-  //   if (!toggleMusicOff) backgroundMusic.play(); // Resume the background music (if hasn't started)
-  //   playRandomThrusterSound();
-
-  //   // Move backwards with higher initial acceleration
-  //   const initialBackwardAcceleration = ship.acceleration * 1.5; // Increased initial backward acceleration
-  //   const backwardSpeed = ship.maxSpeed; // Increased backward speed limit
-  //   ship.velocityX -= initialBackwardAcceleration * Math.sin(angle);
-  //   ship.velocityY += initialBackwardAcceleration * Math.cos(angle);
-
-  //   // Limit backward speed
-  //   // const currentSpeed = Math.sqrt(ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY);
-  //   // if (currentSpeed > backwardSpeed) {
-  //   //   ship.velocityX = (ship.velocityX / currentSpeed) * backwardSpeed;
-  //   //   ship.velocityY = (ship.velocityY / currentSpeed) * backwardSpeed;
-  //   // }
-
-  //   // Generate thruster particles for backward movement
-  //   generateThrusterParticles();
-
-  // } else {
-  //   // Apply natural deceleration when no thrust key is pressed
-  //   ship.velocityX *= ship.deceleration;
-  //   ship.velocityY *= ship.deceleration;
-  // }
-
-  // // Update ship position based on velocity
-  // ship.x += ship.velocityX;
-  // ship.y += ship.velocityY;
-
-  // // Wrap the ship around the screen edges
-  // if (ship.x < 0) ship.x = canvas.width;
-  // else if (ship.x > canvas.width) ship.x = 0;
-  // if (ship.y < 0) ship.y = canvas.height;
-  // else if (ship.y > canvas.height) ship.y = 0;
-
-  // // Handle ship rotation based on key states
-  // if (keys['ArrowLeft'] || keys['a']) {
-  //   ship.rotation -= ship.rotationSpeed;
-  // }
-  // if (keys['ArrowRight'] || keys['d']) {
-  //   ship.rotation += ship.rotationSpeed;
-  // }
-
-  // // Handle shooting based on key state and cooldown
-  // if (keys[' '] && ship.lasers.length < (ship.maxBulletsLevel * 3) && ship.laserTimer === 0) {
-  //   shootLasers();
-  // }
 
   updateGems();
   drawGems();
@@ -1113,9 +1063,9 @@ function initializeGame(mode, replay = false) {
 }
 function isEmulatedTouch() {
   return (
-      window.matchMedia &&
-      window.matchMedia("(pointer: coarse)").matches &&
-      !("ontouchstart" in window)
+    window.matchMedia &&
+    window.matchMedia("(pointer: coarse)").matches &&
+    !("ontouchstart" in window)
   );
 }
 let lastTapTime = 0;
@@ -1156,22 +1106,22 @@ let secondaryWeaponUsedOnMobile = false;
 let activeRotationRight = 0;
 let activeRotationLeft = 0;
 
-let moving=false;
-let called=false;
-let lastX=0;
-let lastY=0;
+let moving = false;
+let called = false;
+let lastX = 0;
+let lastY = 0;
 
 
 function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
-  if(Math.abs(lastX-ship.x) >0.2 || Math.abs(lastY-ship.y)>0.2){
-    moving=true;
-    lastX=ship.x;
-    lastY=ship.y;
+  if (Math.abs(lastX - ship.x) > 0.2 || Math.abs(lastY - ship.y) > 0.2) {
+    moving = true;
+    lastX = ship.x;
+    lastY = ship.y;
   }
   else {
-    moving=false;
-    lastX=ship.x;
-    lastY=ship.y;
+    moving = false;
+    lastX = ship.x;
+    lastY = ship.y;
 
   }
   let angle = (ship.rotation * Math.PI) / 180;
@@ -1193,17 +1143,17 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
     activeRotationRight = 0;
   }
 
-  if (!moving){
+  if (!moving) {
     stopThrusterSound();
-    called=false;
+    called = false;
   }
 
   if (keys[upKey] || (ship === ship && touchAccelerating)) {
     // if (!toggleMusicOff && !bossMusicEnabled) backgroundMusic.play();
     // playRandomThrusterSound();
-    if(moving && !called){
+    if (moving && !called) {
       playThrusterSound();
-      called=true;
+      called = true;
     }
     let accelerationAmount = ship.acceleration;
 
@@ -1229,9 +1179,9 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
     if (Math.abs(ship.velocityX) < 0.9 && Math.abs(ship.velocityY) < 0.9) {
       // if (!toggleMusicOff) backgroundMusic.play();
       // playRandomThrusterSound();
-      if(moving && !called){
+      if (moving && !called) {
         playThrusterSound();
-        called=true;
+        called = true;
       }
       const initialBackwardAcceleration = ship.acceleration * 1.5;
       const backwardSpeed = ship.maxSpeed;
@@ -1247,7 +1197,7 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
 
   // Limit the ship's speed to maxSpeed
   let speed = Math.sqrt(
-      ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY
+    ship.velocityX * ship.velocityX + ship.velocityY * ship.velocityY
   );
   if (speed > ship.maxSpeed) {
     let ratio = ship.maxSpeed / speed;
@@ -1268,12 +1218,12 @@ function updateShip(ship, leftKey, rightKey, upKey, downKey, shootKey) {
 
 function drawPlanet() {
   const gradient = ctx.createRadialGradient(
-      planet.x,
-      planet.y,
-      0,
-      planet.x,
-      planet.y,
-      planet.radius
+    planet.x,
+    planet.y,
+    0,
+    planet.x,
+    planet.y,
+    planet.radius
   );
   gradient.addColorStop(0, "rgba(255, 0, 0, 1)"); // Center color (solid red)
   gradient.addColorStop(1, "rgba(128, 0, 0, 1)"); // Edge color (darker red)
@@ -1353,8 +1303,8 @@ function createAreaDamage(x, y, radius, damage = 1) {
     let distance = Math.sqrt(dx * dx + dy * dy);
     if (distance < radius) {
       let actualDamage = Math.min(
-          damage + damageBooster * pixieBoost,
-          asteroid.hitpoints
+        damage + damageBooster * pixieBoost,
+        asteroid.hitpoints
       );
       asteroid.hitpoints -= actualDamage;
       totalDamage += actualDamage;
@@ -1378,8 +1328,8 @@ function createAreaDamage(x, y, radius, damage = 1) {
     let distance = Math.sqrt(dx * dx + dy * dy);
     if (distance < radius) {
       let actualDamage = Math.min(
-          damage + damageBooster * pixieBoost,
-          alien.hitpoints
+        damage + damageBooster * pixieBoost,
+        alien.hitpoints
       );
 
       if (alien === octoBoss) {
@@ -1406,11 +1356,14 @@ function createAreaDamage(x, y, radius, damage = 1) {
   return totalDamage;
 }
 function increaseXP(amount, isGem = false) {
+
+  //TODO: at the moment in easy from wave 20-40 or so seems to be way too easy.
   const currTimeInMS = Date.now();
   // Apply tapering based on wave number
   const taperingFactor = xpTaperingFactor();
-  amount *= taperingFactor;
+  console.log(xpTaperingFactor);
 
+  amount *= taperingFactor;
   if (xp >= xpToNextLevel / 1) {
     if (lastLevelUp + 2000 > currTimeInMS) {
       amount *= 0.05;
@@ -1519,11 +1472,11 @@ function drawExplosions() {
     ctx.globalAlpha = explosions[i].alpha;
     ctx.beginPath();
     ctx.arc(
-        explosions[i].x,
-        explosions[i].y,
-        explosions[i].size,
-        0,
-        Math.PI * 2
+      explosions[i].x,
+      explosions[i].y,
+      explosions[i].size,
+      0,
+      Math.PI * 2
     );
     ctx.closePath();
     ctx.fillStyle = explosions[i].color;
@@ -1553,24 +1506,24 @@ function drawScore() {
   const secondsUntilNextWave = Math.ceil(spawnTimer);
 
   document.getElementById(
-      "waveCounter"
+    "waveCounter"
   ).textContent = `Wave: ${wave} ${secondsUntilNextWave}s`;
 
   if (!isMobile()) {
     // document.getElementById('controlsInfo').textContent = "[m]usic sou[n]d [v]olume [p]ause [i]nfo";
     if (waitAndClaimMode)
       document.getElementById("controlsInfo").textContent =
-          "[r]edeem s[e]c se[t]tings [p]ause [i]nfo";
+        "[r]edeem s[e]c se[t]tings [p]ause [i]nfo";
     else
       document.getElementById("controlsInfo").textContent =
-          "s[e]condary se[t]tings [p]ause [i]nfo";
+        "s[e]condary se[t]tings [p]ause [i]nfo";
   } else {
     if (waitAndClaimMode)
       document.getElementById("controlsInfo").textContent =
-          "Double tap for secondary weapon";
+        "Double tap for secondary weapon";
     else
       document.getElementById("controlsInfo").textContent =
-          "Double tap for secondary weapon";
+        "Double tap for secondary weapon";
   }
 }
 
@@ -1606,7 +1559,7 @@ function pauseGame() {
 }
 
 function resumeGame() {
-  if(moving){
+  if (moving && !gameOver) {
     playThrusterSound();
   }
   document.getElementById("mobile-pause-img").style.display = "block";
@@ -1681,20 +1634,6 @@ document.addEventListener("fullscreenchange", () => {
   }
 });
 
-// window.addEventListener('resize', () => {
-//     if (document.fullscreenElement) {
-//         // Store ship's position relative to canvas size
-//         shipRelativeX = ship.x / canvas.width;
-//         shipRelativeY = ship.y / canvas.height;
-
-//         // Adjust canvas size
-//         canvas.width = window.innerWidth;
-//         canvas.height = window.innerHeight;
-
-//         // Update ship's position based on new canvas size
-//         updateShipPositionAfterResize();
-//     }
-// });
 
 canvas.addEventListener("touchstart", handleTouch);
 // canvas.addEventListener("touchmove", handleTouch);
@@ -1724,7 +1663,7 @@ function handleKeyDown(event) {
   }
 
   const visibleModal = document.querySelector(
-      '.modal:not([style*="display: none"])'
+    '.modal:not([style*="display: none"])'
   );
   const endScreen = document.getElementById("endScreen");
   const isEndScreenVisible = endScreen && endScreen.style.display !== "none";
@@ -1735,49 +1674,49 @@ function handleKeyDown(event) {
     if (targetElement) {
       event.preventDefault();
       const focusableElements = Array.from(
-          targetElement.querySelectorAll(
-              'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-          )
+        targetElement.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
       );
       const firstElement = focusableElements[0];
       const lastElement = focusableElements[focusableElements.length - 1];
 
       if (
-          !targetElement.contains(document.activeElement) ||
-          (event.key === "ArrowDown" && document.activeElement === lastElement) ||
-          (event.key === "ArrowUp" && document.activeElement === firstElement)
+        !targetElement.contains(document.activeElement) ||
+        (event.key === "ArrowDown" && document.activeElement === lastElement) ||
+        (event.key === "ArrowUp" && document.activeElement === firstElement)
       ) {
         event.key === "ArrowDown" ? firstElement.focus() : lastElement.focus();
       } else {
         const currentIndex = focusableElements.indexOf(document.activeElement);
         const nextIndex =
-            event.key === "ArrowDown"
-                ? (currentIndex + 1) % focusableElements.length
-                : (currentIndex - 1 + focusableElements.length) %
-                focusableElements.length;
+          event.key === "ArrowDown"
+            ? (currentIndex + 1) % focusableElements.length
+            : (currentIndex - 1 + focusableElements.length) %
+            focusableElements.length;
         focusableElements[nextIndex].focus();
       }
     }
   }
 
   if (
-      document.getElementById("loginPopup") &&
-      document.getElementById("loginPopup").style.display == "none"
+    document.getElementById("loginPopup") &&
+    document.getElementById("loginPopup").style.display == "none"
   ) {
     // Player 2 controls
     if (
-        event.key === "a" ||
-        event.key === "d" ||
-        event.key === "w" ||
-        event.key === "s" ||
-        event.key === "q"
+      event.key === "a" ||
+      event.key === "d" ||
+      event.key === "w" ||
+      event.key === "s" ||
+      event.key === "q"
     ) {
       event.preventDefault();
     }
 
     if (event.key === "Enter") {
       if (
-          document.getElementById("rouletteContainer").style.display == "block"
+        document.getElementById("rouletteContainer").style.display == "block"
       ) {
         startRoulette();
       }
@@ -1790,9 +1729,9 @@ function handleKeyDown(event) {
         resumeGame();
       } else {
         if (
-            document.getElementById("rouletteContainer").style.display ==
-            "none" &&
-            document.getElementById("endScreen").style.display == "none"
+          document.getElementById("rouletteContainer").style.display ==
+          "none" &&
+          document.getElementById("endScreen").style.display == "none"
         ) {
           pauseGame();
         }
@@ -1842,7 +1781,7 @@ function handleKeyDown(event) {
           event.preventDefault();
           const index = parseInt(event.key) - 1;
           const megaUpgradeOptions = upgradeModal.querySelectorAll(
-              ".mega-upgrade-option"
+            ".mega-upgrade-option"
           );
           if (megaUpgradeOptions[index]) {
             megaUpgradeOptions[index].click();
@@ -1868,70 +1807,6 @@ function handleKeyUp(event) {
   keys[event.key] = false;
 }
 
-// function countTechnologies() {
-//     let count = 2; // laser + bomb
-
-//     // These are all the achievements that have a specific weapon unlock assigned
-//     if (Achievements.reach_wave_2.reached) count += 2; //turret and bomber drone
-//     if (Achievements.reach_wave_5.reached) count += 2;  //freeze and cluster bomb
-//     if (Achievements.reach_wave_10.reached) count++;
-//     if (Achievements.complete_easy_mode.reached) count++;
-//     if (Achievements.complete_normal_mode.reached) count++;
-//     if (Achievements.complete_hard_mode.reached) count++;
-//     if (Achievements.complete_hero_mode.reached) count++;
-//     if (Achievements.acid_bomb_damage.reached) count++;
-//     if (Achievements.destroy_100_asteroids.reached) count++;
-//     if (Achievements.destroy_1000_asteroids.reached) count++;
-
-//     if (Achievements.kill_5_aliens.reached) count++;
-//     if (Achievements.kill_50_aliens.reached) count++;
-//     if (Achievements.kill_500_aliens.reached) count++;
-//     if (Achievements.no_lives_lost.reached) count++;
-//     if (Achievements.death_ray_damage.reached) count++;
-//     if (Achievements.complete_meteor_normal_mode.reached) count++;
-//     if (Achievements.complete_meteor_hard_mode.reached) count++;
-//     if (Achievements.complete_meteor_hero_mode.reached) count++;
-
-//     if (Achievements.complete_planet_easy_mode.reached) count++;
-//     if (Achievements.complete_planet_normal_mode.reached) count++;
-//     if (Achievements.complete_planet_hard_mode.reached) count++;
-//     if (Achievements.complete_planet_hero_mode.reached) count++;
-//     if (Achievements.complete_planet_hard_mode.reached && Achievements.complete_meteor_hard_mode.reached && Achievements.complete_hard_mode.reached) count++;
-
-//     if (Achievements.drone_damage.reached) count++;
-//     if (Achievements.laser_damage.reached) count++;
-//     if (Achievements.wave_60_endless.reached) count++;
-
-//     if (Achievements.wave_120_endless.reached) count++;
-//     if (Achievements.million_score.reached) count++;
-//     if (Achievements.all_modes.reached) count++;
-
-//     // if (Achievements.space_potato.reached) count++;
-//     if (Achievements.space_pizza.reached) count++;
-
-//     // if (Achievements.space_monkey.reached) count++;
-//     if (Achievements.pink_pixie.reached) count++;
-//     if (Achievements.purple_pixie.reached) count++;
-//     if (Achievements.gold_pixie.reached) count++;
-
-//     if (Achievements.space_pickle.reached) count++;
-//     if (Achievements.dark_side.reached) count++;
-
-//     if (Achievements.alien_supermegaboss_killed.reached) count++;
-//     if (Achievements.alien_octopus_killed.reached) count++;
-//     if (Achievements.alien_megaboss_killed.reached) count++;
-
-//     // 8 ship types to be unlocked  (including basic).
-
-//     // Check the conditions of each ship
-//     for (const ship in ships) {
-//         if (ships.hasOwnProperty(ship)) {
-//             if (ships[ship].condition()) count++;
-//         }
-//     }
-//     // think we are at 41
-//     return count;
-// }
 
 function countTechnologies() {
   // Start with 2 for laser and bomb
@@ -1989,70 +1864,70 @@ function getAvailableWeaponIcons() {
   // availableIcons.push('icon-ship');
 
   if (
-      activeWeaponClasses.includes("turret") ||
-      Achievements.reach_wave_2.reached
+    activeWeaponClasses.includes("turret") ||
+    Achievements.reach_wave_2.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Turret"].icon);
   if (
-      activeWeaponClasses.includes("bomberdrone") ||
-      Achievements.reach_wave_2.reached
+    activeWeaponClasses.includes("bomberdrone") ||
+    Achievements.reach_wave_2.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Bomber Drone"].icon);
   if (
-      activeWeaponClasses.includes("freeze") ||
-      Achievements.reach_wave_5.reached
+    activeWeaponClasses.includes("freeze") ||
+    Achievements.reach_wave_5.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Freeze Effect"].icon);
   if (
-      activeWeaponClasses.includes("explosive") ||
-      Achievements.laser_damage.reached
+    activeWeaponClasses.includes("explosive") ||
+    Achievements.laser_damage.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Explosive Laser"].icon);
   if (
-      activeWeaponClasses.includes("sonic") ||
-      Achievements.reach_wave_10.reached
+    activeWeaponClasses.includes("sonic") ||
+    Achievements.reach_wave_10.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Sonic Blast"].icon);
   if (
-      activeWeaponClasses.includes("boomerang") ||
-      Achievements.complete_easy_mode.reached
+    activeWeaponClasses.includes("boomerang") ||
+    Achievements.complete_easy_mode.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Boomerang"].icon);
   if (
-      activeWeaponClasses.includes("acid") ||
-      Achievements.complete_normal_mode.reached
+    activeWeaponClasses.includes("acid") ||
+    Achievements.complete_normal_mode.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Acid Bomb"].icon);
   if (
-      activeWeaponClasses.includes("drone") ||
-      Achievements.destroy_100_asteroids.reached
+    activeWeaponClasses.includes("drone") ||
+    Achievements.destroy_100_asteroids.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Drone"].icon);
   if (Achievements.destroy_1000_asteroids.reached)
     availableIcons.push(upgradeDefinitions["Damage Booster"].icon);
   if (
-      activeWeaponClasses.includes("deathray") ||
-      Achievements.kill_5_aliens.reached
+    activeWeaponClasses.includes("deathray") ||
+    Achievements.kill_5_aliens.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Death Ray"].icon);
   if (
-      activeWeaponClasses.includes("explosiverocket") ||
-      Achievements.complete_hard_mode.reached
+    activeWeaponClasses.includes("explosiverocket") ||
+    Achievements.complete_hard_mode.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Explosive Rocket"].icon);
   if (
-      activeWeaponClasses.includes("chainlightning") ||
-      Achievements.kill_50_aliens.reached
+    activeWeaponClasses.includes("chainlightning") ||
+    Achievements.kill_50_aliens.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Chain Lightning"].icon);
   if (
-      activeWeaponClasses.includes("nanoswarm") ||
-      Achievements.no_lives_lost.reached
+    activeWeaponClasses.includes("nanoswarm") ||
+    Achievements.no_lives_lost.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Nano Swarm"].icon);
   if (
-      activeWeaponClasses.includes("flamethrower") ||
-      Achievements.acid_bomb_damage.reached
+    activeWeaponClasses.includes("flamethrower") ||
+    Achievements.acid_bomb_damage.reached
   )
     availableIcons.push(upgradeDefinitions["Activate Flamethrower"].icon);
   if (Achievements.alien_supermegaboss_killed.reached)
@@ -2079,8 +1954,8 @@ function populateAchievementIcons() {
 
   // Insert the total stats container at the beginning of achievementIconsList
   achievementIconsList.insertBefore(
-      totalStatsContainer,
-      achievementIconsList.firstChild
+    totalStatsContainer,
+    achievementIconsList.firstChild
   );
 
   // Create containers for weapons and achievements
@@ -2112,8 +1987,8 @@ function populateAchievementIcons() {
       totalAchievements++;
       const achievement = Achievements[key];
       const achieved =
-          achievement.reached ||
-          (achievement.damage && achievement.damage >= achievement.required);
+        achievement.reached ||
+        (achievement.damage && achievement.damage >= achievement.required);
 
       if (achieved) achievedCount++;
 
@@ -2139,8 +2014,8 @@ function populateAchievementIcons() {
   const achievementsHeader = document.createElement("h4");
   achievementsHeader.textContent = `Achievements (${achievedCount} / ${totalAchievements})`;
   achievementsContainer.insertBefore(
-      achievementsHeader,
-      achievementsContainer.firstChild
+    achievementsHeader,
+    achievementsContainer.firstChild
   );
 
   // Append containers to the achievementIconsList
@@ -2153,9 +2028,9 @@ function populateGameModes() {
   const gameModeSection = document.getElementById("gameModeSection");
   if (window.innerHeight > 500) {
     gameModeSection.innerHTML = `
-        <h4 id="gameModeHeader">Select Game Mode</h4>
+        <h4 id="gameModeHeader">Select Game Mode:</h4>
         <div class="selector">
-            <button id="prevGameModeButton">&#60;</button>
+            <button id="prevGameModeButton">&#60;</button>&nbsp;
             <span id="selectedGameMode">${gameModes[currentGameModeIndex].name}</span>
             <button id="nextGameModeButton">></button>
         </div>
@@ -2163,7 +2038,7 @@ function populateGameModes() {
   } else {
     gameModeSection.innerHTML = `
         <div class="selector">
-            <button id="prevGameModeButton">&#60;</button>
+            <button id="prevGameModeButton">&#60;</button>&nbsp;
             <span id="selectedGameMode">${gameModes[currentGameModeIndex].name}</span>
             <button id="nextGameModeButton">></button>
         </div>
@@ -2175,17 +2050,17 @@ function populateGameModes() {
       currentGameModeIndex = (currentGameModeIndex + 1) % gameModes.length;
     } else {
       currentGameModeIndex =
-          (currentGameModeIndex - 1 + gameModes.length) % gameModes.length;
+        (currentGameModeIndex - 1 + gameModes.length) % gameModes.length;
     }
     updateGameModeDisplay();
   }
 
   document
-      .getElementById("nextGameModeButton")
-      .addEventListener("click", () => cycleGameMode("next"));
+    .getElementById("nextGameModeButton")
+    .addEventListener("click", () => cycleGameMode("next"));
   document
-      .getElementById("prevGameModeButton")
-      .addEventListener("click", () => cycleGameMode("prev"));
+    .getElementById("prevGameModeButton")
+    .addEventListener("click", () => cycleGameMode("prev"));
 
   updateGameModeDisplay();
 }
@@ -2199,7 +2074,7 @@ function updateGameModeDisplay() {
   if (playNowButton) {
     // console.log("starting" + gameModes[currentGameModeIndex].name);
     playNowButton.onclick = () =>
-        initializeGame(gameModes[currentGameModeIndex].id);
+      initializeGame(gameModes[currentGameModeIndex].id);
   }
 }
 function getSelectedGameMode() {
@@ -2300,7 +2175,7 @@ function populateAchievementsModal() {
 
 function displayAchievementPage(page) {
   const paginatedAchievements = document.getElementById(
-      "paginatedAchievements"
+    "paginatedAchievements"
   );
   if (!paginatedAchievements) {
     console.error("Paginated achievements container not found");
@@ -2340,7 +2215,7 @@ function displayAchievementPage(page) {
   // Update navigation buttons
   document.getElementById("prevAchievement").disabled = page === 0;
   document.getElementById("nextAchievement").disabled =
-      page === Math.ceil(achievementKeys.length / achievementsPerPage) - 1;
+    page === Math.ceil(achievementKeys.length / achievementsPerPage) - 1;
 }
 
 // Function to open the achievements modal
@@ -2356,11 +2231,11 @@ function openAchievementsModal() {
 
 // Function to close the achievements modal
 document
-    .getElementById("closeAchievementsModal")
-    .addEventListener("click", function () {
-      const modal = document.getElementById("achievementsModal");
-      modal.style.display = "none";
-    });
+  .getElementById("closeAchievementsModal")
+  .addEventListener("click", function () {
+    const modal = document.getElementById("achievementsModal");
+    modal.style.display = "none";
+  });
 
 // Function to display a specific page of achievements
 
@@ -2406,13 +2281,13 @@ function populateAchievements() {
   weaponsContainer.classList.add("icons-section", "weapons-icons");
   const secondaryWeaponsContainer = document.createElement("div");
   secondaryWeaponsContainer.classList.add(
-      "icons-section",
-      "secondary-weapons-icons"
+    "icons-section",
+    "secondary-weapons-icons"
   );
   const achievementsIconsContainer = document.createElement("div");
   achievementsIconsContainer.classList.add(
-      "icons-section",
-      "achievement-icons"
+    "icons-section",
+    "achievement-icons"
   );
 
   // Add ship icons
@@ -2483,7 +2358,7 @@ function populateAchievements() {
   });
 
   let totalSecondaryWeapons =
-      Object.keys(secondaryWeapons).length + spaceWeapons.length;
+    Object.keys(secondaryWeapons).length + spaceWeapons.length;
 
   const secondaryWeaponsHeader = document.createElement("h4");
   secondaryWeaponsHeader.textContent = `Secondary Weapons and Upgrades (${availableSecondaryWeapons.length} / ${totalSecondaryWeapons})`;
@@ -2515,8 +2390,8 @@ function populateAchievements() {
       totalAchievements++;
       const achievement = Achievements[key];
       const achieved =
-          achievement.reached ||
-          (achievement.damage && achievement.damage >= achievement.required);
+        achievement.reached ||
+        (achievement.damage && achievement.damage >= achievement.required);
 
       if (achieved) achievedCount++;
 
@@ -2557,8 +2432,8 @@ function populateAchievements() {
   const achievementsHeader = document.createElement("h4");
   achievementsHeader.textContent = `Achievements (${achievedCount} / ${totalAchievements})`;
   achievementsIconsContainer.insertBefore(
-      achievementsHeader,
-      achievementsIconsContainer.firstChild
+    achievementsHeader,
+    achievementsIconsContainer.firstChild
   );
 
   // Append containers to the achievementIconsList
@@ -2589,8 +2464,8 @@ function updateAchievementsAtEnd() {
 
   const addAchievement = (achievementKey) => {
     if (
-        !Achievements[achievementKey].reached ||
-        currentMatchAchievements.has(achievementKey)
+      !Achievements[achievementKey].reached ||
+      currentMatchAchievements.has(achievementKey)
     ) {
       Achievements[achievementKey].reached = true;
       newlyUnlockedAchievements.push(Achievements[achievementKey].description);
@@ -2686,30 +2561,30 @@ function updateAchievementsAtEnd() {
   // }
 
   if (
-      allAchieved.has("complete_planet_hard_mode") &&
-      allAchieved.has("complete_meteor_hard_mode") &&
-      allAchieved.has("complete_hard_mode")
+    allAchieved.has("complete_planet_hard_mode") &&
+    allAchieved.has("complete_meteor_hard_mode") &&
+    allAchieved.has("complete_hard_mode")
   ) {
     addAchievement("all_hards");
   }
 
   if (
-      allAchieved.has("complete_normal_mode") &&
-      allAchieved.has("complete_meteor_normal_mode") &&
-      allAchieved.has("complete_planet_normal_mode") &&
-      allAchieved.has("complete_planet_hard_mode") &&
-      allAchieved.has("complete_meteor_hard_mode") &&
-      allAchieved.has("complete_hard_mode") &&
-      allAchieved.has("complete_planet_hero_mode") &&
-      allAchieved.has("complete_meteor_hero_mode") &&
-      allAchieved.has("complete_hero_mode")
+    allAchieved.has("complete_normal_mode") &&
+    allAchieved.has("complete_meteor_normal_mode") &&
+    allAchieved.has("complete_planet_normal_mode") &&
+    allAchieved.has("complete_planet_hard_mode") &&
+    allAchieved.has("complete_meteor_hard_mode") &&
+    allAchieved.has("complete_hard_mode") &&
+    allAchieved.has("complete_planet_hero_mode") &&
+    allAchieved.has("complete_meteor_hero_mode") &&
+    allAchieved.has("complete_hero_mode")
   ) {
     addAchievement("all_modes");
   }
 
   try {
     localStorage.setItem("achievements", JSON.stringify(Achievements));
-  } catch (e) {}
+  } catch (e) { }
   populateAchievements();
 
   // Determine newly unlocked weapons based on the achievements unlocked
@@ -2743,8 +2618,8 @@ function updateAchievementsAtEnd() {
 function createUpgradeOptionsHTML(upgrades, isSmall = false) {
   if (!isSmall) {
     return upgrades
-        .map(
-            (upgrade, index) => `
+      .map(
+        (upgrade, index) => `
             <div class="upgrade-option" onclick="selectUpgrade(${index + 1})" >
                 <div class="upgrade-number">${index + 1}</div>
                 <div class="upgrade-icon ${upgrade.icon}"></div>
@@ -2754,12 +2629,12 @@ function createUpgradeOptionsHTML(upgrades, isSmall = false) {
                 </div>
             </div >
             `
-        )
-        .join("");
+      )
+      .join("");
   } else {
     return upgrades
-        .map(
-            (upgrade, index) => `
+      .map(
+        (upgrade, index) => `
         <div class="upgrade-option" onclick="selectUpgrade(${index + 1})" >
             <div class="upgrade-number">${index + 1}</div>
             <div class="upgrade-icon ${upgrade.icon}"></div>
@@ -2769,15 +2644,15 @@ function createUpgradeOptionsHTML(upgrades, isSmall = false) {
             </div>
         </div >
         `
-        )
-        .join("");
+      )
+      .join("");
   }
 }
 
 function claimLevelUps() {
   if (
-      unclaimedLevelUps > 0 &&
-      document.getElementById("levelUpModal").style.display != "block"
+    unclaimedLevelUps > 0 &&
+    document.getElementById("levelUpModal").style.display != "block"
   ) {
     let upgradesToRetrieve = fourthUpgradeUnlocked ? 4 : 3;
 
@@ -2785,7 +2660,7 @@ function claimLevelUps() {
     const upgrades = getRandomUpgrades(upgradesToRetrieve);
     if (upgrades.length >= 1) {
       document.getElementById("leveluptitle").innerHTML =
-          "Claim " + unclaimedLevelUps + " upgrades";
+        "Claim " + unclaimedLevelUps + " upgrades";
 
       // Display the level-up modal
       const levelUpModal = document.getElementById("levelUpModal");
@@ -2798,7 +2673,7 @@ function claimLevelUps() {
 
       if (document.getElementById("upgradeOptions"))
         document.getElementById("upgradeOptions").innerHTML =
-            upgradeOptionsHTML;
+          upgradeOptionsHTML;
 
       // Show the modal
       const container = document.getElementById("activeWeaponClassesContainer");
@@ -2859,9 +2734,9 @@ function levelUp() {
       const upgradeOptionsHTML = createUpgradeOptionsHTML(upgrades);
       if (document.getElementById("upgradeOptions")) {
         document.getElementById("upgradeOptions").innerHTML =
-            upgradeOptionsHTML;
+          upgradeOptionsHTML;
         const container = document.getElementById(
-            "activeWeaponClassesContainer"
+          "activeWeaponClassesContainer"
         );
         container.style.display = "none";
 
@@ -2903,40 +2778,40 @@ function getUpgradeCount(weaponClass) {
       return ship.explosiveLaserLevel;
     case "turret":
       return (
-          turretUpgrades.range +
-          turretUpgrades.fireRate +
-          turretUpgrades.damage -
-          2
+        turretUpgrades.range +
+        turretUpgrades.fireRate +
+        turretUpgrades.damage -
+        2
       );
     case "drone":
       return droneUpgrades.laserInterval + droneUpgrades.damageLevel; // Assuming this is the main upgrade for drones
     case "sonic":
       return (
-          sonicBlast.rangeLevel +
-          sonicBlast.damageLevel +
-          sonicBlast.cooldownLevel -
-          2
+        sonicBlast.rangeLevel +
+        sonicBlast.damageLevel +
+        sonicBlast.cooldownLevel -
+        2
       ); // Example calculation
     case "bomberdrone":
       return (
-          bomberDroneUpgrades.speed +
-          bomberDroneUpgrades.bombRadiusLevel +
-          bomberDroneUpgrades.bombDamage -
-          3
+        bomberDroneUpgrades.speed +
+        bomberDroneUpgrades.bombRadiusLevel +
+        bomberDroneUpgrades.bombDamage -
+        3
       );
     case "deathray":
       return (
-          deathRayUpgrades.length +
-          deathRayUpgrades.width +
-          deathRayUpgrades.cooldown -
-          2
+        deathRayUpgrades.length +
+        deathRayUpgrades.width +
+        deathRayUpgrades.cooldown -
+        2
       );
     case "acid":
       return (
-          acidBombUpgrades.duration +
-          acidBombUpgrades.cooldown +
-          acidBombUpgrades.size -
-          2
+        acidBombUpgrades.duration +
+        acidBombUpgrades.cooldown +
+        acidBombUpgrades.size -
+        2
       );
     case "freeze":
       return freezeEffectUpgrades.duration + freezeEffectUpgrades.cooldown - 1;
@@ -2946,25 +2821,25 @@ function getUpgradeCount(weaponClass) {
       return nanoswarmUpgrades.damage + nanoswarmUpgrades.cooldown - 1;
     case "flamethrower":
       return (
-          flamethrowerUpgrades.range +
-          flamethrowerUpgrades.damage +
-          flamethrowerUpgrades.cooldown -
-          2
+        flamethrowerUpgrades.range +
+        flamethrowerUpgrades.damage +
+        flamethrowerUpgrades.cooldown -
+        2
       );
     case "chainlightning":
       return (
-          chainLightningUpgrades.range +
-          chainLightningUpgrades.damage +
-          chainLightningUpgrades.bounces +
-          chainLightningUpgrades.cooldown -
-          3
+        chainLightningUpgrades.range +
+        chainLightningUpgrades.damage +
+        chainLightningUpgrades.bounces +
+        chainLightningUpgrades.cooldown -
+        3
       );
     case "explosiverocket":
       return (
-          explosiveRocketUpgrades.damage +
-          explosiveRocketUpgrades.radius +
-          explosiveRocketUpgrades.cooldown -
-          2
+        explosiveRocketUpgrades.damage +
+        explosiveRocketUpgrades.radius +
+        explosiveRocketUpgrades.cooldown -
+        2
       );
     case "sonicboom":
       return 1;
@@ -3000,11 +2875,15 @@ function endGame() {
   // clearInterval(gameLoop);
   pauseAllMusic();
 
+  const xpBar = document.getElementById('xpBar');
+  xpBar.style.backgroundColor = 'green';
+  xpBar.style.width = 0 + '%';
+
   if (
-      crazyGamesMode &&
-      window.CrazyGames &&
-      window.CrazyGames.SDK &&
-      window.CrazyGames.SDK.game
+    crazyGamesMode &&
+    window.CrazyGames &&
+    window.CrazyGames.SDK &&
+    window.CrazyGames.SDK.game
   ) {
     try {
       window.CrazyGames.SDK.game.gameplayStop();
@@ -3031,10 +2910,10 @@ function endGame() {
 
   // Calculate top six weapons by damage
   const topSixWeapons = Object.entries(damageReport)
-                              .filter(([weapon, damage]) => damage > 0) // Only include weapons with damage
-                              .sort((a, b) => b[1] - a[1])
-                              .slice(0, 6)
-                              .map(([weapon, damage]) => ({ weapon, damage }));
+    .filter(([weapon, damage]) => damage > 0) // Only include weapons with damage
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([weapon, damage]) => ({ weapon, damage }));
 
   const gameData = {
     score: score,
@@ -3049,7 +2928,7 @@ function endGame() {
 
   // Update achievements and handle end game server logic
   const { newlyUnlockedAchievements, newlyUnlockedWeapons } =
-      updateAchievementsAtEnd();
+    updateAchievementsAtEnd();
 
   // Ensure we have a valid userId before saving
   if (userId) {
@@ -3068,32 +2947,32 @@ function endGame() {
 
   // Display the end game screen
   displayEndGameScreen(
-      topSixWeapons,
-      newlyUnlockedAchievements,
-      newlyUnlockedWeapons,
-      gameData
+    topSixWeapons,
+    newlyUnlockedAchievements,
+    newlyUnlockedWeapons,
+    gameData
   );
 }
 function displayEndGameScreen(
-    topWeapons,
-    newlyUnlockedAchievements,
-    newlyUnlockedWeapons,
-    gameData,
-    affordableUpgrades
+  topWeapons,
+  newlyUnlockedAchievements,
+  newlyUnlockedWeapons,
+  gameData,
+  affordableUpgrades
 ) {
   const endScreen = document.getElementById("endScreen");
   const waveElement = document.getElementById("wave");
   const scoreElement = document.getElementById("score");
   const asteroidsDestroyedElement =
-      document.getElementById("asteroidsDestroyed");
+    document.getElementById("asteroidsDestroyed");
   const damageReportList = document.getElementById("damageReportList");
   const unlockedWeaponsList = document.getElementById("unlockedWeaponsList");
   const unlockedWeaponsHeader = document.getElementById(
-      "unlockedWeaponsHeader"
+    "unlockedWeaponsHeader"
   );
   const newAchievementsList = document.getElementById("newAchievementsList");
   const newAchievementsHeader = document.getElementById(
-      "newAchievementsHeader"
+    "newAchievementsHeader"
   );
   const achievementSound = unlockSound;
   const container = document.getElementById("activeWeaponClassesContainer");
@@ -3225,7 +3104,7 @@ function displayEndGameScreen(
 
   // Set focus to the first focusable element in the end screen
   const firstFocusableElement = endScreen.querySelector(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
   );
   if (firstFocusableElement) {
     firstFocusableElement.focus();
@@ -3239,11 +3118,11 @@ function handleEndScreenKeydown(event) {
   if (event.key === "ArrowDown" || event.key === "ArrowUp") {
     event.preventDefault();
     const focusableElements = Array.from(
-        document
-            .getElementById("endScreen")
-            .querySelectorAll(
-                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-            )
+      document
+        .getElementById("endScreen")
+        .querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
     );
     const currentIndex = focusableElements.indexOf(document.activeElement);
     let nextIndex;
@@ -3252,8 +3131,8 @@ function handleEndScreenKeydown(event) {
       nextIndex = (currentIndex + 1) % focusableElements.length;
     } else {
       nextIndex =
-          (currentIndex - 1 + focusableElements.length) %
-          focusableElements.length;
+        (currentIndex - 1 + focusableElements.length) %
+        focusableElements.length;
     }
 
     focusableElements[nextIndex].focus();
@@ -3269,13 +3148,13 @@ function saveUserUpgrades(userId, gameId, data) {
     },
     body: JSON.stringify(data),
   })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("User upgrades saved successfully:", data);
-      })
-      .catch((error) => {
-        console.error("Error saving user upgrades:", error);
-      });
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("User upgrades saved successfully:", data);
+    })
+    .catch((error) => {
+      console.error("Error saving user upgrades:", error);
+    });
 }
 
 function saveUserUpgrades(userId, gameId, data) {
@@ -3287,13 +3166,13 @@ function saveUserUpgrades(userId, gameId, data) {
     },
     body: JSON.stringify(data),
   })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("User upgrades saved successfully:", data);
-      })
-      .catch((error) => {
-        console.error("Error saving user upgrades:", error);
-      });
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("User upgrades saved successfully:", data);
+    })
+    .catch((error) => {
+      console.error("Error saving user upgrades:", error);
+    });
 }
 
 function calculateWeaponDPM() {
@@ -3304,7 +3183,7 @@ function calculateWeaponDPM() {
   Object.keys(damageReport).forEach((weapon) => {
     const activeTime = (endTime - damageReportStartTimes[weapon]) / 60000; // Time in minutes
     weaponDPM[weapon] =
-        activeTime > 0 ? (damageReport[weapon] / activeTime).toFixed(2) : 0;
+      activeTime > 0 ? (damageReport[weapon] / activeTime).toFixed(2) : 0;
   });
 
   return weaponDPM;
@@ -3329,7 +3208,7 @@ function drawDamageReport() {
   Object.keys(damageReport).forEach((weapon) => {
     const activeTime = (endTime - damageReportStartTimes[weapon]) / 60000; // Time in minutes
     weaponDPM[weapon] =
-        activeTime > 0 ? (damageReport[weapon] / activeTime).toFixed(2) : 0;
+      activeTime > 0 ? (damageReport[weapon] / activeTime).toFixed(2) : 0;
   });
 
   let yOffset = canvas.height - 320;
@@ -3337,11 +3216,10 @@ function drawDamageReport() {
     if (damageReport[weapon] > 0) {
       yOffset += 20;
       ctx.fillText(
-          `${weapon.charAt(0).toUpperCase() + weapon.slice(1)}: ${
-              damageReport[weapon]
-          } (DPM: ${weaponDPM[weapon]})`,
-          20,
-          yOffset
+        `${weapon.charAt(0).toUpperCase() + weapon.slice(1)}: ${damageReport[weapon]
+        } (DPM: ${weaponDPM[weapon]})`,
+        20,
+        yOffset
       );
     }
   });

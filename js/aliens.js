@@ -96,16 +96,16 @@ function spawnAliens(wave) {
 
     }
 
-    if (wave == 50) {
+    if (wave == 22) {
         spawnSuperBossAlien();
     }
 
-    if (wave == 75) {
+    if (wave == 44) {
         spawnMegaBossAlien();
     }
 
 
-    if (wave == 100)
+    if (wave == 88)
         spawnOctoBoss();
 
 
@@ -393,8 +393,8 @@ function spawnSuperBossAlien() {
         shootTimer: 0,
         radius: 20,
         spawnTimer: 0,
-        hitpoints: 5000,
-        maxHitpoints: 5000,
+        hitpoints: 1500,
+        maxHitpoints: 1500,
         shootInterval: 220 // Adjust this value as needed
     };
 
@@ -486,9 +486,9 @@ function spawnMegaBossAlien() {
         direction: Math.random() * Math.PI * 2,
         shootTimer: 0,
         spawnTimer: 0,
-        hitpoints: 10000,
+        hitpoints: 5000,
         radius: 30,
-        maxHitpoints: 10000,
+        maxHitpoints: 5000,
         shootInterval: 100 // Adjust this value as needed
     };
     aliens.push(megaBossAlien);
@@ -1530,7 +1530,7 @@ function checkArmDestruction(armIndex) {
 
 function regenerateArm() {
     const destroyedArmIndex = octoBoss.arms.findIndex(arm =>
-        arm.segments.every(segment => segment.state === OctoBossArmState.DESTROYED)
+        arm.segments.every(seg => seg.state === OctoBossArmState.DESTROYED)
     );
 
     if (destroyedArmIndex !== -1) {
@@ -1700,5 +1700,3 @@ function shootInk() {
     }
     playAlienLaserSound(); // You might want to create a separate ink sound
 }
-
-

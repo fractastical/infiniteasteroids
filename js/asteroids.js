@@ -76,8 +76,8 @@ function createAsteroids(side) {
       asteroidSpeedMultiplier = isSmallAsteroid
         ? 0.3
         : isLargeAsteroid
-        ? 0.05
-        : 0.1;
+          ? 0.05
+          : 0.1;
 
       const randomIndex = Math.floor(Math.random() * asteroidImages.length);
       const asteroidImage = asteroidImages[randomIndex];
@@ -229,7 +229,7 @@ function calculateLineThickness(hitpoints) {
     return (
       20 +
       (60 * (Math.log(hitpoints) - Math.log(100))) /
-        (Math.log(500) - Math.log(100))
+      (Math.log(500) - Math.log(100))
     );
   }
 }

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulated Asteroid Statistics and XP Progression</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .chart-container {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<script>
+    // let currentMode = GameModes.NORMAL;
+
+</script>
+
+<body>
+    <div class="container">
+        <h1>Simulated Asteroid Statistics and XP Progression</h1>
+        <div class="chart-container">
+            <canvas id="asteroidCountChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="asteroidHPChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="asteroidTypeHPChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="asteroidSpeedChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="xpProgressionChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="alienSpawnChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="rareAsteroidChanceChart"></canvas>
+        </div>
+        <h2>Alien Types</h2>
+        <table id="alienTypesTable">
+            <tr>
+                <th>Type</th>
+                <th>Hitpoints</th>
+                <th>Speed</th>
+            </tr>
+        </table>
+        <h2>Boss Spawn Waves</h2>
+        <table id="bossSpawnTable">
+            <tr>
+                <th>Boss</th>
+                <th>Spawn Wave</th>
+                <th>Hitpoints</th>
+            </tr>
+        </table>
+
+    </div>
+
+    <script src="js/game-taper.js"></script>
+    <script src="js/aliens.js"></script>
+    <script>
+        currentMode = GameModes.NORMAL;
+        // Simulation function
+        function simulateWave(waveNumber) {
+            wave = waveNumber; // Set global wave variable
+            let asteroids = [];
+            let numberOfAsteroids = 10 + (wave - 1) * 1.8 + meteorBooster;
+
+            // Apply wave-specific adjustments
+            if (wave > 49 && wave < 53) numberOfAsteroids *= 0.2;
+            else if (wave >= 53 && wave < 56) numberOfAsteroids *= 0.45;
+            if (wave > 74 && wave < 78) numberOfAsteroids *= 0.2;
+            else if (wave >= 78 && wave < 82) numberOfAsteroids *= 0.45;
+            else if (wave >= 97 && wave < 106) numberOfAsteroids *= 0.3;
+
+            numberOfAsteroids = Math.round(numberOfAsteroids);
+
+            for (let i = 0; i < numberOfAsteroids; i++) {
+                let type = 'normal';
+                let hitpoints = 1;
+
+                if (Math.random() < 0.1) type = 'large'; // 10% chance for large
+                else if (Math.random() * 100 < chanceForSmallAsteroid) type = 'small';
+                else if (Math.random() * 100 < chanceForVerySmallAsteroid) type = 'verySmall';
+                else if (Math.random() * 100 < chanceForHardenedAsteroid) type = 'hardened';
+                else if (Math.random() * 100 < chanceForVeryHardenedAsteroid) type = 'veryHardened';
+                else if (Math.random() * 100 < chanceForMegaHardenedAsteroid) type = 'megaHardened';
+
+                if (Math.random() < getRareAsteroidChance(wave)) type = 'rare';
+
+                // Set hitpoints based on type
+                if (type === 'large') hitpoints = wave;
+                else if (type === 'megaHardened') hitpoints = 10 + wave;
+                else if (type === 'veryHardened') hitpoints = 15;
+                else if (type === 'hardened') hitpoints = Math.floor(Math.random() * 5) + 3;
+                else if (type === 'rare') hitpoints = 5;
+
+                hitpoints += applyMultiWaveBoost(wave);
+                hitpoints = calculateAsteroidHitpoints(wave, hitpoints);
+
+                let speed = calculateAsteroidSpeed(wave);
+
+                asteroids.push({ type, hitpoints, speed });
+            }
+
+            // Increase chances for next wave
+            chanceForSmallAsteroid += 0.5;
+            chanceForVerySmallAsteroid += 0.1;
+            chanceForHardenedAsteroid += 0.5;
+            chanceForVeryHardenedAsteroid += 0.2;
+            chanceForMegaHardenedAsteroid += 0.1;
+
+            return asteroids;
+        }
+
+        // Simulate waves
+        const maxWaves = 100;
+        const simulatedData = [];
+        for (let wave = 1; wave <= maxWaves; wave++) {
+            simulatedData.push(simulateWave(wave));
+        }
+
+        // Process simulated data
+        const asteroidCounts = simulatedData.map(wave => {
+            let counts = { normal: 0, large: 0, small: 0, verySmall: 0, hardened: 0, veryHardened: 0, megaHardened: 0, rare: 0 };
+            wave.forEach(asteroid => counts[asteroid.type]++);
+            return counts;
+        });
+
+        const averageHP = simulatedData.map(wave => {
+            let sum = wave.reduce((sum, asteroid) => sum + asteroid.hitpoints, 0);
+            return sum / wave.length;
+        });
+
+        const averageSpeed = simulatedData.map(wave => {
+            let sum = wave.reduce((sum, asteroid) => sum + asteroid.speed, 0);
+            return sum / wave.length;
+        });
+
+        // Calculate HP for each asteroid type up to wave 100
+        const asteroidTypeHP = {
+            normal: [], large: [], small: [], verySmall: [],
+            hardened: [], veryHardened: [], megaHardened: [], rare: []
+        };
+
+        for (let wave = 1; wave <= maxWaves; wave++) {
+            asteroidTypeHP.normal.push(calculateAsteroidHitpoints(wave, 1 + applyMultiWaveBoost(wave)));
+            asteroidTypeHP.large.push(calculateAsteroidHitpoints(wave, wave + applyMultiWaveBoost(wave)));
+            asteroidTypeHP.small.push(calculateAsteroidHitpoints(wave, 1 + applyMultiWaveBoost(wave)));
+            asteroidTypeHP.verySmall.push(calculateAsteroidHitpoints(wave, 1 + applyMultiWaveBoost(wave)));
+            asteroidTypeHP.hardened.push(calculateAsteroidHitpoints(wave, 5 + applyMultiWaveBoost(wave)));
+            asteroidTypeHP.veryHardened.push(calculateAsteroidHitpoints(wave, 15 + applyMultiWaveBoost(wave)));
+            asteroidTypeHP.megaHardened.push(calculateAsteroidHitpoints(wave, 10 + wave + applyMultiWaveBoost(wave)));
+            asteroidTypeHP.rare.push(calculateAsteroidHitpoints(wave, 5 + applyMultiWaveBoost(wave)));
+        }
+
+        // XP Progression
+        const difficulties = [GameModes.EASY, GameModes.NORMAL, GameModes.HARD, GameModes.HERO];
+        const xpProgression = {};
+        difficulties.forEach(diff => {
+            multiplierCalculator(diff);
+            xpToNextLevel = 300; // Reset for each difficulty
+            xpProgression[diff] = Array(maxWaves).fill().map((_, i) => {
+                wave = i + 1; // Set global wave variable
+                bonusLevelUpCalculator();
+                let xp = levelXPCalculator();
+                xpToNextLevel = xp; // Update for next wave
+                return xp;
+            });
+        });
+
+        // Asteroid Count Chart
+        new Chart(document.getElementById('asteroidCountChart').getContext('2d' , { alpha: false  , willReadFrequently: true}), {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: maxWaves }, (_, i) => i + 1),
+                datasets: Object.keys(asteroidCounts[0]).map(type => ({
+                    label: type,
+                    data: asteroidCounts.map(count => count[type]),
+                    borderColor: getColorForType(type),
+                    tension: 0.1
+                }))
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Asteroid Count per Wave' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Wave' } },
+                    y: { title: { display: true, text: 'Count' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // Average HP Chart
+        new Chart(document.getElementById('asteroidHPChart').getContext('2d' , { alpha: false  , willReadFrequently: true}), {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: maxWaves }, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Average HP',
+                    data: averageHP,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Average Asteroid HP per Wave' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Wave' } },
+                    y: { title: { display: true, text: 'HP' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // Asteroid Type HP Chart
+        new Chart(document.getElementById('asteroidTypeHPChart').getContext('2d' , { alpha: false  , willReadFrequently: true}), {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: maxWaves }, (_, i) => i + 1),
+                datasets: Object.keys(asteroidTypeHP).map(type => ({
+                    label: type,
+                    data: asteroidTypeHP[type],
+                    borderColor: getColorForType(type),
+                    tension: 0.1
+                }))
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Asteroid HP by Type (up to Wave 100)' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Wave' } },
+                    y: {
+                        title: { display: true, text: 'HP' },
+                        beginAtZero: true,
+                        type: 'logarithmic'
+                    }
+                }
+            }
+        });
+
+        // Average Speed Chart
+        new Chart(document.getElementById('asteroidSpeedChart').getContext('2d' , { alpha: false  , willReadFrequently: true}), {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: maxWaves }, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Average Speed',
+                    data: averageSpeed,
+                    borderColor: 'rgb(255, 159, 64)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Average Asteroid Speed per Wave' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Wave' } },
+                    y: { title: { display: true, text: 'Speed' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // XP Progression Chart
+        new Chart(document.getElementById('xpProgressionChart').getContext('2d' , { alpha: false  , willReadFrequently: true}), {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: maxWaves }, (_, i) => i + 1),
+                datasets: difficulties.map(diff => ({
+                    label: diff,
+                    data: xpProgression[diff],
+                    borderColor: getColorForDifficulty(diff),
+                    tension: 0.1
+                }))
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'XP Required for Next Level (First 100 Waves)' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Wave' } },
+                    y: {
+                        title: { display: true, text: 'XP Required' },
+                        beginAtZero: true,
+                        type: 'logarithmic'
+                    }
+                }
+            }
+        });
+
+        function getColorForType(type) {
+            const colors = {
+                normal: 'rgb(75, 192, 192)',
+                large: 'rgb(255, 159, 64)',
+                small: 'rgb(255, 99, 132)',
+                verySmall: 'rgb(54, 162, 235)',
+                hardened: 'rgb(153, 102, 255)',
+                veryHardened: 'rgb(255, 206, 86)',
+                megaHardened: 'rgb(231, 233, 237)',
+                rare: 'rgb(102, 255, 102)'
+            };
+            return colors[type] || 'rgb(0, 0, 0)';
+        }
+
+        function getColorForDifficulty(difficulty) {
+            const colors = {
+                [GameModes.EASY]: 'rgb(75, 192, 192)',
+                [GameModes.NORMAL]: 'rgb(255, 159, 64)',
+                [GameModes.HARD]: 'rgb(255, 99, 132)',
+                [GameModes.HERO]: 'rgb(54, 162, 235)'
+            };
+            return colors[difficulty] || 'rgb(0, 0, 0)';
+        }
+
+        new Chart(document.getElementById('alienSpawnChart').getContext('2d' , { alpha: false  , willReadFrequently: true}), {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 100 }, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Aliens Spawned',
+                    data: Array.from({ length: 100 }, (_, i) => getAliensToSpawn(i + 1)),
+                    borderColor: 'rgb(255, 99, 132)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Aliens Spawned per Wave' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Wave' } },
+                    y: { title: { display: true, text: 'Number of Aliens' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // Rare Asteroid Chance Chart
+        new Chart(document.getElementById('rareAsteroidChanceChart').getContext('2d' , { alpha: false  , willReadFrequently: true}), {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 100 }, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Rare Asteroid Chance',
+                    data: Array.from({ length: 100 }, (_, i) => getRareAsteroidChance(i + 1)),
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: { display: true, text: 'Rare Asteroid Spawn Chance' }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Wave' } },
+                    y: {
+                        title: { display: true, text: 'Chance' },
+                        beginAtZero: true,
+                        ticks: { callback: value => (value * 100).toFixed(1) + '%' }
+                    }
+                }
+            }
+        });
+
+        // Populate Alien Types Table
+        const alienTypesTable = document.getElementById('alienTypesTable');
+        for (const [type, stats] of Object.entries(SwarmingAlienTypes)) {
+            const row = alienTypesTable.insertRow();
+            row.insertCell(0).textContent = type;
+            row.insertCell(1).textContent = stats.hitpoints;
+            row.insertCell(2).textContent = stats.speed;
+        }
+
+        // Populate Boss Spawn Table
+        const bossSpawnTable = document.getElementById('bossSpawnTable');
+        [
+            { name: 'Super Boss', wave: SUPER_BOSS_SPAWN_WAVE, hp: SUPER_BOSS_HP },
+            { name: 'Mega Boss', wave: MEGA_BOSS_SPAWN_WAVE, hp: MEGA_BOSS_HP },
+            { name: 'Octo Boss', wave: OCTO_BOSS_SPAWN_WAVE, hp: OCTO_BOSS_HP }
+        ].forEach(boss => {
+            const row = bossSpawnTable.insertRow();
+            row.insertCell(0).textContent = boss.name;
+            row.insertCell(1).textContent = boss.wave;
+            row.insertCell(2).textContent = boss.hp;
+        });
+
+    </script>
+</body>
+
+</html>
