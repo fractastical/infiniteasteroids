@@ -517,6 +517,10 @@
 							<button id="prevShipButton">&#60;</button>
 							<span id="selectedShip">Basic</span>
 							<button id="nextShipButton">></button>
+
+							<a id="customizeShipButton">
+								<img src="icons/wrench.png" width="30px"/>
+							</a>
 						</div>
 					</div>
 
@@ -544,6 +548,7 @@
 			</div>
 			<div><span id="crazyGameData"></span>
 				<button id="playNow" onclick="initializeGame(GameModes.EASY)">Play now</button>
+
 				<BR /><button id="settings" onclick="toggleSettings()">Settings</button><BR />
 				<button id="viewAllLeaderboardsButton">Leaderboards</button><BR />
 				<button id="Achievements" onclick="openAchievementsModal()">My Achievements</button>
@@ -2356,9 +2361,15 @@
 	<script src="js/upgrades-space.js"></script>
 
 	<script src="js/aliens.js"></script>
+	<!-- <script src="js/aliens-advanced-1.js"></script> -->
+
 	<script src="js/eliteAliens.js"></script>
+
+	<script src="js/aliens-splitter-phase.js"></script>
+
 	<script src="js/gems.js"></script>
 	<script src="js/special-effects.js"></script>
+	<script src="js/ship-customization.js"></script>
 	<script>
 
 		function isFirefox() {
