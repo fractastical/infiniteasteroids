@@ -395,7 +395,14 @@ function spawnSuperBossAlien() {
         spawnTimer: 0,
         hitpoints: 1500,
         maxHitpoints: 1500,
-        shootInterval: 220 // Adjust this value as needed
+        shootInterval: 220, // spread attack interval
+        attackModes: ['spread', 'spiral'], // available attack styles
+        attackMode: 'spread', // current attack style
+        phase: 'attack', // 'attack' or 'vulnerable'
+        phaseTimer: 0,
+        attackDuration: 600, // frames (~10s)
+        vulnerabilityDuration: 120, // frames (~2s)
+        spiralAngle: 0
     };
 
     if (testMode)
@@ -406,32 +413,78 @@ function spawnSuperBossAlien() {
 
 function updateSuperBossAlien() {
     if (!superbossAlien) return;
-    if (!freezeEffect.active) {
-        const dx = ship.x - superbossAlien.x;
-        const dy = ship.y - superbossAlien.y;
-        const angle = Math.atan2(dy, dx);
+    if (freezeEffect.active) return;
 
-        superbossAlien.x += Math.cos(angle) * superbossAlien.speed;
-        superbossAlien.y += Math.sin(angle) * superbossAlien.speed;
+    // Move towards the ship
+    const dx = ship.x - superbossAlien.x;
+    const dy = ship.y - superbossAlien.y;
+    const moveAngle = Math.atan2(dy, dx);
 
-        superbossAlien.shootTimer++;
-        if (superbossAlien.shootTimer >= superbossAlien.shootInterval) {
+    superbossAlien.x += Math.cos(moveAngle) * superbossAlien.speed;
+    superbossAlien.y += Math.sin(moveAngle) * superbossAlien.speed;
+
+    // Phase timing
+    superbossAlien.phaseTimer++;
+
+    if (superbossAlien.phase === 'attack') {
+        // Handle current attack style
+        if (superbossAlien.attackMode === 'spread') {
+            superbossAlien.shootTimer++;
+            if (superbossAlien.shootTimer >= superbossAlien.shootInterval) {
+                superbossAlien.shootTimer = 0;
+                shootSuperBossAlienLaser();
+                playBossLaserSound();
+            }
+        } else if (superbossAlien.attackMode === 'spiral') {
+            // Fire rapidly to create a spiral pattern
+            const spiralShootInterval = 3; // frames between each bullet
+            superbossAlien.shootTimer++;
+            if (superbossAlien.shootTimer >= spiralShootInterval) {
+                superbossAlien.shootTimer = 0;
+                const a = superbossAlien.spiralAngle;
+                alienLasers.push({
+                    x: superbossAlien.x,
+                    y: superbossAlien.y,
+                    dx: Math.cos(a) * alienLaserSpeed,
+                    dy: Math.sin(a) * alienLaserSpeed
+                });
+                superbossAlien.spiralAngle += Math.PI / 60; // tweak for smooth spiral
+            }
+        }
+
+        // Transition to vulnerability?
+        if (superbossAlien.phaseTimer >= superbossAlien.attackDuration) {
+            superbossAlien.phase = 'vulnerable';
+            superbossAlien.phaseTimer = 0;
             superbossAlien.shootTimer = 0;
-            shootSuperBossAlienLaser();
-            playBossLaserSound();
         }
-
-        superbossAlien.spawnTimer++;
-        if (superbossAlien.spawnTimer >= 250) {
-            superbossAlien.spawnTimer = 0;
-            spawnLittleAliensAroundSuperBoss();
+    } else if (superbossAlien.phase === 'vulnerable') {
+        // Boss is vulnerable – no shooting
+        if (superbossAlien.phaseTimer >= superbossAlien.vulnerabilityDuration) {
+            // Resume attacking with a (possibly) new style
+            superbossAlien.phase = 'attack';
+            superbossAlien.phaseTimer = 0;
+            const modes = superbossAlien.attackModes;
+            superbossAlien.attackMode = modes[Math.floor(Math.random() * modes.length)];
+            superbossAlien.shootTimer = 0;
+            if (superbossAlien.attackMode === 'spiral') {
+                superbossAlien.spiralAngle = 0;
+            }
         }
-
-        if (superbossAlien.x < 0) superbossAlien.x = canvas.width;
-        else if (superbossAlien.x > canvas.width) superbossAlien.x = 0;
-        if (superbossAlien.y < 0) superbossAlien.y = canvas.height;
-        else if (superbossAlien.y > canvas.height) superbossAlien.y = 0;
     }
+
+    // Spawn helper aliens
+    superbossAlien.spawnTimer++;
+    if (superbossAlien.spawnTimer >= 250) {
+        superbossAlien.spawnTimer = 0;
+        spawnLittleAliensAroundSuperBoss();
+    }
+
+    // Screen wrapping
+    if (superbossAlien.x < 0) superbossAlien.x = canvas.width;
+    else if (superbossAlien.x > canvas.width) superbossAlien.x = 0;
+    if (superbossAlien.y < 0) superbossAlien.y = canvas.height;
+    else if (superbossAlien.y > canvas.height) superbossAlien.y = 0;
 }
 
 function shootSuperBossAlienLaser() {
