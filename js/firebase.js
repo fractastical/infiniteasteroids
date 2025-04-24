@@ -114,19 +114,32 @@ window.saveUserData = saveUserData;
 
 // Function to load leaderboard for a specific game
 async function loadLeaderboard(gameName) {
+    const MAX_VALID_SCORE = 1_000_000_000_000; // Filter out scores above 1 trillion. Adjust as needed.
+    const EXCLUDED_NICKNAMES = ["thomasramage"]; // List of nicknames to exclude (case-insensitive)
     const db = getFirestore();
     const usersSnapshot = await getDocs(collection(db, 'users'));
     const users = [];
 
     usersSnapshot.forEach(doc => {
         const userData = doc.data();
+        const nicknameRaw = userData.nickname || 'Unnamed';
+        const nickname = nicknameRaw.trim();
+        const normalizedNickname = nickname.toLowerCase();
+        // Skip any explicitly excluded nicknames
+        if (EXCLUDED_NICKNAMES.includes(normalizedNickname)) {
+            return; // Skip this entry entirely
+        }
+
         const gameScores = userData.games?.[gameName]?.scores || [];
         const highestScore = gameScores.reduce((max, session) => Math.max(max, session.score), 0);
 
-        users.push({
-            nickname: userData.nickname || 'Unnamed',
-            score: highestScore
-        });
+        // Only include scores within a realistic range
+        if (Number.isFinite(highestScore) && highestScore > 0 && highestScore <= MAX_VALID_SCORE) {
+            users.push({
+                nickname: nickname,
+                score: highestScore
+            });
+        }
     });
 
     users.sort((a, b) => b.score - a.score);
