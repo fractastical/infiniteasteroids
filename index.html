@@ -96,12 +96,12 @@
 
 	<div class="top-right" id="loginContainer">
 
-		<!--    <a href="#" id="login-link"><img width="80" src="icons/user/login.png" /></a>-->
+		<a href="#" id="loginLink"><img width="80" src="icons/user/login.png" /></a>
 	</div>
 
 	<div class="top-right hidden" id="userInfo">
 		<span id="userNickname"></span>
-		<!-- | <a href="#" id="logoutLink">Logout</a> -->
+		| <a href="#" id="logoutLink">Logout</a>
 	</div>
 
 
@@ -519,7 +519,7 @@
 							<button id="nextShipButton">></button>
 
 							<a id="customizeShipButton">
-								<img src="icons/wrench.png" width="30px"/>
+								<img src="icons/wrench.png" width="30px" />
 							</a>
 						</div>
 					</div>
@@ -1484,6 +1484,8 @@
 		const loginForm = document.getElementById('loginForm');
 		const userInfo = document.getElementById('userInfo');
 		const userNickname = document.getElementById('userNickname');
+		const loginLink = document.getElementById('loginLink');
+
 		const logoutLink = document.getElementById('logoutLink');
 		const loginContainer = document.getElementById('loginContainer');
 		const signupForm = document.getElementById('signupForm');
@@ -1624,6 +1626,8 @@
 					const userData = userDoc.data();
 					username = username || userData.nickname;
 					loadUserData(userId);
+					loginLink.style.display = 'none';
+
 				} else {
 					// If the user document doesn't exist, we might want to create it
 					await setDoc(userDocRef, {
@@ -1673,6 +1677,8 @@
 				loginPopup.style.display = 'none';
 				loginFormOpen = false;
 				resumeGame();
+				loginLink.style.display = 'none';
+
 			} catch (error) {
 				console.error('Error signing in:', error);
 				document.getElementById('loginError').textContent = error.message;
@@ -1720,7 +1726,7 @@
 						await auth.signOut();
 						userId = null;
 						userInfo.style.display = 'none';
-						// loginLink.style.display = 'block';
+						loginLink.style.display = 'block';
 					} catch (error) {
 						console.error('Error signing out:', error);
 					}
@@ -1728,6 +1734,23 @@
 			});
 
 		}
+
+		if (loginLink) {
+			if (crazyGamesMode) {
+				loginLink.style.display = 'none';
+			} else {
+				loginLink.style.display = 'block';
+
+
+				loginLink.addEventListener('click', async (event) => {
+					event.preventDefault();
+					showFirebaseLoginPopup();
+
+				});
+			}
+		}
+
+
 
 
 		auth.onAuthStateChanged(user => {

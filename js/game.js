@@ -321,17 +321,17 @@ const Achievements = {
   alien_megaboss_killed: {
     reached: false,
     icon: "icons/aliens/cool_evil_alien_22.png",
-    description: "Killed Wave 50 Alien Boss. Chain of Flame.",
+    description: "Killed Wave 22 Alien Boss. Chain of Flame.",
   },
   alien_supermegaboss_killed: {
     reached: false,
     icon: "icons/aliens/alien_boss_ship_14.png",
-    description: "Killed Wave 75 Alien MegaBoss. Explo Drone.",
+    description: "Killed Wave 44 Alien MegaBoss. Explo Drone.",
   },
   alien_octopus_killed: {
     reached: false,
     icon: "icons/aliens/alien_boss_ship_5.png",
-    description: "Killed Wave 100 Vampire Alien Octopus. CryoBomb.",
+    description: "Killed Wave 88 Vampire Alien Octoboss. CryoBomb.",
   },
   million_score: {
     reached: false,

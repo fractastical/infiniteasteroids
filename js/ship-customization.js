@@ -41,6 +41,7 @@
         originalParent.appendChild(previewCan);
         previewCan.width = originalSize.w;
         previewCan.height = originalSize.h;
+        updateShipPreview(currentShip); // redraw outside preview after canvas reset
         resumeGame?.();
     });
 
