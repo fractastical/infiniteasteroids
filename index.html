@@ -89,6 +89,14 @@
 				<h3>Used Upgrades</h3>
 				<!-- Available upgrades will be added here dynamically -->
 			</div>
+			<div class="option-group">
+				<h4 id="secondaryWeaponHeader">Select Secondary:</h4>
+				<div class="selector">
+					<button id="prevSecondaryWeaponButton">&#60;</button>
+					<span id="selectedSecondaryWeapon">Bomb</span>
+					<button id="nextSecondaryWeaponButton">&#62;</button>
+				</div>
+			</div>
 			<button id="saveCustomization">Save and Close</button>
 		</div>
 	</div>
@@ -124,7 +132,7 @@
 	</div>
 	<!-- <div id="shipType">
   Ship type: Basic&nbsp;&nbsp; &nbsp;
-</div> -->
+</div -->
 
 
 	<div id="technologiesCount1">
@@ -497,11 +505,11 @@
 				if (window.innerHeight < 500) {
 					document.getElementById('gameModeHeader').remove();
 					console.log(window.innerHeight);
-					document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
+					// document.getElementById('secondaryWeaponHeader').innerHTML = "Select Secondary:";
 				}
 
 
-			});
+			};
 
 
 		</script>
@@ -524,14 +532,6 @@
 						</div>
 					</div>
 
-					<div class="option-group">
-						<h4 id="secondaryWeaponHeader">Select Secondary:</h4>
-						<div class="selector">
-							<button id="prevSecondaryWeaponButton">&#60;</button>
-							<span id="selectedSecondaryWeapon">Bomb</span>
-							<button id="nextSecondaryWeaponButton">></button>
-						</div>
-					</div>
 				</div>
 
 				<div id="gameModeSection">
@@ -1551,109 +1551,6 @@
 			};
 			await setDoc(doc(db, 'users', userId), initialData);
 		}
-
-		async function showCrazyGamesAuthPrompt() {
-
-
-			try {
-				const user = await window.CrazyGames.SDK.user.showAuthPrompt();
-				console.log("Auth prompt result", user);
-
-
-			} catch (e) {
-				console.log("Error:", e);
-				// normal login as backup
-				loginFormOpen = true;
-				event.preventDefault();
-				pauseGame();
-				loginPopup.style.display = 'block';
-
-
-
-			}
-
-		}
-
-
-		function showFirebaseLoginPopup() {
-			loginFormOpen = true;
-			pauseGame();
-			loginPopup.style.display = 'block';
-		}
-
-
-
-		async function handleCrazyGamesLogin() {
-			if (!sdkReady) {
-				throw new Error('CrazyGames SDK not ready');
-			}
-
-			console.log('Handling CrazyGames login...');
-
-			const user = await window.CrazyGames.SDK.user.getUserToken();
-			const decodedUserToken = jwt_decode(user);
-
-			if (decodedUserToken && decodedUserToken.userId) {
-				await handleUserLogin('cg_' + decodedUserToken.userId, decodedUserToken.username);
-			} else {
-				const authResult = await window.CrazyGames.SDK.user.showAuthPrompt();
-				if (authResult && authResult.userObject && authResult.userObject.userId) {
-					await handleUserLogin('cg_' + authResult.userObject.userId, authResult.userObject.username);
-				} else {
-					throw new Error('CrazyGames authentication failed');
-				}
-			}
-		}
-
-
-
-
-		async function handleUserLogin(id, username) {
-			console.log('Handling user login for:', id, username);
-			if (!id) {
-				console.error('Invalid user ID received');
-				return;
-			}
-			userId = id;
-			cg_usernickname = username;
-
-			try {
-				const db = getFirestore();
-				const userDocRef = doc(db, 'users', userId);
-				const userDoc = await getDoc(userDocRef);
-
-				if (userDoc.exists()) {
-					const userData = userDoc.data();
-					username = username || userData.nickname;
-					loadUserData(userId);
-					loginLink.style.display = 'none';
-
-				} else {
-					// If the user document doesn't exist, we might want to create it
-					await setDoc(userDocRef, {
-						nickname: username,
-						createdAt: new Date()
-					});
-				}
-
-				userNickname.textContent = username;
-				userInfo.style.display = 'block';
-				// loginLink.style.display = 'none';
-
-				await loadOrInitializeUserData(id, username);
-			} catch (error) {
-				console.error('Error handling user login:', error);
-			}
-		}
-
-
-		function loadUserDataToGame(userData) {
-			coins = userData.coins || 0;
-			Object.assign(Achievements, userData.games?.[gameId]?.achievements || {});
-			// Load other game-specific data as needed
-			updateGameUI();
-		}
-
 
 		async function loadOrInitializeUserData(id, username) {
 			console.log('Loading or initializing user data for:', id);
