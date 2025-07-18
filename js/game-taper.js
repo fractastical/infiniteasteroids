@@ -1,4 +1,3 @@
-
 let bonuslevelUpXPMultiplier = 1;
 
 const TAPER_WAVE = 85;
@@ -34,6 +33,14 @@ const GameModes = {
     PLANETNORMAL: 'planetnormal',
     PLANETHARD: 'planethard',
     PLANETHERO: 'planethero',
+    NEBULARUNEASY: 'nebularuneasy',
+    NEBULARUNNORMAL: 'nebularunnormal',
+    NEBULARUNHARD: 'nebularunhard',
+    NEBULARUNHERO: 'nebularunhero',
+    METAINVADERSEASY: 'metainvaderseasy',
+    METAINVADERSNORMAL: 'metainvadersnormal',
+    METAINVADERSHARD: 'metainvadershard',
+    METAINVADERSHERO: 'metainvadershero',
     ENDLESS_SLOW: 'endless_slow',
     COOP: 'coop'
 
@@ -52,6 +59,14 @@ const gameModes = [
     { id: GameModes.PLANETNORMAL, name: "Planet Normal" },
     { id: GameModes.PLANETHARD, name: "Planet Hard" },
     { id: GameModes.PLANETHERO, name: "Planet Hero" },
+    { id: GameModes.NEBULARUNEASY, name: "Nebula Run Easy" },
+    { id: GameModes.NEBULARUNNORMAL, name: "Nebula Run Normal" },
+    { id: GameModes.NEBULARUNHARD, name: "Nebula Run Hard" },
+    { id: GameModes.NEBULARUNHERO, name: "Nebula Run Hero" },
+    { id: GameModes.METAINVADERSEASY, name: "Meta Invaders Easy" },
+    { id: GameModes.METAINVADERSNORMAL, name: "Meta Invaders Normal" },
+    { id: GameModes.METAINVADERSHARD, name: "Meta Invaders Hard" },
+    { id: GameModes.METAINVADERSHERO, name: "Meta Invaders Hero" },
     { id: GameModes.ENDLESS_SLOW, name: "Endless Slow" }
 ];
 
@@ -222,6 +237,62 @@ function multiplierCalculator(mode) {
             invincibilityDuration = 130;
 
             modeScoreMultiplier = 7.2;
+            break;
+        case GameModes.NEBULARUNEASY:
+            asteroidDifficultySpeedMultiplier = 1.2;
+            levelUpXPMultiplier = 1.1;
+            meteorBooster = 5;
+            modeScoreMultiplier = 1.8;
+            invincibilityDuration = 180;
+            break;
+        case GameModes.NEBULARUNNORMAL:
+            asteroidDifficultySpeedMultiplier = 1.4;
+            levelUpXPMultiplier = 1.2;
+            meteorBooster = 7;
+            modeScoreMultiplier = 3.2;
+            invincibilityDuration = 160;
+            break;
+        case GameModes.NEBULARUNHARD:
+            asteroidDifficultySpeedMultiplier = 1.6;
+            levelUpXPMultiplier = 1.3;
+            meteorBooster = 10;
+            modeScoreMultiplier = 5.0;
+            invincibilityDuration = 140;
+            break;
+        case GameModes.NEBULARUNHERO:
+            asteroidDifficultySpeedMultiplier = 1.8;
+            levelUpXPMultiplier = 1.4;
+            meteorBooster = 15;
+            modeScoreMultiplier = 6.8;
+            invincibilityDuration = 130;
+            break;
+        case GameModes.METAINVADERSEASY:
+            asteroidDifficultySpeedMultiplier = 1.3;
+            levelUpXPMultiplier = 1.1;
+            meteorBooster = 6;
+            modeScoreMultiplier = 2.0;
+            invincibilityDuration = 180;
+            break;
+        case GameModes.METAINVADERSNORMAL:
+            asteroidDifficultySpeedMultiplier = 1.5;
+            levelUpXPMultiplier = 1.2;
+            meteorBooster = 9;
+            modeScoreMultiplier = 3.8;
+            invincibilityDuration = 160;
+            break;
+        case GameModes.METAINVADERSHARD:
+            asteroidDifficultySpeedMultiplier = 1.7;
+            levelUpXPMultiplier = 1.3;
+            meteorBooster = 12;
+            modeScoreMultiplier = 5.6;
+            invincibilityDuration = 140;
+            break;
+        case GameModes.METAINVADERSHERO:
+            asteroidDifficultySpeedMultiplier = 1.9;
+            levelUpXPMultiplier = 1.4;
+            meteorBooster = 17;
+            modeScoreMultiplier = 7.4;
+            invincibilityDuration = 130;
             break;
         case GameModes.ENDLESS_SLOW:
             spawnCooldown = 10;
