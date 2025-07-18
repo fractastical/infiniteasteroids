@@ -509,9 +509,7 @@
 				}
 
 
-			};
-
-
+			});
 		</script>
 		<div id="controlSection">
 			<div>
@@ -1411,6 +1409,9 @@
 			console.log('Falling back to standard mode due to SDK initialization failure');
 		}
 
+		function handleUserLogin() {
+
+		}
 		async function checkCrazyUserStatus() {
 			if (!sdkReady || (window.CrazyGames.SDK && window.CrazyGames.SDK.sdk && window.CrazyGames.SDK.sdk.code && window.CrazyGames.SDK.sdk.code == "sdkDisabled")) {
 				console.log('SDK not ready, cannot check user status');
@@ -1717,7 +1718,7 @@
 					});
 				}
 			} catch (firebaseError) {
-				console.error("Error getting/setting user data in Firebase:", firebaseError);
+				console.error("Error getting/setting did yuser data in Firebase:", firebaseError);
 			}
 		}
 		function populateUserSessions(sessions) {
@@ -2087,22 +2088,22 @@
 				const db = getFirestore();
 				const scoresCollection = collection(db, 'scores');
 
-				const GameModes = {
-					EASY: 'easy',
-					NORMAL: 'normal',
-					HARD: 'hard',
-					HERO: 'heroic',
-					METEORSHOWEREASY: 'meteorshowereasy',
-					METEORSHOWERNORMAL: 'meteorshowernormal',
-					METEORSHOWERHARD: 'meteorshowerhard',
-					METEORSHOWERHERO: 'meteorshowerhero',
-					PLANETEASY: 'planeteasy',
-					PLANETNORMAL: 'planetnormal',
-					PLANETHARD: 'planethard',
-					PLANETHERO: 'planethero',
-					ENDLESS_SLOW: 'endless_slow',
-					COOP: 'coop'
-				};
+				// const GameModes = {
+				// 	EASY: 'easy',
+				// 	NORMAL: 'normal',
+				// 	HARD: 'hard',
+				// 	HERO: 'heroic',
+				// 	METEORSHOWEREASY: 'meteorshowereasy',
+				// 	METEORSHOWERNORMAL: 'meteorshowernormal',
+				// 	METEORSHOWERHARD: 'meteorshowerhard',
+				// 	METEORSHOWERHERO: 'meteorshowerhero',
+				// 	PLANETEASY: 'planeteasy',
+				// 	PLANETNORMAL: 'planetnormal',
+				// 	PLANETHARD: 'planethard',
+				// 	PLANETHERO: 'planethero',
+				// 	ENDLESS_SLOW: 'endless_slow',
+				// 	COOP: 'coop'
+				// };
 
 				const allScores = {};  // Object to store leaderboard data for each game mode
 
@@ -2268,6 +2269,7 @@
 		});
 
 	</script>
+	<script src="js/platform.js"></script>
 	<script src="js/optimize.js"></script>
 	<script src="js/audio.js"></script>
 	<!-- <script src="infinite/leaderboard.js"></script> -->
