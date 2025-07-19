@@ -1454,35 +1454,15 @@ function drawExplosions() {
 }
 
 // Update explosions with random alpha decay
+// updateExplosions logic moved to explosions.js
 function updateExplosions() {
-  for (let i = 0; i < explosions.length; i++) {
-    explosions[i].size += 1;
-    explosions[i].alpha -= explosions[i].alphaDecay;
-    if (explosions[i].alpha <= 0) {
-      explosions.splice(i, 1);
-      i--;
-    }
-  }
+  if (window.updateExplosions) return window.updateExplosions();
 }
 
 // Draw explosions with random colors
+// drawExplosions logic moved to explosions.js
 function drawExplosions() {
-  for (let i = 0; i < explosions.length; i++) {
-    ctx.save();
-    ctx.globalAlpha = explosions[i].alpha;
-    ctx.beginPath();
-    ctx.arc(
-      explosions[i].x,
-      explosions[i].y,
-      explosions[i].size,
-      0,
-      Math.PI * 2
-    );
-    ctx.closePath();
-    ctx.fillStyle = explosions[i].color;
-    ctx.fill();
-    ctx.restore();
-  }
+  if (window.drawExplosions) return window.drawExplosions();
 }
 
 function isColliding(obj1, obj2) {

@@ -541,7 +541,12 @@ function updateAsteroids() {
   }
 }
 
+// Explosion logic moved to explosions.js
 function createExplosion(x, y, hitpoints = 1, sizeMultiplier = 1) {
+  if (window.createExplosion && window.createExplosion !== createExplosion) {
+    // Delegate to new module implementation
+    return window.createExplosion(x, y, hitpoints, sizeMultiplier);
+  }
   const baseSize = 8 * sizeMultiplier; // Base size for explosions
   const sizeReductionFactor = 1.5; // Size reduction per hitpoint
   const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
