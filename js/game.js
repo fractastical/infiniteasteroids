@@ -960,8 +960,8 @@ function update() {
     if (invincibilityTimer <= 0) invincible = false;
   }
 
-  updateExplosions();
-  drawExplosions();
+  if (window.updateExplosions) window.updateExplosions();
+  if (window.drawExplosions) window.drawExplosions();
   // drawMegaBossAlienLaser();
 
   updateAliens();
@@ -981,8 +981,8 @@ function update() {
   drawOctoBoss();
   updateAndDrawParticles();
   updateAndDrawShockwaves();
-  updateExplosions();
-  drawExplosions();
+  if (window.updateExplosions) window.updateExplosions();
+  if (window.drawExplosions) window.drawExplosions();
   drawAlienLasers();
   updateBossFire();
 
@@ -1438,17 +1438,7 @@ function getRandomRedShade() {
 
 
 
-// Update explosions with random alpha decay
-// updateExplosions logic moved to explosions.js
-function updateExplosions() {
-  if (window.updateExplosions) return window.updateExplosions();
-}
 
-// Draw explosions with random colors
-// drawExplosions logic moved to explosions.js
-function drawExplosions() {
-  if (window.drawExplosions) return window.drawExplosions();
-}
 
 function isColliding(obj1, obj2) {
   if (obj1.radius) {

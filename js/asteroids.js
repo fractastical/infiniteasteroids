@@ -1,4 +1,11 @@
 let acidAreas = [];
+// Forward all explosion requests to the centralized implementation
+const createExplosion = (...args) => {
+  if (typeof window.createExplosion === 'function') {
+    return window.createExplosion(...args);
+  }
+  console.warn('createExplosion called before global implementation is ready', args);
+};
 
 function createSmallerAsteroids(x, y, size, speed, hitpoints) {
   const baseAngles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
@@ -20,6 +27,7 @@ function createSmallerAsteroids(x, y, size, speed, hitpoints) {
       initialHitpoints: hitpoints, // Store the initial hitpoints
       color: "gray",
     };
+
     asteroids.push(asteroid);
   }
 }
@@ -186,6 +194,7 @@ function createAsteroids(side) {
         image: asteroidImage,
         type: type,
       };
+
       asteroids.push(asteroid);
     }
 
@@ -541,36 +550,39 @@ function updateAsteroids() {
   }
 }
 
-// Explosion logic moved to explosions.js
-function createExplosion(x, y, hitpoints = 1, sizeMultiplier = 1) {
-  if (window.createExplosion && window.createExplosion !== createExplosion) {
-    // Delegate to new module implementation
-    return window.createExplosion(x, y, hitpoints, sizeMultiplier);
-  }
-  const baseSize = 8 * sizeMultiplier; // Base size for explosions
-  const sizeReductionFactor = 1.5; // Size reduction per hitpoint
-  const randomSize = Math.max(5, baseSize - hitpoints * sizeReductionFactor);
-  const randomAlphaDecay = Math.random() * 0.01 + 0.005; // Random alpha decay between 0.005 and 0.015
 
-  let randomColor;
-  if (hitpoints > 7) {
-    randomColor = getRandomPurpleShade();
+
+
+
+
+
+
+
+
+ // Random alpha decay between 0.005 and 0.015
+
+
+if (hitpoints > 7) {
+  
+} else if (hitpoints > 1) {
+  
+} else {
+  
   } else if (hitpoints > 1) {
-    randomColor = getRandomBlueShade();
+    
   } else {
-    randomColor = getRandomOrangeShade();
+    
   }
 
-  let explosion = {
+  
     x: x,
     y: y,
-    size: randomSize,
-    alpha: 1,
-    alphaDecay: randomAlphaDecay,
-    color: randomColor,
-  };
-  if (explosions.length < HARDCAPONASTEROIDEXPLOSIONS)
-    explosions.push(explosion);
+    
+    
+    
+    
+  
+  
 }
 
 let lastRareAsteroids = [];
@@ -800,7 +812,7 @@ function createMegaExplosionEffect(x, y, radius) {
     duration: duration,
     colors: explosionColors,
     currentColorIndex: 0,
-  };
+  
 
   // Add to a new array for mega explosions if you don't want to use the regular explosions array
   megaExplosions.push(megaExplosion);
@@ -808,7 +820,7 @@ function createMegaExplosionEffect(x, y, radius) {
 
 function drawMegaExplosions() {
   for (let i = megaExplosions.length - 1; i >= 0; i--) {
-    let explosion = megaExplosions[i];
+     megaExplosions[i];
 
     ctx.beginPath();
     ctx.arc(explosion.x, explosion.y, explosion.currentRadius, 0, Math.PI * 2);

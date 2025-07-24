@@ -5,6 +5,8 @@
 
 // If another script already created the array (legacy code) we reuse it; otherwise define it.
 window.explosions = window.explosions || [];
+// Debug flag – set to true to log explosion lifecycle
+window.DEBUG_EXPLOSIONS = window.DEBUG_EXPLOSIONS || false;
 
 // Default cap – falls back to previous global constant if present
 const MAX_EXPLOSIONS = typeof HARDCAPONASTEROIDEXPLOSIONS !== 'undefined' ?
@@ -63,6 +65,7 @@ function createExplosion(x, y, hitpoints = 1, sizeMultiplier = 1) {
   };
 
   if (window.explosions.length < MAX_EXPLOSIONS) {
+    if (window.DEBUG_EXPLOSIONS) console.log('[Explosion] create', {x, y, size: randomSize});
     window.explosions.push(explosion);
   }
 }
@@ -76,6 +79,7 @@ function updateExplosions() {
     e.size += 1;
     e.alpha -= e.alphaDecay;
     if (e.alpha <= 0) {
+      if (window.DEBUG_EXPLOSIONS) console.log('[Explosion] remove', e);
       window.explosions.splice(i, 1);
       i--;
     }
@@ -87,6 +91,7 @@ function updateExplosions() {
  * Assumes `ctx` is a 2D rendering context already available globally.
  */
 function drawExplosions() {
+  if (window.DEBUG_EXPLOSIONS) console.log('[Explosion] draw count', window.explosions.length);
   if (typeof ctx === 'undefined') return; // safeguard
   for (let i = 0; i < window.explosions.length; i++) {
     const e = window.explosions[i];
