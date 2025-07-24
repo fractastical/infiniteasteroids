@@ -20,6 +20,7 @@
   // Globals & Constants
   // ------------------------------------------------------------------
   window.explosions = window.explosions || [];
+window.damageTexts = window.damageTexts || [];
 
   // Cap explosions to avoid memory bloat; fallback to old constant if present.
   const MAX_EXPLOSIONS = typeof HARDCAPONASTEROIDEXPLOSIONS !== 'undefined'
@@ -48,6 +49,7 @@
   // API
   // ------------------------------------------------------------------
   function createExplosion(x, y, hitpoints = 1, sizeMultiplier = 1) {
+    createDamageText(x, y, hitpoints);
     if (window.explosions.length >= MAX_EXPLOSIONS) return;
 
     const baseSize = 8 * sizeMultiplier;
@@ -69,6 +71,7 @@
   }
 
   function updateExplosions() {
+    updateDamageTexts();
     for (let i = window.explosions.length - 1; i >= 0; i--) {
       const e = window.explosions[i];
       e.size += 1;
@@ -81,6 +84,7 @@
   }
 
   function drawExplosions() {
+    drawDamageTexts();
     if (typeof ctx === 'undefined') return; // ctx not ready yet
     if (window.DEBUG_EXPLOSIONS) console.log('[Explosion] draw', window.explosions.length);
     for (let i = 0; i < window.explosions.length; i++) {
