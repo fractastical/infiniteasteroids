@@ -204,6 +204,12 @@ canvas {
     /* Triggers hardware acceleration */
 }
 
+#tutorialStep, #tutorialStep * {
+    font-family: 'Press Start 2P', cursive !important;
+    color: #0f0;
+    text-shadow: 1px 1px #000;
+}
+
 /* Joystick styling */
 #joystick {
     position: absolute;
