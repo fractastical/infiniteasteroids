@@ -37,6 +37,46 @@ window.damageTexts = window.damageTexts || [];
   const BLUES   = ['#82B1FF', '#448AFF', '#2979FF', '#2962FF'];
   const ORANGES = ['#FFAB91', '#FF8A65', '#FF7043', '#FF5722'];
 
+  // ------------------------------------------------------------------
+  // Damage numbers (retro floating text)
+  // ------------------------------------------------------------------
+  const DAMAGE_FLOAT_SPEED = -0.5;
+  const DAMAGE_FADE_SPEED = 0.02;
+
+  function createDamageText(x, y, damage) {
+    window.damageTexts.push({
+      x,
+      y,
+      text: damage.toString(),
+      alpha: 1,
+      dy: DAMAGE_FLOAT_SPEED,
+    });
+  }
+
+  function updateDamageTexts() {
+    for (let i = window.damageTexts.length - 1; i >= 0; i--) {
+      const t = window.damageTexts[i];
+      t.y += t.dy;
+      t.alpha -= DAMAGE_FADE_SPEED;
+      if (t.alpha <= 0) {
+        window.damageTexts.splice(i, 1);
+      }
+    }
+  }
+
+  function drawDamageTexts() {
+    if (typeof ctx === 'undefined') return;
+    ctx.save();
+    ctx.font = '16px "Press Start 2P", monospace';
+    ctx.textAlign = 'center';
+    for (const t of window.damageTexts) {
+      ctx.globalAlpha = t.alpha;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(t.text, t.x, t.y);
+    }
+    ctx.restore();
+  }
+
   function randOf(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
   function randomExplosionColor() {
     const r = Math.random();
