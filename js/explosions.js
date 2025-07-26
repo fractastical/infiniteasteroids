@@ -38,6 +38,37 @@ window.damageTexts = window.damageTexts || [];
   const ORANGES = ['#FFAB91', '#FF8A65', '#FF7043', '#FF5722'];
 
   // ------------------------------------------------------------------
+  // Explosion type configurations
+  // ------------------------------------------------------------------
+  const EXPLOSION_TYPES = {
+    normal: {
+      colors: [...PURPLES, ...BLUES, ...ORANGES],
+      growth: 1,
+      alphaDecay: [0.01, 0.03],
+    },
+    plasma: {
+      colors: ['#FF00FF', '#FF66FF', '#CC00CC'],
+      growth: 1.5,
+      alphaDecay: [0.015, 0.035],
+    },
+    ice: {
+      colors: ['#A1D8FF', '#6EC9FF', '#3AB3FF'],
+      growth: 0.8,
+      alphaDecay: [0.008, 0.02],
+    },
+    acid: {
+      colors: ['#AAFF00', '#CCFF33', '#99FF00'],
+      growth: 1.2,
+      alphaDecay: [0.012, 0.025],
+    },
+    electric: {
+      colors: ['#FFFF66', '#FFFF00', '#FFDD00'],
+      growth: 1.3,
+      alphaDecay: [0.015, 0.03],
+    },
+  };
+
+  // ------------------------------------------------------------------
   // Damage numbers (retro floating text)
   // ------------------------------------------------------------------
   const DAMAGE_FLOAT_SPEED = -0.3;
@@ -78,32 +109,34 @@ window.damageTexts = window.damageTexts || [];
   }
 
   function randOf(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-  function randomExplosionColor() {
-    const r = Math.random();
-    if (r < 0.33) return randOf(PURPLES);
-    if (r < 0.66) return randOf(BLUES);
-    return randOf(ORANGES);
+  function getRandomColorFor(type) {
+    const cfg = EXPLOSION_TYPES[type] || EXPLOSION_TYPES.normal;
+    return randOf(cfg.colors);
   }
 
   // ------------------------------------------------------------------
   // API
   // ------------------------------------------------------------------
-  function createExplosion(x, y, hitpoints = 1, sizeMultiplier = 1) {
+  // type can be 'normal', 'plasma', 'ice', 'acid', 'electric', etc.
+  function createExplosion(x, y, hitpoints = 1, sizeMultiplier = 1, type = 'normal') {
     createDamageText(x, y, hitpoints);
     if (window.explosions.length >= MAX_EXPLOSIONS) return;
 
     const baseSize = 8 * sizeMultiplier;
     const sizeReduction = 1.5;
     const size = Math.max(5, baseSize - hitpoints * sizeReduction);
-    const alphaDecay = 0.01 + Math.random() * 0.02; // 0.01–0.03 per frame
+    const cfg = EXPLOSION_TYPES[type] || EXPLOSION_TYPES.normal;
+    const [decayMin, decayMax] = cfg.alphaDecay;
+    const alphaDecay = decayMin + Math.random() * (decayMax - decayMin);
 
     const explosion = {
       x,
       y,
       size,
+      growth: cfg.growth,
       alpha: 1,
       alphaDecay,
-      color: randomExplosionColor(),
+      color: getRandomColorFor(type),
     };
 
     window.explosions.push(explosion);
@@ -114,7 +147,7 @@ window.damageTexts = window.damageTexts || [];
     updateDamageTexts();
     for (let i = window.explosions.length - 1; i >= 0; i--) {
       const e = window.explosions[i];
-      e.size += 1;
+      e.size += (e.growth || 1);
       e.alpha -= e.alphaDecay;
       if (e.alpha <= 0) {
         window.explosions.splice(i, 1);
