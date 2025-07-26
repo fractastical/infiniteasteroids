@@ -40,8 +40,8 @@ window.damageTexts = window.damageTexts || [];
   // ------------------------------------------------------------------
   // Damage numbers (retro floating text)
   // ------------------------------------------------------------------
-  const DAMAGE_FLOAT_SPEED = -0.5;
-  const DAMAGE_FADE_SPEED = 0.02;
+  const DAMAGE_FLOAT_SPEED = -0.3;
+  const DAMAGE_FADE_SPEED = 0.01;
 
   function createDamageText(x, y, damage) {
     window.damageTexts.push({
