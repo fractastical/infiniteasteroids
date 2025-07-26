@@ -21,6 +21,7 @@
   // ------------------------------------------------------------------
   window.explosions = window.explosions || [];
 window.damageTexts = window.damageTexts || [];
+  window.splinters = window.splinters || []; // small shard particles
 
   // Cap explosions to avoid memory bloat; fallback to old constant if present.
   const MAX_EXPLOSIONS = typeof HARDCAPONASTEROIDEXPLOSIONS !== 'undefined'
@@ -67,6 +68,56 @@ window.damageTexts = window.damageTexts || [];
       alphaDecay: [0.015, 0.03],
     },
   };
+
+  // ------------------------------------------------------------------
+  // Damage numbers (retro floating text)
+  // ------------------------------------------------------------------
+  // Splinter (shard) particles
+  // ------------------------------------------------------------------
+  const SPLINTER_ALPHA_DECAY = 0.02;
+  const SPLINTER_SPEED_MIN = 0.8;
+  const SPLINTER_SPEED_MAX = 2.0;
+  const SPLINTER_SIZE_RANGE = [2, 4];
+
+  function createSplinters(x, y, type) {
+    const shardCount = 8;
+    for (let i = 0; i < shardCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = SPLINTER_SPEED_MIN + Math.random() * (SPLINTER_SPEED_MAX - SPLINTER_SPEED_MIN);
+      window.splinters.push({
+        x,
+        y,
+        dx: Math.cos(angle) * speed,
+        dy: Math.sin(angle) * speed,
+        size: SPLINTER_SIZE_RANGE[0] + Math.random() * (SPLINTER_SIZE_RANGE[1] - SPLINTER_SIZE_RANGE[0]),
+        alpha: 1,
+        color: getRandomColorFor(type),
+      });
+    }
+  }
+
+  function updateSplinters() {
+    for (let i = window.splinters.length - 1; i >= 0; i--) {
+      const s = window.splinters[i];
+      s.x += s.dx;
+      s.y += s.dy;
+      s.alpha -= SPLINTER_ALPHA_DECAY;
+      if (s.alpha <= 0) {
+        window.splinters.splice(i, 1);
+      }
+    }
+  }
+
+  function drawSplinters() {
+    if (typeof ctx === 'undefined') return;
+    for (const s of window.splinters) {
+      ctx.save();
+      ctx.globalAlpha = s.alpha;
+      ctx.fillStyle = s.color;
+      ctx.fillRect(s.x, s.y, s.size, s.size);
+      ctx.restore();
+    }
+  }
 
   // ------------------------------------------------------------------
   // Damage numbers (retro floating text)
@@ -140,11 +191,13 @@ window.damageTexts = window.damageTexts || [];
     };
 
     window.explosions.push(explosion);
+    createSplinters(x, y, type);
     if (window.DEBUG_EXPLOSIONS) console.log('[Explosion] create', explosion);
   }
 
   function updateExplosions() {
     updateDamageTexts();
+    updateSplinters();
     for (let i = window.explosions.length - 1; i >= 0; i--) {
       const e = window.explosions[i];
       e.size += (e.growth || 1);
@@ -158,6 +211,7 @@ window.damageTexts = window.damageTexts || [];
 
   function drawExplosions() {
     drawDamageTexts();
+    drawSplinters();
     if (typeof ctx === 'undefined') return; // ctx not ready yet
     if (window.DEBUG_EXPLOSIONS) console.log('[Explosion] draw', window.explosions.length);
     for (let i = 0; i < window.explosions.length; i++) {
