@@ -323,8 +323,9 @@ function createTutorialOverlay() {
         padding: 10px !important;
         border-radius: 8px;
         max-width: 200px;
-        font-family: 'Segoe UI', Arial, sans-serif;
-        font-size: 14px;
+        font-family: 'Press Start 2P', monospace;
+        letter-spacing: 0;
+        font-size: 12px;
         text-align: center;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         border: 1px solid rgba(100, 150, 255, 0.5);
