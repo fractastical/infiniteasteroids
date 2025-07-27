@@ -1,6 +1,6 @@
 # Feature Progress
 
-_Last updated: 2025-07-26_
+_Last updated: 2025-07-27_
 
 | Feature | Status | Notes |
 | --- | --- | --- |
@@ -12,3 +12,7 @@ _Last updated: 2025-07-26_
 | Micro-tasking / auto-aim | Not started |  |
 | Ship armor | Not started | Requires `armor` attribute and mitigation logic |
 | Weight limit for ship | Not started | Will govern load-outs / speed trade-offs |
+| Curved-surface level | Not started | New gameplay mode where action happens on a planetary arc |
+Death effects
+Other transition effects
+Splintering explosion visuals
