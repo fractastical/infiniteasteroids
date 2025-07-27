@@ -1,6 +1,13 @@
 // for leaderboard and telegram API
 let gameId = "InfiniteAsteroids";
 let version = "1.22";
+
+// --- Global Analytics Snapshot Config (Raspberry Pi kiosks etc.) ---
+// Override this in HTML before loading game.js:
+//   <script>window.SNAPSHOT_ENDPOINT = "https://analytics.example.com/upload";</script>
+// If unset, snapshots are skipped.
+const SNAPSHOT_ENDPOINT = window.SNAPSHOT_ENDPOINT || null;
+
 let versionNotes = "1.2 intended to have distinct challenges."
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
@@ -2872,6 +2879,27 @@ function getTimeTaken() {
 let timeTaken = 0;
 
 function endGame() {
+  // Capture a snapshot of the current canvas for global analytics (Pi kiosks)
+  if (SNAPSHOT_ENDPOINT && typeof canvas !== 'undefined' && canvas.toBlob) {
+    try {
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const form = new FormData();
+        form.append('image', blob, `snapshot-${Date.now()}.png`);
+        form.append('score', score);
+        form.append('wave', wave);
+        form.append('version', version);
+        fetch(SNAPSHOT_ENDPOINT, {
+          method: 'POST',
+          body: form,
+          // No-cors avoids blocking the UI if kiosk is offline
+          mode: 'no-cors',
+        }).catch((err) => console.warn('Snapshot upload failed', err));
+      }, 'image/png', 0.9);
+    } catch (err) {
+      console.warn('Snapshot capture failed', err);
+    }
+  }
   // Stop the game loop and background music
   endTutorial();
   document.getElementById("mobile-pause-img").style.display = "none";

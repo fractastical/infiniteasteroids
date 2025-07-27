@@ -38,7 +38,23 @@ Exec=chromium-browser --noerrdialogs --kiosk --disable-pinch --overscroll-histor
      file:///home/pi/infiniteasteroids/index.html
 ```
 
-## 5  Optional Tweaks
+## 5  Global Analytics (Optional)
+The Pi build can capture a PNG of each finished run and POST it to a central server.  
+This is **disabled by default** – you enable it by providing an endpoint URL.
+
+1. Create/choose an upload API that accepts `multipart/form-data` with fields `image`, `score`, `wave`, `version`.
+2. In the BalenaCloud dashboard add a device or service-level environment variable:
+   
+   | Name | Example Value |
+   |------|---------------|
+   | `SNAPSHOT_ENDPOINT` | `https://analytics.example.com/upload` |
+
+3. The game reads this variable at runtime and sends the snapshot right after *Game Over*.  
+   If the Pi is offline the request is queued in **IndexedDB** and retried once the network returns.
+
+---
+
+## 6  Optional Tweaks
 | Purpose | Command / File |
 |---------|----------------|
 | Hide mouse cursor | `sudo apt install -y unclutter` then `unclutter -idle 0.1 -root &` (add to `~/.bashrc` or a service). |
