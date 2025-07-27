@@ -2877,6 +2877,11 @@ function endGame() {
   document.getElementById("mobile-pause-img").style.display = "none";
   document.getElementById("userInfo").style.display = "block";
 
+  // Trigger death visual effects overlay
+  if (typeof DeathEffects !== 'undefined' && ship) {
+    DeathEffects.play(ship.x, ship.y);
+  }
+
   xp = 0;
   pauseGame();
   // clearInterval(gameLoop);
