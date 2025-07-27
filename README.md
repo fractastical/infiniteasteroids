@@ -143,3 +143,21 @@ The time axis at the bottom shows the project timeline.
   # Playground
 
   playground.html
+
+---
+
+## Game Modes & Difficulty Differences
+
+Infinite Asteroids ships with a wide range of “level packs” (internally *Game Modes*).  Each pack tweaks core parameters such as asteroid speed, gravity, meteor frequency, XP curve, and score multipliers.  The table below lists what makes them special.  Values come from `js/game-taper.js > multiplierCalculator()`.
+
+| Pack | Sub-Modes | Key Tweaks |
+|------|-----------|------------|
+| **Deep Space** | Easy / Normal / Hard / Hero | Classic zero-gravity arena.  Difficulty scales via `asteroidDifficultySpeedMultiplier` (0.7 → 1.3) and shorter *invincibility* windows.  No environmental gimmicks. |
+| **Meteor Shower** | Easy / Normal / Hard / Hero | `meteorMode = true` <br>More meteors (`meteorBooster` 7→21) rain constantly.  Asteroid speed starts high (1.6→2.2).  Score multipliers 1.2→8.2 reward the extra chaos. |
+| **Planet** | Easy / Normal / Hard / Hero | `planetMode = true` enables curved-surface gravity.  `gravityStrength` rises 60→140 pulling debris toward the planet rim.  Moderate meteor frequency (booster 7→25). |
+| **Nebula Run** | Easy / Normal / Hard / Hero | Dense nebula slows lasers and obscures view (visual FX planned).  Lower base speed (1.2→1.8) but high score multipliers 1.8→6.8. |
+| **Meta Invaders** | Easy / Normal / Hard / Hero | Alien-heavy variant – spawns extra invader waves, boosted score 2.0→? .  Similar speed curve (1.3→1.9). |
+| **Endless Slow** | — | Relaxed zen mode.  Asteroids drift slowly; scoring toned down.  Great for practice. |
+| **Co-op** | — | Two-player shared-screen; lives are pooled. |
+
+*(A planned “Curved-surface level” will slot into the Planet pack when implemented.)*
