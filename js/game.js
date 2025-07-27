@@ -1,6 +1,6 @@
 // for leaderboard and telegram API
 let gameId = "InfiniteAsteroids";
-let version = "1.2";
+let version = "1.22";
 let versionNotes = "1.2 intended to have distinct challenges."
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
@@ -1455,6 +1455,9 @@ function drawExplosions() {
 
 // Update explosions with random alpha decay
 function updateExplosions() {
+  // Update floating damage numbers and splinter shards first (defined in explosions.js)
+  if (typeof updateDamageTexts === 'function') updateDamageTexts();
+  if (typeof updateSplinters === 'function') updateSplinters();
   for (let i = 0; i < explosions.length; i++) {
     explosions[i].size += 1;
     explosions[i].alpha -= explosions[i].alphaDecay;
@@ -1467,6 +1470,8 @@ function updateExplosions() {
 
 // Draw explosions with random colors
 function drawExplosions() {
+  // Draw splinter shards behind explosion bubbles
+  if (typeof drawSplinters === 'function') drawSplinters();
   for (let i = 0; i < explosions.length; i++) {
     ctx.save();
     ctx.globalAlpha = explosions[i].alpha;
@@ -1483,6 +1488,8 @@ function drawExplosions() {
     ctx.fill();
     ctx.restore();
   }
+  // Finally overlay floating damage numbers so they stay visible on top
+  if (typeof drawDamageTexts === 'function') drawDamageTexts();
 }
 
 function isColliding(obj1, obj2) {

@@ -210,10 +210,12 @@ window.damageTexts = window.damageTexts || [];
   }
 
   function drawExplosions() {
-    drawDamageTexts();
+    // Draw splinters first so shards sit behind text
     drawSplinters();
     if (typeof ctx === 'undefined') return; // ctx not ready yet
     if (window.DEBUG_EXPLOSIONS) console.log('[Explosion] draw', window.explosions.length);
+
+    // Draw explosion bubbles
     for (let i = 0; i < window.explosions.length; i++) {
       const e = window.explosions[i];
       ctx.save();
@@ -225,6 +227,9 @@ window.damageTexts = window.damageTexts || [];
       ctx.fill();
       ctx.restore();
     }
+
+    // Draw damage numbers last so they remain visible on top
+    drawDamageTexts();
   }
 
   // Expose globally so existing code continues to work.
