@@ -82,3 +82,33 @@ The Pi will auto-login, open Chromium full-screen, and load **Infinite Asteroids
 Connect a USB/Bluetooth controller — our `gamepad.js` already maps **A → thrust** and **B → secondary weapon**.
 
 Enjoy! 🎮🚀
+
+---
+
+## 9  Updating **Infinite Asteroids** on the Pi
+Need to pull in bug-fixes or new features? A normal **git pull** is all that’s required because the game is loaded straight from the local clone.
+
+### 9.1  Quick one-liner (from another computer)
+```bash
+ssh pi@raspberrypi.local "cd ~/infiniteasteroids && git pull --ff-only && sudo reboot"
+```
+• Assumes default hostname and that you have SSH enabled on the Pi.  
+• The Pi reboots so the autostarted Chromium session picks up the new code.
+
+### 9.2  Manual update over SSH
+```bash
+ssh pi@raspberrypi.local
+cd ~/infiniteasteroids
+git pull --ff-only   # grabs the latest commit from GitHub
+sudo reboot          # or just `pkill chromium-browser` to restart kiosk without full reboot
+```
+
+### 9.3  Using BalenaCloud deployments
+If you cloned the repo inside a BalenaCloud release, simply push a new commit from your dev machine:
+```bash
+balena push <app-name>
+```
+Balena will rebuild the container, download it to the device and restart the service automatically – no manual SSH needed.
+
+> Tip: for very slow connections you can enable **delta updates** in Balena to only transfer changed layers.
+
