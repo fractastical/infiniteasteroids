@@ -1,6 +1,13 @@
 // for leaderboard and telegram API
 let gameId = "InfiniteAsteroids";
-let version = "1.2";
+let version = "1.22";
+
+// --- Global Analytics Snapshot Config (Raspberry Pi kiosks etc.) ---
+// Override this in HTML before loading game.js:
+//   <script>window.SNAPSHOT_ENDPOINT = "https://analytics.example.com/upload";</script>
+// If unset, snapshots are skipped.
+const SNAPSHOT_ENDPOINT = window.SNAPSHOT_ENDPOINT || null;
+
 let versionNotes = "1.2 intended to have distinct challenges."
 let crazyGamesMode = false;
 let crazyGamesDebugMode = false;
@@ -94,6 +101,11 @@ let initialSlowDown = true;
 let currentBackgroundImage = null;
 
 let keys = {};
+// Ensure the same reference is visible globally — allows the gamepad shim
+// (js/gamepad.js) to update keyboard state regardless of where it is
+// initialised. This prevents mismatched objects when a controller is
+// plugged in.
+window.keys = keys;
 let isPaused = false;
 let loginFormOpen = false;
 
@@ -960,8 +972,6 @@ function update() {
     if (invincibilityTimer <= 0) invincible = false;
   }
 
-  if (window.updateExplosions) window.updateExplosions();
-  if (window.drawExplosions) window.drawExplosions();
   // drawMegaBossAlienLaser();
 
   updateAliens();
@@ -1438,7 +1448,44 @@ function getRandomRedShade() {
 
 
 
+// Update explosions with random alpha decay
+function updateExplosions() {
+  // Update floating damage numbers and splinter shards first (defined in explosions.js)
+  if (typeof updateDamageTexts === 'function') updateDamageTexts();
+  if (typeof updateSplinters === 'function') updateSplinters();
+  for (let i = 0; i < explosions.length; i++) {
+    explosions[i].size += 1;
+    explosions[i].alpha -= explosions[i].alphaDecay;
+    if (explosions[i].alpha <= 0) {
+      explosions.splice(i, 1);
+      i--;
+    }
+  }
+}
 
+// Draw explosions with random colors
+function drawExplosions() {
+  // Draw splinter shards behind explosion bubbles
+  if (typeof drawSplinters === 'function') drawSplinters();
+  for (let i = 0; i < explosions.length; i++) {
+    ctx.save();
+    ctx.globalAlpha = explosions[i].alpha;
+    ctx.beginPath();
+    ctx.arc(
+      explosions[i].x,
+      explosions[i].y,
+      explosions[i].size,
+      0,
+      Math.PI * 2
+    );
+    ctx.closePath();
+    ctx.fillStyle = explosions[i].color;
+    ctx.fill();
+    ctx.restore();
+  }
+  // Finally overlay floating damage numbers so they stay visible on top
+  if (typeof drawDamageTexts === 'function') drawDamageTexts();
+}
 
 function isColliding(obj1, obj2) {
   if (obj1.radius) {
@@ -2820,10 +2867,36 @@ function getTimeTaken() {
 let timeTaken = 0;
 
 function endGame() {
+  // Capture a snapshot of the current canvas for global analytics (Pi kiosks)
+  if (SNAPSHOT_ENDPOINT && typeof canvas !== 'undefined' && canvas.toBlob) {
+    try {
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const form = new FormData();
+        form.append('image', blob, `snapshot-${Date.now()}.png`);
+        form.append('score', score);
+        form.append('wave', wave);
+        form.append('version', version);
+        fetch(SNAPSHOT_ENDPOINT, {
+          method: 'POST',
+          body: form,
+          // No-cors avoids blocking the UI if kiosk is offline
+          mode: 'no-cors',
+        }).catch((err) => console.warn('Snapshot upload failed', err));
+      }, 'image/png', 0.9);
+    } catch (err) {
+      console.warn('Snapshot capture failed', err);
+    }
+  }
   // Stop the game loop and background music
   endTutorial();
   document.getElementById("mobile-pause-img").style.display = "none";
   document.getElementById("userInfo").style.display = "block";
+
+  // Trigger death visual effects overlay
+  if (typeof DeathEffects !== 'undefined' && ship) {
+    DeathEffects.play(ship.x, ship.y);
+  }
 
   xp = 0;
   pauseGame();
