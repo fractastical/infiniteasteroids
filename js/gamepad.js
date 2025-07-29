@@ -65,8 +65,7 @@
 
   // Start immediately if already connected
   if (navigator.getGamepads()[0]) poll();
-})();
-// can play without rewriting input logic.  We translate specific
+})();  We translate specific
 // gamepad buttons into the expected `keys` flags used throughout the game.
 //
 // Mapping (Xbox-style indices):
