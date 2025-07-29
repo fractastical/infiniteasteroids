@@ -559,31 +559,8 @@ function updateAsteroids() {
 
 
 
- // Random alpha decay between 0.005 and 0.015
 
 
-if (hitpoints > 7) {
-  
-} else if (hitpoints > 1) {
-  
-} else {
-  
-  } else if (hitpoints > 1) {
-    
-  } else {
-    
-  }
-
-  
-    x: x,
-    y: y,
-    
-    
-    
-    
-  
-  
-}
 
 let lastRareAsteroids = [];
 const maxRareAsteroidsDisplayed = 3;
@@ -812,15 +789,15 @@ function createMegaExplosionEffect(x, y, radius) {
     duration: duration,
     colors: explosionColors,
     currentColorIndex: 0,
-  
+  }
 
-  // Add to a new array for mega explosions if you don't want to use the regular explosions array
   megaExplosions.push(megaExplosion);
 }
 
 function drawMegaExplosions() {
   for (let i = megaExplosions.length - 1; i >= 0; i--) {
-     megaExplosions[i];
+    let explosion = megaExplosions[i];
+    megaExplosions[i];
 
     ctx.beginPath();
     ctx.arc(explosion.x, explosion.y, explosion.currentRadius, 0, Math.PI * 2);
