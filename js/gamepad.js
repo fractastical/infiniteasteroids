@@ -65,7 +65,7 @@
 
   // Start immediately if already connected
   if (navigator.getGamepads()[0]) poll();
-})(); so that controller users (including Raspberry Pi builds)
+})();
 // can play without rewriting input logic.  We translate specific
 // gamepad buttons into the expected `keys` flags used throughout the game.
 //
@@ -125,7 +125,7 @@ window.gamepadKeyMap = {
   // If a pad is already connected (some browsers), start immediately
   if (navigator.getGamepads()[0]) pollGamepad();
 
-// Maps the first connected gamepad to the existing `keys` object so the rest
+
 // of the game can stay unchanged.
 // Buttons / axes mapping follows the standard X-Input (Xbox) layout:
 //   Button 0 (A)         → Space  (primary fire)
@@ -135,8 +135,7 @@ window.gamepadKeyMap = {
 //   Axes [1] (LY)        → up / down
 // Feel free to tweak thresholds or add more bindings.
 
-(function () {
-  const DEADZONE = 0.3;
+
   const KEY_MAP = {
     left: "ArrowLeft",
     right: "ArrowRight",
@@ -178,7 +177,7 @@ window.gamepadKeyMap = {
     window.requestAnimationFrame(pollGamepad);
   }
 
-  window.addEventListener("gamepadconnected", () => {
+  , () => {
     console.log("Gamepad connected");
     pollGamepad();
   });
