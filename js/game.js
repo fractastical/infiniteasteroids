@@ -101,6 +101,11 @@ let initialSlowDown = true;
 let currentBackgroundImage = null;
 
 let keys = {};
+// Ensure the same reference is visible globally — allows the gamepad shim
+// (js/gamepad.js) to update keyboard state regardless of where it is
+// initialised. This prevents mismatched objects when a controller is
+// plugged in.
+window.keys = keys;
 let isPaused = false;
 let loginFormOpen = false;
 

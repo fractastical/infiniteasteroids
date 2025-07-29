@@ -2,6 +2,15 @@
 <html>
 
 <head>
+    <!-- Ensure the page grabs keyboard focus when loaded (useful for kiosk mode) -->
+    <script>
+      window.addEventListener('load', () => {
+        if (document.hasFocus && !document.hasFocus()) {
+          window.focus();
+          document.body && document.body.focus();
+        }
+      });
+    </script>
 	<title>Infinite Asteroids</title>
 	<link href="styles.css" rel="stylesheet">
 	<link href="styles-cg.css" rel="stylesheet">
