@@ -54,7 +54,19 @@ This is **disabled by default** – you enable it by providing an endpoint URL.
 
 ---
 
-## 6  Optional Tweaks
+## 6  Debugging / Exiting Kiosk
+Need to drop to the terminal or close the browser?
+
+| Action | Shortcut |
+|--------|----------|
+| Switch to text console | **Ctrl + Alt + F2** (login), back with **Ctrl + Alt + F7** |
+| Close kiosk window | **Alt + F4** |
+| Quit Chromium completely | **Ctrl + Shift + Q** |
+| Toggle full-screen (non-kiosk launches) | **F11** |
+
+---
+
+## 7  Optional Tweaks
 | Purpose | Command / File |
 |---------|----------------|
 | Hide mouse cursor | `sudo apt install -y unclutter` then `unclutter -idle 0.1 -root &` (add to `~/.bashrc` or a service). |
@@ -62,7 +74,7 @@ This is **disabled by default** – you enable it by providing an endpoint URL.
 | Lock console switching (arcade safety) | Edit `/etc/kbd/config` → `CONSOLE_ALTS=""`. |
 | Change HDMI resolution | `sudo raspi-config` → *Display Options* → *Resolution*. |
 
-## 6  Reboot & Play
+## 8  Reboot & Play
 ```bash
 sudo reboot
 ```
