@@ -27,7 +27,7 @@ const lastStep = (() => setTimeout(() => {
 // Tutorial steps for desktop - UNCHANGED POSITIONS
 const desktopTutorialSteps = [
     {
-        text: "Use arrow keys or A,W,S,D to move your ship",
+        text: "Use arrow keys or A,W,S,D or press the A button on your controller to move your ship",
         position: { top: '66%', left: '5%' },
         arrowPosition: { top: '60%', left: '5%' },
         arrowRotation: 0,
@@ -189,7 +189,7 @@ const mobileTutorialSteps = [
 // Tutorial steps for fullscreen mode - UNCHANGED POSITIONS
 const fullscreenTutorialSteps = [
     {
-        text: "Use arrow keys or A,W,S,D to move your ship",
+        text: "Use arrow keys or A,W,S,D or press the A button on your controller to move your ship",
         position: { top: '57%', left: '5%' },
         arrowPosition: { top: '54%', left: '5%' },
         arrowRotation: 0,
@@ -386,7 +386,7 @@ function createTutorialOverlay() {
     stepContent.appendChild(stepText);
     stepElement.appendChild(stepContent);
     stepElement.appendChild(stepProgress);
-    
+
     overlay.appendChild(stepElement);
     overlay.appendChild(arrowElement);
     document.body.appendChild(overlay);
@@ -401,7 +401,7 @@ function showCurrentTutorialStep() {
     const iconElement = document.getElementById('tutorialIcon');
     const textElement = document.getElementById('tutorialText');
     const progressBar = document.getElementById('tutorialProgressBar');
-    
+
     // Reset positioning exactly as in original
     stepElement.style.bottom = 'unset';
     stepElement.style.right = 'unset';
@@ -412,11 +412,11 @@ function showCurrentTutorialStep() {
     arrowElement.style.top = 'unset';
     arrowElement.style.left = 'unset';
     arrowElement.style.maxWidth = "auto";
-    
+
     // Set content
     textElement.textContent = step.text;
     iconElement.textContent = step.icon || '';
-    
+
     // Update progress
     const progress = ((currentTutorialStep + 1) / steps.length) * 100;
     progressBar.style.width = `${progress}%`;
@@ -584,7 +584,7 @@ function updateTutorial() {
 
     const steps = getTutorialSteps();
     const currentStep = steps[currentTutorialStep];
-    
+
     // Update animation frame counter for highlight effect
     tutorialAnimationFrame++;
     highlightPulse = Math.sin(tutorialAnimationFrame * 0.1) * 0.2 + 0.8;
@@ -612,7 +612,7 @@ function updateTutorial() {
     if (tutorialAlienCreated && !tutorialAlienDestroyed) {
         tutorialAlienDestroyed = !aliens.some(alien => alien.isTutorialAlien);
     }
-    
+
     if (currentStep.condition()) {
         console.log(steps.length, "---", currentTutorialStep);
         if (currentTutorialStep === steps.length - 2) {
@@ -634,7 +634,7 @@ function updateTutorial() {
 // Highlight the tutorial asteroid - SIMILAR TO ORIGINAL
 function highlightTutorialAsteroid() {
     if (!tutorialAsteroid) return;
-    
+
     ctx.save();
     ctx.strokeStyle = 'yellow';
     ctx.lineWidth = 2;
@@ -656,11 +656,11 @@ function endTutorial() {
 // Draw all tutorial elements
 function drawTutorial() {
     if (!tutorialActive) return;
-    
+
     // Highlight the current tutorial object
     const steps = getTutorialSteps();
     const currentStep = steps[currentTutorialStep];
-    
+
     if (currentStep.asteroid && tutorialAsteroid) {
         highlightTutorialAsteroid();
     } else if (currentStep.elementAsteroid && elementalAsteroidCreated && !elementalAsteroidDestroyed) {
@@ -706,7 +706,7 @@ function drawTutorial() {
 function updateGameWithTutorial(deltaTime) {
     // Update regular game elements
     updateGame(deltaTime);
-    
+
     // Update tutorial elements if active
     if (tutorialActive) {
         updateTutorial();
@@ -717,7 +717,7 @@ function updateGameWithTutorial(deltaTime) {
 // Initialize everything
 function initGame() {
     // ... existing initialization code
-    
+
     // Initialize tutorial if not completed
     if (!localStorage.getItem('tutorialCompleted')) {
         initializeTutorial();
