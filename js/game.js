@@ -972,8 +972,6 @@ function update() {
     if (invincibilityTimer <= 0) invincible = false;
   }
 
-  updateExplosions();
-  drawExplosions();
   // drawMegaBossAlienLaser();
 
   updateAliens();
@@ -993,6 +991,8 @@ function update() {
   drawOctoBoss();
   updateAndDrawParticles();
   updateAndDrawShockwaves();
+  if (window.updateExplosions) window.updateExplosions();
+  if (window.drawExplosions) window.drawExplosions();
   drawAlienLasers();
   updateBossFire();
 
@@ -1446,24 +1446,7 @@ function getRandomRedShade() {
   return shades[Math.floor(Math.random() * shades.length)];
 }
 
-// Draw the explosions on the canvas
-function drawExplosions() {
-  for (let i = 0; i < explosions.length; i++) {
-    let explosion = explosions[i];
-    ctx.fillStyle = explosion.color;
-    ctx.globalAlpha = explosion.alpha;
-    ctx.beginPath();
-    ctx.arc(explosion.x, explosion.y, explosion.size, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
 
-    explosion.alpha -= explosion.alphaDecay;
-    if (explosion.alpha <= 0) {
-      explosions.splice(i, 1);
-      i--;
-    }
-  }
-}
 
 // Update explosions with random alpha decay
 function updateExplosions() {

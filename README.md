@@ -1,6 +1,8 @@
 
 # Description
 
+> This fork has experimental Raspberry Pi arcade support: plug in any USB gamepad and launch in Chromium kiosk mode – see below.
+
 Roguelike verision of asteroids with 22 weapon types and passives unlocked via 40+ achievements. Implemented in vanilla javascript with a firebase backend and customizations for crazygames.
 
 
@@ -140,7 +142,22 @@ The time axis at the bottom shows the project timeline.
   stats.html
 
 
-  # Playground
+  # Raspberry Pi / Kiosk Mode
+
+1. Install Raspberry Pi OS (Desktop or Lite + `xinit`).
+2. Enable GL (FKMS) driver in `raspi-config` for hardware-accelerated canvas.
+3. Autostart Chromium in kiosk mode:
+
+```bash
+chromium-browser --kiosk --app=file:///home/pi/infiniteasteroids/index.html --disable-pinch --disable-translate --disable-features=OverlayScrollbar
+```
+
+4. Connect a USB/Bluetooth gamepad – the game detects it automatically via the Gamepad API.
+5. Optionally lower resolution to 1280×720 and set `LOW_SPEC=true` in `settings.js` (not yet committed) for smoother 60 FPS.
+
+---
+
+# Playground
 
   playground.html
 
